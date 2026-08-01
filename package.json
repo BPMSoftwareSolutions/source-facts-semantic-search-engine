@@ -1,0 +1,26 @@
+{
+  "name": "source-facts-semantic-search-engine",
+  "version": "0.1.0",
+  "description": "MVP source-facts semantic search engine.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bin": {
+    "source-facts-se": "./src/cli.js"
+  },
+  "scripts": {
+    "project": "node src/cli.js project",
+    "query": "node src/cli.js query",
+    "start": "node src/cli.js",
+    "check:deps": "node ./scripts/check-deps.mjs",
+    "test": "node --test test",
+    "prove:smoke": "node ./scripts/prove-smoke.mjs"
+  },
+  "dependencies": {
+    "@deterministic-solutions/source-code-taxonomy-scanner": "file:../source-code-taxonomy-scanner",
+    "@deterministic-solutions/sej-runtime-query": "file:../sej-runtime-query",
+    "ajv": "^8.17.1"
+  }
+}
