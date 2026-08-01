@@ -1,0 +1,8 @@
+Deterministic Know-How Intelligence Center — public landing page
+└── GlobalHeader
+    └── PrimaryNavigation
+└── Hero
+└── KnowHowFamilies
+└── FeatureSections
+└── GlobalFooter
+└── AuthenticationEntry

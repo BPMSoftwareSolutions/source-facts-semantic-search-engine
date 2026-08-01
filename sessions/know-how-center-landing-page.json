@@ -1,0 +1,253 @@
+{
+  "sessionType": "intent-to-product-session.v1",
+  "sessionId": "sha256:ed6d9e7527972ba6a7ba95fd8ffcc84fd62ae46cf8b9c4b4b19feb52adc715ff",
+  "subject": "Deterministic Know-How Intelligence Center — public landing page",
+  "intentRevisions": [
+    {
+      "revisionId": "sha256:d3ac5802e585061aad6f4d36fdff7c8d686b30875d97ad79ac6b557ad2a144a9",
+      "ordinal": 1,
+      "intentText": "Build the public landing page for the Deterministic Know-How Intelligence Center.",
+      "rationale": "This is the pipeline-discussion doc's own proposed first mission: scan existing repositories for webpage know-how and use that know-how to design the first governed landing page."
+    }
+  ],
+  "queries": [
+    {
+      "queryId": "sha256:31a01ea557be2c18bf7ee19a75b50f635f99eaf7ba4fe4eb0989010095979832",
+      "ordinal": 1,
+      "queryText": "SELECT relativePath, title FROM htmlDocuments",
+      "resultSummary": "21 HTML entry surfaces found. Nearly all are internal operator/console prototypes (AI engine telemetry, LOC control plane, warehouse/shipment consoles, UX choreography inspectors). Exactly one, managed-services-homepage.html, is a public marketing homepage (a labeled webpage-classification-scanner fixture); index.html is the governed procedural-dungeon-webpage bootstrap reference.",
+      "rowCount": 21
+    },
+    {
+      "queryId": "sha256:79d32890818e3df4c5a40218ef93bba4e7c5cf5501f0d67cfc59528bd6291752",
+      "ordinal": 2,
+      "queryText": "SELECT dimension, value, disposition, supportScore FROM webpageClassifications",
+      "resultSummary": "The page-type classifier (page-type.heuristics.sej.v1 pack) abstained on all 21 pages — consistent with the survey above: this corpus is overwhelmingly internal tooling, not deployed marketing pages, so its URL-path-dependent heuristics (e.g. homepage requires site-root path) have little to work with here.",
+      "rowCount": 21
+    },
+    {
+      "queryId": "sha256:4200466c90664773ee16bdd313f6b1085732a9c0d62a67dfe17133e96d1fc699",
+      "ordinal": 3,
+      "queryText": "SELECT tag, text, sourceReferenceId FROM htmlElements WHERE kind = 'heading' AND tag = 'h1'",
+      "resultSummary": "23 <h1> headings found across the corpus. Only managed-services-homepage.html's h1 (\"Managed IT and cybersecurity services for growing enterprise teams\") sits inside a hero region with supporting copy and two calls to action; the rest are console/dashboard page titles, not marketing heroes.",
+      "rowCount": 23
+    },
+    {
+      "queryId": "sha256:b9ba6ddeb4cc6a081606d50fdc1f526953b089ced53096129cff3e8ecbe45890",
+      "ordinal": 4,
+      "queryText": "SELECT text, attributes FROM htmlElements WHERE kind = 'link' AND documentId = '051ae101c68f6c7e783a69de289be1e5e08341c9d17342effb69f532bcaafb92'",
+      "resultSummary": "managed-services-homepage.html's navigation and body links: Home, Services, Case Studies, Careers, Contact, Request an assessment, Book a demo, Customer success stories, Join our team - open positions and benefits. The header nav itself carries 5 primary links (Home, Services, Case Studies, Careers, Contact) and no search entry, no sign-in entry.",
+      "rowCount": 9
+    },
+    {
+      "queryId": "sha256:78534ebebe4445e1b34d787c700adf5ccd0a73803872c761682a9f186ef495ff",
+      "ordinal": 5,
+      "queryText": "SELECT tag, attributes FROM htmlElements WHERE tag = 'input'",
+      "resultSummary": "2 <input> elements found corpus-wide; 0 are password inputs. No authentication form of any kind exists in this pilot corpus.",
+      "rowCount": 2
+    },
+    {
+      "queryId": "sha256:570b8770dcb5f9cf71ed6251fa5d0b28adae9065106827503ac5fbb8ff0dbfcb",
+      "ordinal": 6,
+      "queryText": "SELECT propertyName, COUNT(*) AS usageCount FROM cssDeclarations WHERE isCustomProperty = true GROUP BY propertyName ORDER BY usageCount DESC LIMIT 5",
+      "resultSummary": "Top reused custom-property tokens by usage count: --bg (12x), --muted (12x), --line (11x), --shadow (8x), --danger (7x). A consistent dark-theme token scale (--bg/--surface/--text/--accent/--muted/--border) recurs across most console pages, independent of the marketing-page source used for structure.",
+      "rowCount": 5
+    }
+  ],
+  "evidenceInspections": [
+    {
+      "inspectionId": "sha256:afd43851e12c64c4d784c713de37366b22ace598dd49dbf6bc8ee4ebf0544efa",
+      "ordinal": 1,
+      "sourceReferenceIds": [
+        "htmlDocuments:ai-execution-substrate/ai-engine-execution-telemetry-preview.html",
+        "htmlDocuments:gitship/warehouse_shipment_operator_console.html",
+        "htmlDocuments:live-operational-cognition/Prototypes/LOC Projection Shell — ASCII Contract View.html",
+        "htmlDocuments:live-operational-cognition/loc-it-down-gemini-prototype.html",
+        "htmlDocuments:live-operational-cognition/loc_cockpit_demo.html",
+        "htmlDocuments:live-operational-cognition/thread-captures/preview (2).html",
+        "htmlDocuments:live-operational-cognition/thread-captures/projection-preview-exact-style.html",
+        "htmlDocuments:live-operational-cognition/workspace-inventory-tree-prototype.html",
+        "htmlDocuments:operator-console/operator-console-demo.html",
+        "htmlDocuments:shipment_line_lab/shipment-manifest-composer.html",
+        "htmlDocuments:shipment_line_lab/warehouse_visibility_workspace_clean_prototype-latest.html",
+        "htmlDocuments:shipment_line_lab/warehouse_visibility_workspace_clean_prototype.html",
+        "htmlDocuments:warehouse_visibility_ui_taxonomy/inventory_tree_leaf_render_v1/latest-inspector.html",
+        "htmlDocuments:warehouse_visibility_ui_taxonomy/projected_workspace_zero_trust_e2e_v1/latest-inspector.html",
+        "htmlDocuments:warehouse_visibility_ui_taxonomy/projected_workspace_zero_trust_e2e_v1/latest-live-readback-inspector.html",
+        "htmlDocuments:warehouse_visibility_ui_taxonomy/projected_workspace_zero_trust_e2e_v1/latest-rejected-inspector.html",
+        "htmlDocuments:warehouse_visibility_ui_taxonomy/warehouse_visibility_workspace_shell_contract_v1/latest-inspector.html",
+        "htmlDocuments:pages/learning-loop-value-simulator.html",
+        "htmlDocuments:index.html",
+        "htmlDocuments:insufficient-evidence-page.html",
+        "htmlDocuments:managed-services-homepage.html"
+      ],
+      "note": "Surveyed every HTML entry surface's title before choosing which pages to treat as structural exemplars for a public-facing page."
+    },
+    {
+      "inspectionId": "sha256:c8e1e53734b1b0a91077dfbc30fe59486f6d36918db5f7b31d9077374d62dca3",
+      "ordinal": 2,
+      "sourceReferenceIds": [
+        "ai-execution-substrate/ai-engine-execution-telemetry-preview.html:269:14",
+        "ai-execution-substrate/ai-engine-execution-telemetry-preview.html:468:16",
+        "ai-execution-substrate/ai-engine-execution-telemetry-preview.html:549:18"
+      ],
+      "note": "Inspected the fullest --bg/--text/--accent token scale in the corpus to confirm real hex values before citing the theme as reused know-how."
+    }
+  ],
+  "considerations": [
+    {
+      "considerationId": "sha256:cc8175228b8b864f444c1e19917f1778fb85d519a6cb76fba676a44636e46ee2",
+      "ordinal": 1,
+      "category": "structural-posture",
+      "candidateLabel": "internal-dark-console-shell (majority pattern across the corpus)",
+      "evidenceReferences": [
+        "htmlDocuments:ai-execution-substrate/ai-engine-execution-telemetry-preview.html",
+        "htmlDocuments:gitship/warehouse_shipment_operator_console.html",
+        "htmlDocuments:live-operational-cognition/Prototypes/LOC Projection Shell — ASCII Contract View.html"
+      ],
+      "outcome": "rejected",
+      "rationale": "This is the most common shape in the corpus, but it is an internal operator-console posture (dense telemetry panels, control-plane cockpits) built for operators already inside the system, not for a first-time public visitor evaluating the product. Reusing it would misrepresent the audience."
+    },
+    {
+      "considerationId": "sha256:d9665f164bd046ce6b0118be05deb4a596170fc9a1c0c32a316a80079a5c1f14",
+      "ordinal": 2,
+      "category": "structural-posture",
+      "candidateLabel": "managed-services-homepage (header nav + hero + feature sections + footer)",
+      "evidenceReferences": [
+        "managed-services-homepage.html:565:5",
+        "managed-services-homepage.html:760:6",
+        "managed-services-homepage.html:2132:8"
+      ],
+      "outcome": "selected",
+      "rationale": "The only page in the corpus actually shaped like public marketing/documentation homepage: a header with primary navigation, a hero, three feature sections, and a footer with a direct contact path. This structural skeleton is the appropriate one to reuse for a public landing page."
+    },
+    {
+      "considerationId": "sha256:3ec423e3684547584a985b5388e32463607f70662bf98fc95ce718f8d1456fb4",
+      "ordinal": 3,
+      "category": "hero-pattern",
+      "candidateLabel": "hero-with-code-sample",
+      "evidenceReferences": [],
+      "outcome": "rejected",
+      "rationale": "No page in the pilot corpus pairs a hero with an inline code sample. Selecting this pattern would require new authority, not reuse — out of scope for this pass."
+    },
+    {
+      "considerationId": "sha256:56326ba6a808d2d2af0c6951bfa4da8dfe3a8185ff348da698ab1bf3cc9ed4f5",
+      "ordinal": 4,
+      "category": "hero-pattern",
+      "candidateLabel": "hero-with-interactive-architecture-diagram",
+      "evidenceReferences": [],
+      "outcome": "rejected",
+      "rationale": "Same gap: not observed anywhere in the corpus. Recording the absence honestly rather than inventing a precedent."
+    },
+    {
+      "considerationId": "sha256:2320c51b3dd6e643229c4ed03af9bdd23e19c21121c6cc0a6604266865d37a0b",
+      "ordinal": 5,
+      "category": "hero-pattern",
+      "candidateLabel": "centered-hero-with-dual-cta",
+      "evidenceReferences": [
+        "managed-services-homepage.html:771:75",
+        "managed-services-homepage.html:1069:44",
+        "managed-services-homepage.html:1753:55"
+      ],
+      "outcome": "selected",
+      "rationale": "Headline plus supporting paragraph plus a primary CTA (\"Request an assessment\") and a secondary CTA (\"Book a demo\") is a real, observed pattern and reads well for an audience evaluating a new deterministic-tooling product."
+    },
+    {
+      "considerationId": "sha256:4ec5c7fd918ca77e2198786f5ea9442e25d6193fa0e9165dd9643ca4a84cfe2d",
+      "ordinal": 6,
+      "category": "navigation-pattern",
+      "candidateLabel": "header-primary-nav-flat-links",
+      "evidenceReferences": [
+        "managed-services-homepage.html:565:5"
+      ],
+      "outcome": "selected",
+      "rationale": "The only real navigation exemplar in the corpus: a flat set of primary links in the header. Reused as-is for structure; search and sign-in entries have no precedent here (see below) so they are marked as gaps, not fabricated."
+    },
+    {
+      "considerationId": "sha256:b29ee4d9cf1a3ee08d82b08667080d4273ed8dc93ffa2a326a4c1097ec96820c",
+      "ordinal": 7,
+      "category": "sign-in-entry",
+      "candidateLabel": "any-authentication-pattern-from-corpus",
+      "evidenceReferences": [],
+      "outcome": "rejected",
+      "rationale": "Zero password inputs and zero authentication forms exist anywhere in the 21-page pilot corpus (verified: 2 <input> elements total, none of type password). Per the pipeline discussion's own guidance, the sign-in posture must come from repository findings and security constraints, not visual preference — since there are no findings to draw on, this decision is deferred rather than invented."
+    },
+    {
+      "considerationId": "sha256:9d6e51b33a1a0e92a79d4cfd72a1a979984924ff13c963f328694d3a10a0a4f7",
+      "ordinal": 8,
+      "category": "theme-tokens",
+      "candidateLabel": "shared-dark-theme-custom-property-scale",
+      "evidenceReferences": [
+        "ai-execution-substrate/ai-engine-execution-telemetry-preview.html:269:14",
+        "ai-execution-substrate/ai-engine-execution-telemetry-preview.html:468:16",
+        "ai-execution-substrate/ai-engine-execution-telemetry-preview.html:549:18"
+      ],
+      "outcome": "selected",
+      "rationale": "Recurs across 12+ files with consistent naming (--bg, --text, --accent, --muted, --border). A genuinely reusable design-token vocabulary, independent of which page supplied the structural skeleton."
+    }
+  ],
+  "selections": [
+    {
+      "selectionId": "sha256:d94f9f8023a2564fa996ed0478131bc16120685cab4ca1abee9fbbf8fecf62a2",
+      "ordinal": 1,
+      "category": "structural-posture",
+      "selectedLabel": "managed-services-homepage structural skeleton",
+      "consideredConsiderationIds": [
+        "sha256:cc8175228b8b864f444c1e19917f1778fb85d519a6cb76fba676a44636e46ee2",
+        "sha256:d9665f164bd046ce6b0118be05deb4a596170fc9a1c0c32a316a80079a5c1f14"
+      ],
+      "rationale": "Best (and only) fit for a first-time public visitor, drawn from real corpus evidence rather than the majority internal-tooling pattern."
+    },
+    {
+      "selectionId": "sha256:2846fac97f232814033fa6e501bddc4d57397438dbf1ed5357ebfbe66c767e55",
+      "ordinal": 2,
+      "category": "hero-pattern",
+      "selectedLabel": "centered-hero-with-dual-cta",
+      "consideredConsiderationIds": [
+        "sha256:3ec423e3684547584a985b5388e32463607f70662bf98fc95ce718f8d1456fb4",
+        "sha256:56326ba6a808d2d2af0c6951bfa4da8dfe3a8185ff348da698ab1bf3cc9ed4f5",
+        "sha256:2320c51b3dd6e643229c4ed03af9bdd23e19c21121c6cc0a6604266865d37a0b"
+      ],
+      "rationale": "Only hero pattern with real corpus precedent; the alternatives would require net-new authority this pass doesn't cover."
+    },
+    {
+      "selectionId": "sha256:217c2278bb23a39f7481ad547a5737ddbe16863567186fac6dca01db536f6857",
+      "ordinal": 3,
+      "category": "navigation-pattern",
+      "selectedLabel": "header-primary-nav-flat-links",
+      "consideredConsiderationIds": [
+        "sha256:4ec5c7fd918ca77e2198786f5ea9442e25d6193fa0e9165dd9643ca4a84cfe2d"
+      ],
+      "rationale": "Direct reuse of the one real navigation exemplar found by query."
+    },
+    {
+      "selectionId": "sha256:d8a4ab4b767ae424b2bc6e55e75cafeca54f0b5e4ebdc7c18edf7af0f6d2c996",
+      "ordinal": 4,
+      "category": "sign-in-entry",
+      "selectedLabel": "deferred — no corpus precedent",
+      "consideredConsiderationIds": [
+        "sha256:b29ee4d9cf1a3ee08d82b08667080d4273ed8dc93ffa2a326a4c1097ec96820c"
+      ],
+      "rationale": "Honest gap: the landing page will link out to a dedicated authentication capability (per the pipeline doc's own separation of concerns) but this pass does not select magic-link vs. SSO vs. passkey without real evidence."
+    },
+    {
+      "selectionId": "sha256:2428eec5a1b22c2bf6d5e337d50c8db974ebebef94b030016b0e10fe4ea77e2b",
+      "ordinal": 5,
+      "category": "theme-tokens",
+      "selectedLabel": "shared-dark-theme-custom-property-scale",
+      "consideredConsiderationIds": [
+        "sha256:9d6e51b33a1a0e92a79d4cfd72a1a979984924ff13c963f328694d3a10a0a4f7"
+      ],
+      "rationale": "Only token system with real, repeated corpus precedent."
+    }
+  ],
+  "contractRevisions": [
+    {
+      "revisionId": "sha256:4dcc627ab869850dde0d4a1f86776984aa026c4ebc3dbde26f6dd26b91dbd53b",
+      "ordinal": 1,
+      "summary": "Initial contract: header/nav, hero, feature sections, footer, and an explicitly deferred authentication-entry region.",
+      "contractHash": "sha256:1af209c02594df8fe9710c1909ba262c4a21fe3cf316b9092f5f0a24839a9520"
+    }
+  ],
+  "terminalDisposition": "design-document-projected"
+}

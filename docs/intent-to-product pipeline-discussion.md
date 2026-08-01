@@ -1319,3 +1319,104 @@ The next coding sprint should stop after Slice 2:
 > Build a policy-driven multi-root web inventory, add exact HTML and CSS facts, and project bounded web artifact families for the 21-page first-wave corpus.
 
 That is the missing foundation. Classification, layout shaping, contract growth, and webpage projection can then remain independently testable consumers of the same evidence.
+
+# Slice 3–5 and cross-cutting facts implementation evidence (2026-08-01)
+
+Following the Slice 0–2 build above, five more capabilities were added: data-flow
+facts (a placeholder since before this repository's first commit), real JSX/TSX
+component-tree facts, the webpage-classification overlay (Slice 3), a query surface
+for the web-surface collections, manual intent-session tooling (Slice 4), and
+governed-contract/design-document projection (Slice 5). A real session was then run
+against the pilot corpus, producing genuine session, contract, and design-document
+artifacts — not just the machinery.
+
+## Scope actually covered
+
+- **Data-flow facts** (`source-fact-index.v1.dataflows`): assignment, return, and
+  call-argument edges, resolved against parameter/local bindings only within the
+  same enclosing function (mirrors the existing `relationships.fromSymbolResolution`
+  philosophy) — not cross-file flow analysis.
+- **JSX component-tree facts**: real `ts.createSourceFile`-based extraction (the
+  TypeScript compiler, not a regex approximation), covering element/prop structure,
+  fragments, and `jsx-component-reference` edges resolved through local imports —
+  not type-aware prop resolution.
+- **Classification overlay**: the `page-type` dimension only, reusing
+  `webpage-classification-scanner`'s heuristic evaluator and taxonomy/lexicon packs
+  directly rather than its network-bound harness.
+- **Governed contract**: subject/purpose/audience, a page-region tree with cited
+  reused-know-how evidence, and one selected layout — not the doc's full five-pass
+  feature/scenario/responsibility/obligation/signal formalism.
+- **Design-document projection**: the markdown design document and a candidate-AST
+  text view — not the executable HTML preview (Slice 5's "project the executable
+  webpage body" remains future work).
+
+## Concrete evidence anchors
+
+- data-flow facts: [`src/dataflow-projector.js`](../src/dataflow-projector.js),
+  wired into [`src/project.js`](../src/project.js), schema in
+  [`source-fact-index.schema.v1.json`](../contracts/source-fact-index.schema.v1.json),
+  proof in [`test/dataflow-projector.test.js`](../test/dataflow-projector.test.js)
+- JSX component-tree facts: [`src/web/jsx-projector.js`](../src/web/jsx-projector.js),
+  wired into [`src/web/family-projector.js`](../src/web/family-projector.js), proof
+  in [`test/jsx-projector.test.js`](../test/jsx-projector.test.js)
+- webpage-classification overlay:
+  [`src/web/classification-overlay.js`](../src/web/classification-overlay.js), proof
+  in [`test/classification-overlay.test.js`](../test/classification-overlay.test.js)
+  — reuses
+  [`webpage-classification-scanner/src/runtime/index-builder.ts`](../../webpage-classification-scanner/src/runtime/index-builder.ts),
+  [`heuristic-evaluator.ts`](../../webpage-classification-scanner/src/runtime/heuristic-evaluator.ts),
+  and
+  [`classification-resolver.ts`](../../webpage-classification-scanner/src/runtime/classification-resolver.ts)
+  directly, with only the two classification decision declarations registered on a
+  fresh `SemanticKernel`
+- web-surface query engine: [`src/web/web-query.js`](../src/web/web-query.js), CLI
+  `web query` in [`src/cli.js`](../src/cli.js), proof in
+  [`test/web-query.test.js`](../test/web-query.test.js)
+- manual intent sessions: contract in
+  [`intent-to-product-session.schema.v1.json`](../contracts/intent-to-product-session.schema.v1.json),
+  builder in [`src/session/intent-session.js`](../src/session/intent-session.js),
+  proof in [`test/intent-session.test.js`](../test/intent-session.test.js)
+- governed contract and design-document projection: contract schema in
+  [`web-know-landing-page-contract.schema.v1.json`](../contracts/web-know-landing-page-contract.schema.v1.json),
+  builder in
+  [`src/session/landing-page-contract.js`](../src/session/landing-page-contract.js),
+  projector in
+  [`src/session/design-document-projector.js`](../src/session/design-document-projector.js),
+  proof in
+  [`test/design-document-projector.test.js`](../test/design-document-projector.test.js)
+
+## The real session
+
+[`scripts/run-landing-page-session.mjs`](../scripts/run-landing-page-session.mjs)
+runs the actual manual conveyor against the pilot corpus's `web-surface-index.json`
+(regenerated via `web project` so it includes the new `jsxElements` and
+`webpageClassifications` collections), querying real evidence through
+`web-query.js` before making each selection:
+
+- Surveyed all 21 HTML entry surfaces: nearly all are internal operator/console
+  prototypes; exactly one (`managed-services-homepage.html`, a labeled
+  webpage-classification-scanner fixture) is a public marketing homepage.
+- Confirmed independently via the classification overlay that all 21 pages abstain
+  from `page-type` classification — consistent with the survey, since the pack's
+  URL-path-dependent heuristics have little to work with on internal tooling pages.
+  Abstention here is correct behavior, not a bug; the overlay's own tests
+  (`test/classification-overlay.test.js`) prove it resolves `landing-page`
+  correctly against a page shaped like one.
+- Selected `managed-services-homepage.html`'s structural skeleton (header/nav,
+  hero, three feature sections, footer) over the majority internal-console pattern,
+  explicitly rejecting the majority pattern as audience-inappropriate.
+- Selected the corpus-wide dark-theme custom-property token scale
+  (`--bg`/`--text`/`--accent`/`--muted`/`--border`, recurring 6–12× independently
+  of the structural source page) as reused visual authority.
+- Found **zero** authentication forms anywhere in the pilot corpus (0 of the
+  corpus's `<input>` elements are `type=password`) and recorded the sign-in-entry
+  decision as an explicit, honest gap rather than inventing a posture.
+
+Outputs, all schema-validated during the run:
+[`sessions/know-how-center-landing-page.json`](../sessions/know-how-center-landing-page.json),
+[`sessions/know-how-center-landing-page.contract.json`](../sessions/know-how-center-landing-page.contract.json),
+[`design/know-how-center-landing-page.md`](../design/know-how-center-landing-page.md),
+[`design/know-how-center-landing-page.ast.txt`](../design/know-how-center-landing-page.ast.txt).
+Every byte-level evidence reference cited in the session was independently checked
+against the index's own `sourceReferences` collection and resolves to a real
+citation — none are fabricated.

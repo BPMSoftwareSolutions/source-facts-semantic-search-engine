@@ -7,7 +7,7 @@ function project(text, overrides = {}) {
     pathId: "pathid1234",
     rootId: "root",
     relativePath: "index.html",
-    contentHash: "sha256:0000000000000000000000000000000000000000000000000000000000000",
+    contentHash: "sha256:0000000000000000000000000000000000000000000000000000000000000000",
     text,
     ...overrides,
   });
@@ -28,6 +28,7 @@ test("extracts document metadata, form controls, links, and stylesheet/script re
     "<nav role=\"navigation\"><a href=\"/pricing\">Pricing</a></nav>",
     "<main>",
     "<h1>Welcome</h1>",
+    "<p>Sign in to continue to your dashboard.</p>",
     "<form id=\"login\" action=\"/login\" method=\"post\">",
     "<label for=\"email\">Email</label>",
     "<input id=\"email\" type=\"email\" required>",
@@ -52,6 +53,7 @@ test("extracts document metadata, form controls, links, and stylesheet/script re
   assert.equal(byKind("link").length, 1);
   assert.equal(byKind("image").length, 1);
   assert.equal(byKind("heading")[0].text, "Welcome");
+  assert.equal(byKind("paragraph")[0].text, "Sign in to continue to your dashboard.");
 
   const label = byKind("label")[0];
   assert.deepEqual(label.idRefs, [{ attribute: "for", targetId: "email" }]);

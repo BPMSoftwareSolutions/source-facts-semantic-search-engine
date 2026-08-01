@@ -1,0 +1,13 @@
+{
+  "declarationType": "gallery-projector.v1",
+  "projectorId": "enterprise-page-gallery.v1",
+  "acceptedResultContract": "executes-relational-query-result.v1",
+  "requiredColumns": ["documentId", "pathId", "rootId", "relativePath", "title", "familyId", "truncated"],
+  "sourceCollections": ["htmlDocuments", "webFamilies"],
+  "projectionScope": "complete-result",
+  "outputContract": "enterprise-gallery-manifest.v1",
+  "presentationSurfaces": ["html-static-host"],
+  "implementationStatus": "materialized",
+  "projectorDigest": "sha256:af6eb89b85def27ee89846a884e27abbcbb3adc10c47d5dce44e1325eb605723",
+  "mayRequestExecutablePreviews": true
+}

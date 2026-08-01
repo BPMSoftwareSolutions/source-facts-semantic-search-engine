@@ -1,8 +1,11 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { extractsJsReferences, resolvesReferenceToRelationship } from "./relationship-resolver.js";
+import { projectsJsxOrTsFile } from "./jsx-projector.js";
+import { addSourceReference } from "../lib/source-reference.js";
 
 const jsLikeExtensions = Object.freeze([".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx"]);
+const tsAstExtensions = Object.freeze(new Set([".ts", ".tsx", ".jsx"]));
 const nonTraversableEdgeKinds = Object.freeze(new Set(["html-anchor-navigation"]));
 
 export async function projectsWebArtifactFamilies({
@@ -17,6 +20,8 @@ export async function projectsWebArtifactFamilies({
 }) {
   const families = [];
   const discoveredRelationships = [];
+  const discoveredJsxElements = [];
+  const discoveredSourceReferences = [];
   const lazyScannedPathIds = new Set();
 
   for (const entry of entries) {
@@ -30,12 +35,19 @@ export async function projectsWebArtifactFamilies({
       expansionLimits,
       policyHash,
       discoveredRelationships,
+      discoveredJsxElements,
+      discoveredSourceReferences,
       lazyScannedPathIds,
     });
     families.push(family);
   }
 
-  return Object.freeze({ families: Object.freeze(families), discoveredRelationships: Object.freeze(discoveredRelationships) });
+  return Object.freeze({
+    families: Object.freeze(families),
+    discoveredRelationships: Object.freeze(discoveredRelationships),
+    discoveredJsxElements: Object.freeze(discoveredJsxElements),
+    discoveredSourceReferences: Object.freeze(discoveredSourceReferences),
+  });
 }
 
 async function expandsOneFamily({
@@ -48,6 +60,8 @@ async function expandsOneFamily({
   expansionLimits,
   policyHash,
   discoveredRelationships,
+  discoveredJsxElements,
+  discoveredSourceReferences,
   lazyScannedPathIds,
 }) {
   const startTime = Date.now();
@@ -82,6 +96,8 @@ async function expandsOneFamily({
       inlineContentBySyntheticPathId,
       readsFileText,
       discoveredRelationships,
+      discoveredJsxElements,
+      discoveredSourceReferences,
       lazyScannedPathIds,
     });
 
@@ -131,7 +147,7 @@ async function expandsOneFamily({
   });
 }
 
-async function resolvesEdgesFor({ pathId, edgesByFromPathId, resolutionContext, absolutePathByPathId, inlineContentBySyntheticPathId, readsFileText, discoveredRelationships, lazyScannedPathIds }) {
+async function resolvesEdgesFor({ pathId, edgesByFromPathId, resolutionContext, absolutePathByPathId, inlineContentBySyntheticPathId, readsFileText, discoveredRelationships, discoveredJsxElements, discoveredSourceReferences, lazyScannedPathIds }) {
   const precomputed = edgesByFromPathId.get(pathId);
   if (precomputed !== undefined) return precomputed;
   if (lazyScannedPathIds.has(pathId)) return [];
@@ -144,20 +160,54 @@ async function resolvesEdgesFor({ pathId, edgesByFromPathId, resolutionContext, 
   if (text === null) return [];
 
   const fromAbsoluteDirectory = inlineContent !== undefined ? inlineContent.hostAbsoluteDirectory : path.dirname(absolutePath);
+  const extension = inlineContent !== undefined ? null : resolutionContext.extensionByPathId.get(pathId);
+  const relativePath = inlineContent !== undefined
+    ? inlineContent.hostRelativePath
+    : resolutionContext.pathIdByAbsolutePath.get(absolutePath)?.relativePath ?? pathId;
+
+  if (extension !== null && tsAstExtensions.has(extension)) {
+    const projected = projectsJsxOrTsFile({ pathId, relativePath, text });
+    const relationships = projected.rawReferences.map((rawReference) => resolvesReferenceToRelationship({
+      rawReference,
+      fromPathId: pathId,
+      fromAbsoluteDirectory,
+      context: resolutionContext,
+    }));
+    discoveredRelationships.push(...relationships);
+    discoveredJsxElements.push(...projected.jsxElements);
+    discoveredSourceReferences.push(...projected.sourceReferences);
+    return relationships;
+  }
+
+  const referenceById = new Set();
+  const sourceReferences = [];
   const jsReferences = extractsJsReferences(text);
-  const relationships = jsReferences.map((jsReference) => resolvesReferenceToRelationship({
-    rawReference: {
+  const rawReferences = jsReferences.map((jsReference) => {
+    const reference = addSourceReference({
+      kind: "js-import",
+      sourceKind: jsReference.edgeKind,
+      location: jsReference,
+      modulePath: relativePath,
+      sourceText: text,
+      referenceById,
+      sourceReferences,
+    });
+    return {
       edgeKind: jsReference.edgeKind,
       candidateTarget: jsReference.candidateTarget,
       resolvedSyntheticPathId: null,
-      sourceReferenceId: `${inlineContent !== undefined ? inlineContent.hostRelativePath : pathId}:${jsReference.start}:${jsReference.length}`,
-    },
+      sourceReferenceId: reference.referenceId,
+    };
+  });
+  const relationships = rawReferences.map((rawReference) => resolvesReferenceToRelationship({
+    rawReference,
     fromPathId: pathId,
     fromAbsoluteDirectory,
     context: resolutionContext,
   }));
 
   discoveredRelationships.push(...relationships);
+  discoveredSourceReferences.push(...sourceReferences);
   return relationships;
 }
 

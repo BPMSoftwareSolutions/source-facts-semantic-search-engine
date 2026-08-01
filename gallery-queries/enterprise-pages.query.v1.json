@@ -1,0 +1,9 @@
+{
+  "declarationType": "gallery-query.v1",
+  "queryId": "enterprise-pages",
+  "sourceCollection": "htmlDocuments",
+  "commandText": "SELECT d.documentId, d.pathId, d.rootId, d.relativePath, d.title, f.familyId, f.truncated FROM htmlDocuments d LEFT JOIN webFamilies f ON d.pathId = f.entryPathId ORDER BY d.rootId, d.relativePath",
+  "description": "Every admitted HTML entry surface joined to its artifact family, ordered for a stable gallery listing.",
+  "requiredColumns": ["documentId", "pathId", "rootId", "relativePath", "title", "familyId", "truncated"],
+  "allowedProjectorIds": ["enterprise-page-gallery.v1"]
+}

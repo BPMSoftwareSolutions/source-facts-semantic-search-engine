@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gallery Selection",
+  "type": "object",
+  "required": ["selectionType", "selectionId", "requestId", "queryEnvelope", "items", "selectedCount", "rejectedCount"],
+  "additionalProperties": false,
+  "properties": {
+    "selectionType": { "const": "gallery-selection.v1" },
+    "selectionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "requestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "queryEnvelope": {
+      "type": "object",
+      "required": ["commandText", "columns", "rowCount"],
+      "properties": {
+        "commandText": { "type": "string", "minLength": 1 },
+        "columns": { "type": "array", "items": { "type": "string" } },
+        "rowCount": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["itemId", "ordinal", "rowIdentity", "sourceReferenceIds", "disposition", "reason"],
+        "properties": {
+          "itemId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 0 },
+          "rowIdentity": { "type": "object" },
+          "sourceReferenceIds": { "type": "array", "items": { "type": "string" } },
+          "disposition": {
+            "enum": [
+              "selected",
+              "rejected-missing-identity",
+              "rejected-stale-source",
+              "rejected-unsupported-surface",
+              "rejected-by-preview-policy"
+            ]
+          },
+          "reason": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "selectedCount": { "type": "integer", "minimum": 0 },
+    "rejectedCount": { "type": "integer", "minimum": 0 }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "contractType": "web-know-landing-page-contract.v1",
+  "contractId": "sha256:1af209c02594df8fe9710c1909ba262c4a21fe3cf316b9092f5f0a24839a9520",
+  "sessionId": "sha256:ed6d9e7527972ba6a7ba95fd8ffcc84fd62ae46cf8b9c4b4b19feb52adc715ff",
+  "subject": "Deterministic Know-How Intelligence Center — public landing page",
+  "purpose": "Introduce the deterministic know-how intelligence conveyor to technical visitors evaluating it for their own codebases, and route them toward documentation or a live demo.",
+  "audience": "Engineers and technical leads evaluating deterministic source-fact and web-know tooling, arriving with no prior context.",
+  "pageRegions": [
+    {
+      "regionId": "sha256:af735b089f647055b5eb6fdf191a5749c789129340330be2b0e413440f549853",
+      "name": "GlobalHeader",
+      "parentRegionId": null,
+      "depth": 0,
+      "reusedKnowHow": [
+        {
+          "label": "header-primary-nav-flat-links",
+          "evidenceReferences": [
+            "managed-services-homepage.html:565:5"
+          ]
+        }
+      ],
+      "notes": "Reused structural skeleton; search and sign-in entries are open gaps, not populated here."
+    },
+    {
+      "regionId": "sha256:7af9e40bc143249f843b88824aa96b1fdd2cd1c89ff5aa978c67f12e1397c778",
+      "name": "PrimaryNavigation",
+      "parentRegionId": "sha256:af735b089f647055b5eb6fdf191a5749c789129340330be2b0e413440f549853",
+      "depth": 1,
+      "reusedKnowHow": [
+        {
+          "label": "header-primary-nav-flat-links",
+          "evidenceReferences": [
+            "managed-services-homepage.html:575:20",
+            "managed-services-homepage.html:600:32"
+          ]
+        }
+      ],
+      "notes": null
+    },
+    {
+      "regionId": "sha256:9aecc1e410087b2f2324d005f72d3c79c21b82df2286ed9fd801a0ca18e6a7c2",
+      "name": "Hero",
+      "parentRegionId": null,
+      "depth": 0,
+      "reusedKnowHow": [
+        {
+          "label": "centered-hero-with-dual-cta",
+          "evidenceReferences": [
+            "managed-services-homepage.html:771:75",
+            "managed-services-homepage.html:1069:44",
+            "managed-services-homepage.html:1753:55"
+          ]
+        }
+      ],
+      "notes": "Headline, supporting paragraph, primary + secondary CTA."
+    },
+    {
+      "regionId": "sha256:2793ee3621c98b74d25f1dc2cbf50731a0955c50ab38ab7fa19642d6ebded3c2",
+      "name": "KnowHowFamilies",
+      "parentRegionId": null,
+      "depth": 0,
+      "reusedKnowHow": [],
+      "notes": "New authority — no corpus precedent for a capability-family grid; not populated beyond the region placeholder in this pass."
+    },
+    {
+      "regionId": "sha256:5b4956797b49639fa2e7a3ffb2f12ea818a85a6c0cadd25d787836b8fa66905b",
+      "name": "FeatureSections",
+      "parentRegionId": null,
+      "depth": 0,
+      "reusedKnowHow": [
+        {
+          "label": "three-feature-section-layout",
+          "evidenceReferences": [
+            "managed-services-homepage.html:1135:25",
+            "managed-services-homepage.html:1411:31",
+            "managed-services-homepage.html:1845:29"
+          ]
+        }
+      ],
+      "notes": "Reused three-section body shape (service/service/why-choose-us) from managed-services-homepage.html."
+    },
+    {
+      "regionId": "sha256:75739d134d986fcbd37e6763d1ce1992fef3906066a42957592a9a35a42f4d06",
+      "name": "GlobalFooter",
+      "parentRegionId": null,
+      "depth": 0,
+      "reusedKnowHow": [
+        {
+          "label": "footer-with-direct-contact",
+          "evidenceReferences": [
+            "managed-services-homepage.html:2132:8"
+          ]
+        }
+      ],
+      "notes": null
+    },
+    {
+      "regionId": "sha256:814339a900ba77fb8dcafa5c87726bfd884c588de33b76a6f6cc76732bad6db9",
+      "name": "AuthenticationEntry",
+      "parentRegionId": null,
+      "depth": 0,
+      "reusedKnowHow": [],
+      "notes": "Deferred: no sign-in pattern exists anywhere in the pilot corpus (0 of many <input> elements are type=password). Navigates to a separate governed authentication capability once one exists; posture (magic link vs. SSO vs. passkey) intentionally left unselected."
+    }
+  ],
+  "selectedLayout": {
+    "label": "documentation-homepage-with-dark-theme-tokens",
+    "rationale": "Structural skeleton and hero reused from managed-services-homepage.html; visual theme reused from the corpus-wide dark custom-property token scale. Combines the only two real, evidence-backed patterns found in the pilot corpus."
+  }
+}

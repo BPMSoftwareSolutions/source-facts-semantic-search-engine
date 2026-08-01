@@ -15,6 +15,8 @@
     "webRelationships",
     "assets",
     "webFamilies",
+    "jsxElements",
+    "webpageClassifications",
     "sourceReferences",
     "diagnostics",
     "coverage"
@@ -177,7 +179,8 @@
               "js-static-import",
               "js-dynamic-import-candidate",
               "js-json-import",
-              "js-style-import"
+              "js-style-import",
+              "jsx-component-reference"
             ]
           },
           "fromPathId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
@@ -273,6 +276,80 @@
         "additionalProperties": true
       }
     },
+    "jsxElements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["jsxElementId", "pathId", "tagName", "tagKind", "attributes", "parentJsxElementId", "depth", "sourceReferenceId"],
+        "properties": {
+          "jsxElementId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "pathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "tagName": { "type": "string" },
+          "tagKind": { "enum": ["intrinsic", "component", "fragment"] },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "valueKind", "value"],
+              "properties": {
+                "name": { "type": ["string", "null"] },
+                "valueKind": { "enum": ["string", "number", "boolean", "expression", "spread"] },
+                "value": { "type": ["string", "null"] }
+              },
+              "additionalProperties": false
+            }
+          },
+          "parentJsxElementId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "depth": { "type": "integer", "minimum": 0 },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "webpageClassifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "classificationId",
+          "documentId",
+          "dimension",
+          "taxonomyId",
+          "value",
+          "disposition",
+          "supportScore",
+          "evidenceReferences",
+          "findingReferences",
+          "alternatives",
+          "sourceReferenceId"
+        ],
+        "properties": {
+          "classificationId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "documentId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "dimension": { "type": "string" },
+          "taxonomyId": { "type": "string" },
+          "value": { "type": ["string", "null"] },
+          "disposition": { "type": "string" },
+          "supportScore": { "type": "number", "minimum": 0 },
+          "evidenceReferences": { "type": "array", "items": { "type": "string" } },
+          "findingReferences": { "type": "array", "items": { "type": "string" } },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["value", "supportScore"],
+              "properties": {
+                "value": { "type": "string" },
+                "supportScore": { "type": "number", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
     "sourceReferences": {
       "type": "array",
       "items": {
@@ -318,6 +395,8 @@
         "webRelationships",
         "assets",
         "webFamilies",
+        "jsxElements",
+        "webpageClassifications",
         "diagnostics"
       ],
       "properties": {
@@ -329,6 +408,8 @@
         "webRelationships": { "type": "integer", "minimum": 0 },
         "assets": { "type": "integer", "minimum": 0 },
         "webFamilies": { "type": "integer", "minimum": 0 },
+        "jsxElements": { "type": "integer", "minimum": 0 },
+        "webpageClassifications": { "type": "integer", "minimum": 0 },
         "diagnostics": { "type": "integer", "minimum": 0 }
       },
       "additionalProperties": false

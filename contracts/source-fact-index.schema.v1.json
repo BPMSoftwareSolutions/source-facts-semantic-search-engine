@@ -179,7 +179,40 @@
     },
     "dataflows": {
       "type": "array",
-      "items": { "type": "object" }
+      "items": {
+        "type": "object",
+        "required": [
+          "dataflowId",
+          "dataflowKind",
+          "fromCandidate",
+          "fromBindingKind",
+          "toCandidate",
+          "toBindingKind",
+          "toRole",
+          "calleeCandidate",
+          "argumentIndex",
+          "enclosingSymbolId",
+          "enclosingSymbolResolution",
+          "sourceReferenceId",
+          "modulePath"
+        ],
+        "properties": {
+          "dataflowId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "dataflowKind": { "enum": ["assignment", "return", "argument"] },
+          "fromCandidate": { "type": "string" },
+          "fromBindingKind": { "enum": ["parameter", "local-declaration", "unresolved"] },
+          "toCandidate": { "type": ["string", "null"] },
+          "toBindingKind": { "enum": ["parameter", "local-declaration", "unresolved", null] },
+          "toRole": { "enum": ["assignment-target", "return", "argument"] },
+          "calleeCandidate": { "type": ["string", "null"] },
+          "argumentIndex": { "type": ["integer", "null"], "minimum": 0 },
+          "enclosingSymbolId": { "type": ["string", "null"] },
+          "enclosingSymbolResolution": { "enum": ["enclosing-callable", "unresolved"] },
+          "sourceReferenceId": { "type": "string" },
+          "modulePath": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
     },
     "sourceReferences": {
       "type": "array",
@@ -291,6 +324,7 @@
         "documentFacts": { "type": "integer", "minimum": 0 },
         "governanceRules": { "type": "integer", "minimum": 0 },
         "bodyMechanics": { "type": "integer", "minimum": 0 },
+        "dataflows": { "type": "integer", "minimum": 0 },
         "unknownSyntaxRatio": { "type": "number", "minimum": 0, "maximum": 1 }
       }
     }

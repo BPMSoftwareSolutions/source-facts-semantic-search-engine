@@ -1,0 +1,17 @@
+{
+  "declarationType": "surface-preview-policy.v1",
+  "policyId": "static-no-script.v1",
+  "scriptPolicy": "deny",
+  "networkPolicy": "deny",
+  "formPolicy": "deny",
+  "navigationPolicy": "deny",
+  "downloadPolicy": "deny",
+  "storagePolicy": "ephemeral-deny-by-default",
+  "serviceWorkerPolicy": "block",
+  "permissionPolicy": "none",
+  "sandboxTokens": ["allow-same-origin"],
+  "viewports": [{ "label": "desktop", "width": 1280, "height": 800 }],
+  "maxBytes": 5000000,
+  "maxFiles": 200,
+  "timeoutMs": 15000
+}

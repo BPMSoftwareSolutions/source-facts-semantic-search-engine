@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gallery Projector Declaration",
+  "type": "object",
+  "required": [
+    "declarationType",
+    "projectorId",
+    "acceptedResultContract",
+    "requiredColumns",
+    "sourceCollections",
+    "projectionScope",
+    "outputContract",
+    "presentationSurfaces",
+    "implementationStatus",
+    "projectorDigest",
+    "mayRequestExecutablePreviews"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "declarationType": { "const": "gallery-projector.v1" },
+    "projectorId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*\\.v[0-9]+$" },
+    "acceptedResultContract": { "type": "string", "minLength": 1 },
+    "requiredColumns": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "sourceCollections": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "projectionScope": { "enum": ["each-row", "complete-result"] },
+    "outputContract": { "type": "string", "minLength": 1 },
+    "presentationSurfaces": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "implementationStatus": { "enum": ["declared", "materialized"] },
+    "projectorDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "mayRequestExecutablePreviews": { "type": "boolean" }
+  }
+}

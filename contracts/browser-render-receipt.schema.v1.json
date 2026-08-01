@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Browser Render Receipt",
+  "type": "object",
+  "required": [
+    "receiptType",
+    "receiptId",
+    "manifestId",
+    "planId",
+    "planItemId",
+    "galleryItemId",
+    "previewRoute",
+    "browser",
+    "os",
+    "viewport",
+    "cspPolicy",
+    "sandboxTokens",
+    "requestsAttempted",
+    "consoleErrors",
+    "pageErrors",
+    "domAssertions",
+    "ariaSnapshotDigest",
+    "screenshotDigest",
+    "timings",
+    "verdict"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "receiptType": { "const": "browser-render-receipt.v1" },
+    "receiptId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "manifestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "planId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "planItemId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "galleryItemId": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+    "previewRoute": { "type": ["string", "null"] },
+    "browser": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": ["string", "null"] },
+        "version": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "os": { "type": ["string", "null"] },
+    "viewport": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["width", "height"],
+          "properties": {
+            "width": { "type": "integer", "minimum": 1 },
+            "height": { "type": "integer", "minimum": 1 }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "cspPolicy": { "type": ["string", "null"] },
+    "sandboxTokens": { "type": "array", "items": { "type": "string" } },
+    "requestsAttempted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["url", "disposition"],
+        "properties": {
+          "url": { "type": "string" },
+          "disposition": { "enum": ["allowed", "blocked"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "consoleErrors": { "type": "array", "items": { "type": "string" } },
+    "pageErrors": { "type": "array", "items": { "type": "string" } },
+    "domAssertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["assertion", "passed"],
+        "properties": {
+          "assertion": { "type": "string" },
+          "passed": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "ariaSnapshotDigest": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+    "screenshotDigest": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+    "timings": {
+      "type": "object",
+      "required": ["navigationMs", "totalMs"],
+      "properties": {
+        "navigationMs": { "type": ["number", "null"], "minimum": 0 },
+        "totalMs": { "type": ["number", "null"], "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "verdict": {
+      "enum": [
+        "RENDERED_STATIC_VERIFIED",
+        "RENDERED_SCRIPTED_VERIFIED",
+        "RENDERED_WITH_LIMITATIONS",
+        "NOT_EVALUATED",
+        "BLOCKED"
+      ]
+    }
+  }
+}

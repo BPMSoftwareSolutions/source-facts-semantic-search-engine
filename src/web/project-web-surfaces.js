@@ -6,6 +6,7 @@ import { projectsHtmlDocument } from "./html-projector.js";
 import { projectsCssStylesheet } from "./css-projector.js";
 import { buildsResolutionContext, resolvesReferenceToRelationship } from "./relationship-resolver.js";
 import { projectsWebArtifactFamilies } from "./family-projector.js";
+import { classifiesHtmlDocument } from "./classification-overlay.js";
 
 const assetEdgeKinds = Object.freeze(new Set(["html-image-src", "html-source-srcset", "css-url"]));
 
@@ -19,6 +20,7 @@ export async function projectsWebSurfaceIndex({ policy, inventory: providedInven
   const cssRules = [];
   const cssDeclarations = [];
   const webRelationships = [];
+  const webpageClassifications = [];
   const sourceReferences = [];
   const diagnostics = [];
   const edgesByFromPathId = new Map();
@@ -43,6 +45,7 @@ export async function projectsWebSurfaceIndex({ policy, inventory: providedInven
     sourceReferences.push(...projected.sourceReferences);
     diagnostics.push(...projected.diagnostics);
     entryPathIdsByRelativePath.set(entry.pathId, entry);
+    webpageClassifications.push(await classifiesHtmlDocument({ document: projected.document, elements: projected.elements }));
 
     const fromAbsoluteDirectory = path.dirname(absolutePath);
     const relationships = projected.rawReferences.map((rawReference) => resolvesReferenceToRelationship({
@@ -136,6 +139,7 @@ export async function projectsWebSurfaceIndex({ policy, inventory: providedInven
     policyHash: inventory.policyHash,
   });
   webRelationships.push(...familyResult.discoveredRelationships);
+  sourceReferences.push(...familyResult.discoveredSourceReferences);
 
   const relativePathByPathId = new Map(inventory.entries.map((entry) => [entry.pathId, entry.relativePath]));
   const contentHashByPathId = new Map(inventory.entries.map((entry) => [entry.pathId, entry.contentHash ?? null]));
@@ -177,6 +181,8 @@ export async function projectsWebSurfaceIndex({ policy, inventory: providedInven
     webRelationships: Object.freeze(webRelationships),
     assets: Object.freeze(assets),
     webFamilies: familyResult.families,
+    jsxElements: familyResult.discoveredJsxElements,
+    webpageClassifications: Object.freeze(webpageClassifications),
     sourceReferences: Object.freeze(sourceReferences),
     diagnostics: Object.freeze(diagnostics),
     coverage: Object.freeze({
@@ -188,6 +194,8 @@ export async function projectsWebSurfaceIndex({ policy, inventory: providedInven
       webRelationships: webRelationships.length,
       assets: assets.length,
       webFamilies: familyResult.families.length,
+      jsxElements: familyResult.discoveredJsxElements.length,
+      webpageClassifications: webpageClassifications.length,
       diagnostics: diagnostics.length,
     }),
   });

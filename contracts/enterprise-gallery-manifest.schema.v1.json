@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Enterprise Gallery Manifest",
+  "type": "object",
+  "required": ["manifestType", "manifestId", "requestId", "selectionId", "planId", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "manifestType": { "const": "enterprise-gallery-manifest.v1" },
+    "manifestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "requestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "selectionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "planId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "galleryItemId",
+          "ordinal",
+          "documentId",
+          "familyId",
+          "pathId",
+          "rootId",
+          "relativePath",
+          "title",
+          "kind",
+          "classification",
+          "sourceReferenceIds",
+          "dependencySummary",
+          "previewDisposition",
+          "previewRoute",
+          "diagnostics",
+          "limitations",
+          "allowedInspectorTabs",
+          "selectable"
+        ],
+        "properties": {
+          "galleryItemId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 0 },
+          "documentId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "familyId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "pathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "rootId": { "type": "string" },
+          "relativePath": { "type": "string" },
+          "title": { "type": ["string", "null"] },
+          "kind": { "const": "html-document" },
+          "classification": {
+            "type": "object",
+            "required": ["dimension", "value", "disposition"],
+            "properties": {
+              "dimension": { "type": "string" },
+              "value": { "type": ["string", "null"] },
+              "disposition": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "sourceReferenceIds": { "type": "array", "items": { "type": "string" } },
+          "dependencySummary": {
+            "type": "object",
+            "required": ["resolvedLocal", "unresolved", "external"],
+            "properties": {
+              "resolvedLocal": { "type": "integer", "minimum": 0 },
+              "unresolved": { "type": "integer", "minimum": 0 },
+              "external": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": false
+          },
+          "previewDisposition": {
+            "enum": [
+              "STATIC_REPRODUCTION_READY",
+              "PARTIAL_STATIC_REPRODUCTION",
+              "AUTHORIZED_SCRIPTED_REPRODUCTION_READY",
+              "NOT_EVALUATED_REQUIRES_SCRIPT",
+              "BLOCKED_STALE_SOURCE",
+              "BLOCKED_MISSING_DEPENDENCY",
+              "BLOCKED_BY_POLICY"
+            ]
+          },
+          "previewRoute": { "type": ["string", "null"] },
+          "diagnostics": { "type": "array", "items": { "type": "string" } },
+          "limitations": { "type": "array", "items": { "type": "string" } },
+          "allowedInspectorTabs": { "type": "array", "items": { "type": "string" } },
+          "selectable": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

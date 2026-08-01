@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Intent-to-Product Session",
+  "type": "object",
+  "required": [
+    "sessionType",
+    "sessionId",
+    "subject",
+    "intentRevisions",
+    "queries",
+    "evidenceInspections",
+    "considerations",
+    "selections",
+    "contractRevisions",
+    "terminalDisposition"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "sessionType": { "const": "intent-to-product-session.v1" },
+    "sessionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "subject": { "type": "string", "minLength": 1 },
+    "intentRevisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["revisionId", "ordinal", "intentText", "rationale"],
+        "properties": {
+          "revisionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 1 },
+          "intentText": { "type": "string", "minLength": 1 },
+          "rationale": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "queries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["queryId", "ordinal", "queryText", "resultSummary", "rowCount"],
+        "properties": {
+          "queryId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 1 },
+          "queryText": { "type": "string", "minLength": 1 },
+          "resultSummary": { "type": "string", "minLength": 1 },
+          "rowCount": { "type": ["integer", "null"], "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "evidenceInspections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["inspectionId", "ordinal", "sourceReferenceIds", "note"],
+        "properties": {
+          "inspectionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 1 },
+          "sourceReferenceIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "note": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "considerations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["considerationId", "ordinal", "category", "candidateLabel", "evidenceReferences", "outcome", "rationale"],
+        "properties": {
+          "considerationId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 1 },
+          "category": { "type": "string", "minLength": 1 },
+          "candidateLabel": { "type": "string", "minLength": 1 },
+          "evidenceReferences": { "type": "array", "items": { "type": "string" } },
+          "outcome": { "enum": ["selected", "rejected"] },
+          "rationale": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "selections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["selectionId", "ordinal", "category", "selectedLabel", "consideredConsiderationIds", "rationale"],
+        "properties": {
+          "selectionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 1 },
+          "category": { "type": "string", "minLength": 1 },
+          "selectedLabel": { "type": "string", "minLength": 1 },
+          "consideredConsiderationIds": { "type": "array", "items": { "type": "string" } },
+          "rationale": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "contractRevisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["revisionId", "ordinal", "summary", "contractHash"],
+        "properties": {
+          "revisionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "ordinal": { "type": "integer", "minimum": 1 },
+          "summary": { "type": "string", "minLength": 1 },
+          "contractHash": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "terminalDisposition": { "type": ["string", "null"] }
+  }
+}

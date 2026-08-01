@@ -8,6 +8,20 @@ import { validatesSourceFactIndex } from "./validate-index.js";
 import { projectsWebSurfaceInventory } from "./web/inventory.js";
 import { projectsWebSurfaceIndex } from "./web/project-web-surfaces.js";
 import { validatesWebSurfaceInventory, validatesWebSurfaceIndex, validatesWebKnowWorkspace } from "./web/validate-web-index.js";
+import { executesWebRelationalQuery } from "./web/web-query.js";
+import {
+  galleryArtifactNames,
+  resolvesGalleryPreviewPolicy,
+  writesGalleryPlan,
+  writesGalleryProjection,
+} from "./gallery/projects-gallery.js";
+import { servesIsolatedPreviews } from "./gallery/serves-isolated-previews.js";
+import { capturesBrowserRenders } from "./gallery/captures-browser-render.js";
+import {
+  validatesEnterpriseGalleryManifest,
+  validatesSurfacePreviewPlan,
+  validatesSurfacePreviewPolicy,
+} from "./gallery/validates-gallery-artifacts.js";
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -65,10 +79,147 @@ async function runWeb(rawArgs) {
     await runWebInventory(rawArgs.slice(1));
   } else if (subcommand === "project") {
     await runWebProject(rawArgs.slice(1));
+  } else if (subcommand === "query") {
+    await runWebQuery(rawArgs.slice(1));
+  } else if (subcommand === "gallery") {
+    await runWebGallery(rawArgs.slice(1));
   } else {
     writeUsage(process.stderr);
     process.exitCode = 1;
   }
+}
+
+async function runWebGallery(rawArgs) {
+  const subcommand = rawArgs[0];
+  if (subcommand === "plan") {
+    await runWebGalleryPlan(rawArgs.slice(1));
+  } else if (subcommand === "project") {
+    await runWebGalleryProject(rawArgs.slice(1));
+  } else if (subcommand === "serve") {
+    await runWebGalleryServe(rawArgs.slice(1));
+  } else if (subcommand === "prove") {
+    await runWebGalleryProve(rawArgs.slice(1));
+  } else {
+    writeUsage(process.stderr);
+    process.exitCode = 1;
+  }
+}
+
+async function runWebGalleryPlan(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const { index, inventory } = await readsGalleryInputs(flags);
+  const outputDirectory = path.resolve(flags.output ?? flags.dir ?? path.join(process.cwd(), "enterprise-gallery"));
+  const result = await writesGalleryPlan({
+    index,
+    inventory,
+    queryId: flags.query ?? "enterprise-pages",
+    previewPolicyId: flags.policy ?? "static-no-script.v1",
+    outputDirectory,
+    writeMode: flags.writeMode ?? "overwrite",
+  });
+  process.stdout.write(`${path.join(outputDirectory, galleryArtifactNames.selection)}\n`);
+  process.stdout.write(`${path.join(outputDirectory, galleryArtifactNames.plan)}\n`);
+  if (flags.summary === true) process.stdout.write(formatsGallerySummary(result.selection, result.plan));
+}
+
+async function runWebGalleryProject(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const { index, inventory } = await readsGalleryInputs(flags);
+  const outputDirectory = path.resolve(flags.output ?? flags.dir ?? path.join(process.cwd(), "enterprise-gallery"));
+  const result = await writesGalleryProjection({
+    index,
+    inventory,
+    queryId: flags.query ?? "enterprise-pages",
+    previewPolicyId: flags.policy ?? "static-no-script.v1",
+    outputDirectory,
+    writeMode: flags.writeMode ?? "overwrite",
+  });
+  process.stdout.write(`${path.join(outputDirectory, galleryArtifactNames.manifest)}\n`);
+  process.stdout.write(`${path.join(outputDirectory, galleryArtifactNames.host)}\n`);
+  process.stdout.write(`${path.join(outputDirectory, galleryArtifactNames.projectionReceipt)}\n`);
+  if (flags.summary === true) process.stdout.write(formatsGallerySummary(result.selection, result.plan));
+}
+
+async function runWebGalleryServe(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const outputDirectory = path.resolve(flags.dir ?? flags.output ?? path.join(process.cwd(), "enterprise-gallery"));
+  const previewPolicy = await readsPersistedGalleryPolicy(outputDirectory, flags.policy);
+  const previewServer = await servesIsolatedPreviews({ outputDirectory, previewPolicy });
+  process.stdout.write(`${previewServer.url}\n`);
+  await waitsForTerminationSignal(previewServer);
+}
+
+async function runWebGalleryProve(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const outputDirectory = path.resolve(flags.dir ?? flags.output ?? path.join(process.cwd(), "enterprise-gallery"));
+  const manifest = JSON.parse(stripsByteOrderMark(await fs.readFile(path.join(outputDirectory, galleryArtifactNames.manifest), "utf8")));
+  const plan = JSON.parse(stripsByteOrderMark(await fs.readFile(path.join(outputDirectory, galleryArtifactNames.plan), "utf8")));
+  const previewPolicy = await readsPersistedGalleryPolicy(outputDirectory, flags.policy);
+  await validatesEnterpriseGalleryManifest(manifest);
+  await validatesSurfacePreviewPlan(plan);
+
+  const previewServer = await servesIsolatedPreviews({ outputDirectory, previewPolicy });
+  let proof;
+  try {
+    proof = await capturesBrowserRenders({
+      manifest,
+      plan,
+      outputDirectory,
+      baseUrl: previewServer.url,
+      previewPolicy,
+      cspPolicy: previewServer.cspPolicy,
+    });
+  } finally {
+    await previewServer.close();
+  }
+  for (const emittedFile of proof.emittedFiles.filter((file) => file.path.endsWith(".receipt.json"))) {
+    process.stdout.write(`${path.join(outputDirectory, ...emittedFile.path.split("/"))}\n`);
+  }
+  const renderedCount = proof.receipts.filter((receipt) => receipt.verdict.startsWith("RENDERED_")).length;
+  process.stdout.write(`Browser receipts: ${proof.receipts.length}; rendered: ${renderedCount}; browser available: ${proof.browserAvailable}\n`);
+}
+
+async function readsGalleryInputs(flags) {
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "web-surface-index.json"));
+  const inventoryPath = path.resolve(flags.inventory ?? path.join(path.dirname(indexPath), "web-surface.inventory.json"));
+  const index = JSON.parse(stripsByteOrderMark(await fs.readFile(indexPath, "utf8")));
+  const inventory = JSON.parse(stripsByteOrderMark(await fs.readFile(inventoryPath, "utf8")));
+  await validatesWebSurfaceIndex(index);
+  await validatesWebSurfaceInventory(inventory);
+  return { index, inventory };
+}
+
+async function readsPersistedGalleryPolicy(outputDirectory, policyOverride) {
+  const persistedPolicyPath = path.join(outputDirectory, galleryArtifactNames.policy);
+  let previewPolicy;
+  try {
+    previewPolicy = JSON.parse(stripsByteOrderMark(await fs.readFile(persistedPolicyPath, "utf8")));
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    previewPolicy = await resolvesGalleryPreviewPolicy(policyOverride ?? "static-no-script.v1");
+  }
+  await validatesSurfacePreviewPolicy(previewPolicy);
+  return previewPolicy;
+}
+
+function waitsForTerminationSignal(previewServer) {
+  return new Promise((resolve, reject) => {
+    let closing = false;
+    const closes = async () => {
+      if (closing) return;
+      closing = true;
+      process.off("SIGINT", closes);
+      process.off("SIGTERM", closes);
+      try {
+        await previewServer.close();
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    };
+    process.on("SIGINT", closes);
+    process.on("SIGTERM", closes);
+  });
 }
 
 async function runWebInventory(rawArgs) {
@@ -108,6 +259,16 @@ async function runWebProject(rawArgs) {
   }
 }
 
+async function runWebQuery(rawArgs) {
+  const { flags, positional } = parseArgs(rawArgs);
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "web-surface-index.json"));
+  const queryText = resolveQueryText(flags, positional);
+  const index = JSON.parse(stripsByteOrderMark(await fs.readFile(indexPath, "utf8")));
+  const result = await executesWebRelationalQuery(index, queryText);
+  const pretty = flags.pretty === true;
+  process.stdout.write(pretty ? JSON.stringify(result, null, 2) : JSON.stringify(result));
+}
+
 async function readsPolicy(policyPath) {
   if (policyPath === undefined) {
     throw new Error("--policy <web-know.workspace.json> is required.");
@@ -141,6 +302,8 @@ function formatWebIndexSummary(index) {
     `Web relationships: ${index.webRelationships.length}`,
     `Assets: ${index.assets.length}`,
     `Web families: ${index.webFamilies.length}`,
+    `JSX elements: ${index.jsxElements.length}`,
+    `Webpage classifications: ${index.webpageClassifications.length}`,
     `Diagnostics: ${index.diagnostics.length}`,
     `Index ID: ${index.indexId}`,
   ];
@@ -180,6 +343,8 @@ function parseArgs(rawArgs) {
         case "--query":
         case "--policy":
         case "--inventory":
+        case "--dir":
+        case "--write-mode":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
@@ -224,12 +389,32 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se web inventory --policy <web-know.workspace.json> [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web project --policy <web-know.workspace.json> [--inventory <file>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se web query [--index <file>] --query \"<sql>\" [--pretty]\n`);
+  stream.write(`  source-facts-se web query \"<sql>\" [--pretty]\n`);
+  stream.write(`  source-facts-se web gallery plan [--index <file>] [--inventory <file>] [--query <saved-query-id>] [--policy <policy-id-or-file>] [--output <dir>] [--summary]\n`);
+  stream.write(`  source-facts-se web gallery project [--index <file>] [--inventory <file>] [--query <saved-query-id>] [--policy <policy-id-or-file>] [--output <dir>] [--summary]\n`);
+  stream.write(`  source-facts-se web gallery serve --dir <gallery-output-dir>\n`);
+  stream.write(`  source-facts-se web gallery prove --dir <gallery-output-dir>\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
   stream.write(`  source-facts-se project --workspace C:/lab/repos/contract-driven-artifact-governance-engine --pretty\n`);
   stream.write(`  source-facts-se query --index ./source-fact-index.json \"SELECT symbolId, name FROM symbols\"\n`);
   stream.write(`  source-facts-se web inventory --policy ./web-know.workspace.json --pretty --summary\n`);
   stream.write(`  source-facts-se web project --policy ./web-know.workspace.json --pretty --summary\n`);
+  stream.write(`  source-facts-se web query --index ./web-surface-index.json \"SELECT familyId, entryRelativePath FROM webFamilies\"\n`);
+  stream.write(`  source-facts-se web gallery project --index ./web-surface-index.json --inventory ./web-surface.inventory.json --query enterprise-pages --output ./enterprise-gallery --summary\n`);
+}
+
+function formatsGallerySummary(selection, plan) {
+  const byDisposition = new Map();
+  for (const item of plan.items) byDisposition.set(item.reproductionDisposition, (byDisposition.get(item.reproductionDisposition) ?? 0) + 1);
+  const lines = [
+    `Query rows: ${selection.queryEnvelope.rowCount}`,
+    `Selected: ${selection.selectedCount}`,
+    `Rejected: ${selection.rejectedCount}`,
+    ...[...byDisposition.entries()].map(([disposition, count]) => `  ${disposition}: ${count}`),
+  ];
+  return `${lines.join("\n")}\n`;
 }
 
 function normalizeLongOption(value) {

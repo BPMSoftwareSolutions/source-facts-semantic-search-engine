@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Surface Preview Plan",
+  "type": "object",
+  "required": ["planType", "planId", "selectionId", "previewPolicyId", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "planType": { "const": "surface-preview-plan.v1" },
+    "planId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "selectionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "previewPolicyId": { "type": "string", "minLength": 1 },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "entryPathId",
+          "familyId",
+          "sourceHashAtPlanTime",
+          "admittedMembers",
+          "unresolvedEdgeCount",
+          "externalEdgeCount",
+          "transformations",
+          "requiredMocks",
+          "targetRoute",
+          "reproductionDisposition",
+          "reason"
+        ],
+        "properties": {
+          "itemId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "entryPathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "familyId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "sourceHashAtPlanTime": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "admittedMembers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["pathId", "relativePath", "role", "contentHash"],
+              "properties": {
+                "pathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+                "relativePath": { "type": "string" },
+                "role": { "enum": ["entry", "stylesheet", "script", "json", "asset"] },
+                "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "unresolvedEdgeCount": { "type": "integer", "minimum": 0 },
+          "externalEdgeCount": { "type": "integer", "minimum": 0 },
+          "transformations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["kind", "detail"],
+              "properties": {
+                "kind": { "enum": ["script-removed", "link-rewritten", "asset-copied", "stylesheet-copied"] },
+                "detail": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "requiredMocks": { "type": "array", "items": { "type": "string" } },
+          "targetRoute": { "type": ["string", "null"] },
+          "reproductionDisposition": {
+            "enum": [
+              "STATIC_REPRODUCTION_READY",
+              "PARTIAL_STATIC_REPRODUCTION",
+              "AUTHORIZED_SCRIPTED_REPRODUCTION_READY",
+              "NOT_EVALUATED_REQUIRES_SCRIPT",
+              "BLOCKED_STALE_SOURCE",
+              "BLOCKED_MISSING_DEPENDENCY",
+              "BLOCKED_BY_POLICY"
+            ]
+          },
+          "reason": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

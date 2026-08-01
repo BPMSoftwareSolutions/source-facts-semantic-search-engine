@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { projectsJsonWorkspace } from "./json-projector.js";
 import { addSourceReference } from "./lib/source-reference.js";
+import { projectsDataflowFacts } from "./dataflow-projector.js";
 
 const engineVersion = "0.2.0";
 const indexSchemaVersion = "1.1.0";
@@ -87,6 +88,15 @@ export async function projectSourceFactsWorkspace(options) {
     }
 
     declarationsByModule.set(file.relativePath, declarationRows);
+
+    const dataflowRows = projectsDataflowFacts({
+      relativePath: file.relativePath,
+      sourceText,
+      declarationRows,
+      referenceById,
+      sourceReferences,
+    });
+    dataflows.push(...dataflowRows);
 
     for (const relationship of file.relationships) {
       const sourceReference = addSourceReference({
@@ -213,6 +223,7 @@ export async function projectSourceFactsWorkspace(options) {
       documentFacts: totalDocuments,
       governanceRules: governanceRules.length,
       bodyMechanics: bodyMechanics.length,
+      dataflows: dataflows.length,
       unknownSyntaxRatio: totalObservedFacts === 0 ? 0 : totalUnknown / totalObservedFacts,
     }),
   });

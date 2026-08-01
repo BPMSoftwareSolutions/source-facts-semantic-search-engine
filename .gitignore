@@ -4,6 +4,10 @@ node_modules/
 !package-lock.json
 !contracts/**/*.json
 !web-know.workspace.json
+!sessions/**/*.json
+!gallery-queries/**/*.json
+!gallery-projectors/**/*.json
+!gallery-policies/**/*.json
 .env
 .env.local
 .DS_Store

@@ -208,6 +208,14 @@ export function projectsHtmlDocument({ pathId, rootId, relativePath, contentHash
     pushElement({ kind: "heading", tag: `h${match[1]}`, attributes: attrs, text: headingText, start: match.index, length: match[0].length });
   }
 
+  for (const match of text.matchAll(/<p\b([^>]*)>([\s\S]*?)<\/p\s*>/gi)) {
+    if (isClaimed(match.index)) continue;
+    const attrs = parsesAttributes(match[1] ?? "");
+    const paragraphText = decodesEntities(stripsTags(match[2]));
+    if (paragraphText.trim().length === 0) continue;
+    pushElement({ kind: "paragraph", tag: "p", attributes: attrs, text: paragraphText, start: match.index, length: match[0].length });
+  }
+
   for (const tag of landmarkTags) {
     for (const match of text.matchAll(new RegExp(`<${tag}\\b([^>]*)>`, "gi"))) {
       if (isClaimed(match.index)) continue;

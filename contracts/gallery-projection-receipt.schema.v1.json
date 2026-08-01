@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Gallery Projection Receipt",
+  "type": "object",
+  "required": [
+    "receiptType",
+    "receiptId",
+    "requestId",
+    "selectionId",
+    "planId",
+    "manifestId",
+    "projectorId",
+    "emittedFiles",
+    "rowCounts",
+    "redactions",
+    "writeDisposition",
+    "deterministicHash"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "receiptType": { "const": "gallery-projection-receipt.v1" },
+    "receiptId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "requestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "selectionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "planId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "manifestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "projectorId": { "type": "string", "minLength": 1 },
+    "emittedFiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "contentHash"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rowCounts": {
+      "type": "object",
+      "required": ["input", "selected", "rejected"],
+      "properties": {
+        "input": { "type": "integer", "minimum": 0 },
+        "selected": { "type": "integer", "minimum": 0 },
+        "rejected": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "redactions": { "type": "array", "items": { "type": "string" } },
+    "writeDisposition": { "enum": ["written", "skipped-exists"] },
+    "deterministicHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}
