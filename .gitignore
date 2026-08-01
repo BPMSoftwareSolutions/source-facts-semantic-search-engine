@@ -4,7 +4,10 @@ node_modules/
 !package-lock.json
 !contracts/**/*.json
 !web-know.workspace.json
+!web-know.enterprise.workspace.json
 !sessions/**/*.json
+!composition-authorities/**/*.json
+!compositions/**/*.json
 !gallery-queries/**/*.json
 !gallery-projectors/**/*.json
 !gallery-policies/**/*.json

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sign-In Composition Request",
+  "type": "object",
+  "required": ["requestType", "subject", "purpose", "audience", "galleryManifestId", "selections", "previewPolicyId"],
+  "additionalProperties": false,
+  "properties": {
+    "requestType": { "const": "sign-in-composition-request.v1" },
+    "requestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "subject": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "audience": { "type": "string", "minLength": 1 },
+    "galleryManifestId": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+    "selections": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["authorityKind", "authorityId", "rationale"],
+        "additionalProperties": false,
+        "properties": {
+          "authorityKind": { "enum": ["layout", "authentication-entry", "messaging", "theme"] },
+          "authorityId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*\\.v[0-9]+$" },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "previewPolicyId": { "const": "static-no-script.v1" }
+  }
+}

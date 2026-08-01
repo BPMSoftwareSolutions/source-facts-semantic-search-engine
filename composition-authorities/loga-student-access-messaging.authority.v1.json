@@ -1,0 +1,24 @@
+{
+  "authorityType": "composition-authority.v1",
+  "authorityId": "loga-student-access-messaging.v1",
+  "authorityKind": "messaging",
+  "label": "Loga student-access messaging",
+  "reviewStatus": "reviewed-candidate",
+  "evidenceClass": "declared",
+  "source": {
+    "documentId": "0c2da473f8e26d3ba1065d8626a8e9f1dd99baef4e44f2c88e17d896e056b484",
+    "rootId": "intelligence-08",
+    "relativePath": "youtube-presentations/ai-training-business/public/login.html",
+    "sourceReferenceIds": ["youtube-presentations/ai-training-business/public/login.html:0:3847"]
+  },
+  "provides": ["content.primary-message", "content.failure-message", "content.continuation"],
+  "requires": ["slot.messaging", "state.failure"],
+  "conflictsWith": [],
+  "bindings": [
+    { "key": "message.eyebrow", "value": "Student Access" },
+    { "key": "message.heading", "value": "Welcome Back" },
+    { "key": "message.body", "value": "Log in to access your courses, cohort resources, and student dashboard." },
+    { "key": "message.failure", "value": "Authentication could not be completed. Verify your details and try again." },
+    { "key": "message.continuation", "value": "Don't have an account? Enroll or apply for a cohort." }
+  ]
+}

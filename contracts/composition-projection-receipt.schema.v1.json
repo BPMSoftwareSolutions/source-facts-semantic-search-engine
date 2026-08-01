@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Composition Projection Receipt",
+  "type": "object",
+  "required": ["receiptType", "receiptId", "requestId", "compatibilityReportId", "contractId", "projectorId", "projectorAuthorityHash", "previewPolicyId", "projectionLevel", "emittedFiles", "deterministicHash"],
+  "additionalProperties": false,
+  "properties": {
+    "receiptType": { "const": "composition-projection-receipt.v1" },
+    "receiptId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "requestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "compatibilityReportId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "contractId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "projectorId": { "const": "sign-in-composition.v1" },
+    "projectorAuthorityHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "previewPolicyId": { "const": "static-no-script.v1" },
+    "projectionLevel": { "const": "constructive-composition" },
+    "emittedFiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "contentHash"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "deterministicHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

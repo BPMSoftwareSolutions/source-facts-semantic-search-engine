@@ -1296,3 +1296,28 @@ source-facts-se web query --index ./web-surface-index.json \
 ```
 
 That is a source/evidence inventory only. Slice G5 still owns DOM ancestry, selector/cascade binding, computed styles, state fixtures, clustering, review, and promotion before any normalized button gallery can claim visual or semantic reuse.
+
+## Implemented result: first constructive sign-in composition slice (2026-08-01)
+
+The north-star sign-in path is now implemented as a narrow Level 4 vertical slice without broadening the legacy-execution boundary.
+
+The added materialized boundary consists of:
+
+- the enterprise scope policy in [`web-know.enterprise.workspace.json`](../web-know.enterprise.workspace.json), covering intelligence roots 01 through 09, BPM clients, and lab repositories as eleven separately identified roots;
+- the registered [`sign-in-pages`](../gallery-queries/sign-in-pages.query.v1.json) query, which maps the user-facing sign-in concept to the classifier's governed `login` taxonomy value;
+- reviewed candidate declarations under [`composition-authorities/`](../composition-authorities/) for layout, authentication entry, messaging, and theme;
+- strict schemas for composition authority, request, compatibility report, candidate contract, and projection receipt under [`contracts/`](../contracts/);
+- fail-closed compatibility and deterministic contract/document/AST/preview projection in [`src/composition/`](../src/composition/); and
+- `web compose sign-in` routing in [`src/cli.js`](../src/cli.js).
+
+The compatibility evaluator requires one selected authority per kind, reviewed or promoted status, a source-addressable binding to the active gallery manifest, complete required/provided ports, no declared authority conflict, and complete safe renderer bindings. An incompatible request writes its request and report but cannot emit a contract or preview.
+
+The composed HTML is a governed static simulation. It contains usable local input controls and an inert primary action, but no scripts, form submission, source endpoint, network access, storage, or authentication effect. Observed-and-reviewed bindings and declared content remain explicitly distinguishable in the candidate contract and projected design document.
+
+### Enterprise-scale proof
+
+The reviewed policy inventoried 300,547 paths and admitted 1,643 HTML entry candidates. Projection produced 1,643 HTML documents and classifications, 181,939 HTML element facts, 238,512 CSS rules, 655,997 CSS declarations, and 62,564 relationships. That volume exposed and fixed two scale boundaries: monolithic JSON serialization and irrelevant-collection hashing. Large top-level indexes now stream deterministically to disk, read incrementally, and web SQL requests include only named collections.
+
+The registered sign-in query returned 13 classifier-supported login surfaces at support score `0.9`. Gallery projection retained all 13 rows with zero rejection: two static-ready, four partial-static, and seven script-required. The example four-authority request produced a compatibility report with eight satisfied checks and zero failures, a candidate contract, projected design document, candidate AST, deterministic receipt, and a script-free browser-observed preview.
+
+This is not general constructive composition. The implemented subject is deliberately limited to the four-authority sign-in contract and the static renderer. Authorized source-script execution, effect mocks, arbitrary role catalogs, general composition planning, and promotion workflow remain future G6 work.

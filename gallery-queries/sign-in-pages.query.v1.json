@@ -1,0 +1,9 @@
+{
+  "declarationType": "gallery-query.v1",
+  "queryId": "sign-in-pages",
+  "sourceCollection": "webpageClassifications",
+  "commandText": "SELECT d.documentId, d.pathId, d.rootId, d.relativePath, d.title, f.familyId, f.truncated FROM htmlDocuments d LEFT JOIN webFamilies f ON d.pathId = f.entryPathId INNER JOIN webpageClassifications c ON d.documentId = c.documentId WHERE c.value = 'login' ORDER BY d.rootId, d.relativePath",
+  "description": "Every admitted HTML entry surface classified as a sign-in page, joined to its artifact family and ordered for a stable gallery listing.",
+  "requiredColumns": ["documentId", "pathId", "rootId", "relativePath", "title", "familyId", "truncated"],
+  "allowedProjectorIds": ["enterprise-page-gallery.v1"]
+}

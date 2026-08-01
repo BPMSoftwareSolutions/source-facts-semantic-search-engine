@@ -1,0 +1,21 @@
+{
+  "authorityType": "composition-authority.v1",
+  "authorityId": "app-lab-split-auth-layout.v1",
+  "authorityKind": "layout",
+  "label": "App Lab split authentication layout",
+  "reviewStatus": "reviewed-candidate",
+  "evidenceClass": "observed-and-reviewed",
+  "source": {
+    "documentId": "7fa4a6b3b5c4bbc127b55b352e0ac2fe000641b816870172b011ee2fea5b580d",
+    "rootId": "intelligence-05",
+    "relativePath": "app-lab/experiment/lab/sketch2html/output-auth-split-side.html",
+    "sourceReferenceIds": ["app-lab/experiment/lab/sketch2html/output-auth-split-side.html:0:2497"]
+  },
+  "provides": ["slot.brand", "slot.authentication-entry", "slot.messaging", "surface.sign-in"],
+  "requires": ["role.identity-entry", "content.primary-message", "tokens.theme"],
+  "conflictsWith": [],
+  "bindings": [
+    { "key": "layout.variant", "value": "split" },
+    { "key": "layout.brand-side", "value": "left" }
+  ]
+}

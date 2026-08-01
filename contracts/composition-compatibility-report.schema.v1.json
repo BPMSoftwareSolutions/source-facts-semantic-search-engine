@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Composition Compatibility Report",
+  "type": "object",
+  "required": ["reportType", "reportId", "requestId", "disposition", "checks", "satisfiedCount", "failedCount"],
+  "additionalProperties": false,
+  "properties": {
+    "reportType": { "const": "composition-compatibility-report.v1" },
+    "reportId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "requestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "disposition": { "enum": ["COMPATIBLE", "INCOMPATIBLE"] },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["checkId", "category", "disposition", "message", "authorityIds"],
+        "additionalProperties": false,
+        "properties": {
+          "checkId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "category": { "enum": ["selection", "review", "source-binding", "port-binding", "conflict", "projection-binding"] },
+          "disposition": { "enum": ["SATISFIED", "FAILED"] },
+          "message": { "type": "string", "minLength": 1 },
+          "authorityIds": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "satisfiedCount": { "type": "integer", "minimum": 0 },
+    "failedCount": { "type": "integer", "minimum": 0 }
+  }
+}

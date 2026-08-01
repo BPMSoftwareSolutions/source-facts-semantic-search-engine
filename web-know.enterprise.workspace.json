@@ -1,0 +1,30 @@
+{
+  "policyType": "web-know-workspace.v1",
+  "roots": [
+    { "rootId": "intelligence-01", "path": "C:/source/repos/bpm/intelligence/01-cognitive-governance" },
+    { "rootId": "intelligence-02", "path": "C:/source/repos/bpm/intelligence/02-ai-operations-intelligence" },
+    { "rootId": "intelligence-03", "path": "C:/source/repos/bpm/intelligence/03-engineering-intelligence" },
+    { "rootId": "intelligence-04", "path": "C:/source/repos/bpm/intelligence/04-runtime-and-resolvers" },
+    { "rootId": "intelligence-05", "path": "C:/source/repos/bpm/intelligence/05-ui-rendering-and-app-fabric" },
+    { "rootId": "intelligence-06", "path": "C:/source/repos/bpm/intelligence/06-integration-and-data-platforms" },
+    { "rootId": "intelligence-07", "path": "C:/source/repos/bpm/intelligence/07-vertical-solutions" },
+    { "rootId": "intelligence-08", "path": "C:/source/repos/bpm/intelligence/08-sales-content-and-enablement" },
+    { "rootId": "intelligence-09", "path": "C:/source/repos/bpm/intelligence/09-labs-and-incubation" },
+    { "rootId": "bpm-clients", "path": "C:/source/repos/bpm/clients" },
+    { "rootId": "lab-repos", "path": "C:/lab/repos" }
+  ],
+  "entryExtensions": [".html", ".htm"],
+  "relatedExtensions": [".css", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".json"],
+  "excludeDirectories": ["node_modules", ".git", "dist", "build", "coverage", "release", "bin", "obj", ".next", ".cache", "playwright-report", "test-results"],
+  "excludeGlobs": [],
+  "generatedGlobs": ["**/generated/**", "**/*.generated.html", "**/*.min.js"],
+  "evidenceSnapshotGlobs": ["**/snapshots/**", "**/__snapshots__/**"],
+  "symlinkPolicy": "skip",
+  "maxFileSizeBytes": 2000000,
+  "expansion": {
+    "maxDepth": 6,
+    "maxMembers": 200,
+    "maxBytes": 20000000,
+    "maxTimeMs": 30000
+  }
+}

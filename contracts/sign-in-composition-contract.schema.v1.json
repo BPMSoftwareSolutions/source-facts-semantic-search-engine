@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sign-In Candidate Composition Contract",
+  "type": "object",
+  "required": ["contractType", "contractId", "requestId", "compatibilityReportId", "subject", "purpose", "audience", "galleryManifestId", "authorities", "regions", "bindings", "unresolvedBindings", "conflicts", "disposition"],
+  "additionalProperties": false,
+  "properties": {
+    "contractType": { "const": "sign-in-composition-contract.v1" },
+    "contractId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "requestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "compatibilityReportId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "subject": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "audience": { "type": "string", "minLength": 1 },
+    "galleryManifestId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "authorities": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "$ref": "#/$defs/authorityBinding" } },
+    "regions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/region" } },
+    "bindings": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/binding" } },
+    "unresolvedBindings": { "type": "array", "maxItems": 0 },
+    "conflicts": { "type": "array", "maxItems": 0 },
+    "disposition": { "const": "COMPOSABLE" }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["documentId", "rootId", "relativePath", "sourceReferenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "documentId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "rootId": { "type": "string", "minLength": 1 },
+        "relativePath": { "type": "string", "minLength": 1 },
+        "sourceReferenceIds": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "authorityBinding": {
+      "type": "object",
+      "required": ["authorityKind", "authorityId", "authorityHash", "label", "reviewStatus", "evidenceClass", "source", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "authorityKind": { "enum": ["layout", "authentication-entry", "messaging", "theme"] },
+        "authorityId": { "type": "string", "minLength": 1 },
+        "authorityHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "label": { "type": "string", "minLength": 1 },
+        "reviewStatus": { "enum": ["reviewed-candidate", "promoted"] },
+        "evidenceClass": { "enum": ["observed-and-reviewed", "declared"] },
+        "source": { "$ref": "#/$defs/source" },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    },
+    "region": {
+      "type": "object",
+      "required": ["regionId", "role", "authorityId", "children"],
+      "additionalProperties": false,
+      "properties": {
+        "regionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "role": { "type": "string", "minLength": 1 },
+        "authorityId": { "type": "string", "minLength": 1 },
+        "children": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "required": ["key", "value", "authorityId"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "value": { "type": "string" },
+        "authorityId": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

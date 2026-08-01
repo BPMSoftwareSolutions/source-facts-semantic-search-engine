@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reviewed Composition Authority",
+  "type": "object",
+  "required": ["authorityType", "authorityId", "authorityKind", "label", "reviewStatus", "evidenceClass", "source", "provides", "requires", "conflictsWith", "bindings"],
+  "additionalProperties": false,
+  "properties": {
+    "authorityType": { "const": "composition-authority.v1" },
+    "authorityId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*\\.v[0-9]+$" },
+    "authorityKind": { "enum": ["layout", "authentication-entry", "messaging", "theme"] },
+    "label": { "type": "string", "minLength": 1 },
+    "reviewStatus": { "enum": ["reviewed-candidate", "promoted"] },
+    "evidenceClass": { "enum": ["observed-and-reviewed", "declared"] },
+    "source": {
+      "type": "object",
+      "required": ["documentId", "rootId", "relativePath", "sourceReferenceIds"],
+      "additionalProperties": false,
+      "properties": {
+        "documentId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "rootId": { "type": "string", "minLength": 1 },
+        "relativePath": { "type": "string", "minLength": 1 },
+        "sourceReferenceIds": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "provides": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "requires": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "conflictsWith": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "bindings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["key", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "value": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "requestType": "sign-in-composition-request.v1",
+  "subject": "Enterprise Learning sign-in",
+  "purpose": "Give approved enterprise learners a clear, accessible authentication entry surface assembled from reviewed repository authority.",
+  "audience": "Enterprise learners with an approved account or cohort enrollment path.",
+  "galleryManifestId": null,
+  "selections": [
+    {
+      "authorityKind": "layout",
+      "authorityId": "app-lab-split-auth-layout.v1",
+      "rationale": "Use the reviewed split authentication structure to separate identity and task regions."
+    },
+    {
+      "authorityKind": "authentication-entry",
+      "authorityId": "app-lab-email-password-entry.v1",
+      "rationale": "Use the observed email/password roles and primary sign-in action without executing its legacy endpoint."
+    },
+    {
+      "authorityKind": "messaging",
+      "authorityId": "loga-student-access-messaging.v1",
+      "rationale": "Use the reviewed student-access voice and explicitly declared failure copy for a complete candidate state model."
+    },
+    {
+      "authorityKind": "theme",
+      "authorityId": "loga-midnight-theme.v1",
+      "rationale": "Use the reviewed midnight palette and focus token mapping from the login-form inspection surface."
+    }
+  ],
+  "previewPolicyId": "static-no-script.v1"
+}

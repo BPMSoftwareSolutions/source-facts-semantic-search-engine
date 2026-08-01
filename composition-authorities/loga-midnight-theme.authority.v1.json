@@ -1,0 +1,28 @@
+{
+  "authorityType": "composition-authority.v1",
+  "authorityId": "loga-midnight-theme.v1",
+  "authorityKind": "theme",
+  "label": "Loga midnight inspection theme",
+  "reviewStatus": "reviewed-candidate",
+  "evidenceClass": "observed-and-reviewed",
+  "source": {
+    "documentId": "8b108aa41d706e1850a47f0d0ca86636714c1f49dc32dbc25d56b0a25ad00da0",
+    "rootId": "intelligence-05",
+    "relativePath": "loga/output/raw-check/login-form.html",
+    "sourceReferenceIds": ["loga/output/raw-check/login-form.html:0:36656"]
+  },
+  "provides": ["tokens.theme", "tokens.focus-treatment", "tokens.contrast"],
+  "requires": ["surface.sign-in"],
+  "conflictsWith": [],
+  "bindings": [
+    { "key": "theme.background", "value": "#0a0f1f" },
+    { "key": "theme.surface", "value": "#0c1428" },
+    { "key": "theme.ink", "value": "#d0e2ff" },
+    { "key": "theme.muted", "value": "#9dc5ff" },
+    { "key": "theme.accent", "value": "#6ea8ff" },
+    { "key": "theme.danger", "value": "#ef4444" },
+    { "key": "theme.focus", "value": "#fee440" },
+    { "key": "theme.radius", "value": "12px" },
+    { "key": "theme.font", "value": "system-ui, sans-serif" }
+  ]
+}

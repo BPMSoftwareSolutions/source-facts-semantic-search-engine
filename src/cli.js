@@ -8,7 +8,9 @@ import { validatesSourceFactIndex } from "./validate-index.js";
 import { projectsWebSurfaceInventory } from "./web/inventory.js";
 import { projectsWebSurfaceIndex } from "./web/project-web-surfaces.js";
 import { validatesWebSurfaceInventory, validatesWebSurfaceIndex, validatesWebKnowWorkspace } from "./web/validate-web-index.js";
-import { executesWebRelationalQuery } from "./web/web-query.js";
+import { deducesWebQuerySourceNames, executesWebRelationalQuery } from "./web/web-query.js";
+import { writesJsonFile } from "./lib/writes-json-file.js";
+import { readsJsonFile } from "./lib/reads-json-file.js";
 import {
   galleryArtifactNames,
   resolvesGalleryPreviewPolicy,
@@ -22,6 +24,7 @@ import {
   validatesSurfacePreviewPlan,
   validatesSurfacePreviewPolicy,
 } from "./gallery/validates-gallery-artifacts.js";
+import { compositionArtifactNames, writesSignInComposition } from "./composition/writes-sign-in-composition.js";
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -53,10 +56,7 @@ async function runProject(rawArgs) {
   });
   await validatesSourceFactIndex(index);
 
-  const json = pretty
-    ? JSON.stringify(index, null, 2)
-    : JSON.stringify(index);
-  await fs.writeFile(outputPath, json, "utf8");
+  await writesJsonFile(outputPath, index, { pretty });
   process.stdout.write(`${outputPath}\n`);
   if (flags.summary === true) {
     process.stdout.write(formatSummary(index));
@@ -67,7 +67,7 @@ async function runQuery(rawArgs) {
   const { flags, positional } = parseArgs(rawArgs);
   const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
   const queryText = resolveQueryText(flags, positional);
-  const index = JSON.parse(await fs.readFile(indexPath, "utf8"));
+  const index = await readsJsonFile(indexPath);
   const result = await executeRelationalQuery(index, queryText);
   const pretty = flags.pretty === true;
   process.stdout.write(pretty ? JSON.stringify(result, null, 2) : JSON.stringify(result));
@@ -83,10 +83,44 @@ async function runWeb(rawArgs) {
     await runWebQuery(rawArgs.slice(1));
   } else if (subcommand === "gallery") {
     await runWebGallery(rawArgs.slice(1));
+  } else if (subcommand === "compose") {
+    await runWebCompose(rawArgs.slice(1));
   } else {
     writeUsage(process.stderr);
     process.exitCode = 1;
   }
+}
+
+async function runWebCompose(rawArgs) {
+  const subcommand = rawArgs[0];
+  if (subcommand !== "sign-in") {
+    writeUsage(process.stderr);
+    process.exitCode = 1;
+    return;
+  }
+  const { flags } = parseArgs(rawArgs.slice(1));
+  if (typeof flags.request !== "string") throw new Error("--request <sign-in-composition-request.json> is required.");
+  if (typeof flags.manifest !== "string") throw new Error("--manifest <enterprise-gallery-manifest.json> is required.");
+  const requestInput = JSON.parse(stripsByteOrderMark(await fs.readFile(path.resolve(flags.request), "utf8")));
+  const manifest = JSON.parse(stripsByteOrderMark(await fs.readFile(path.resolve(flags.manifest), "utf8")));
+  const outputDirectory = path.resolve(flags.output ?? flags.dir ?? path.join(process.cwd(), "sign-in-composition"));
+  const result = await writesSignInComposition({
+    requestInput,
+    manifest,
+    outputDirectory,
+    ...(typeof flags.authorities === "string" ? { authoritiesDirectory: path.resolve(flags.authorities) } : {}),
+  });
+  process.stdout.write(`${path.join(outputDirectory, compositionArtifactNames.compatibilityReport)}\n`);
+  if (result.contract !== null) {
+    process.stdout.write(`${path.join(outputDirectory, compositionArtifactNames.contract)}\n`);
+    process.stdout.write(`${path.join(outputDirectory, compositionArtifactNames.designDocument)}\n`);
+    process.stdout.write(`${path.join(outputDirectory, compositionArtifactNames.candidateAst)}\n`);
+    process.stdout.write(`${path.join(outputDirectory, compositionArtifactNames.preview)}\n`);
+  }
+  if (flags.summary === true) {
+    process.stdout.write(`Compatibility: ${result.compatibilityReport.disposition}; satisfied: ${result.compatibilityReport.satisfiedCount}; failed: ${result.compatibilityReport.failedCount}\n`);
+  }
+  if (result.compatibilityReport.disposition !== "COMPATIBLE") process.exitCode = 2;
 }
 
 async function runWebGallery(rawArgs) {
@@ -182,8 +216,8 @@ async function runWebGalleryProve(rawArgs) {
 async function readsGalleryInputs(flags) {
   const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "web-surface-index.json"));
   const inventoryPath = path.resolve(flags.inventory ?? path.join(path.dirname(indexPath), "web-surface.inventory.json"));
-  const index = JSON.parse(stripsByteOrderMark(await fs.readFile(indexPath, "utf8")));
-  const inventory = JSON.parse(stripsByteOrderMark(await fs.readFile(inventoryPath, "utf8")));
+  const index = await readsJsonFile(indexPath);
+  const inventory = await readsJsonFile(inventoryPath);
   await validatesWebSurfaceIndex(index);
   await validatesWebSurfaceInventory(inventory);
   return { index, inventory };
@@ -231,8 +265,7 @@ async function runWebInventory(rawArgs) {
   const inventory = await projectsWebSurfaceInventory({ policy });
   await validatesWebSurfaceInventory(inventory);
 
-  const json = pretty ? JSON.stringify(inventory, null, 2) : JSON.stringify(inventory);
-  await fs.writeFile(outputPath, json, "utf8");
+  await writesJsonFile(outputPath, inventory, { pretty });
   process.stdout.write(`${outputPath}\n`);
   if (flags.summary === true) {
     process.stdout.write(formatInventorySummary(inventory));
@@ -245,14 +278,13 @@ async function runWebProject(rawArgs) {
   const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "web-surface-index.json"));
   const pretty = flags.pretty === true;
   const inventory = flags.inventory !== undefined
-    ? JSON.parse(stripsByteOrderMark(await fs.readFile(path.resolve(flags.inventory), "utf8")))
+    ? await readsJsonFile(path.resolve(flags.inventory))
     : undefined;
 
   const index = await projectsWebSurfaceIndex({ policy, inventory });
   await validatesWebSurfaceIndex(index);
 
-  const json = pretty ? JSON.stringify(index, null, 2) : JSON.stringify(index);
-  await fs.writeFile(outputPath, json, "utf8");
+  await writesJsonFile(outputPath, index, { pretty });
   process.stdout.write(`${outputPath}\n`);
   if (flags.summary === true) {
     process.stdout.write(formatWebIndexSummary(index));
@@ -263,7 +295,7 @@ async function runWebQuery(rawArgs) {
   const { flags, positional } = parseArgs(rawArgs);
   const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "web-surface-index.json"));
   const queryText = resolveQueryText(flags, positional);
-  const index = JSON.parse(stripsByteOrderMark(await fs.readFile(indexPath, "utf8")));
+  const index = await readsJsonFile(indexPath, { includeKeys: deducesWebQuerySourceNames(queryText) });
   const result = await executesWebRelationalQuery(index, queryText);
   const pretty = flags.pretty === true;
   process.stdout.write(pretty ? JSON.stringify(result, null, 2) : JSON.stringify(result));
@@ -345,6 +377,9 @@ function parseArgs(rawArgs) {
         case "--inventory":
         case "--dir":
         case "--write-mode":
+        case "--request":
+        case "--manifest":
+        case "--authorities":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
@@ -395,6 +430,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web gallery project [--index <file>] [--inventory <file>] [--query <saved-query-id>] [--policy <policy-id-or-file>] [--output <dir>] [--summary]\n`);
   stream.write(`  source-facts-se web gallery serve --dir <gallery-output-dir>\n`);
   stream.write(`  source-facts-se web gallery prove --dir <gallery-output-dir>\n`);
+  stream.write(`  source-facts-se web compose sign-in --request <file> --manifest <gallery-manifest> [--authorities <dir>] [--output <dir>] [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
   stream.write(`  source-facts-se project --workspace C:/lab/repos/contract-driven-artifact-governance-engine --pretty\n`);
@@ -403,6 +439,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web project --policy ./web-know.workspace.json --pretty --summary\n`);
   stream.write(`  source-facts-se web query --index ./web-surface-index.json \"SELECT familyId, entryRelativePath FROM webFamilies\"\n`);
   stream.write(`  source-facts-se web gallery project --index ./web-surface-index.json --inventory ./web-surface.inventory.json --query enterprise-pages --output ./enterprise-gallery --summary\n`);
+  stream.write(`  source-facts-se web compose sign-in --request ./compositions/enterprise-sign-in.request.v1.json --manifest ./sign-in-gallery/enterprise-gallery-manifest.json --output ./sign-in-composition --summary\n`);
 }
 
 function formatsGallerySummary(selection, plan) {
