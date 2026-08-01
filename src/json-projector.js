@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
+import { buildsLineStarts, resolvesLineAndColumn } from "./lib/text-positions.js";
 
 const excludedDirectories = new Set([".git", "node_modules", "dist", "dist-test", "release"]);
 
@@ -186,25 +187,6 @@ function parsesJsonWithLocations(relativePath, text) {
   skipWhitespace();
   if (cursor !== text.length) fail("Unexpected content after the root JSON value");
   return Object.freeze({ value, nodes: Object.freeze(nodes) });
-}
-
-function buildsLineStarts(text) {
-  const starts = [0];
-  for (let index = 0; index < text.length; index++) {
-    if (text[index] === "\n") starts.push(index + 1);
-  }
-  return starts;
-}
-
-function resolvesLineAndColumn(lineStarts, offset) {
-  let low = 0;
-  let high = lineStarts.length - 1;
-  while (low <= high) {
-    const middle = Math.floor((low + high) / 2);
-    if (lineStarts[middle] <= offset) low = middle + 1;
-    else high = middle - 1;
-  }
-  return Object.freeze({ line: high + 1, column: offset - lineStarts[high] + 1 });
 }
 
 function escapesJsonPointer(value) {

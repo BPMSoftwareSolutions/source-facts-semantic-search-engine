@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Web Surface Index",
+  "type": "object",
+  "required": [
+    "indexType",
+    "indexId",
+    "manifest",
+    "roots",
+    "htmlDocuments",
+    "htmlElements",
+    "cssStylesheets",
+    "cssRules",
+    "cssDeclarations",
+    "webRelationships",
+    "assets",
+    "webFamilies",
+    "sourceReferences",
+    "diagnostics",
+    "coverage"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "indexType": { "const": "web-surface-index.v1" },
+    "indexId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "manifest": {
+      "type": "object",
+      "required": ["schemaVersion", "engine", "engineVersion", "policyHash"],
+      "properties": {
+        "schemaVersion": { "type": "string", "minLength": 1 },
+        "engine": { "type": "string" },
+        "engineVersion": { "type": "string" },
+        "policyHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      },
+      "additionalProperties": true
+    },
+    "roots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rootId", "path"],
+        "properties": {
+          "rootId": { "type": "string" },
+          "path": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "htmlDocuments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["documentId", "pathId", "relativePath", "rootId", "contentHash", "sourceReferenceId"],
+        "properties": {
+          "documentId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "pathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "relativePath": { "type": "string" },
+          "rootId": { "type": "string" },
+          "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "doctype": { "type": ["string", "null"] },
+          "lang": { "type": ["string", "null"] },
+          "title": { "type": ["string", "null"] },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "htmlElements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["elementId", "documentId", "kind", "tag", "attributes", "sourceReferenceId"],
+        "properties": {
+          "elementId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "documentId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "kind": { "type": "string" },
+          "tag": { "type": "string" },
+          "attributes": { "type": "object" },
+          "text": { "type": ["string", "null"] },
+          "textHash": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+          "idRefs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["attribute", "targetId"],
+              "properties": {
+                "attribute": { "type": "string" },
+                "targetId": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "cssStylesheets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stylesheetId", "origin", "contentHash", "sourceReferenceId"],
+        "properties": {
+          "stylesheetId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "origin": { "enum": ["file", "inline"] },
+          "pathId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "relativePath": { "type": ["string", "null"] },
+          "hostDocumentId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "cssRules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ruleId", "stylesheetId", "ruleKind", "prelude", "parentRuleId", "sourceReferenceId"],
+        "properties": {
+          "ruleId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "stylesheetId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "ruleKind": { "enum": ["style-rule", "at-rule"] },
+          "atKeyword": { "type": ["string", "null"] },
+          "prelude": { "type": "string" },
+          "parentRuleId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "cssDeclarations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["declarationId", "ruleId", "propertyName", "value", "important", "isCustomProperty", "sourceReferenceId"],
+        "properties": {
+          "declarationId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "ruleId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "propertyName": { "type": "string" },
+          "value": { "type": "string" },
+          "important": { "type": "boolean" },
+          "isCustomProperty": { "type": "boolean" },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "webRelationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "relationshipId",
+          "edgeKind",
+          "fromPathId",
+          "fromDocumentId",
+          "candidateTarget",
+          "resolvedPathId",
+          "resolutionDisposition",
+          "sourceReferenceId"
+        ],
+        "properties": {
+          "relationshipId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "edgeKind": {
+            "enum": [
+              "html-script-src",
+              "html-module-script-src",
+              "html-stylesheet-href",
+              "html-image-src",
+              "html-source-srcset",
+              "html-anchor-navigation",
+              "html-inline-script",
+              "html-inline-style",
+              "css-import",
+              "css-url",
+              "js-static-import",
+              "js-dynamic-import-candidate",
+              "js-json-import",
+              "js-style-import"
+            ]
+          },
+          "fromPathId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "fromDocumentId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "candidateTarget": { "type": "string" },
+          "resolvedPathId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "resolutionDisposition": {
+            "enum": [
+              "resolved-local",
+              "resolved-workspace-package",
+              "external-url",
+              "data-url",
+              "fragment-only",
+              "missing-local-target",
+              "blocked-by-policy",
+              "unsupported-resolution-form"
+            ]
+          },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["assetId", "candidateTarget", "resolutionDisposition", "referencedByRelationshipId"],
+        "properties": {
+          "assetId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "pathId": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" },
+          "relativePath": { "type": ["string", "null"] },
+          "candidateTarget": { "type": "string" },
+          "resolutionDisposition": { "type": "string" },
+          "contentHash": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+          "referencedByRelationshipId": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "webFamilies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "familyId",
+          "entryPathId",
+          "entryRelativePath",
+          "rootId",
+          "members",
+          "resolvedEdgeIds",
+          "unresolvedEdgeIds",
+          "expansionLimits",
+          "truncated",
+          "truncationReason",
+          "familyRootHash"
+        ],
+        "properties": {
+          "familyId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "entryPathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "entryRelativePath": { "type": "string" },
+          "rootId": { "type": "string" },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["pathId", "role", "depth"],
+              "properties": {
+                "pathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+                "role": { "enum": ["entry", "stylesheet", "script", "json", "asset"] },
+                "depth": { "type": "integer", "minimum": 0 }
+              },
+              "additionalProperties": false
+            }
+          },
+          "resolvedEdgeIds": { "type": "array", "items": { "type": "string", "pattern": "^[0-9a-f]{64}$" } },
+          "unresolvedEdgeIds": { "type": "array", "items": { "type": "string", "pattern": "^[0-9a-f]{64}$" } },
+          "expansionLimits": {
+            "type": "object",
+            "required": ["maxDepth", "maxMembers", "maxBytes", "maxTimeMs"],
+            "properties": {
+              "maxDepth": { "type": "integer" },
+              "maxMembers": { "type": "integer" },
+              "maxBytes": { "type": "integer" },
+              "maxTimeMs": { "type": "integer" }
+            },
+            "additionalProperties": false
+          },
+          "truncated": { "type": "boolean" },
+          "truncationReason": { "enum": ["maxDepth", "maxMembers", "maxBytes", "maxTimeMs", null] },
+          "familyRootHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "sourceReferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["referenceId", "modulePath", "startLine", "startColumn", "endLine", "endColumn", "kind", "sourceKind"],
+        "properties": {
+          "referenceId": { "type": "string" },
+          "modulePath": { "type": "string" },
+          "startLine": { "type": "integer", "minimum": 1 },
+          "startColumn": { "type": "integer", "minimum": 1 },
+          "endLine": { "type": "integer", "minimum": 1 },
+          "endColumn": { "type": "integer", "minimum": 1 },
+          "kind": { "type": "string" },
+          "sourceKind": { "type": "string" }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["diagnosticId", "scope", "relativePath", "kind", "message", "line", "column"],
+        "properties": {
+          "diagnosticId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "scope": { "enum": ["html", "css"] },
+          "relativePath": { "type": "string" },
+          "kind": { "type": "string" },
+          "message": { "type": "string" },
+          "line": { "type": "integer", "minimum": 1 },
+          "column": { "type": "integer", "minimum": 1 }
+        },
+        "additionalProperties": true
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "htmlDocuments",
+        "htmlElements",
+        "cssStylesheets",
+        "cssRules",
+        "cssDeclarations",
+        "webRelationships",
+        "assets",
+        "webFamilies",
+        "diagnostics"
+      ],
+      "properties": {
+        "htmlDocuments": { "type": "integer", "minimum": 0 },
+        "htmlElements": { "type": "integer", "minimum": 0 },
+        "cssStylesheets": { "type": "integer", "minimum": 0 },
+        "cssRules": { "type": "integer", "minimum": 0 },
+        "cssDeclarations": { "type": "integer", "minimum": 0 },
+        "webRelationships": { "type": "integer", "minimum": 0 },
+        "assets": { "type": "integer", "minimum": 0 },
+        "webFamilies": { "type": "integer", "minimum": 0 },
+        "diagnostics": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  }
+}

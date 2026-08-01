@@ -1,0 +1,298 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source Fact Index",
+  "type": "object",
+  "required": [
+    "indexType",
+    "indexId",
+    "manifest",
+    "workspace",
+    "files",
+    "symbols",
+    "relationships",
+    "dataflows",
+    "sourceReferences",
+    "coverage",
+    "documents",
+    "governanceRules",
+    "bodyMechanics"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "indexType": {
+      "const": "source-fact-index.v1"
+    },
+    "indexId": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "manifest": {
+      "type": "object",
+      "required": ["schemaVersion", "engine", "engineVersion", "scanId", "documentRootHash", "scanRequest"],
+      "properties": {
+        "schemaVersion": { "type": "string", "minLength": 1 },
+        "engine": {
+          "type": "string"
+        },
+        "engineVersion": {
+          "type": "string"
+        },
+        "scanId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "documentRootHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "scanRequest": {
+          "type": "object",
+          "required": ["workspaceId", "workspaceRoot"],
+          "properties": {
+            "workspaceId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "workspaceRoot": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "workspace": {
+      "type": "object",
+      "required": ["workspaceId", "rootHash", "languageId", "languageProfileVersion"],
+      "properties": {
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rootHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "languageId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "languageProfileVersion": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fileId", "relativePath", "contentHash", "counts"],
+        "properties": {
+          "fileId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "relativePath": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contentHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "declarations": { "type": "integer", "minimum": 0 },
+              "relationships": { "type": "integer", "minimum": 0 },
+              "controlFlow": { "type": "integer", "minimum": 0 },
+              "syntax": { "type": "integer", "minimum": 0 },
+              "unknownSyntax": { "type": "integer", "minimum": 0 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["symbolId", "symbolVersionId", "kind", "name", "modulePath", "sourceReferenceId", "declarationLine", "declarationHeaderHash"],
+        "properties": {
+          "symbolId": { "type": "string" },
+          "kind": { "type": "string" },
+          "name": { "type": "string" },
+          "modulePath": { "type": "string" },
+          "sourceReferenceId": { "type": "string" },
+          "declarationLine": { "type": "integer", "minimum": 1 },
+          "declarationColumn": { "type": "integer", "minimum": 1 },
+          "moduleHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "symbolVersionId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "declarationHeaderHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "isExported": { "type": "boolean" }
+        },
+      "additionalProperties": true
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["relationshipId", "relationshipKind", "sourceReferenceId", "fromSymbolId", "fromSymbolResolution", "toSymbolId", "toSymbolCandidate", "operator"],
+        "properties": {
+          "relationshipId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "relationshipKind": {
+            "type": "string"
+          },
+          "sourceReferenceId": {
+            "type": "string"
+          },
+          "fromSymbolId": {
+            "type": ["string", "null"]
+          },
+          "fromSymbolCandidate": {
+            "type": ["string", "null"]
+          },
+          "fromSymbolResolution": {
+            "enum": ["enclosing-callable", "unresolved"]
+          },
+          "toSymbolId": {
+            "type": ["string", "null"]
+          },
+          "toSymbolCandidate": {
+            "type": ["string", "null"]
+          },
+          "operator": {
+            "type": ["string", "null"]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "dataflows": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "sourceReferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["referenceId", "modulePath", "startLine", "startColumn", "endLine", "endColumn", "kind", "sourceKind"],
+        "properties": {
+          "referenceId": { "type": "string" },
+          "modulePath": { "type": "string" },
+          "startLine": { "type": "integer", "minimum": 1 },
+          "startColumn": { "type": "integer", "minimum": 1 },
+          "endLine": { "type": "integer", "minimum": 1 },
+          "endColumn": { "type": "integer", "minimum": 1 },
+          "kind": { "type": "string" },
+          "sourceKind": { "type": "string" }
+        }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["documentFactId", "documentFactVersionId", "relativePath", "pointer", "valueType", "valuePreview", "valuePath", "sourceReferenceId"],
+        "properties": {
+          "documentFactId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "documentFactVersionId": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "relativePath": {
+            "type": "string"
+          },
+          "pointer": {
+            "type": "string"
+          },
+          "valueType": {
+            "type": "string"
+          },
+          "valuePreview": {
+            "type": "string"
+          },
+          "valuePath": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceReferenceId": {
+            "type": "string"
+          },
+          "value": {
+            "type": ["string", "number", "boolean", "null"]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "governanceRules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ruleId", "ruleType", "profilePath", "policyPointer", "executionPortEffect", "mechanic", "sourceReferenceId"],
+        "properties": {
+          "ruleId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "ruleType": { "const": "forbidden-executable-mechanic" },
+          "profilePath": { "type": "string", "minLength": 1 },
+          "policyPointer": { "type": "string" },
+          "profileType": { "type": ["string", "null"] },
+          "applicability": { "type": ["string", "null"] },
+          "executionPortEffect": { "type": "string" },
+          "semanticAuthorityLocation": { "type": ["string", "null"] },
+          "mechanic": { "type": "string" },
+          "sourceReferenceId": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "bodyMechanics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["mechanicId", "mechanic", "modulePath", "sourceReferenceId", "fromSymbolId", "evidenceKind", "classification", "verificationDisposition"],
+        "properties": {
+          "mechanicId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "mechanic": { "type": "string" },
+          "modulePath": { "type": "string" },
+          "sourceReferenceId": { "type": "string" },
+          "fromSymbolId": { "type": ["string", "null"] },
+          "evidenceKind": { "type": "string" },
+          "classification": { "const": "syntax-derived-candidate" },
+          "verificationDisposition": { "const": "OBSERVED_NOT_EVALUATED" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["filesObserved", "declarations", "relationships", "controlFlow", "syntax", "unknownSyntax", "documentFacts", "governanceRules", "bodyMechanics"],
+      "properties": {
+        "filesObserved": { "type": "integer", "minimum": 0 },
+        "declarations": { "type": "integer", "minimum": 0 },
+        "relationships": { "type": "integer", "minimum": 0 },
+        "controlFlow": { "type": "integer", "minimum": 0 },
+        "syntax": { "type": "integer", "minimum": 0 },
+        "unknownSyntax": { "type": "integer", "minimum": 0 },
+        "documentFacts": { "type": "integer", "minimum": 0 },
+        "governanceRules": { "type": "integer", "minimum": 0 },
+        "bodyMechanics": { "type": "integer", "minimum": 0 },
+        "unknownSyntaxRatio": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

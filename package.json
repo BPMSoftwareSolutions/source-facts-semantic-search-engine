@@ -16,7 +16,8 @@
     "start": "node src/cli.js",
     "check:deps": "node ./scripts/check-deps.mjs",
     "test": "node --test test",
-    "prove:smoke": "node ./scripts/prove-smoke.mjs"
+    "prove:smoke": "node ./scripts/prove-smoke.mjs",
+    "prove:smoke:web": "node ./scripts/prove-smoke-web.mjs"
   },
   "dependencies": {
     "@deterministic-solutions/source-code-taxonomy-scanner": "file:../source-code-taxonomy-scanner",

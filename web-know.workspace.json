@@ -1,0 +1,24 @@
+{
+  "policyType": "web-know-workspace.v1",
+  "roots": [
+    { "rootId": "ai-engine-docs", "path": "C:/source/repos/bpm/intelligence/01-cognitive-governance/ai-engine/docs" },
+    { "rootId": "ai-engine-experimentation", "path": "C:/source/repos/bpm/intelligence/01-cognitive-governance/ai-engine/experimentation" },
+    { "rootId": "ai-engine-site", "path": "C:/source/repos/bpm/intelligence/01-cognitive-governance/ai-engine/site" },
+    { "rootId": "procedural-dungeon-webpage", "path": "C:/lab/repos/contract-driven-artifact-governance-engine/procedural-dungeon-webpage" },
+    { "rootId": "webpage-classification-scanner-fixtures", "path": "C:/lab/repos/webpage-classification-scanner/proof/fixtures" }
+  ],
+  "entryExtensions": [".html", ".htm"],
+  "relatedExtensions": [".css", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".json"],
+  "excludeDirectories": ["node_modules", "dist", "build", "coverage", "release", ".git"],
+  "excludeGlobs": [],
+  "generatedGlobs": [],
+  "evidenceSnapshotGlobs": [],
+  "symlinkPolicy": "skip",
+  "maxFileSizeBytes": 2000000,
+  "expansion": {
+    "maxDepth": 6,
+    "maxMembers": 200,
+    "maxBytes": 20000000,
+    "maxTimeMs": 30000
+  }
+}

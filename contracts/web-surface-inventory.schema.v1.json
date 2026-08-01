@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Web Surface Inventory",
+  "type": "object",
+  "required": ["indexType", "inventoryId", "policyHash", "manifest", "roots", "entries", "coverage"],
+  "additionalProperties": false,
+  "properties": {
+    "indexType": { "const": "web-surface-inventory.v1" },
+    "inventoryId": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "policyHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "manifest": {
+      "type": "object",
+      "required": ["schemaVersion", "engine", "engineVersion"],
+      "properties": {
+        "schemaVersion": { "type": "string", "minLength": 1 },
+        "engine": { "type": "string" },
+        "engineVersion": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "roots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rootId", "path"],
+        "properties": {
+          "rootId": { "type": "string" },
+          "path": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pathId", "rootId", "relativePath", "disposition", "extension", "sizeBytes"],
+        "properties": {
+          "pathId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "rootId": { "type": "string" },
+          "relativePath": { "type": "string", "minLength": 1 },
+          "disposition": {
+            "enum": [
+              "admitted-entry-candidate",
+              "admitted-related-candidate",
+              "excluded-by-policy",
+              "unsupported-extension",
+              "unreadable",
+              "oversized",
+              "external-link",
+              "generated-observation",
+              "evidence-snapshot",
+              "changed-during-observation"
+            ]
+          },
+          "extension": { "type": "string" },
+          "sizeBytes": { "type": ["integer", "null"], "minimum": 0 },
+          "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+          "reason": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["totalPaths", "byDisposition"],
+      "properties": {
+        "totalPaths": { "type": "integer", "minimum": 0 },
+        "byDisposition": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
