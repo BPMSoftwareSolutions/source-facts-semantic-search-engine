@@ -1264,7 +1264,7 @@ The materialized boundary consists of:
 - nine strict contracts under [`contracts/`](../contracts/), including the projection request, row-retaining selection, preview plan, manifest, deterministic projection receipt, and environment-bound browser receipt;
 - registered authorities in [`gallery-queries/enterprise-pages.query.v1.json`](../gallery-queries/enterprise-pages.query.v1.json), [`gallery-projectors/enterprise-page-gallery.projection.v1.json`](../gallery-projectors/enterprise-page-gallery.projection.v1.json), and [`gallery-policies/static-no-script.policy.v1.json`](../gallery-policies/static-no-script.policy.v1.json);
 - deterministic selection, planning, materialization, manifest, host, and receipt orchestration in [`src/gallery/`](../src/gallery/);
-- a loopback-only, read-only preview server with traversal rejection and restrictive CSP/sandbox headers in [`serves-isolated-previews.js`](../src/gallery/serves-isolated-previews.js);
+- a loopback-only, read-only server exposing the generated script-free catalog at `/` and admitted bundles beneath `/preview/`, with traversal rejection and restrictive CSP/sandbox headers in [`serves-isolated-previews.js`](../src/gallery/serves-isolated-previews.js);
 - a Playwright adapter using a fresh context per preview, blocked service workers, denied non-local routes, and screenshot/ARIA/DOM/request/console evidence in [`captures-browser-render.js`](../src/gallery/captures-browser-render.js); and
 - `web gallery plan`, `project`, `serve`, and `prove` command routing in [`src/cli.js`](../src/cli.js).
 

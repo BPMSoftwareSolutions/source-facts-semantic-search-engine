@@ -32,9 +32,9 @@ design:
   static preview bundles, a manifest, and a projection receipt. It refuses output
   locations inside any configured source root and rechecks every admitted file at
   materialization time.
-- `web gallery serve` exposes only materialized preview bytes from an ephemeral
-  `127.0.0.1` server with deny-by-default CSP, sandbox, permissions, method, and path
-  controls.
+- `web gallery serve` exposes the generated script-free catalog at `/` and only its
+  materialized preview bytes beneath `/preview/` from an ephemeral `127.0.0.1`
+  server with deny-by-default CSP, sandbox, permissions, method, and path controls.
 - `web gallery prove` opens each eligible preview in a fresh Playwright Chromium
   context with outbound routing denied and emits browser, request, DOM, ARIA,
   screenshot, console, timing, and environment evidence.

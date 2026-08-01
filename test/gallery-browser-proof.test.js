@@ -40,11 +40,16 @@ test("serves only materialized previews with restrictive headers and captures an
     assert.equal(projected.manifest.items[0].previewDisposition, "PARTIAL_STATIC_REPRODUCTION");
 
     previewServer = await servesIsolatedPreviews({ outputDirectory, previewPolicy: projected.previewPolicy });
+    const galleryResponse = await fetch(previewServer.url);
+    assert.equal(galleryResponse.status, 200);
+    assert.match(await galleryResponse.text(), /Enterprise Surface Explorer/);
+    assert.match(galleryResponse.headers.get("content-security-policy"), /default-src 'none'/);
     const previewResponse = await fetch(new URL(projected.manifest.items[0].previewRoute, previewServer.url));
     assert.equal(previewResponse.status, 200);
     assert.match(previewResponse.headers.get("content-security-policy"), /default-src 'none'/);
     assert.match(previewResponse.headers.get("content-security-policy"), /sandbox allow-same-origin/);
     assert.equal((await fetch(`${previewServer.url}/preview/../../package.json`)).status, 404);
+    assert.equal((await fetch(`${previewServer.url}/enterprise-gallery-manifest.json`)).status, 404);
     assert.equal((await fetch(new URL(projected.manifest.items[0].previewRoute, previewServer.url), { method: "POST" })).status, 405);
 
     const proof = await capturesBrowserRenders({

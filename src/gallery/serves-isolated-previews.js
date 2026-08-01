@@ -44,14 +44,21 @@ export async function servesIsolatedPreviews({
   port = 0,
 } = {}) {
   if (hostname !== "127.0.0.1") throw new Error("The gallery preview server may bind only to 127.0.0.1.");
+  const outputRoot = path.resolve(outputDirectory);
   const previewsRoot = path.resolve(outputDirectory, "previews");
+  const galleryHostPath = path.resolve(outputDirectory, "gallery-host.html");
   const rootStats = await stat(previewsRoot).catch(() => null);
   if (rootStats === null || !rootStats.isDirectory()) throw new Error(`Materialized preview directory does not exist: ${previewsRoot}`);
+  const realOutputRoot = await realpath(outputRoot);
   const realPreviewsRoot = await realpath(previewsRoot);
+  const candidateGalleryHostPath = await realpath(galleryHostPath).catch(() => null);
+  const realGalleryHostPath = candidateGalleryHostPath !== null && isSameOrDescendant(candidateGalleryHostPath, realOutputRoot)
+    ? candidateGalleryHostPath
+    : null;
   const cspPolicy = buildsPreviewCsp(previewPolicy);
 
   const server = http.createServer((request, response) => {
-    handlesRequest({ request, response, realPreviewsRoot, cspPolicy }).catch(() => {
+    handlesRequest({ request, response, realPreviewsRoot, realGalleryHostPath, cspPolicy }).catch(() => {
       if (!response.headersSent) writesSecurityHeaders(response, cspPolicy);
       response.statusCode = 500;
       response.end("Preview server error.");
@@ -82,7 +89,7 @@ export async function servesIsolatedPreviews({
   });
 }
 
-async function handlesRequest({ request, response, realPreviewsRoot, cspPolicy }) {
+async function handlesRequest({ request, response, realPreviewsRoot, realGalleryHostPath, cspPolicy }) {
   writesSecurityHeaders(response, cspPolicy);
   if (request.method !== "GET" && request.method !== "HEAD") {
     response.statusCode = 405;
@@ -97,6 +104,15 @@ async function handlesRequest({ request, response, realPreviewsRoot, cspPolicy }
   } catch {
     response.statusCode = 400;
     response.end("Bad request.");
+    return;
+  }
+  if (decodedPathname === "/" || decodedPathname === "/gallery-host.html") {
+    if (realGalleryHostPath === null) {
+      response.statusCode = 404;
+      response.end("Not found.");
+      return;
+    }
+    await servesFile({ request, response, absolutePath: realGalleryHostPath });
     return;
   }
   if (!decodedPathname.startsWith("/preview/") || decodedPathname.includes("\0") || decodedPathname.includes("\\")) {
@@ -125,14 +141,24 @@ async function handlesRequest({ request, response, realPreviewsRoot, cspPolicy }
     return;
   }
 
+  await servesFile({ request, response, absolutePath: candidateRealPath, fileStats });
+}
+
+async function servesFile({ request, response, absolutePath, fileStats: providedStats }) {
+  const fileStats = providedStats ?? await stat(absolutePath).catch(() => null);
+  if (fileStats === null || !fileStats.isFile()) {
+    response.statusCode = 404;
+    response.end("Not found.");
+    return;
+  }
   response.statusCode = 200;
-  response.setHeader("Content-Type", contentTypeByExtension.get(path.extname(candidateRealPath).toLowerCase()) ?? "application/octet-stream");
+  response.setHeader("Content-Type", contentTypeByExtension.get(path.extname(absolutePath).toLowerCase()) ?? "application/octet-stream");
   response.setHeader("Content-Length", fileStats.size);
   if (request.method === "HEAD") {
     response.end();
     return;
   }
-  const stream = createReadStream(candidateRealPath);
+  const stream = createReadStream(absolutePath);
   stream.on("error", () => response.destroy());
   stream.pipe(response);
 }
