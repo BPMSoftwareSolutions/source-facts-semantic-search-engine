@@ -47,6 +47,8 @@ test("materializes a static page with its stylesheet and never touches the sourc
     ].join(""), "utf8");
     fs.writeFileSync(path.join(workspaceRoot, "app.css"), "body { color: red; }", "utf8");
     const { plan, resolutionContext } = await buildsPlan(workspaceRoot);
+    fs.mkdirSync(path.join(outputDirectory, "previews", "stale-preview"), { recursive: true });
+    fs.writeFileSync(path.join(outputDirectory, "previews", "stale-preview", "index.html"), "stale", "utf8");
 
     const sourceStatBefore = fs.statSync(path.join(workspaceRoot, "index.html"));
     const { emittedFiles } = await materializesStaticPreviews({
@@ -57,6 +59,7 @@ test("materializes a static page with its stylesheet and never touches the sourc
     });
     const sourceStatAfter = fs.statSync(path.join(workspaceRoot, "index.html"));
     assert.equal(sourceStatBefore.mtimeMs, sourceStatAfter.mtimeMs, "the source file must never be modified");
+    assert.equal(fs.existsSync(path.join(outputDirectory, "previews", "stale-preview")), false, "overwrite materialization must remove stale preview routes");
 
     assert.ok(emittedFiles.length >= 2, "expected at least the entry html and the stylesheet to be emitted");
     const entryFile = emittedFiles.find((file) => file.path.endsWith("index.html"));
@@ -66,6 +69,64 @@ test("materializes a static page with its stylesheet and never touches the sourc
     const stylesheetFile = emittedFiles.find((file) => file.path.endsWith("app.css"));
     assert.ok(stylesheetFile, "the local stylesheet must be copied into the preview bundle");
     assert.equal(fs.readFileSync(path.join(outputDirectory, stylesheetFile.path), "utf8"), "body { color: red; }");
+  } finally {
+    fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    fs.rmSync(outputDirectory, { recursive: true, force: true });
+  }
+});
+
+test("materializes and rewrites root-relative stylesheets for browser previews", async () => {
+  const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "materializer-root-relative-"));
+  const outputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "materializer-root-relative-output-"));
+  try {
+    fs.mkdirSync(path.join(workspaceRoot, "public"), { recursive: true });
+    fs.writeFileSync(path.join(workspaceRoot, "public", "login.html"), [
+      '<!doctype html><html><head><link rel="stylesheet" href="/styles.css"></head>',
+      "<body><h1>Student access</h1></body></html>",
+    ].join(""), "utf8");
+    fs.writeFileSync(path.join(workspaceRoot, "public", "styles.css"), "body { color: navy; }", "utf8");
+    const { plan, resolutionContext } = await buildsPlan(workspaceRoot);
+
+    const result = await materializesStaticPreviews({
+      plan,
+      resolutionContext,
+      sourceRootAbsolutePaths: resolutionContext.rootAbsolutePaths,
+      outputDirectory,
+    });
+
+    const entryFile = result.emittedFiles.find((file) => file.path.endsWith("index.html"));
+    const materializedHtml = fs.readFileSync(path.join(outputDirectory, entryFile.path), "utf8");
+    assert.match(materializedHtml, /href="\.\/files\/[0-9a-f]{64}\/styles\.css"/);
+    assert.ok(result.emittedFiles.some((file) => file.path.endsWith("styles.css")));
+  } finally {
+    fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    fs.rmSync(outputDirectory, { recursive: true, force: true });
+  }
+});
+
+test("materializes a generated page with its nearest ancestor stylesheet", async () => {
+  const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "materializer-ancestor-style-"));
+  const outputDirectory = fs.mkdtempSync(path.join(os.tmpdir(), "materializer-ancestor-style-output-"));
+  try {
+    fs.mkdirSync(path.join(workspaceRoot, "output", "initial-examples"), { recursive: true });
+    fs.writeFileSync(path.join(workspaceRoot, "output", "initial-examples", "login.html"), [
+      '<!doctype html><html><head><link rel="stylesheet" href="style.css"></head>',
+      "<body><h1>Welcome back</h1></body></html>",
+    ].join(""), "utf8");
+    fs.writeFileSync(path.join(workspaceRoot, "output", "style.css"), "body { color: teal; }", "utf8");
+    const { plan, resolutionContext } = await buildsPlan(workspaceRoot);
+
+    const result = await materializesStaticPreviews({
+      plan,
+      resolutionContext,
+      sourceRootAbsolutePaths: resolutionContext.rootAbsolutePaths,
+      outputDirectory,
+    });
+
+    const entryFile = result.emittedFiles.find((file) => file.path.endsWith("index.html"));
+    const materializedHtml = fs.readFileSync(path.join(outputDirectory, entryFile.path), "utf8");
+    assert.match(materializedHtml, /href="\.\/files\/[0-9a-f]{64}\/style\.css"/);
+    assert.ok(result.emittedFiles.some((file) => file.path.endsWith("style.css")));
   } finally {
     fs.rmSync(workspaceRoot, { recursive: true, force: true });
     fs.rmSync(outputDirectory, { recursive: true, force: true });

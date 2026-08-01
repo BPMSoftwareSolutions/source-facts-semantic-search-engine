@@ -52,6 +52,9 @@ test("serves only materialized previews with restrictive headers and captures an
     assert.equal((await fetch(`${previewServer.url}/enterprise-gallery-manifest.json`)).status, 404);
     assert.equal((await fetch(new URL(projected.manifest.items[0].previewRoute, previewServer.url), { method: "POST" })).status, 405);
 
+    fs.mkdirSync(path.join(outputDirectory, "browser-proof"), { recursive: true });
+    fs.writeFileSync(path.join(outputDirectory, "browser-proof", "stale.receipt.json"), "{}", "utf8");
+
     const proof = await capturesBrowserRenders({
       manifest: projected.manifest,
       plan: projected.plan,
@@ -75,6 +78,7 @@ test("serves only materialized previews with restrictive headers and captures an
     assert.match(receipt.screenshotDigest, /^sha256:[0-9a-f]{64}$/);
     assert.ok(proof.emittedFiles.some((file) => file.path.endsWith(".png")));
     assert.ok(proof.emittedFiles.some((file) => file.path.endsWith(".aria.yml")));
+    assert.equal(fs.existsSync(path.join(outputDirectory, "browser-proof", "stale.receipt.json")), false);
   } finally {
     if (previewServer !== undefined) await previewServer.close();
     fs.rmSync(workspaceRoot, { recursive: true, force: true });

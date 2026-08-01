@@ -110,3 +110,28 @@ test("indexId is stable across repeated projections of the same workspace", asyn
     fs.rmSync(workspaceRoot, { recursive: true, force: true });
   }
 });
+
+test("resolves browser-local bare, root-relative, and generated ancestor stylesheet references", async () => {
+  const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "web-project-browser-paths-"));
+  try {
+    fs.mkdirSync(path.join(workspaceRoot, "public"), { recursive: true });
+    fs.mkdirSync(path.join(workspaceRoot, "generated", "initial-examples"), { recursive: true });
+    fs.writeFileSync(path.join(workspaceRoot, "public", "login.html"), '<link rel="stylesheet" href="/styles.css">', "utf8");
+    fs.writeFileSync(path.join(workspaceRoot, "public", "styles.css"), "body { color: navy; }", "utf8");
+    fs.writeFileSync(path.join(workspaceRoot, "generated", "initial-examples", "login.html"), '<link rel="stylesheet" href="style.css">', "utf8");
+    fs.writeFileSync(path.join(workspaceRoot, "generated", "style.css"), "body { color: teal; }", "utf8");
+
+    const index = await projectsWebSurfaceIndex({ policy: basePolicy(workspaceRoot) });
+    const rootRelative = index.webRelationships.find((relationship) => relationship.candidateTarget === "/styles.css");
+    const ancestorRecovered = index.webRelationships.find((relationship) => relationship.candidateTarget === "style.css");
+
+    assert.equal(rootRelative.resolutionDisposition, "resolved-local");
+    assert.equal(rootRelative.resolutionBasis, "inferred-root-relative-web-root");
+    assert.ok(rootRelative.resolvedPathId);
+    assert.equal(ancestorRecovered.resolutionDisposition, "resolved-local");
+    assert.equal(ancestorRecovered.resolutionBasis, "inferred-nearest-ancestor-stylesheet");
+    assert.ok(ancestorRecovered.resolvedPathId);
+  } finally {
+    fs.rmSync(workspaceRoot, { recursive: true, force: true });
+  }
+});

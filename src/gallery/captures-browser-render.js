@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { chromium } from "playwright";
@@ -17,6 +17,7 @@ export async function capturesBrowserRenders({
   const previewItems = manifest.items.filter((item) => item.previewRoute !== null);
   const planItemByEntryPathId = new Map(plan.items.map((item) => [item.entryPathId, item]));
   const proofDirectory = path.join(path.resolve(outputDirectory), "browser-proof");
+  await rm(proofDirectory, { recursive: true, force: true });
   await mkdir(proofDirectory, { recursive: true });
   if (previewItems.length === 0) return Object.freeze({ receipts: Object.freeze([]), emittedFiles: Object.freeze([]), browserAvailable: true });
 

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, realpath, writeFile } from "node:fs/promises";
+import { mkdir, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { resolvesLocalReferenceTarget } from "../web/relationship-resolver.js";
 
 const materializableDispositions = Object.freeze(new Set(["STATIC_REPRODUCTION_READY", "PARTIAL_STATIC_REPRODUCTION"]));
 const copiedRoles = Object.freeze(new Set(["stylesheet", "asset"]));
@@ -15,6 +16,7 @@ export async function materializesStaticPreviews({
   const outputRoot = path.resolve(outputDirectory);
   const previewsRoot = path.join(outputRoot, "previews");
   await requiresOutsideSourceRoots(previewsRoot, sourceRootAbsolutePaths);
+  await rm(previewsRoot, { recursive: true, force: true });
 
   const emittedFiles = [];
   const transformationsByItem = [];
@@ -160,7 +162,10 @@ function stripsExecutableHtml(html) {
 
 function rewritesHtmlReferences(html, context) {
   return html.replace(/\b(href|src)\s*=\s*(["'])([^"']*)\2/gi, (match, attribute, quote, value) => {
-    const rewritten = resolvesRewrittenReference(value, context);
+    const rewritten = resolvesRewrittenReference(value, {
+      ...context,
+      allowAncestorFallback: attribute.toLowerCase() === "href" && /\.css(?:[?#]|$)/i.test(value),
+    });
     if (rewritten === null) return match;
     context.transformations.push(Object.freeze({ kind: "link-rewritten", detail: `${attribute} rewritten to admitted preview member` }));
     return `${attribute}=${quote}${rewritten}${quote}`;
@@ -176,16 +181,20 @@ function rewritesCssReferences(css, context) {
   });
 }
 
-function resolvesRewrittenReference(value, { sourceAbsolutePath, outputAbsolutePath, outputPathByPathId, resolutionContext }) {
+function resolvesRewrittenReference(value, { sourceAbsolutePath, outputAbsolutePath, outputPathByPathId, resolutionContext, allowAncestorFallback = false }) {
   const trimmed = value.trim();
-  if (trimmed.length === 0 || trimmed.startsWith("#") || trimmed.startsWith("/") || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(trimmed)) return null;
+  if (trimmed.length === 0 || trimmed.startsWith("#") || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(trimmed)) return null;
   const suffixIndex = trimmed.search(/[?#]/u);
   const pathPart = suffixIndex === -1 ? trimmed : trimmed.slice(0, suffixIndex);
   const suffix = suffixIndex === -1 ? "" : trimmed.slice(suffixIndex);
-  const candidateAbsolutePath = path.resolve(path.dirname(sourceAbsolutePath), pathPart);
-  const inventoryEntry = resolutionContext.pathIdByAbsolutePath.get(candidateAbsolutePath);
-  if (inventoryEntry === undefined) return null;
-  const targetOutputPath = outputPathByPathId.get(inventoryEntry.pathId);
+  const resolution = resolvesLocalReferenceTarget({
+    candidateTarget: pathPart,
+    fromAbsoluteDirectory: path.dirname(sourceAbsolutePath),
+    context: resolutionContext,
+    allowAncestorFallback,
+  });
+  if (resolution.resolvedPathId === null) return null;
+  const targetOutputPath = outputPathByPathId.get(resolution.resolvedPathId);
   if (targetOutputPath === undefined) return null;
   let relativeUrl = path.relative(path.dirname(outputAbsolutePath), targetOutputPath).replaceAll("\\", "/");
   if (!relativeUrl.startsWith(".")) relativeUrl = `./${relativeUrl}`;

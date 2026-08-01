@@ -151,15 +151,15 @@ On 2026-08-01, the included enterprise policy produced:
 - 1,643 projected HTML documents and page classifications;
 - 181,939 HTML element facts;
 - 238,512 CSS rule facts and 655,997 CSS declaration facts;
-- 62,564 web relationships;
+- 64,052 web relationships;
 - 13 classifier-supported login surfaces at support score `0.9`;
 - 13 of 13 query rows retained by the sign-in gallery;
-- 2 static-ready, 4 partial-static, and 7 script-required gallery dispositions; and
+- 5 static-ready and 8 script-required gallery dispositions; and
 - a compatible four-authority candidate with 8 satisfied checks and 0 failures.
 
-The composed preview was observed in the in-app browser with two input controls, one inert primary action, projected messaging and theme, and zero script elements.
+All 5 admitted sign-in previews were exercised in Chromium through `web gallery prove`; all 5 rendered, all browser assertions passed, and all 3 external App Lab stylesheets loaded from rewritten admitted-bundle URLs without console errors. The 2 inline-styled CSS migration documents rendered with the expected form-action CSP limitation. The composed preview was observed in the in-app browser with two input controls, one inert primary action, projected messaging and theme, and zero script elements.
 
-The complete automated suite passes 54 of 54 tests, and both source-facts and web-surface smoke proofs remain green.
+The complete automated suite passes 57 of 57 tests, and both source-facts and web-surface smoke proofs remain green.
 
 ## Other commands
 
