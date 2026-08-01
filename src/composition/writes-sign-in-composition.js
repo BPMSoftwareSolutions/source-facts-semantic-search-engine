@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { validatesEnterpriseGalleryManifest, validatesSurfacePreviewPolicy } from "../gallery/validates-gallery-artifacts.js";
@@ -56,6 +56,7 @@ export async function writesSignInComposition({
   await validatesCompositionCompatibilityReport(compatibilityReport);
 
   const outputRoot = path.resolve(outputDirectory);
+  await clearsManagedCompositionArtifacts(outputRoot);
   await mkdir(outputRoot, { recursive: true });
   const emittedFiles = [];
   emittedFiles.push(await writesArtifact(outputRoot, compositionArtifactNames.request, serializesJson(request)));
@@ -111,6 +112,21 @@ export async function writesSignInComposition({
     receipt,
     emittedFiles: Object.freeze(emittedFiles),
   });
+}
+
+async function clearsManagedCompositionArtifacts(outputRoot) {
+  const managedPaths = [
+    compositionArtifactNames.request,
+    compositionArtifactNames.compatibilityReport,
+    compositionArtifactNames.contract,
+    compositionArtifactNames.designDocument,
+    compositionArtifactNames.candidateAst,
+    compositionArtifactNames.preview,
+    compositionArtifactNames.host,
+    compositionArtifactNames.policy,
+    compositionArtifactNames.receipt,
+  ];
+  await Promise.all(managedPaths.map((relativePath) => rm(path.join(outputRoot, ...relativePath.split("/")), { recursive: true, force: true })));
 }
 
 async function calculatesProjectorAuthorityHash() {

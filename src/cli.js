@@ -2,6 +2,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 import { projectSourceFactsWorkspace } from "./project.js";
 import { executeRelationalQuery } from "./query.js";
 import { validatesSourceFactIndex } from "./validate-index.js";
@@ -25,6 +26,9 @@ import {
   validatesSurfacePreviewPolicy,
 } from "./gallery/validates-gallery-artifacts.js";
 import { compositionArtifactNames, writesSignInComposition } from "./composition/writes-sign-in-composition.js";
+import { northStarArtifactNames, runsSignInNorthStar } from "./composition/runs-sign-in-north-star.js";
+
+const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -85,10 +89,58 @@ async function runWeb(rawArgs) {
     await runWebGallery(rawArgs.slice(1));
   } else if (subcommand === "compose") {
     await runWebCompose(rawArgs.slice(1));
+  } else if (subcommand === "north-star") {
+    await runWebNorthStar(rawArgs.slice(1));
   } else {
     writeUsage(process.stderr);
     process.exitCode = 1;
   }
+}
+
+async function runWebNorthStar(rawArgs) {
+  const subcommand = rawArgs[0];
+  if (subcommand !== "sign-in") {
+    writeUsage(process.stderr);
+    process.exitCode = 1;
+    return;
+  }
+  const { flags } = parseArgs(rawArgs.slice(1));
+  const { index, inventory } = await readsGalleryInputs(flags);
+  const requestPath = path.resolve(flags.request ?? path.join(repositoryRoot, "compositions", "enterprise-learning-sign-in.request.v1.json"));
+  const requestTemplate = await readsJsonFile(requestPath);
+  const requestInput = {
+    ...requestTemplate,
+    ...(typeof flags.subject === "string" ? { subject: flags.subject } : {}),
+    ...(typeof flags.purpose === "string" ? { purpose: flags.purpose } : {}),
+    ...(typeof flags.audience === "string" ? { audience: flags.audience } : {}),
+  };
+  const outputDirectory = path.resolve(flags.output ?? flags.dir ?? path.join(process.cwd(), "sign-in-north-star"));
+  const result = await runsSignInNorthStar({
+    index,
+    inventory,
+    requestInput,
+    outputDirectory,
+    selectionOverrides: {
+      ...(typeof flags.layout === "string" ? { layout: flags.layout } : {}),
+      ...(typeof flags.authenticationEntry === "string" ? { "authentication-entry": flags.authenticationEntry } : {}),
+      ...(typeof flags.messaging === "string" ? { messaging: flags.messaging } : {}),
+      ...(typeof flags.theme === "string" ? { theme: flags.theme } : {}),
+    },
+    ...(typeof flags.authorities === "string" ? { authoritiesDirectory: path.resolve(flags.authorities) } : {}),
+    previewPolicyId: flags.policy ?? requestInput.previewPolicyId,
+    prove: flags.prove === true,
+  });
+  process.stdout.write(`${path.join(outputDirectory, northStarArtifactNames.report)}\n`);
+  process.stdout.write(`${path.join(outputDirectory, northStarArtifactNames.authorityChoices)}\n`);
+  process.stdout.write(`${path.join(result.galleryOutputDirectory, galleryArtifactNames.host)}\n`);
+  process.stdout.write(`${path.join(result.compositionOutputDirectory, compositionArtifactNames.compatibilityReport)}\n`);
+  if (result.composition.contract !== null) {
+    process.stdout.write(`${path.join(result.compositionOutputDirectory, compositionArtifactNames.designDocument)}\n`);
+    process.stdout.write(`${path.join(result.compositionOutputDirectory, compositionArtifactNames.candidateAst)}\n`);
+    process.stdout.write(`${path.join(result.compositionOutputDirectory, compositionArtifactNames.preview)}\n`);
+  }
+  if (flags.summary === true) process.stdout.write(formatsNorthStarSummary(result));
+  if (result.composition.compatibilityReport.disposition !== "COMPATIBLE") process.exitCode = 2;
 }
 
 async function runWebCompose(rawArgs) {
@@ -380,6 +432,13 @@ function parseArgs(rawArgs) {
         case "--request":
         case "--manifest":
         case "--authorities":
+        case "--layout":
+        case "--authentication-entry":
+        case "--messaging":
+        case "--theme":
+        case "--subject":
+        case "--purpose":
+        case "--audience":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
@@ -388,6 +447,7 @@ function parseArgs(rawArgs) {
     switch (current) {
       case "--pretty":
       case "--summary":
+      case "--prove":
         flags[current.slice(2)] = true;
         break;
       default:
@@ -431,6 +491,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web gallery serve --dir <gallery-output-dir>\n`);
   stream.write(`  source-facts-se web gallery prove --dir <gallery-output-dir>\n`);
   stream.write(`  source-facts-se web compose sign-in --request <file> --manifest <gallery-manifest> [--authorities <dir>] [--output <dir>] [--summary]\n`);
+  stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
   stream.write(`  source-facts-se project --workspace C:/lab/repos/contract-driven-artifact-governance-engine --pretty\n`);
@@ -440,6 +501,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web query --index ./web-surface-index.json \"SELECT familyId, entryRelativePath FROM webFamilies\"\n`);
   stream.write(`  source-facts-se web gallery project --index ./web-surface-index.json --inventory ./web-surface.inventory.json --query enterprise-pages --output ./enterprise-gallery --summary\n`);
   stream.write(`  source-facts-se web compose sign-in --request ./compositions/enterprise-sign-in.request.v1.json --manifest ./sign-in-gallery/enterprise-gallery-manifest.json --output ./sign-in-composition --summary\n`);
+  stream.write(`  source-facts-se web north-star sign-in --index ./web-surface-index.json --inventory ./web-surface.inventory.json --output ./sign-in-north-star --prove --summary\n`);
 }
 
 function formatsGallerySummary(selection, plan) {
@@ -450,6 +512,20 @@ function formatsGallerySummary(selection, plan) {
     `Selected: ${selection.selectedCount}`,
     `Rejected: ${selection.rejectedCount}`,
     ...[...byDisposition.entries()].map(([disposition, count]) => `  ${disposition}: ${count}`),
+  ];
+  return `${lines.join("\n")}\n`;
+}
+
+function formatsNorthStarSummary(result) {
+  const proof = result.report.gallery.proof;
+  const lines = [
+    `North star: ${result.report.disposition}`,
+    `Gallery: ${result.report.gallery.rowCount} sign-in surface(s); ${result.report.gallery.selectedCount} selected; ${result.report.gallery.rejectedCount} rejected`,
+    ...result.report.selectedAuthorities.map((authority) => `  ${authority.authorityKind}: ${authority.authorityId} <- ${authority.sourceRelativePath}`),
+    `Compatibility: ${result.report.compatibility.disposition}; ${result.report.compatibility.satisfiedCount} satisfied; ${result.report.compatibility.failedCount} failed`,
+    ...(proof === null ? [] : [`Playwright: ${proof.renderedCount}/${proof.receiptCount} rendered; ${proof.blockedCount} blocked`]),
+    `Gallery serve: ${result.report.serveCommands.gallery}`,
+    ...(result.report.serveCommands.candidate === null ? [] : [`Candidate serve: ${result.report.serveCommands.candidate}`]),
   ];
   return `${lines.join("\n")}\n`;
 }

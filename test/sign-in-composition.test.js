@@ -118,6 +118,52 @@ test("fails closed when reviewed authority evidence is not present in the select
   }
 });
 
+test("an incompatible overwrite removes every stale runnable candidate artifact", async () => {
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "sign-in-stale-candidate-"));
+  try {
+    const authoritiesDirectory = path.join(workspace, "authorities");
+    const outputDirectory = path.join(workspace, "output");
+    fs.mkdirSync(authoritiesDirectory);
+    const authorities = buildsAuthorities();
+    for (const authority of authorities) {
+      fs.writeFileSync(path.join(authoritiesDirectory, `${authority.authorityId}.authority.v1.json`), JSON.stringify(authority), "utf8");
+    }
+    const first = await writesSignInComposition({
+      requestInput: buildsRequest(),
+      manifest: buildsManifest(),
+      outputDirectory,
+      authoritiesDirectory,
+      previewPolicy: buildsPreviewPolicy(),
+    });
+    assert.equal(first.compatibilityReport.disposition, "COMPATIBLE");
+    assert.ok(fs.existsSync(path.join(outputDirectory, "previews", "composed-sign-in", "index.html")));
+
+    const incompatibleLayout = { ...authorities[0], requires: [...authorities[0].requires, "missing.port"] };
+    fs.writeFileSync(path.join(authoritiesDirectory, `${incompatibleLayout.authorityId}.authority.v1.json`), JSON.stringify(incompatibleLayout), "utf8");
+    const second = await writesSignInComposition({
+      requestInput: buildsRequest(),
+      manifest: buildsManifest(),
+      outputDirectory,
+      authoritiesDirectory,
+      previewPolicy: buildsPreviewPolicy(),
+    });
+
+    assert.equal(second.compatibilityReport.disposition, "INCOMPATIBLE");
+    for (const stalePath of [
+      "candidate-composition-contract.json",
+      "projected-design-document.md",
+      "candidate.ast.txt",
+      "gallery-host.html",
+      "composition-projection-receipt.json",
+      path.join("previews", "composed-sign-in", "index.html"),
+    ]) {
+      assert.equal(fs.existsSync(path.join(outputDirectory, stalePath)), false, `${stalePath} must not survive an incompatible overwrite`);
+    }
+  } finally {
+    fs.rmSync(workspace, { recursive: true, force: true });
+  }
+});
+
 function buildsRequest() {
   return {
     requestType: "sign-in-composition-request.v1",

@@ -1308,7 +1308,7 @@ The added materialized boundary consists of:
 - reviewed candidate declarations under [`composition-authorities/`](../composition-authorities/) for layout, authentication entry, messaging, and theme;
 - strict schemas for composition authority, request, compatibility report, candidate contract, and projection receipt under [`contracts/`](../contracts/);
 - fail-closed compatibility and deterministic contract/document/AST/preview projection in [`src/composition/`](../src/composition/); and
-- `web compose sign-in` routing in [`src/cli.js`](../src/cli.js).
+- `web compose sign-in` routing and the one-command `web north-star sign-in` operator path in [`src/cli.js`](../src/cli.js).
 
 The compatibility evaluator requires one selected authority per kind, reviewed or promoted status, a source-addressable binding to the active gallery manifest, complete required/provided ports, no declared authority conflict, and complete safe renderer bindings. An incompatible request writes its request and report but cannot emit a contract or preview.
 
@@ -1316,8 +1316,10 @@ The composed HTML is a governed static simulation. It contains usable local inpu
 
 ### Enterprise-scale proof
 
-The reviewed policy inventoried 300,547 paths and admitted 1,643 HTML entry candidates. Projection produced 1,643 HTML documents and classifications, 181,939 HTML element facts, 238,512 CSS rules, 655,997 CSS declarations, and 62,564 relationships. That volume exposed and fixed two scale boundaries: monolithic JSON serialization and irrelevant-collection hashing. Large top-level indexes now stream deterministically to disk, read incrementally, and web SQL requests include only named collections.
+The reviewed policy inventoried 300,547 paths and admitted 1,643 HTML entry candidates. Projection produced 1,643 HTML documents and classifications, 181,939 HTML element facts, 238,512 CSS rules, 655,997 CSS declarations, and 64,052 relationships. That volume exposed and fixed two scale boundaries: monolithic JSON serialization and irrelevant-collection hashing. Large top-level indexes now stream deterministically to disk, read incrementally, and web SQL requests include only named collections.
 
-The registered sign-in query returned 13 classifier-supported login surfaces at support score `0.9`. Gallery projection retained all 13 rows with zero rejection: two static-ready, four partial-static, and seven script-required. The example four-authority request produced a compatibility report with eight satisfied checks and zero failures, a candidate contract, projected design document, candidate AST, deterministic receipt, and a script-free browser-observed preview.
+The registered sign-in query returned 13 classifier-supported login surfaces at support score `0.9`. Gallery projection retained all 13 rows with zero rejection: five static-ready and eight script-required. Playwright rendered all five admitted previews with zero blocked receipts. The example four-authority request produced a compatibility report with eight satisfied checks and zero failures, a candidate contract, projected design document, candidate AST, deterministic receipt, and a script-free browser-observed preview.
+
+The operator no longer has to invoke and correlate every stage manually. `web north-star sign-in` accepts the frozen index and inventory, an optional reviewed request, and optional per-kind authority IDs or source-relative gallery paths. One invocation writes an authority-choice catalog, executable gallery, browser proof, compatibility report, candidate composition, projected document, candidate AST, governed preview, and a `sign-in-north-star-report.v1` ledger covering every stage. Incompatible overwrites remove prior candidate artifacts before returning, so an older runnable preview cannot survive a failed compatibility gate.
 
 This is not general constructive composition. The implemented subject is deliberately limited to the four-authority sign-in contract and the static renderer. Authorized source-script execution, effect mocks, arbitrary role catalogs, general composition planning, and promotion workflow remain future G6 work.

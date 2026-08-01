@@ -61,6 +61,8 @@ The registered [`sign-in-pages`](gallery-queries/sign-in-pages.query.v1.json) au
 
 ### Governed sign-in composition
 
+`web north-star sign-in` is the one-command operator path. It projects the `sign-in-pages` gallery, resolves reviewed authority selections, evaluates compatibility, emits the candidate contract/design document/AST/preview, and optionally runs Playwright over every admitted gallery preview.
+
 `web compose sign-in` accepts four explicit selections:
 
 - layout authority;
@@ -96,6 +98,38 @@ composition-projection-receipt.json
 The initial reviewed authority registry lives in [`composition-authorities/`](composition-authorities/). The runnable request is [`compositions/enterprise-learning-sign-in.request.v1.json`](compositions/enterprise-learning-sign-in.request.v1.json).
 
 ## Run the north-star workflow
+
+### Fast path: one command
+
+After inventory and index projection, the entire north-star journey is one command. The included reviewed request supplies the default four selections:
+
+```powershell
+node src/cli.js web north-star sign-in `
+  --index C:\lab\temp\web-know-enterprise\web-surface-index.json `
+  --inventory C:\lab\temp\web-know-enterprise\web-surface.inventory.json `
+  --output C:\lab\temp\web-know-enterprise\north-star-sign-in `
+  --prove `
+  --summary
+```
+
+Selections can be overridden with either an authority ID or the source-relative path visible in the gallery:
+
+```powershell
+node src/cli.js web north-star sign-in `
+  --index C:\lab\temp\web-know-enterprise\web-surface-index.json `
+  --inventory C:\lab\temp\web-know-enterprise\web-surface.inventory.json `
+  --layout "app-lab/experiment/lab/sketch2html/output-auth-split-side.html" `
+  --authentication-entry "app-lab/experiment/lab/sketch2html/output.html" `
+  --messaging "youtube-presentations/ai-training-business/public/login.html" `
+  --theme "loga/output/raw-check/login-form.html" `
+  --output C:\lab\temp\web-know-enterprise\north-star-sign-in `
+  --prove `
+  --summary
+```
+
+The output root contains `authority-choices.json`, a stage-by-stage `north-star-report.json`, the executable gallery under `gallery/`, and the compatibility report, contract, design document, AST, receipt, and governed candidate under `composition/`. The summary prints the exact commands needed to serve either experience.
+
+The lower-level commands remain available when an operator needs to pause, inspect, or substitute evidence at a particular boundary.
 
 ### 1. Inventory and project the enterprise scope
 
@@ -159,7 +193,7 @@ On 2026-08-01, the included enterprise policy produced:
 
 All 5 admitted sign-in previews were exercised in Chromium through `web gallery prove`; all 5 rendered, all browser assertions passed, and all 3 external App Lab stylesheets loaded from rewritten admitted-bundle URLs without console errors. The 2 inline-styled CSS migration documents rendered with the expected form-action CSP limitation. The composed preview was observed in the in-app browser with two input controls, one inert primary action, projected messaging and theme, and zero script elements.
 
-The complete automated suite passes 57 of 57 tests, and both source-facts and web-surface smoke proofs remain green.
+The complete automated suite passes 59 of 59 tests, and both source-facts and web-surface smoke proofs remain green.
 
 ## Other commands
 
@@ -169,6 +203,7 @@ npm run query -- --index <file> "<sql>" [--pretty]
 node src/cli.js web query --index <web-surface-index.json> "<sql>" [--pretty]
 node src/cli.js web gallery plan --index <file> --inventory <file> --query <id> --output <dir>
 node src/cli.js web gallery prove --dir <gallery-output-dir>
+node src/cli.js web north-star sign-in --index <file> --inventory <file> --output <dir> [--prove]
 node scripts/run-landing-page-session.mjs
 npm test
 npm run prove:smoke
