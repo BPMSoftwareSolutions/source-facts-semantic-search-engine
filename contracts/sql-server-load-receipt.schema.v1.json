@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SQL Server Load Receipt",
+  "type": "object",
+  "required": ["receiptType", "indexId", "disposition", "alreadyLoaded", "counts", "steps", "totalElapsedMs"],
+  "additionalProperties": false,
+  "properties": {
+    "receiptType": { "const": "sql-server-load-receipt.v1" },
+    "indexId": { "type": "string", "minLength": 1 },
+    "disposition": { "enum": ["LOAD_ADMITTED", "LOAD_ALREADY_ADMITTED"] },
+    "alreadyLoaded": { "type": "boolean" },
+    "counts": {
+      "type": "object",
+      "required": ["files", "symbols", "relationships", "dataflows", "sourceReferences", "documents", "governanceRules", "bodyMechanics"],
+      "additionalProperties": false,
+      "properties": {
+        "files": { "type": "integer", "minimum": 0 },
+        "symbols": { "type": "integer", "minimum": 0 },
+        "relationships": { "type": "integer", "minimum": 0 },
+        "dataflows": { "type": "integer", "minimum": 0 },
+        "sourceReferences": { "type": "integer", "minimum": 0 },
+        "documents": { "type": "integer", "minimum": 0 },
+        "governanceRules": { "type": "integer", "minimum": 0 },
+        "bodyMechanics": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["table", "rows", "elapsedMs"],
+        "additionalProperties": false,
+        "properties": {
+          "table": { "type": "string", "minLength": 1 },
+          "rows": { "type": "integer", "minimum": 0 },
+          "elapsedMs": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "totalElapsedMs": { "type": "integer", "minimum": 0 }
+  }
+}

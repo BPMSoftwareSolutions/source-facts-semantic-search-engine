@@ -193,13 +193,45 @@ On 2026-08-01, the included enterprise policy produced:
 
 All 5 admitted sign-in previews were exercised in Chromium through `web gallery prove`; all 5 rendered, all browser assertions passed, and all 3 external App Lab stylesheets loaded from rewritten admitted-bundle URLs without console errors. The 2 inline-styled CSS migration documents rendered with the expected form-action CSP limitation. The composed preview was observed in the in-app browser with two input controls, one inert primary action, projected messaging and theme, and zero script elements.
 
-The complete automated suite passes 59 of 59 tests, and both source-facts and web-surface smoke proofs remain green.
+The complete automated suite passes 63 of 63 tests (the SQL Server load test skips gracefully on machines without the connection configured), and both source-facts and web-surface smoke proofs remain green.
+
+## Self-analysis
+
+`project` and `query` are workspace-agnostic: pointing `--workspace` at this repository's own `src/` directory projects the engine's own symbols, relationships, dataflow, and `bodyMechanics` observations, which can then be queried like any other codebase.
+
+```powershell
+node src/cli.js project --workspace ./src --workspace-id self --output ./self-index.json --summary
+node src/cli.js query --index ./self-index.json "SELECT mechanic, COUNT(*) AS count FROM bodyMechanics GROUP BY mechanic ORDER BY count DESC" --pretty
+```
+
+[`source-facts-query-console/`](source-facts-query-console/) is a small browser UI over the same doorway. `console serve` starts a loopback-only HTTP server (matching the restricted-host pattern used by `web gallery serve`) that executes live SQL through `executeRelationalQuery` and resolves exact source snippets from disk:
+
+```powershell
+node src/cli.js console serve --index ./self-index.json --workspace ./src
+```
+
+## Loading facts into SQL Server
+
+Past a certain point, a custom query runtime and UI are the wrong home for ad hoc analysis — SQL Server is. `load-sqlserver` projects nothing itself; it takes an already-produced `source-fact-index.v1` and loads it table-by-table into a declared SQL Server database (`sql/`), so SSMS, saved views, and ordinary joins become the query surface instead of a bespoke language. Each table is its own step, its own committed statement, and its own timed progress line — not one all-or-nothing transaction across tens of thousands of rows. Loading is idempotent: an index whose content hasn't changed is a no-op (`LOAD_ALREADY_ADMITTED`), never a duplicate insert.
+
+Both a local trusted (Windows-integrated) connection and Azure SQL (SQL authentication via an ADO.NET connection string held in an environment variable) are supported; the password never appears on the command line or in a log.
+
+```powershell
+node src/cli.js load-sqlserver --index ./self-index.json --connection-env source-facts-semantic-search-engine --summary
+# or, in one step from a workspace:
+node src/cli.js ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary
+```
+
+`reporting.*` views (`ForbiddenExecutableMechanic`, `FunctionMechanicSummary`, `UnresolvedRelationship`, `UngovernedBody`) give SSMS ready-made starting points over the loaded facts; see [`sql/`](sql/) for the full schema and loader procedures.
 
 ## Other commands
 
 ```text
 npm run project -- --workspace <path> [--workspace-id <id>] [--output <file>] [--pretty] [--summary]
 npm run query -- --index <file> "<sql>" [--pretty]
+node src/cli.js console serve --index <source-fact-index.json> [--workspace <dir>] [--port <n>]
+node src/cli.js load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js ingest --workspace <dir> [--workspace-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js web query --index <web-surface-index.json> "<sql>" [--pretty]
 node src/cli.js web gallery plan --index <file> --inventory <file> --query <id> --output <dir>
 node src/cli.js web gallery prove --dir <gallery-output-dir>

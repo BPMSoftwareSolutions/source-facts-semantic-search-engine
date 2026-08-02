@@ -27,6 +27,9 @@ import {
 } from "./gallery/validates-gallery-artifacts.js";
 import { compositionArtifactNames, writesSignInComposition } from "./composition/writes-sign-in-composition.js";
 import { northStarArtifactNames, runsSignInNorthStar } from "./composition/runs-sign-in-north-star.js";
+import { servesQueryConsole } from "./console/serves-query-console.js";
+import { loadsSourceFactIndexIntoSqlServer } from "./sqlserver/load-sqlserver.js";
+import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./sqlserver/resolves-sql-connection.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -39,6 +42,12 @@ if (command === "project") {
   await runQuery(args.slice(1));
 } else if (command === "web") {
   await runWeb(args.slice(1));
+} else if (command === "console") {
+  await runConsole(args.slice(1));
+} else if (command === "load-sqlserver") {
+  await runLoadSqlServer(args.slice(1));
+} else if (command === "ingest") {
+  await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
   writeUsage(process.stdout);
 } else {
@@ -75,6 +84,87 @@ async function runQuery(rawArgs) {
   const result = await executeRelationalQuery(index, queryText);
   const pretty = flags.pretty === true;
   process.stdout.write(pretty ? JSON.stringify(result, null, 2) : JSON.stringify(result));
+}
+
+function resolvesSqlServerConnection(flags) {
+  if (typeof flags.connectionEnv === "string") return resolvesSqlAuthConnectionFromEnv(flags.connectionEnv);
+  if (typeof flags.server === "string") return resolvesTrustedConnection({ server: flags.server, database: flags.database ?? "source-facts-semantic-search-engine" });
+  throw new Error("Either --connection-env <ENV_VAR> (Azure/SQL auth) or --server <host> [--database <name>] (trusted connection) is required.");
+}
+
+async function runLoadSqlServer(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const index = await readsJsonFile(indexPath);
+  const connection = resolvesSqlServerConnection(flags);
+  const receipt = await loadsSourceFactIndexIntoSqlServer({
+    index,
+    connection,
+    onStep: (step) => process.stdout.write(`  ${step.table}: ${step.rows} rows in ${step.elapsedMs}ms${step.alreadyLoaded ? " (already loaded)" : ""}\n`),
+  });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) process.stdout.write(formatsSqlServerLoadSummary(receipt));
+}
+
+async function runIngest(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const workspaceRoot = path.resolve(flags.workspace ?? process.cwd());
+  const workspaceId = flags.workspaceId ?? path.basename(workspaceRoot);
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "source-fact-index.json"));
+
+  const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId, languageId: "typescript" });
+  await validatesSourceFactIndex(index);
+  await writesJsonFile(outputPath, index, { pretty: flags.pretty === true });
+  process.stdout.write(`${outputPath}\n`);
+  if (flags.summary === true) process.stdout.write(formatSummary(index));
+
+  const connection = resolvesSqlServerConnection(flags);
+  const receipt = await loadsSourceFactIndexIntoSqlServer({
+    index,
+    connection,
+    onStep: (step) => process.stdout.write(`  ${step.table}: ${step.rows} rows in ${step.elapsedMs}ms${step.alreadyLoaded ? " (already loaded)" : ""}\n`),
+  });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) process.stdout.write(formatsSqlServerLoadSummary(receipt));
+}
+
+function formatsSqlServerLoadSummary(receipt) {
+  const lines = [
+    `Index ID: ${receipt.indexId}`,
+    `Already loaded: ${receipt.alreadyLoaded}`,
+    `Files: ${receipt.counts.files}`,
+    `Symbols: ${receipt.counts.symbols}`,
+    `Relationships: ${receipt.counts.relationships}`,
+    `Dataflows: ${receipt.counts.dataflows}`,
+    `Source references: ${receipt.counts.sourceReferences}`,
+    `Body mechanics: ${receipt.counts.bodyMechanics}`,
+    `Total elapsed: ${receipt.totalElapsedMs}ms`,
+  ];
+  return `${lines.join("\n")}\n`;
+}
+
+async function runConsole(rawArgs) {
+  const subcommand = rawArgs[0];
+  if (subcommand === "serve") {
+    await runConsoleServe(rawArgs.slice(1));
+  } else {
+    writeUsage(process.stderr);
+    process.exitCode = 1;
+  }
+}
+
+async function runConsoleServe(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const index = await readsJsonFile(indexPath);
+  const workspaceRoot = typeof flags.workspace === "string"
+    ? path.resolve(flags.workspace)
+    : (typeof index.manifest?.scanRequest?.workspaceRoot === "string" ? index.manifest.scanRequest.workspaceRoot : null);
+  const consoleAssetPath = path.join(repositoryRoot, "source-facts-query-console", "index.html");
+  const port = typeof flags.port === "string" ? Number.parseInt(flags.port, 10) : 0;
+  const consoleServer = await servesQueryConsole({ index, workspaceRoot, consoleAssetPath, port });
+  process.stdout.write(`${consoleServer.url}\n`);
+  await waitsForTerminationSignal(consoleServer);
 }
 
 async function runWeb(rawArgs) {
@@ -439,6 +529,10 @@ function parseArgs(rawArgs) {
         case "--subject":
         case "--purpose":
         case "--audience":
+        case "--server":
+        case "--database":
+        case "--connection-env":
+        case "--port":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
@@ -492,6 +586,9 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web gallery prove --dir <gallery-output-dir>\n`);
   stream.write(`  source-facts-se web compose sign-in --request <file> --manifest <gallery-manifest> [--authorities <dir>] [--output <dir>] [--summary]\n`);
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
+  stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
+  stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
   stream.write(`  source-facts-se project --workspace C:/lab/repos/contract-driven-artifact-governance-engine --pretty\n`);
@@ -502,6 +599,9 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web gallery project --index ./web-surface-index.json --inventory ./web-surface.inventory.json --query enterprise-pages --output ./enterprise-gallery --summary\n`);
   stream.write(`  source-facts-se web compose sign-in --request ./compositions/enterprise-sign-in.request.v1.json --manifest ./sign-in-gallery/enterprise-gallery-manifest.json --output ./sign-in-composition --summary\n`);
   stream.write(`  source-facts-se web north-star sign-in --index ./web-surface-index.json --inventory ./web-surface.inventory.json --output ./sign-in-north-star --prove --summary\n`);
+  stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
+  stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }
 
 function formatsGallerySummary(selection, plan) {
