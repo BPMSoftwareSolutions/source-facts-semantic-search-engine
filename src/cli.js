@@ -37,6 +37,8 @@ import { discoversAuthorityDocumentsAcrossRoots } from "./governance/discovers-a
 import { discoversSemanticOverlapProposalBatches } from "./governance/discovers-semantic-overlap-proposals.js";
 import { discoversKnowHowRegistry } from "./governance/discovers-know-how-registry.js";
 import { proposesSemanticOverlap } from "./governance/proposes-semantic-overlap.js";
+import { generatesConnectiveTissue } from "./governance/generates-connective-tissue.js";
+import { discoversHealingDrafts } from "./governance/discovers-healing-drafts.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
@@ -76,6 +78,8 @@ if (command === "project") {
   await runGovern(args.slice(1));
 } else if (command === "propose-semantic-overlap") {
   await runProposeSemanticOverlap(args.slice(1));
+} else if (command === "generate-connective-tissue") {
+  await runGenerateConnectiveTissue(args.slice(1));
 } else if (command === "web") {
   await runWeb(args.slice(1));
 } else if (command === "console") {
@@ -304,12 +308,16 @@ async function runGovern(rawArgs) {
   const knowHowDir = path.resolve(flags.knowHowDir ?? path.join(repositoryRoot, "know-how"));
   const knowHowRegistry = await discoversKnowHowRegistry(knowHowDir, { relativeTo: repositoryRoot });
 
+  const healingDir = path.resolve(flags.healingDir ?? path.join(repositoryRoot, "healing"));
+  const healingDraftBatches = await discoversHealingDrafts(healingDir, { relativeTo: repositoryRoot });
+
   const report = await projectsSelfGovernanceReport({
     index,
     repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
     authorityDocuments,
     semanticOverlapProposalBatches,
     knowHowRegistry,
+    healingDraftBatches,
     workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
   });
   await validatesSelfGovernanceReport(report);
@@ -377,6 +385,58 @@ async function runProposeSemanticOverlap(rawArgs) {
   process.stdout.write(`${outputPath}\n`);
   process.stdout.write(`${batch.proposals.length} proposal(s) obtained from ${batch.inference.resolvedModel} (${batch.inference.usage?.totalTokens ?? "?"} tokens, ${batch.inference.durationMilliseconds ?? "?"}ms).\n`);
   process.stdout.write("Lifecycle: INFERRED_NOT_ADMITTED -- review this file (reviewFindings/reviewOutcomes/knowHowExtracted/candidateAuthorities) before running scripts/admit-know-how-from-review.mjs.\n");
+}
+
+/**
+ * Stage 1+2 of the self-healing ladder (Infer, Draft) -- see
+ * generates-connective-tissue.js for why this stops there. Writes a
+ * connective-tissue-draft-batch.v1 file under healing/ (never contracts/,
+ * never src/). No code anywhere in this repository consumes
+ * draft.collapsedBodyDraft.proposedSource as a file write -- applying a
+ * healing draft is a distinct, not-yet-built capability, deliberately.
+ */
+async function runGenerateConnectiveTissue(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+
+  if (typeof flags.subjectId !== "string" || typeof flags.executableEvidenceFiles !== "string") {
+    process.stderr.write("generate-connective-tissue requires --subject-id <string> and --executable-evidence-files <file,file,...>\n");
+    process.exitCode = 1;
+    return;
+  }
+
+  const readsEvidenceBlock = async (fileListFlag) => {
+    if (typeof fileListFlag !== "string") return null;
+    const filePaths = fileListFlag.split(",").map((entry) => entry.trim()).filter((entry) => entry.length > 0);
+    if (filePaths.length === 0) return null;
+    const blocks = [];
+    for (const relativePath of filePaths) {
+      const absolutePath = path.resolve(repositoryRoot, relativePath);
+      const content = await fs.readFile(absolutePath, "utf8");
+      blocks.push(`## ${relativePath}\n\`\`\`\n${content}\n\`\`\``);
+    }
+    return blocks.join("\n\n");
+  };
+
+  const authorityEvidence = await readsEvidenceBlock(flags.authorityEvidenceFiles);
+  const executableEvidence = await readsEvidenceBlock(flags.executableEvidenceFiles);
+  const knownGaps = typeof flags.knownGapsFile === "string" ? await readsJsonFile(path.resolve(repositoryRoot, flags.knownGapsFile)) : [];
+
+  const batch = await generatesConnectiveTissue({
+    subjectId: flags.subjectId,
+    authorityEvidence,
+    executableEvidence,
+    existingWiring: flags.wiringEvidence ?? null,
+    knownGaps: Array.isArray(knownGaps) ? knownGaps : [],
+  });
+
+  const defaultOutputName = `${flags.subjectId.replaceAll(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase()}.connective-tissue-draft.json`;
+  const outputPath = path.resolve(repositoryRoot, flags.output ?? path.join("healing", defaultOutputName));
+  await fs.mkdir(path.dirname(outputPath), { recursive: true });
+  await writesJsonFile(outputPath, batch, { pretty: true });
+
+  process.stdout.write(`${outputPath}\n`);
+  process.stdout.write(`healingDisposition: ${batch.draft.healingDisposition} (confidence ${batch.draft.confidence}), model ${batch.inference.resolvedModel} (${batch.inference.usage?.totalTokens ?? "?"} tokens, ${batch.inference.durationMilliseconds ?? "?"}ms).\n`);
+  process.stdout.write("Lifecycle: DRAFT_NOT_ADMITTED -- nothing has been applied. Review this file before any further action.\n");
 }
 
 /**
@@ -865,6 +925,7 @@ function parseArgs(rawArgs) {
       switch (current) {
         case "--workspace":
         case "--workspace-id":
+        case "--repository-id":
         case "--output":
         case "--index":
         case "--query":
@@ -876,8 +937,12 @@ function parseArgs(rawArgs) {
         case "--responsibility":
         case "--code-file":
         case "--authority-file":
+        case "--authority-dir":
         case "--authority-complete":
         case "--authority-output":
+        case "--reviews-dir":
+        case "--know-how-dir":
+        case "--healing-dir":
         case "--template-contract":
         case "--binding":
         case "--violation-bindings":
@@ -901,6 +966,11 @@ function parseArgs(rawArgs) {
         case "--successor-file":
         case "--related-files":
         case "--succession-evidence":
+        case "--subject-id":
+        case "--authority-evidence-files":
+        case "--executable-evidence-files":
+        case "--wiring-evidence":
+        case "--known-gaps-file":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
@@ -960,8 +1030,9 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
-  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
+  stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);

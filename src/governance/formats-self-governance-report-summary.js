@@ -1,3 +1,5 @@
+import { tissueTypeLabels } from "./summarizes-healing-drafts.js";
+
 function padsColumn(value, width) {
   return String(value).padEnd(width, " ");
 }
@@ -10,6 +12,18 @@ function formatsPercent(numerator, denominator) {
   if (denominator === 0) return "n/a";
   return `${((numerator / denominator) * 100).toFixed(1)}%`;
 }
+
+const healingDispositionLabels = Object.freeze({
+  HEALING_DRAFT_GENERATED: "Healing draft generated",
+  HEALING_DRAFT_PARTIAL: "Healing draft partial",
+  HUMAN_DECISION_REQUIRED: "Human decision required",
+  INSUFFICIENT_EVIDENCE: "Insufficient evidence",
+  CONFLICTING_AUTHORITY: "Conflicting authority",
+  NO_SUPPORTED_PROJECTOR: "No supported projector",
+  READY_FOR_REVIEW: "Ready for review",
+  READY_FOR_ADMISSION: "Ready for admission",
+  READY_FOR_PROJECTION: "Ready for projection",
+});
 
 /**
  * An authority source can declare AUTHORITY_BOUND mechanics whose sourceLocation
@@ -523,6 +537,73 @@ function formatsKnowHowRegistry(report) {
   return lines;
 }
 
+/**
+ * Draft connective tissue is intentionally downstream of know-how but still
+ * upstream of any admission or projection step. It is review-only repair
+ * evidence, not governance evidence, and should read like a staged repair
+ * queue rather than like applied truth.
+ */
+function formatsHealingDraftRegistry(report) {
+  const registry = report.healingDraftRegistry;
+  const lines = [
+    "## Generated Healing Candidates",
+    "",
+    "Draft connective-tissue batches discovered under `healing/` -- review-only repair evidence, not authority, not applied source, and not a build gate.",
+    "",
+  ];
+
+  if (registry.totalDrafts === 0) {
+    lines.push("No connective-tissue draft batches found under `healing/`.");
+    lines.push("");
+    return lines;
+  }
+
+  lines.push(`${formatsCount(registry.totalDrafts)} draft batch(es) discovered.`);
+  lines.push("");
+  lines.push("| Repair posture | Drafts |");
+  lines.push("|---|---:|");
+  for (const [disposition, label] of Object.entries(healingDispositionLabels)) {
+    const count = registry.byDisposition[disposition] ?? 0;
+    lines.push(`| ${label} | ${formatsCount(count)} |`);
+  }
+  for (const disposition of Object.keys(registry.byDisposition).sort()) {
+    if (Object.prototype.hasOwnProperty.call(healingDispositionLabels, disposition)) continue;
+    lines.push(`| ${disposition} | ${formatsCount(registry.byDisposition[disposition])} |`);
+  }
+  lines.push("");
+
+  if (Object.keys(registry.byTissueType).length > 0) {
+    lines.push("### Generated Tissue Types");
+    lines.push("");
+    lines.push("| Tissue type | Drafts |");
+    lines.push("|---|---:|");
+    for (const [tissueType, label] of Object.entries(tissueTypeLabels)) {
+      const count = registry.byTissueType[tissueType] ?? 0;
+      lines.push(`| ${label} | ${formatsCount(count)} |`);
+    }
+    for (const tissueType of Object.keys(registry.byTissueType).sort()) {
+      if (Object.prototype.hasOwnProperty.call(tissueTypeLabels, tissueType)) continue;
+      lines.push(`| ${tissueType} | ${formatsCount(registry.byTissueType[tissueType])} |`);
+    }
+    lines.push("");
+  }
+
+  lines.push("### Drafts");
+  lines.push("");
+  lines.push("| Draft file | Subject | Lifecycle | Healing disposition | Confidence | Missing tissue | Generated tissue | Inference model |");
+  lines.push("|---|---|---|---|---:|---|---|---|");
+  for (const draft of registry.drafts) {
+    const subjectCell = draft.subjectId !== null && draft.subjectId !== undefined ? `\`${draft.subjectId}\`` : "(unspecified)";
+    const confidenceCell = draft.confidence === null || draft.confidence === undefined ? "n/a" : draft.confidence.toFixed(2);
+    const missingTissueCell = draft.missingTissue.length > 0 ? draft.missingTissue.map((value) => `\`${value}\``).join(", ") : "(none)";
+    const generatedTissueCell = draft.generatedTissueTypes.length > 0 ? draft.generatedTissueTypes.map((value) => `\`${value}\``).join(", ") : "(none)";
+    lines.push(`| \`${draft.draftFile}\` | ${subjectCell} | \`${draft.lifecycle}\` | ${draft.healingDisposition} | ${confidenceCell} | ${missingTissueCell} | ${generatedTissueCell} | ${draft.inferenceModel ?? "(unspecified)"} |`);
+  }
+  lines.push("");
+
+  return lines;
+}
+
 export function formatsSelfGovernanceReportMarkdown(report) {
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
@@ -588,6 +669,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     ...formatsAuthoritySuccession(report),
     ...formatsSemanticOverlapProposals(report),
     ...formatsKnowHowRegistry(report),
+    ...formatsHealingDraftRegistry(report),
     ...formatsAutomationReadiness(report),
     "## Authority Sources",
     "",
@@ -669,7 +751,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, semanticOverlapProposals, knowHowRegistry, automationReadiness, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, semanticOverlapProposals, knowHowRegistry, healingDraftRegistry, automationReadiness, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -755,6 +837,14 @@ export function formatsSelfGovernanceReportSummary(report) {
   }
   for (const candidate of knowHowRegistry.authorityRemediationCandidates) {
     lines.push(`  candidate authority: ${candidate.candidateAuthorityId} [${candidate.lifecycle}] (${candidate.family ?? "unclassified"})`);
+  }
+
+  lines.push("");
+  lines.push(`Healing draft registry: ${healingDraftRegistry.totalDrafts} draft batch(es)`);
+  lines.push(`  dispositions: ${formatsDispositionCounts(healingDraftRegistry.byDisposition)}`);
+  lines.push(`  tissue types: ${formatsDispositionCounts(healingDraftRegistry.byTissueType)}`);
+  for (const draft of healingDraftRegistry.drafts) {
+    lines.push(`  ${draft.draftFile} [${draft.lifecycle}] ${draft.subjectId ?? "(unspecified)"} -> ${draft.healingDisposition} (${draft.confidence?.toFixed(2) ?? "n/a"})`);
   }
 
   lines.push("");

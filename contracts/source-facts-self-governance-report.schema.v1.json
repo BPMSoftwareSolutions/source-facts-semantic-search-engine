@@ -16,6 +16,7 @@
     "authoritySuccession",
     "semanticOverlapProposals",
     "knowHowRegistry",
+    "healingDraftRegistry",
     "automationReadiness",
     "occurrences",
     "disposition"
@@ -487,6 +488,44 @@
               "family": { "type": ["string", "null"] },
               "rationale": { "type": "string" },
               "citesKnowHow": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "healingDraftRegistry": {
+      "type": "object",
+      "description": "Review-only connective-tissue drafts discovered from healing/ (distinct from reviews/ and know-how/). Purely descriptive -- never authority, never applied source, never governance evidence.",
+      "required": ["totalDrafts", "byDisposition", "byTissueType", "drafts"],
+      "additionalProperties": false,
+      "properties": {
+        "totalDrafts": { "type": "integer", "minimum": 0 },
+        "byDisposition": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "byTissueType": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "drafts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "draftFile",
+              "lifecycle",
+              "subjectId",
+              "healingDisposition",
+              "confidence",
+              "missingTissue",
+              "generatedTissueTypes",
+              "inferenceModel"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "draftFile": { "type": "string", "minLength": 1 },
+              "lifecycle": { "type": "string", "minLength": 1 },
+              "subjectId": { "type": ["string", "null"] },
+              "healingDisposition": { "type": "string", "minLength": 1 },
+              "confidence": { "type": ["number", "null"] },
+              "missingTissue": { "type": "array", "items": { "type": "string" } },
+              "generatedTissueTypes": { "type": "array", "items": { "type": "string" } },
+              "inferenceModel": { "type": ["string", "null"] }
             }
           }
         }
