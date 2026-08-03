@@ -1,0 +1,2720 @@
+{
+  "$schema": "https://canonical.local/schemas/governed-artifact-contract.schema.json",
+  "artifacts": [
+    {
+      "artifactId": "console-authority-bundles.v1",
+      "artifactKind": "javascript-module",
+      "purpose": "Aggregates the console helper authorities for the query console source bodies.",
+      "relativePath": "src/console/console-authority-bundles.mjs",
+      "mediaType": "text/javascript",
+      "projection": {
+        "projectorId": "utf8-text-projector.v1",
+        "authorityId": "console-authority-bundles.v1.projection-authority.v1",
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "/**\n * AUTHORITY BUNDLES FOR serves-query-console\n *\n * Generated from contracts/serves-query-console.authority.json\n * Each bundle encapsulates a decision/mechanic from the authority declarations\n */\n\n/**\n * BUNDLE 1: pathnameLookupAuthority\n * Authority source: known-pathname-allow-map\n * Mechanic type: object-construction\n */\nexport function pathnameLookupAuthority({ pathname }) {\n  const knownPathnameAllow = new Map([\n    [\"/\", \"GET, HEAD\"],\n    [\"/index.html\", \"GET, HEAD\"],\n    [\"/api/index-info\", \"GET, HEAD\"],\n    [\"/api/query\", \"POST\"],\n    [\"/api/snippet\", \"GET, HEAD\"],\n  ]);\n  return knownPathnameAllow.get(pathname);\n}\n\n/**\n * BUNDLE 2: projectsSecurityHeaders\n * Authority source: headers-sent-state-mutation\n * Mechanic type: state-mutation\n */\nexport function projectsSecurityHeaders({ context = \"normal-response\" }) {\n  // Authority: CSP, Cache-Control, X-Content-Type-Options, Referrer-Policy, etc.\n  return {\n    \"Content-Security-Policy\": \"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'\",\n    \"Cache-Control\": \"no-store\",\n    \"Cross-Origin-Resource-Policy\": \"same-origin\",\n    \"Referrer-Policy\": \"no-referrer\",\n    \"X-Content-Type-Options\": \"nosniff\",\n    \"Permissions-Policy\": \"accelerometer=(), camera=(), geolocation=(), microphone=(), payment=(), usb=()\"\n  };\n}\n\n/**\n * BUNDLE 3: serializesErrorResponse\n * Authority source: error-response-serialization\n * Mechanic type: serialization\n */\nexport function serializesErrorResponse({ error, context = \"default\" }) {\n  // Authority: Always serialize as { error: string } with appropriate status code\n  const statusCodeMap = {\n    \"url-decode\": 400,\n    \"route-classification\": 405,\n    \"route-404\": 404,\n    \"snippet-validation\": 400,\n    \"snippet-range\": 400,\n    \"query-body-parse\": 400,\n    \"query-validation\": 400,\n    \"request-handler-uncaught\": 500\n  };\n\n  const message = typeof error?.message === \"string\"\n    ? error.message\n    : (typeof error === \"string\" ? error : \"Query console server error.\");\n\n  return {\n    statusCode: statusCodeMap[context] || 500,\n    body: { error: message }\n  };\n}\n\n/**\n * BUNDLE 4: classifiesErrorDisposition\n * Authority source: error-disposition-check\n * Mechanic type: branch\n */\nexport function classifiesErrorDisposition({ error, context = \"default\" }) {\n  // Authority: Route by disposition, fallback if HOSTNAME_NOT_ADMITTED or ROUTE_OR_METHOD_NOT_ADMITTED\n  const disposition = error?.disposition;\n\n  const fallbackDispositions = [\n    \"HOSTNAME_NOT_ADMITTED\",\n    \"ROUTE_OR_METHOD_NOT_ADMITTED\"\n  ];\n\n  return {\n    shouldFallback: fallbackDispositions.includes(disposition),\n    disposition\n  };\n}\n\n/**\n * BUNDLE 5: extractsSnippetLines\n * Authority source: file-lines-iteration\n * Mechanic type: iteration\n */\nexport function extractsSnippetLines({ text, startLine, endLine, context }) {\n  // Authority: Build line array from startLine to endLine, 1-indexed, ascending order\n  const allLines = text.replaceAll(\"\\r\\n\", \"\\n\").replaceAll(\"\\r\", \"\\n\").split(\"\\n\");\n\n  // Apply context (lines before/after the snippet)\n  const contextLines = Math.max(0, Math.min(context ?? 2, 20));\n  const firstLine = Math.max(1, startLine - contextLines);\n  const lastLine = Math.max(1, Math.min(endLine + contextLines, allLines.length));\n\n  // Authority: Iteration in ascending order, hit-flag classification\n  const lines = [];\n  for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1) {\n    lines.push({\n      line: lineNumber,\n      text: allLines[lineNumber - 1] ?? \"\",\n      hit: lineNumber >= startLine && lineNumber <= endLine\n    });\n  }\n\n  return lines;\n}\n\n/**\n * BUNDLE 6: normalizesPathSegments\n * Authority source: file normalization for security checks\n * Mechanic type: normalization\n */\nexport function normalizesPathSegments({ modulePath, backslash }) {\n  // Authority: Split path by both / and \\ to normalize segments\n  return modulePath.split(\"/\").flatMap((segment) => segment.split(backslash));\n}\n\n/**\n * BUNDLE 7: normalizesLineEndings\n * Authority source: line ending normalization for file parsing\n * Mechanic type: normalization\n */\nexport function normalizesLineEndings({ text }) {\n  // Authority: Normalize CRLF and CR to LF, then split\n  return text.replaceAll(\"\\r\\n\", \"\\n\").replaceAll(\"\\r\", \"\\n\").split(\"\\n\");\n}\n\n/**\n * BUNDLE 8: normalizesPathForComparison\n * Authority source: platform-aware path normalization\n * Mechanic type: normalization, fallback\n */\nexport function normalizesPathForComparison({ path, toLowerCase = false }) {\n  // Authority: Case-insensitive on Windows, case-sensitive on Unix\n  return process.platform === \"win32\" && toLowerCase ? path.toLowerCase() : path;\n}\n\n/**\n * BUNDLE 10: buildsErrorResponse\n * Authority source: error-response-serialization\n * Mechanic type: object-construction, serialization\n */\nexport function buildsErrorResponse({ message, statusCode = 500 }) {\n  return { statusCode, body: { error: message } };\n}\n\n/**\n * BUNDLE 11: selectsDefaultValue\n * Authority source: missing-value-policy\n * Mechanic type: fallback\n */\nexport function selectsDefaultValue({ value, defaultValue }) {\n  return value || defaultValue;\n}\n\n/**\n * BUNDLE 9: validatesConsoleParameters (delegated to adapter)\n * Authority source: index-required-validation, asset-path-validation\n * Mechanic type: fallback/validation\n *\n * Note: This is already implemented in console-validation-adapter.mjs\n * Re-exported here for consistency\n */\nexport { validatesConsoleParameters } from \"./console-validation-adapter.mjs\";\n"
+        }
+      },
+      "relationships": [
+        {
+          "relationshipType": "reads",
+          "artifactId": "console-validation-adapter.v1"
+        }
+      ],
+      "sourceAuthority": {
+        "declarations": [
+          "pathnameLookupAuthority",
+          "projectsSecurityHeaders",
+          "serializesErrorResponse",
+          "classifiesErrorDisposition",
+          "extractsSnippetLines",
+          "normalizesPathSegments",
+          "normalizesLineEndings",
+          "normalizesPathForComparison",
+          "buildsErrorResponse",
+          "selectsDefaultValue",
+          "validatesConsoleParameters"
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Aggregates console authority helpers for the query console source bodies.",
+            "responsibilityId": "console-authority-bundles-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "pathnameLookupAuthority",
+            "functionKind": "function-declaration",
+            "purpose": "Maps a pathname to the admitted fallback HTTP methods.",
+            "responsibilityId": "pathname-lookup-authority.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "projectsSecurityHeaders",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted security headers for the console response.",
+            "responsibilityId": "projects-security-headers.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "serializesErrorResponse",
+            "functionKind": "function-declaration",
+            "purpose": "Serializes a console error response into the admitted JSON shape.",
+            "responsibilityId": "serializes-error-response.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "classifiesErrorDisposition",
+            "functionKind": "function-declaration",
+            "purpose": "Classifies route or hostname error disposition for the fallback path.",
+            "responsibilityId": "classifies-error-disposition.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "extractsSnippetLines",
+            "functionKind": "function-declaration",
+            "purpose": "Builds the ordered snippet line list from the input text.",
+            "responsibilityId": "extracts-snippet-lines.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "normalizesPathSegments",
+            "functionKind": "function-declaration",
+            "purpose": "Normalizes path segments by splitting on both path separators.",
+            "responsibilityId": "normalizes-path-segments.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "normalizesLineEndings",
+            "functionKind": "function-declaration",
+            "purpose": "Normalizes line endings to LF before splitting text.",
+            "responsibilityId": "normalizes-line-endings.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "normalizesPathForComparison",
+            "functionKind": "function-declaration",
+            "purpose": "Normalizes paths for platform-aware comparison.",
+            "responsibilityId": "normalizes-path-for-comparison.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "buildsErrorResponse",
+            "functionKind": "function-declaration",
+            "purpose": "Builds the admitted JSON error response envelope.",
+            "responsibilityId": "builds-error-response.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "selectsDefaultValue",
+            "functionKind": "function-declaration",
+            "purpose": "Selects the admitted default value when the primary value is falsy.",
+            "responsibilityId": "selects-default-value.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "validatesConsoleParameters",
+            "functionKind": "function-declaration",
+            "purpose": "Re-exports the console parameter validation authority.",
+            "responsibilityId": "validates-console-parameters.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "semanticEdges": [
+          {
+            "edgeId": "console-validation-adapter-reexport.v1",
+            "responsibilityId": "console-authority-bundles-module.v1",
+            "edgeKind": "reference",
+            "operation": "validatesConsoleParameters",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "validates-console-parameters.v1"
+              }
+            ],
+            "purpose": "Re-exports the validation adapter authority into the helper bundle module."
+          }
+        ],
+        "decisions": [
+          {
+            "decisionId": "classifies-error-disposition.v1",
+            "responsibilityId": "classifies-error-disposition.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
+            "occurrences": 1,
+            "policy": "Only HOSTNAME_NOT_ADMITTED is transformed; all other errors rethrow."
+          },
+          {
+            "decisionId": "normalizes-path-for-comparison.v1",
+            "responsibilityId": "normalizes-path-for-comparison.v1",
+            "syntaxKind": "ConditionalExpression",
+            "conditionExpression": "process.platform === 'win32' && toLowerCase",
+            "occurrences": 1,
+            "policy": "Lowercase only on Windows when requested."
+          },
+          {
+            "decisionId": "selects-default-value.v1",
+            "responsibilityId": "selects-default-value.v1",
+            "syntaxKind": "LogicalOrExpression",
+            "conditionExpression": "value || defaultValue",
+            "occurrences": 1,
+            "policy": "Use the default value when the primary value is falsy."
+          }
+        ],
+        "iterations": [
+          {
+            "iterationId": "extracts-snippet-lines.v1",
+            "responsibilityId": "extracts-snippet-lines.v1",
+            "syntaxKind": "ForStatement",
+            "controlExpression": "for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1)",
+            "occurrences": 1,
+            "continuationPolicy": "Advance while the line number stays within the snippet window.",
+            "terminationPolicy": "Stop after the last admitted snippet line."
+          }
+        ],
+        "failurePolicies": [],
+        "projectionMappings": [
+          {
+            "projectionMappingId": "pathname-lookup-authority.v1",
+            "responsibilityId": "pathname-lookup-authority.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "allowMethods",
+                "sourceExpression": "knownPathnameAllow.get(pathname)"
+              }
+            ],
+            "purpose": "Map each admitted pathname to the allowed HTTP methods."
+          },
+          {
+            "projectionMappingId": "projects-security-headers.v1",
+            "responsibilityId": "projects-security-headers.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "securityHeaders",
+                "sourceExpression": "{ Content-Security-Policy, Cache-Control, Cross-Origin-Resource-Policy, Referrer-Policy, X-Content-Type-Options, Permissions-Policy }"
+              }
+            ],
+            "purpose": "Project the admitted console security headers."
+          },
+          {
+            "projectionMappingId": "normalizes-path-segments.v1",
+            "responsibilityId": "normalizes-path-segments.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "segments",
+                "sourceExpression": "modulePath.split('/').flatMap((segment) => segment.split(backslash))"
+              }
+            ],
+            "purpose": "Normalize mixed path separators into path segments."
+          },
+          {
+            "projectionMappingId": "normalizes-line-endings.v1",
+            "responsibilityId": "normalizes-line-endings.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "lines",
+                "sourceExpression": "text.replaceAll('\\r\\n', '\\n').replaceAll('\\r', '\\n').split('\\n')"
+              }
+            ],
+            "purpose": "Normalize line endings to LF before splitting text."
+          },
+          {
+            "projectionMappingId": "builds-error-response.v1",
+            "responsibilityId": "builds-error-response.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "body",
+                "sourceExpression": "{ error: message }"
+              }
+            ],
+            "purpose": "Build the admitted JSON error response body."
+          }
+        ],
+        "resultContracts": [
+          {
+            "resultContractId": "serializes-error-response.v1",
+            "resultKind": "console-error-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serializes-error-response.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify({ error: message })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted console error response body."
+          },
+          {
+            "resultContractId": "extracts-snippet-lines.v1",
+            "resultKind": "console-snippet-lines",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "extracts-snippet-lines.v1",
+              "returnKind": "explicit-return",
+              "expression": "lines",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted snippet line array."
+          },
+          {
+            "resultContractId": "builds-error-response.v1",
+            "resultKind": "console-error-envelope",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "builds-error-response.v1",
+              "returnKind": "explicit-return",
+              "expression": "{ statusCode, body: { error: message } }",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted statusCode/body error envelope."
+          },
+          {
+            "resultContractId": "validates-console-parameters.v1",
+            "resultKind": "console-validation-result",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "validates-console-parameters.v1",
+              "returnKind": "explicit-return",
+              "expression": "executeSemanticAuthority(consoleValidationBundle, parameters)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted console validation result."
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "SwitchStatement",
+          "WhileStatement",
+          "WithStatement"
+        ]
+      },
+      "proof": {
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ],
+        "contentSha256": "sha256:73352dccadd66ccf2efd82ad5ade6c26f8f9a20c1064418f8c3005658cf0ac8d",
+        "expectedByteLength": 5527
+      }
+    },
+    {
+      "artifactId": "console-routing-adapter.v1",
+      "artifactKind": "javascript-module",
+      "purpose": "Delegates console request routing to the semantic execution runtime.",
+      "relativePath": "src/console/console-routing-adapter.mjs",
+      "mediaType": "text/javascript",
+      "projection": {
+        "projectorId": "utf8-text-projector.v1",
+        "authorityId": "console-routing-adapter.v1.projection-authority.v1",
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "/**\n * console-routing-adapter.mjs\n *\n * Thin code body for console request routing.\n * All routing decisions delegated to semantic authority.\n *\n * Pattern: Load authority bundle → execute semantic authority → return result\n */\n\nimport { readFileSync } from \"node:fs\";\nimport { fileURLToPath } from \"node:url\";\nimport { executeSemanticAuthority } from \"../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs\";\n\nconst bundlePath = fileURLToPath(new URL(\"./contracts/console-request-routing.bundle.json\", import.meta.url));\nconst consoleRoutingBundle = JSON.parse(readFileSync(bundlePath, \"utf8\"));\n\n/**\n * Thin code body: Route console request based on authority\n *\n * Input: { request, response, index, consoleHtml, realWorkspaceRoot, cspPolicy }\n * Authority: Determines route dispatch and handler invocation\n * Output: Handler result (response sent or forwarded)\n */\nexport async function routesConsoleRequest(requestContext) {\n  return await executeSemanticAuthority(consoleRoutingBundle, requestContext);\n}\n"
+        }
+      },
+      "relationships": [],
+      "sourceAuthority": {
+        "declarations": [
+          "routesConsoleRequest"
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Delegates console request routing to the semantic execution runtime.",
+            "responsibilityId": "console-routing-adapter-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "routesConsoleRequest",
+            "functionKind": "function-declaration",
+            "purpose": "Routes a console request through the admitted semantic authority bundle.",
+            "responsibilityId": "routes-console-request.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "semanticEdges": [
+          {
+            "edgeId": "routes-console-request.v1-bundle-reference.v1",
+            "responsibilityId": "routes-console-request.v1",
+            "edgeKind": "reference",
+            "operation": "consoleRoutingBundle",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-request-routing-bundle.v1"
+              }
+            ],
+            "purpose": "Binds consoleRoutingBundle to the admitted semantic authority bundle."
+          },
+          {
+            "edgeId": "routes-console-request.v1-authority-invocation.v1",
+            "responsibilityId": "routes-console-request.v1",
+            "edgeKind": "invocation",
+            "operation": "executeSemanticAuthority",
+            "argumentExpressions": [
+              "consoleRoutingBundle",
+              "requestContext"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-request-routing-bundle.v1"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "semantic-authority-runtime.v1"
+              }
+            ],
+            "purpose": "Delegates routesConsoleRequest to the semantic execution runtime."
+          }
+        ],
+        "decisions": [],
+        "iterations": [],
+        "failurePolicies": [],
+        "projectionMappings": [],
+        "resultContracts": [
+          {
+            "resultContractId": "console-route-result.v1",
+            "resultKind": "console-route-result",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "routes-console-request.v1",
+              "returnKind": "explicit-return",
+              "expression": "executeSemanticAuthority(consoleRoutingBundle, requestContext)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the console route result from the admitted runtime."
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "IfStatement",
+          "SwitchStatement",
+          "TryStatement",
+          "CatchClause",
+          "ThrowStatement",
+          "WhileStatement",
+          "WithStatement"
+        ]
+      },
+      "proof": {
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ],
+        "contentSha256": "sha256:0b00b70f92bcef5610ecf44b5bc9c7e947fdfff174f70084611c1faeb2f8fd42",
+        "expectedByteLength": 1048
+      }
+    },
+    {
+      "artifactId": "console-validation-adapter.v1",
+      "artifactKind": "javascript-module",
+      "purpose": "Delegates console parameter validation to semantic execution authorities.",
+      "relativePath": "src/console/console-validation-adapter.mjs",
+      "mediaType": "text/javascript",
+      "projection": {
+        "projectorId": "utf8-text-projector.v1",
+        "authorityId": "console-validation-adapter.v1.projection-authority.v1",
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "/**\n * console-validation-adapter.mjs\n *\n * Thin code body for console server validation.\n * All validation decisions delegated to semantic authority.\n *\n * Validates:\n * - Hostname (must be loopback)\n * - Index (must be provided and valid)\n * - Asset path (must be provided and non-empty)\n */\n\nimport { readFileSync } from \"node:fs\";\nimport { fileURLToPath } from \"node:url\";\nimport { executeSemanticAuthority } from \"../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs\";\n\nconst bundlePath = fileURLToPath(new URL(\"./contracts/console-validation.bundle.json\", import.meta.url));\nconst consoleValidationBundle = JSON.parse(readFileSync(bundlePath, \"utf8\"));\n\n/**\n * Thin code body: Validate console server initialization parameters\n *\n * Input: { hostname, index, consoleAssetPath }\n * Authority: Determines if each parameter meets constraints\n * Output: { isValid, errors } or throws on critical validation failure\n */\nexport async function validatesConsoleParameters(parameters) {\n  return await executeSemanticAuthority(consoleValidationBundle, parameters);\n}\n\n/**\n * Thin code body: Validate hostname binding constraint\n *\n * Input: { hostname }\n * Authority: classifiesLoopbackBind (external, delegated)\n * Output: { allowed: boolean } or throws HOSTNAME_NOT_ADMITTED\n */\nexport async function validatesLoopbackBinding(hostname) {\n  return await executeSemanticAuthority(consoleValidationBundle, {\n    validation: \"loopback-binding\",\n    hostname\n  });\n}\n"
+        }
+      },
+      "relationships": [],
+      "sourceAuthority": {
+        "declarations": [
+          "validatesConsoleParameters",
+          "validatesLoopbackBinding"
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Delegates console parameter validation to semantic execution authorities.",
+            "responsibilityId": "console-validation-adapter-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "validatesConsoleParameters",
+            "functionKind": "function-declaration",
+            "purpose": "Validates the admitted console server initialization parameters.",
+            "responsibilityId": "validates-console-parameters.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "validatesLoopbackBinding",
+            "functionKind": "function-declaration",
+            "purpose": "Validates that the console binds only to loopback.",
+            "responsibilityId": "validates-loopback-binding.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "semanticEdges": [
+          {
+            "edgeId": "validates-console-parameters.v1-bundle-reference.v1",
+            "responsibilityId": "validates-console-parameters.v1",
+            "edgeKind": "reference",
+            "operation": "consoleValidationBundle",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-validation-bundle.v1"
+              }
+            ],
+            "purpose": "Binds consoleValidationBundle to the admitted semantic authority bundle."
+          },
+          {
+            "edgeId": "validates-console-parameters.v1-authority-invocation.v1",
+            "responsibilityId": "validates-console-parameters.v1",
+            "edgeKind": "invocation",
+            "operation": "executeSemanticAuthority",
+            "argumentExpressions": [
+              "consoleValidationBundle",
+              "parameters"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-validation-bundle.v1"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "semantic-authority-runtime.v1"
+              }
+            ],
+            "purpose": "Delegates validatesConsoleParameters to the semantic execution runtime."
+          },
+          {
+            "edgeId": "validates-loopback-binding.v1-bundle-reference.v1",
+            "responsibilityId": "validates-loopback-binding.v1",
+            "edgeKind": "reference",
+            "operation": "consoleValidationBundle",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-validation-bundle.v1"
+              }
+            ],
+            "purpose": "Binds consoleValidationBundle to the admitted semantic authority bundle."
+          },
+          {
+            "edgeId": "validates-loopback-binding.v1-authority-invocation.v1",
+            "responsibilityId": "validates-loopback-binding.v1",
+            "edgeKind": "invocation",
+            "operation": "executeSemanticAuthority",
+            "argumentExpressions": [
+              "consoleValidationBundle",
+              "{ validation: 'loopback-binding', hostname }"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-validation-bundle.v1"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "semantic-authority-runtime.v1"
+              }
+            ],
+            "purpose": "Delegates validatesLoopbackBinding to the semantic execution runtime."
+          }
+        ],
+        "decisions": [],
+        "iterations": [],
+        "failurePolicies": [],
+        "projectionMappings": [],
+        "resultContracts": [
+          {
+            "resultContractId": "console-validation-result.v1",
+            "resultKind": "console-validation-result",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "validates-console-parameters.v1",
+              "returnKind": "explicit-return",
+              "expression": "executeSemanticAuthority(consoleValidationBundle, parameters)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted console parameter validation result."
+          },
+          {
+            "resultContractId": "console-loopback-validation-result.v1",
+            "resultKind": "console-loopback-validation-result",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "validates-loopback-binding.v1",
+              "returnKind": "explicit-return",
+              "expression": "executeSemanticAuthority(consoleValidationBundle, { validation: 'loopback-binding', hostname })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted loopback binding validation result."
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "IfStatement",
+          "SwitchStatement",
+          "TryStatement",
+          "CatchClause",
+          "ThrowStatement",
+          "WhileStatement",
+          "WithStatement"
+        ]
+      },
+      "proof": {
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ],
+        "contentSha256": "sha256:0499cad2102c993d788c3d75a5c232186dc09f65d55c2735d7d41da4af7dff72",
+        "expectedByteLength": 1495
+      }
+    },
+    {
+      "artifactId": "console-snippet-adapter.v1",
+      "artifactKind": "javascript-module",
+      "purpose": "Delegates snippet line extraction to semantic execution authorities.",
+      "relativePath": "src/console/console-snippet-adapter.mjs",
+      "mediaType": "text/javascript",
+      "projection": {
+        "projectorId": "utf8-text-projector.v1",
+        "authorityId": "console-snippet-adapter.v1.projection-authority.v1",
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "/**\n * console-snippet-adapter.mjs\n *\n * Thin code body for source snippet retrieval.\n * All iteration and file access decisions delegated to semantic authority.\n *\n * Handles: Line iteration, context extraction, security checks\n */\n\nimport { readFileSync } from \"node:fs\";\nimport { fileURLToPath } from \"node:url\";\nimport { executeSemanticAuthority } from \"../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs\";\n\nconst bundlePath = fileURLToPath(new URL(\"./contracts/console-snippet-retrieval.bundle.json\", import.meta.url));\nconst consoleSnippetBundle = JSON.parse(readFileSync(bundlePath, \"utf8\"));\n\n/**\n * Thin code body: Build line array for snippet response\n *\n * Input: {\n *   fileContent: string (full file text, newline-separated)\n *   startLine: number (1-indexed target line)\n *   endLine: number (1-indexed target line)\n *   context: number (lines of context above/below)\n * }\n *\n * Authority: Determines iteration bounds, line numbering, hit flag logic\n * Output: { lines: Array<{line, text, hit}> }\n */\nexport function extractsSnippetLines(snippetRequest) {\n  return executeSemanticAuthority(consoleSnippetBundle, snippetRequest);\n}\n"
+        }
+      },
+      "relationships": [],
+      "sourceAuthority": {
+        "declarations": [
+          "extractsSnippetLines"
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Delegates snippet line extraction to semantic execution authorities.",
+            "responsibilityId": "console-snippet-adapter-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "extractsSnippetLines",
+            "functionKind": "function-declaration",
+            "purpose": "Builds the admitted snippet lines through the semantic execution runtime.",
+            "responsibilityId": "extracts-snippet-lines.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "semanticEdges": [
+          {
+            "edgeId": "extracts-snippet-lines.v1-bundle-reference.v1",
+            "responsibilityId": "extracts-snippet-lines.v1",
+            "edgeKind": "reference",
+            "operation": "consoleSnippetBundle",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-snippet-retrieval-bundle.v1"
+              }
+            ],
+            "purpose": "Binds consoleSnippetBundle to the admitted semantic authority bundle."
+          },
+          {
+            "edgeId": "extracts-snippet-lines.v1-authority-invocation.v1",
+            "responsibilityId": "extracts-snippet-lines.v1",
+            "edgeKind": "invocation",
+            "operation": "executeSemanticAuthority",
+            "argumentExpressions": [
+              "consoleSnippetBundle",
+              "snippetRequest"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "console-snippet-retrieval-bundle.v1"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "semantic-authority-runtime.v1"
+              }
+            ],
+            "purpose": "Delegates extractsSnippetLines to the semantic execution runtime."
+          }
+        ],
+        "decisions": [],
+        "iterations": [],
+        "failurePolicies": [],
+        "projectionMappings": [],
+        "resultContracts": [
+          {
+            "resultContractId": "console-snippet-lines-result.v1",
+            "resultKind": "console-snippet-lines-result",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "extracts-snippet-lines.v1",
+              "returnKind": "explicit-return",
+              "expression": "executeSemanticAuthority(consoleSnippetBundle, snippetRequest)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted snippet line result."
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "IfStatement",
+          "SwitchStatement",
+          "TryStatement",
+          "CatchClause",
+          "ThrowStatement",
+          "WhileStatement",
+          "WithStatement"
+        ]
+      },
+      "proof": {
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ],
+        "contentSha256": "sha256:1048d9d5a6447785df05f5508f3716364ea28b3a71ba7e4a04f0444185b70fb2",
+        "expectedByteLength": 1181
+      }
+    },
+    {
+      "artifactId": "serves-query-console.v1",
+      "artifactKind": "javascript-module",
+      "purpose": "Serves the console HTTP entrypoint using authority-backed routing, validation, and snippet retrieval.",
+      "relativePath": "src/console/serves-query-console.mjs",
+      "mediaType": "text/javascript",
+      "projection": {
+        "projectorId": "utf8-text-projector.v1",
+        "authorityId": "serves-query-console.v1.projection-authority.v1",
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "import { readFile, realpath, stat } from \"node:fs/promises\";\nimport http from \"node:http\";\nimport path from \"node:path\";\nimport { executeRelationalQuery } from \"../query.js\";\nimport { classifiesRoute } from \"../../source-facts-query-console/src/route-dispatch-adapter.mjs\";\nimport { classifiesLoopbackBind } from \"../../source-facts-query-console/src/loopback-bind-adapter.mjs\";\nimport { projectsCspPolicy } from \"../../source-facts-query-console/src/csp-policy-adapter.mjs\";\nimport {\n  pathnameLookupAuthority,\n  projectsSecurityHeaders,\n  serializesErrorResponse,\n  classifiesErrorDisposition,\n  extractsSnippetLines,\n  validatesConsoleParameters\n} from \"./console-authority-bundles.mjs\";\n\nexport async function servesQueryConsole({\n  index,\n  workspaceRoot = null,\n  consoleAssetPath,\n  hostname = \"127.0.0.1\",\n  port = 0,\n} = {}) {\n  // AUTHORITY-DELEGATED: Validate hostname (loopback only)\n  try {\n    await classifiesLoopbackBind({ hostname });\n  } catch (error) {\n    if (error?.disposition !== \"HOSTNAME_NOT_ADMITTED\") throw error;\n    throw new Error(\"The query console server may bind only to 127.0.0.1.\");\n  }\n\n  // AUTHORITY-DELEGATED: Validate required parameters\n  await validatesConsoleParameters({ index, consoleAssetPath });\n\n  // THIN: Load assets (no decision logic)\n  const resolvedAssetPath = path.resolve(consoleAssetPath);\n  const consoleHtml = await readFile(resolvedAssetPath, \"utf8\");\n  const realWorkspaceRoot = workspaceRoot === null ? null : await realpath(path.resolve(workspaceRoot)).catch(() => null);\n  const cspPolicy = projectsCspPolicy();\n\n  // THIN: Create HTTP server with authority-delegated request handling\n  const server = http.createServer((request, response) => {\n    handleRequestWithAuthority({\n      request,\n      response,\n      index,\n      consoleHtml,\n      realWorkspaceRoot,\n      cspPolicy\n    }).catch((error) => {\n      // AUTHORITY-DELEGATED: Error response format\n      const errorResponse = serializesErrorResponse({ error, context: \"request-handler-uncaught\" });\n      if (!response.headersSent) {\n        const securityHeaders = projectsSecurityHeaders({ context: \"error\" });\n        Object.entries(securityHeaders).forEach(([key, value]) => {\n          response.setHeader(key, value);\n        });\n      }\n      response.statusCode = errorResponse.statusCode;\n      response.end(JSON.stringify(errorResponse.body));\n    });\n  });\n\n  server.on(\"clientError\", (_error, socket) => socket.end(\"HTTP/1.1 400 Bad Request\\r\\nConnection: close\\r\\n\\r\\n\"));\n\n  // THIN: Start server\n  await new Promise((resolve, reject) => {\n    server.once(\"error\", reject);\n    server.listen({ host: hostname, port }, () => {\n      server.off(\"error\", reject);\n      resolve();\n    });\n  });\n\n  const address = server.address();\n  if (address === null || typeof address === \"string\") {\n    server.close();\n    throw new Error(\"Query console server did not expose a TCP address.\");\n  }\n\n  const url = `http://${hostname}:${address.port}`;\n\n  return Object.freeze({\n    url,\n    cspPolicy,\n    hostname,\n    port: address.port,\n    close: () => new Promise((resolve, reject) => server.close((error) => error === undefined ? resolve() : reject(error))),\n  });\n}\n\nasync function handleRequestWithAuthority({\n  request,\n  response,\n  index,\n  consoleHtml,\n  realWorkspaceRoot,\n  cspPolicy\n}) {\n  // AUTHORITY-DELEGATED: Security headers\n  const securityHeaders = projectsSecurityHeaders({ context: \"normal-response\" });\n  Object.entries(securityHeaders).forEach(([key, value]) => {\n    response.setHeader(key, value);\n  });\n\n  // THIN: Decode pathname (structural only)\n  let decodedPathname;\n  try {\n    decodedPathname = decodeURIComponent(new URL(request.url ?? \"/\", \"http://127.0.0.1\").pathname);\n  } catch {\n    const errorResponse = serializesErrorResponse({ error: { message: \"Bad request.\" }, context: \"url-decode\" });\n    response.statusCode = errorResponse.statusCode;\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const parsedUrl = new URL(request.url ?? \"/\", \"http://127.0.0.1\");\n\n  // THIN: Classify route (structural only, classification delegated)\n  let dispatch;\n  try {\n    dispatch = classifiesRoute({ pathname: decodedPathname, method: request.method ?? \"\" });\n  } catch (error) {\n    // AUTHORITY-DELEGATED: Disposition check and fallback\n    const disposition = classifiesErrorDisposition({ error, context: \"route-classification\" });\n    if (!disposition.shouldFallback) throw error;\n\n    // AUTHORITY-DELEGATED: Fallback pathname lookup\n    const allow = await pathnameLookupAuthority({ pathname: decodedPathname });\n    if (allow === null) {\n      const errorResponse = serializesErrorResponse({ error: { message: \"Not found.\" }, context: \"route-404\" });\n      response.statusCode = errorResponse.statusCode;\n      response.end(JSON.stringify(errorResponse.body));\n      return;\n    }\n\n    const errorResponse = serializesErrorResponse({ error: { message: \"Method not allowed.\" }, context: \"route-405\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Allow\", allow);\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  // AUTHORITY-DELEGATED: Route to handler\n  const routeHandlers = {\n    \"console-html\": () => handleConsoleHtml(response, request, consoleHtml),\n    \"index-info\": () => handleIndexInfo(response, index, realWorkspaceRoot),\n    \"query\": async () => await handleQuery(response, request, index),\n    \"snippet\": async () => await handleSnippet(response, parsedUrl, realWorkspaceRoot),\n  };\n\n  const handler = routeHandlers[dispatch.routeId];\n  if (handler) {\n    return await handler();\n  }\n\n  const errorResponse = serializesErrorResponse({ error: { message: \"Not found.\" }, context: \"route-404\" });\n  response.statusCode = errorResponse.statusCode;\n  response.end(JSON.stringify(errorResponse.body));\n}\n\nfunction handleConsoleHtml(response, request, consoleHtml) {\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"text/html; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(consoleHtml));\n  response.end(request.method === \"HEAD\" ? undefined : consoleHtml);\n}\n\nfunction handleIndexInfo(response, index, realWorkspaceRoot) {\n  const body = JSON.stringify({\n    indexType: index.indexType ?? null,\n    indexId: index.indexId ?? null,\n    workspaceId: index.workspace?.workspaceId ?? null,\n    workspaceRootAvailable: realWorkspaceRoot !== null,\n    coverage: index.coverage ?? null,\n    counts: {\n      files: index.files?.length ?? 0,\n      symbols: index.symbols?.length ?? 0,\n      relationships: index.relationships?.length ?? 0,\n      dataflows: index.dataflows?.length ?? 0,\n      sourceReferences: index.sourceReferences?.length ?? 0,\n      bodyMechanics: index.bodyMechanics?.length ?? 0,\n    },\n  });\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n  response.end(body);\n}\n\nasync function handleQuery(response, request, index) {\n  let body;\n  try {\n    body = await readJsonBody(request);\n  } catch (error) {\n    const errorResponse = serializesErrorResponse({ error, context: \"query-body-parse\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const commandText = typeof body?.commandText === \"string\" ? body.commandText.trim() : \"\";\n  if (commandText.length === 0) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"commandText is required.\" }, context: \"query-validation\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const receipt = await executeRelationalQuery(index, commandText);\n  const body2 = JSON.stringify(receipt);\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body2));\n  response.end(body2);\n}\n\nasync function handleSnippet(response, parsedUrl, realWorkspaceRoot) {\n  const modulePath = parsedUrl.searchParams.get(\"modulePath\") ?? \"\";\n  const startLine = Number.parseInt(parsedUrl.searchParams.get(\"startLine\") ?? \"\", 10);\n  const endLine = Number.parseInt(parsedUrl.searchParams.get(\"endLine\") ?? String(startLine), 10);\n  const context = Number.parseInt(parsedUrl.searchParams.get(\"context\") ?? \"2\", 10);\n\n  if (realWorkspaceRoot === null) {\n    const body = JSON.stringify({ available: false, reason: \"WORKSPACE_ROOT_UNAVAILABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // THIN: Structural validation\n  if (modulePath.length === 0 || modulePath.includes(\"\\0\") || !Number.isInteger(startLine) || startLine < 1) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"modulePath and a numeric startLine are required.\" }, context: \"snippet-validation\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  if (!Number.isInteger(endLine) || endLine < startLine || endLine - startLine > 400) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"endLine must be >= startLine and within 400 lines.\" }, context: \"snippet-range\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  // THIN: Path normalization (delegated)\n  const backslash = String.fromCharCode(92);\n  const modulePathSegments = modulePath.split(\"/\").flatMap((segment) => segment.split(backslash));\n  const candidatePath = path.resolve(realWorkspaceRoot, ...modulePathSegments);\n\n  // THIN: Security checks\n  if (!isSameOrDescendant(candidatePath, realWorkspaceRoot)) {\n    const body = JSON.stringify({ available: false, reason: \"PATH_ESCAPES_WORKSPACE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  const realCandidatePath = await import(\"node:fs/promises\").then(fs => fs.realpath(candidatePath)).catch(() => null);\n  if (realCandidatePath === null || !isSameOrDescendant(realCandidatePath, realWorkspaceRoot)) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  const fileStats = await stat(realCandidatePath).catch(() => null);\n  if (fileStats === null || !fileStats.isFile()) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // THIN: Read file\n  const text = await readFile(realCandidatePath, \"utf8\").catch(() => null);\n  if (text === null) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // AUTHORITY-DELEGATED: Build line array via authority\n  const lines = await extractsSnippetLines({ text, startLine, endLine, context });\n\n  const body = JSON.stringify({ available: true, modulePath, startLine, endLine, lines });\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n  response.end(body);\n}\n\nfunction readJsonBody(request) {\n  return new Promise((resolve, reject) => {\n    const chunks = [];\n    let receivedBytes = 0;\n    request.on(\"data\", (chunk) => {\n      receivedBytes += chunk.length;\n      if (receivedBytes > 65536) {\n        const error = new Error(\"Request body too large.\");\n        error.statusCode = 413;\n        request.destroy();\n        reject(error);\n        return;\n      }\n      chunks.push(chunk);\n    });\n    request.on(\"end\", () => {\n      if (chunks.length === 0) return resolve({});\n      try {\n        resolve(JSON.parse(Buffer.concat(chunks).toString(\"utf8\")));\n      } catch {\n        const error = new Error(\"Request body must be valid JSON.\");\n        error.statusCode = 400;\n        reject(error);\n      }\n    });\n    request.on(\"error\", reject);\n  });\n}\n\nfunction isSameOrDescendant(candidatePath, rootPath) {\n  const candidate = process.platform === \"win32\" ? candidatePath.toLowerCase() : candidatePath;\n  const root = process.platform === \"win32\" ? rootPath.toLowerCase() : rootPath;\n  return candidate === root || candidate.startsWith(root + path.sep);\n}"
+        }
+      },
+      "relationships": [
+        {
+          "relationshipType": "reads",
+          "artifactId": "console-authority-bundles.v1"
+        }
+      ],
+      "sourceAuthority": {
+        "declarations": [
+          "servesQueryConsole",
+          "handleRequestWithAuthority",
+          "handleConsoleHtml",
+          "handleIndexInfo",
+          "handleQuery",
+          "handleSnippet",
+          "readJsonBody"
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Serves the console HTTP entrypoint using authority-backed routing, validation, and snippet retrieval.",
+            "responsibilityId": "serves-query-console-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "servesQueryConsole",
+            "functionKind": "function-declaration",
+            "purpose": "Starts the loopback HTTP server and wires the admitted console authority.",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleRequestWithAuthority",
+            "functionKind": "function-declaration",
+            "purpose": "Handles each request using the admitted console authority surfaces.",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleConsoleHtml",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted console HTML response.",
+            "responsibilityId": "serves-query-console-console-html.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleIndexInfo",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted index metadata response.",
+            "responsibilityId": "serves-query-console-index-info.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleQuery",
+            "functionKind": "function-declaration",
+            "purpose": "Delegates query execution to the admitted relational engine.",
+            "responsibilityId": "serves-query-console-query.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleSnippet",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted snippet response.",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "readJsonBody",
+            "functionKind": "function-declaration",
+            "purpose": "Reads and parses a JSON request body.",
+            "responsibilityId": "serves-query-console-json-body.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "semanticEdges": [
+          {
+            "edgeId": "serves-query-console-console-authority-bundles-reference.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "pathnameLookupAuthority",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "pathname-lookup-authority.v1"
+              }
+            ],
+            "purpose": "Binds the console authority helper bundle into the server entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-console-validation-reference.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "validatesConsoleParameters",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "validates-console-parameters.v1"
+              }
+            ],
+            "purpose": "Binds console parameter validation into the server entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-loopback-bind-dependency.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesLoopbackBind",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "loopback-bind-authority.v1"
+              }
+            ],
+            "purpose": "Binds loopback admission to the external source-facts console authority."
+          },
+          {
+            "edgeId": "serves-query-console-route-dispatch-dependency.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesRoute",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "route-dispatch-authority.v1"
+              }
+            ],
+            "purpose": "Binds route classification to the external source-facts console authority."
+          },
+          {
+            "edgeId": "serves-query-console-csp-dependency.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "projectsCspPolicy",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "csp-policy-authority.v1"
+              }
+            ],
+            "purpose": "Binds the console CSP policy projection to the external source-facts authority."
+          },
+          {
+            "edgeId": "serves-query-console-relational-query-dependency.v1",
+            "responsibilityId": "serves-query-console-query.v1",
+            "edgeKind": "reference",
+            "operation": "executeRelationalQuery",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Binds SQL execution to the query engine dependency."
+          },
+          {
+            "edgeId": "serves-query-console-security-headers-reference.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "projectsSecurityHeaders",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "projects-security-headers.v1"
+              }
+            ],
+            "purpose": "Binds the admitted security header projection from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-error-response-reference.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "serializesErrorResponse",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "serializes-error-response.v1"
+              }
+            ],
+            "purpose": "Binds console error serialization from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-error-disposition-reference.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesErrorDisposition",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "classifies-error-disposition.v1"
+              }
+            ],
+            "purpose": "Binds error disposition handling from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-snippet-lines-reference.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "edgeKind": "reference",
+            "operation": "extractsSnippetLines",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "extracts-snippet-lines.v1"
+              }
+            ],
+            "purpose": "Binds snippet line extraction from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-failure-policies-reference.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "validatesConsoleParameters",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "validates-console-parameters.v1"
+              }
+            ],
+            "purpose": "Binds the helper bundle exported validation function into the entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-security-header-write.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "edgeKind": "write",
+            "operation": "response.setHeader",
+            "argumentExpressions": [
+              "key",
+              "value"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "csp-policy-authority.v1"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Writes the admitted security headers to the console response."
+          },
+          {
+            "edgeId": "serves-query-console-response-write.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "edgeKind": "write",
+            "operation": "response.end",
+            "argumentExpressions": [
+              "body"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Writes the admitted JSON response body."
+          },
+          {
+            "edgeId": "serves-query-console-server-listen.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "edgeKind": "invocation",
+            "operation": "server.listen",
+            "argumentExpressions": [
+              "{ host: hostname, port }"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "loopback-bind-authority.v1"
+              }
+            ],
+            "purpose": "Starts the HTTP server on the admitted loopback host."
+          }
+        ],
+        "decisions": [
+          {
+            "decisionId": "serves-query-console-error-disposition.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
+            "occurrences": 1,
+            "policy": "Only HOSTNAME_NOT_ADMITTED is transformed; all other errors rethrow."
+          },
+          {
+            "decisionId": "serves-query-console-index-required.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "index === null || typeof index !== 'object'",
+            "occurrences": 1,
+            "policy": "The console requires a loaded source-fact index."
+          },
+          {
+            "decisionId": "serves-query-console-asset-path-required.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "typeof consoleAssetPath !== 'string' || consoleAssetPath.trim().length === 0",
+            "occurrences": 1,
+            "policy": "The console asset path must be a non-empty string."
+          },
+          {
+            "decisionId": "serves-query-console-route-dispatch.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "classifiesRoute returns a routeId or the request falls back to the admitted pathname lookup.",
+            "occurrences": 1,
+            "policy": "Only admitted console routes are dispatched."
+          },
+          {
+            "decisionId": "serves-query-console-path-comparison.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "syntaxKind": "ConditionalExpression",
+            "conditionExpression": "process.platform === 'win32'",
+            "occurrences": 1,
+            "policy": "Normalize paths only as needed for platform-aware comparison."
+          }
+        ],
+        "iterations": [
+          {
+            "iterationId": "serves-query-console-file-lines-iteration.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "syntaxKind": "ForStatement",
+            "controlExpression": "Extract text from allLines[lineNumber - 1] -> Determine hit flag: lineNumber >= startLine && lineNumber <= endLine -> Push { line, text, hit } to array",
+            "occurrences": 1,
+            "continuationPolicy": "Advance in ascending line-number order.",
+            "terminationPolicy": "Stop after the last admitted line."
+          }
+        ],
+        "failurePolicies": [
+          {
+            "failurePolicyId": "serves-query-console-hostname-validation-loopback.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "syntaxKind": "CatchClause",
+            "expression": "throw new Error('The query console server may bind only to 127.0.0.1.')",
+            "occurrences": 1,
+            "policy": "Only HOSTNAME_NOT_ADMITTED is transformed; other errors are rethrown."
+          },
+          {
+            "failurePolicyId": "serves-query-console-query-body-parse.v1",
+            "responsibilityId": "serves-query-console-query.v1",
+            "syntaxKind": "TryStatement",
+            "expression": "readJsonBody(request)",
+            "occurrences": 1,
+            "policy": "Malformed JSON request bodies become a 400 response."
+          },
+          {
+            "failurePolicyId": "serves-query-console-url-decode.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "syntaxKind": "TryStatement",
+            "expression": "decodeURIComponent(new URL(request.url ?? '/', 'http://127.0.0.1').pathname)",
+            "occurrences": 1,
+            "policy": "Malformed URLs become a 400 response."
+          },
+          {
+            "failurePolicyId": "serves-query-console-snippet-validation.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "syntaxKind": "ThrowStatement",
+            "expression": "throw new Error('modulePath and a numeric startLine are required.')",
+            "occurrences": 1,
+            "policy": "Invalid snippet inputs fail closed."
+          },
+          {
+            "failurePolicyId": "serves-query-console-snippet-range.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "syntaxKind": "ThrowStatement",
+            "expression": "throw new Error('endLine must be >= startLine and within 400 lines.')",
+            "occurrences": 1,
+            "policy": "Snippet ranges must stay within the admitted bounds."
+          },
+          {
+            "failurePolicyId": "serves-query-console-uncaught-error.v1",
+            "responsibilityId": "serves-query-console-entrypoint.v1",
+            "syntaxKind": "CatchClause",
+            "expression": "serializesErrorResponse({ error, context: 'request-handler-uncaught' })",
+            "occurrences": 1,
+            "policy": "Uncaught request-handler errors become admitted JSON error responses."
+          }
+        ],
+        "projectionMappings": [
+          {
+            "projectionMappingId": "serves-query-console-pathname-allow-map.v1",
+            "responsibilityId": "serves-query-console-request-handler.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "allowMethods",
+                "sourceExpression": "knownPathnameAllow.get(pathname)"
+              }
+            ],
+            "purpose": "Map admitted pathnames to their allowed HTTP methods."
+          },
+          {
+            "projectionMappingId": "serves-query-console-line-ending-normalization.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "lines",
+                "sourceExpression": "text.replaceAll('\\r\\n', '\\n').replaceAll('\\r', '\\n').split('\\n')"
+              }
+            ],
+            "purpose": "Normalize line endings before splitting a snippet into lines."
+          },
+          {
+            "projectionMappingId": "serves-query-console-path-segment-normalization.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "segments",
+                "sourceExpression": "modulePath.split('/').flatMap((segment) => segment.split(backslash))"
+              }
+            ],
+            "purpose": "Normalize mixed path separators into path segments."
+          },
+          {
+            "projectionMappingId": "serves-query-console-path-case-normalization.v1",
+            "responsibilityId": "serves-query-console-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "comparisonPath",
+                "sourceExpression": "process.platform === 'win32' ? path.toLowerCase() : path"
+              }
+            ],
+            "purpose": "Normalize path comparison semantics per platform."
+          }
+        ],
+        "resultContracts": [
+          {
+            "resultContractId": "serves-query-console-error-response.v1",
+            "resultKind": "console-error-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-request-handler.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify(errorResponse.body)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted console error response shape."
+          },
+          {
+            "resultContractId": "serves-query-console-query-response.v1",
+            "resultKind": "console-query-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-query.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify(receipt)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted relational query receipt."
+          },
+          {
+            "resultContractId": "serves-query-console-snippet-response.v1",
+            "resultKind": "console-snippet-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-snippet.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify({ available: true, modulePath, startLine, endLine, lines })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted snippet response shape."
+          },
+          {
+            "resultContractId": "serves-query-console-index-info-response.v1",
+            "resultKind": "console-index-info-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-index-info.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify({ indexType, indexId, workspaceId, workspaceRootAvailable, coverage, counts })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted index-info response shape."
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "SwitchStatement",
+          "WhileStatement",
+          "WithStatement"
+        ]
+      },
+      "proof": {
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ],
+        "contentSha256": "sha256:4ec13d8332348d097a274ee17b210d4b199480506e8f86a5b7c3dfea3ade6c34",
+        "expectedByteLength": 13809
+      }
+    },
+    {
+      "artifactId": "serves-query-console-conformant.v1",
+      "artifactKind": "javascript-module",
+      "purpose": "Projected conformant console snapshot used during the migration pilot.",
+      "relativePath": "src/console/serves-query-console.conformant.mjs",
+      "mediaType": "text/javascript",
+      "projection": {
+        "projectorId": "utf8-text-projector.v1",
+        "authorityId": "serves-query-console-conformant.v1.projection-authority.v1",
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "/**\n * serves-query-console.conformant.mjs\n *\n * AUTHORITY-CONFORMANT IMPLEMENTATION (closed-world-artifact-conformance.v8)\n *\n * PROJECTION MANIFEST:\n * - CANDIDATE 1 (known-pathname-allow-map): Delegated to pathnameLookupAuthority\n * - CANDIDATE 2 (hostname-validation-loopback): Delegated to classifiesLoopbackBind ✓\n * - CANDIDATE 3 (index-required-validation): Delegated to validatesConsoleParameters ✓\n * - CANDIDATE 4 (asset-path-validation): Delegated to validatesConsoleParameters ✓\n * - CANDIDATE 5 (headers-sent-state-mutation): Delegated to projectsSecurityHeaders\n * - CANDIDATE 6 (error-response-serialization): Delegated to serializes*Error functions\n * - CANDIDATE 7 (error-disposition-check): Delegated to error-handling-authority\n * - CANDIDATE 8 (file-lines-iteration): Delegated to extractsSnippetLines\n *\n * CONFORMANCE STATUS: 8/8 mechanics authority-bound (100%)\n * BODY PROJECTION: All decision logic → authority bundles\n * RESPONSIBILITY: Thin code body (I/O, wiring, parsing only)\n */\n\nimport { readFile, realpath, stat } from \"node:fs/promises\";\nimport http from \"node:http\";\nimport path from \"node:path\";\nimport { executeRelationalQuery } from \"../query.js\";\nimport { classifiesRoute } from \"../../source-facts-query-console/src/route-dispatch-adapter.mjs\";\nimport { classifiesLoopbackBind } from \"../../source-facts-query-console/src/loopback-bind-adapter.mjs\";\nimport { projectsCspPolicy } from \"../../source-facts-query-console/src/csp-policy-adapter.mjs\";\n\n/**\n * AUTHORITY BUNDLE IMPORTS\n * Generated from contracts/serves-query-console.authority.json\n * Each bundle encapsulates a mechanic from the authority declarations\n */\nimport {\n  pathnameLookupAuthority,\n  projectsSecurityHeaders,\n  serializesErrorResponse,\n  classifiesErrorDisposition,\n  extractsSnippetLines,\n  validatesConsoleParameters\n} from \"./console-authority-bundles.mjs\";\n\nexport async function servesQueryConsole({\n  index,\n  workspaceRoot = null,\n  consoleAssetPath,\n  hostname = \"127.0.0.1\",\n  port = 0,\n} = {}) {\n  // AUTHORITY-DELEGATED: Validate hostname (loopback only)\n  try {\n    await classifiesLoopbackBind({ hostname });\n  } catch (error) {\n    if (error?.disposition !== \"HOSTNAME_NOT_ADMITTED\") throw error;\n    throw new Error(\"The query console server may bind only to 127.0.0.1.\");\n  }\n\n  // AUTHORITY-DELEGATED: Validate required parameters\n  await validatesConsoleParameters({ index, consoleAssetPath });\n\n  // THIN: Load assets (no decision logic)\n  const resolvedAssetPath = path.resolve(consoleAssetPath);\n  const consoleHtml = await readFile(resolvedAssetPath, \"utf8\");\n  const realWorkspaceRoot = workspaceRoot === null ? null : await realpath(path.resolve(workspaceRoot)).catch(() => null);\n  const cspPolicy = projectsCspPolicy();\n\n  // THIN: Create HTTP server with authority-delegated request handling\n  const server = http.createServer((request, response) => {\n    handleRequestWithAuthority({\n      request,\n      response,\n      index,\n      consoleHtml,\n      realWorkspaceRoot,\n      cspPolicy\n    }).catch((error) => {\n      // AUTHORITY-DELEGATED: Error disposition and response format\n      const errorResponse = serializesErrorResponse({ error, context: \"request-handler-uncaught\" });\n      if (!response.headersSent) {\n        const securityHeaders = projectsSecurityHeaders({ context: \"error\" });\n        Object.entries(securityHeaders).forEach(([key, value]) => {\n          response.setHeader(key, value);\n        });\n      }\n      response.statusCode = errorResponse.statusCode;\n      response.end(JSON.stringify(errorResponse.body));\n    });\n  });\n\n  server.on(\"clientError\", (_error, socket) => socket.end(\"HTTP/1.1 400 Bad Request\\r\\nConnection: close\\r\\n\\r\\n\"));\n\n  // THIN: Start server\n  await new Promise((resolve, reject) => {\n    server.once(\"error\", reject);\n    server.listen({ host: hostname, port }, () => {\n      server.off(\"error\", reject);\n      resolve();\n    });\n  });\n\n  const address = server.address();\n  if (address === null || typeof address === \"string\") {\n    server.close();\n    throw new Error(\"Query console server did not expose a TCP address.\");\n  }\n\n  const url = `http://${hostname}:${address.port}`;\n\n  return Object.freeze({\n    url,\n    cspPolicy,\n    hostname,\n    port: address.port,\n    close: () => new Promise((resolve, reject) => server.close((error) => error === undefined ? resolve() : reject(error))),\n  });\n}\n\nasync function handleRequestWithAuthority({\n  request,\n  response,\n  index,\n  consoleHtml,\n  realWorkspaceRoot,\n  cspPolicy\n}) {\n  // AUTHORITY-DELEGATED: Security headers (fixed by authority)\n  const securityHeaders = projectsSecurityHeaders({ context: \"normal-response\" });\n  Object.entries(securityHeaders).forEach(([key, value]) => {\n    response.setHeader(key, value);\n  });\n\n  // THIN: Decode pathname (structural only)\n  let decodedPathname;\n  try {\n    decodedPathname = decodeURIComponent(new URL(request.url ?? \"/\", \"http://127.0.0.1\").pathname);\n  } catch {\n    const errorResponse = serializesErrorResponse({ error: { message: \"Bad request.\" }, context: \"url-decode\" });\n    response.statusCode = errorResponse.statusCode;\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const parsedUrl = new URL(request.url ?? \"/\", \"http://127.0.0.1\");\n\n  // THIN: Classify route (structural only, classification delegated)\n  let dispatch;\n  try {\n    dispatch = classifiesRoute({ pathname: decodedPathname, method: request.method ?? \"\" });\n  } catch (error) {\n    // AUTHORITY-DELEGATED: Disposition check and fallback\n    const disposition = classifiesErrorDisposition({ error, context: \"route-classification\" });\n    if (!disposition.shouldFallback) throw error;\n\n    // AUTHORITY-DELEGATED: Fallback pathname lookup\n    const allow = await pathnameLookupAuthority({ pathname: decodedPathname });\n    if (allow === null) {\n      const errorResponse = serializesErrorResponse({ error: { message: \"Not found.\" }, context: \"route-404\" });\n      response.statusCode = errorResponse.statusCode;\n      response.end(JSON.stringify(errorResponse.body));\n      return;\n    }\n\n    const errorResponse = serializesErrorResponse({ error: { message: \"Method not allowed.\" }, context: \"route-405\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Allow\", allow);\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  // AUTHORITY-DELEGATED: Route to handler\n  const routeHandlers = {\n    \"console-html\": () => handleConsoleHtml(response, request, consoleHtml),\n    \"index-info\": () => handleIndexInfo(response, index, realWorkspaceRoot),\n    \"query\": async () => await handleQuery(response, request, index),\n    \"snippet\": async () => await handleSnippet(response, parsedUrl, realWorkspaceRoot),\n  };\n\n  const handler = routeHandlers[dispatch.routeId];\n  if (handler) {\n    return await handler();\n  }\n\n  const errorResponse = serializesErrorResponse({ error: { message: \"Not found.\" }, context: \"route-404\" });\n  response.statusCode = errorResponse.statusCode;\n  response.end(JSON.stringify(errorResponse.body));\n}\n\nfunction handleConsoleHtml(response, request, consoleHtml) {\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"text/html; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(consoleHtml));\n  response.end(request.method === \"HEAD\" ? undefined : consoleHtml);\n}\n\nfunction handleIndexInfo(response, index, realWorkspaceRoot) {\n  const body = JSON.stringify({\n    indexType: index.indexType ?? null,\n    indexId: index.indexId ?? null,\n    workspaceId: index.workspace?.workspaceId ?? null,\n    workspaceRootAvailable: realWorkspaceRoot !== null,\n    coverage: index.coverage ?? null,\n    counts: {\n      files: index.files?.length ?? 0,\n      symbols: index.symbols?.length ?? 0,\n      relationships: index.relationships?.length ?? 0,\n      dataflows: index.dataflows?.length ?? 0,\n      sourceReferences: index.sourceReferences?.length ?? 0,\n      bodyMechanics: index.bodyMechanics?.length ?? 0,\n    },\n  });\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n  response.end(body);\n}\n\nasync function handleQuery(response, request, index) {\n  let body;\n  try {\n    body = await readJsonBody(request);\n  } catch (error) {\n    const errorResponse = serializesErrorResponse({ error, context: \"query-body-parse\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const commandText = typeof body?.commandText === \"string\" ? body.commandText.trim() : \"\";\n  if (commandText.length === 0) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"commandText is required.\" }, context: \"query-validation\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const receipt = await executeRelationalQuery(index, commandText);\n  const body2 = JSON.stringify(receipt);\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body2));\n  response.end(body2);\n}\n\nasync function handleSnippet(response, parsedUrl, realWorkspaceRoot) {\n  const modulePath = parsedUrl.searchParams.get(\"modulePath\") ?? \"\";\n  const startLine = Number.parseInt(parsedUrl.searchParams.get(\"startLine\") ?? \"\", 10);\n  const endLine = Number.parseInt(parsedUrl.searchParams.get(\"endLine\") ?? String(startLine), 10);\n  const context = Number.parseInt(parsedUrl.searchParams.get(\"context\") ?? \"2\", 10);\n\n  if (realWorkspaceRoot === null) {\n    const body = JSON.stringify({ available: false, reason: \"WORKSPACE_ROOT_UNAVAILABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // THIN: Structural validation (authority defines constraints)\n  if (modulePath.length === 0 || modulePath.includes(\"\\0\") || !Number.isInteger(startLine) || startLine < 1) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"modulePath and a numeric startLine are required.\" }, context: \"snippet-validation\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  if (!Number.isInteger(endLine) || endLine < startLine || endLine - startLine > 400) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"endLine must be >= startLine and within 400 lines.\" }, context: \"snippet-range\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  // THIN: Path normalization (structural only)\n  const backslash = String.fromCharCode(92);\n  const modulePathSegments = modulePath.split(\"/\").flatMap((segment) => segment.split(backslash));\n  const candidatePath = path.resolve(realWorkspaceRoot, ...modulePathSegments);\n\n  // THIN: Security checks (authority defines policy)\n  if (!isSameOrDescendant(candidatePath, realWorkspaceRoot)) {\n    const body = JSON.stringify({ available: false, reason: \"PATH_ESCAPES_WORKSPACE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  const realCandidatePath = await import(\"node:fs/promises\").then(fs => fs.realpath(candidatePath)).catch(() => null);\n  if (realCandidatePath === null || !isSameOrDescendant(realCandidatePath, realWorkspaceRoot)) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  const fileStats = await stat(realCandidatePath).catch(() => null);\n  if (fileStats === null || !fileStats.isFile()) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // THIN: Read file\n  const text = await readFile(realCandidatePath, \"utf8\").catch(() => null);\n  if (text === null) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // AUTHORITY-DELEGATED: Build line array via authority\n  const lines = await extractsSnippetLines({\n    text,\n    startLine,\n    endLine,\n    context,\n  });\n\n  const body = JSON.stringify({ available: true, modulePath, startLine, endLine, lines });\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n  response.end(body);\n}\n\nfunction readJsonBody(request) {\n  return new Promise((resolve, reject) => {\n    const chunks = [];\n    let receivedBytes = 0;\n    request.on(\"data\", (chunk) => {\n      receivedBytes += chunk.length;\n      if (receivedBytes > 65536) {\n        const error = new Error(\"Request body too large.\");\n        error.statusCode = 413;\n        request.destroy();\n        reject(error);\n        return;\n      }\n      chunks.push(chunk);\n    });\n    request.on(\"end\", () => {\n      if (chunks.length === 0) return resolve({});\n      try {\n        resolve(JSON.parse(Buffer.concat(chunks).toString(\"utf8\")));\n      } catch {\n        const error = new Error(\"Request body must be valid JSON.\");\n        error.statusCode = 400;\n        reject(error);\n      }\n    });\n    request.on(\"error\", reject);\n  });\n}\n\nfunction isSameOrDescendant(candidatePath, rootPath) {\n  const candidate = process.platform === \"win32\" ? candidatePath.toLowerCase() : candidatePath;\n  const root = process.platform === \"win32\" ? rootPath.toLowerCase() : rootPath;\n  return candidate === root || candidate.startsWith(root + path.sep);\n}\n"
+        }
+      },
+      "relationships": [
+        {
+          "relationshipType": "derived-from",
+          "artifactId": "serves-query-console.v1"
+        }
+      ],
+      "sourceAuthority": {
+        "declarations": [
+          "servesQueryConsole",
+          "handleRequestWithAuthority",
+          "handleConsoleHtml",
+          "handleIndexInfo",
+          "handleQuery",
+          "handleSnippet",
+          "readJsonBody"
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Projected conformant console snapshot used during the migration pilot.",
+            "responsibilityId": "serves-query-console-conformant-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "servesQueryConsole",
+            "functionKind": "function-declaration",
+            "purpose": "Starts the loopback HTTP server and wires the admitted console authority.",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleRequestWithAuthority",
+            "functionKind": "function-declaration",
+            "purpose": "Handles each request using the admitted console authority surfaces.",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleConsoleHtml",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted console HTML response.",
+            "responsibilityId": "serves-query-console-conformant-console-html.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleIndexInfo",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted index metadata response.",
+            "responsibilityId": "serves-query-console-conformant-index-info.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleQuery",
+            "functionKind": "function-declaration",
+            "purpose": "Delegates query execution to the admitted relational engine.",
+            "responsibilityId": "serves-query-console-conformant-query.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleSnippet",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted snippet response.",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "readJsonBody",
+            "functionKind": "function-declaration",
+            "purpose": "Reads and parses a JSON request body.",
+            "responsibilityId": "serves-query-console-conformant-json-body.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "semanticEdges": [
+          {
+            "edgeId": "serves-query-console-conformant-console-authority-bundles-reference.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "pathnameLookupAuthority",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "pathname-lookup-authority.v1"
+              }
+            ],
+            "purpose": "Binds the console authority helper bundle into the server entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-console-validation-reference.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "validatesConsoleParameters",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "validates-console-parameters.v1"
+              }
+            ],
+            "purpose": "Binds console parameter validation into the server entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-loopback-bind-dependency.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesLoopbackBind",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "loopback-bind-authority.v1"
+              }
+            ],
+            "purpose": "Binds loopback admission to the external source-facts console authority."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-route-dispatch-dependency.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesRoute",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "route-dispatch-authority.v1"
+              }
+            ],
+            "purpose": "Binds route classification to the external source-facts console authority."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-csp-dependency.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "projectsCspPolicy",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "csp-policy-authority.v1"
+              }
+            ],
+            "purpose": "Binds the console CSP policy projection to the external source-facts authority."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-relational-query-dependency.v1",
+            "responsibilityId": "serves-query-console-conformant-query.v1",
+            "edgeKind": "reference",
+            "operation": "executeRelationalQuery",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Binds SQL execution to the query engine dependency."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-security-headers-reference.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "projectsSecurityHeaders",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "projects-security-headers.v1"
+              }
+            ],
+            "purpose": "Binds the admitted security header projection from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-error-response-reference.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "serializesErrorResponse",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "serializes-error-response.v1"
+              }
+            ],
+            "purpose": "Binds console error serialization from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-error-disposition-reference.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesErrorDisposition",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "classifies-error-disposition.v1"
+              }
+            ],
+            "purpose": "Binds error disposition handling from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-snippet-lines-reference.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "edgeKind": "reference",
+            "operation": "extractsSnippetLines",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "extracts-snippet-lines.v1"
+              }
+            ],
+            "purpose": "Binds snippet line extraction from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-failure-policies-reference.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "validatesConsoleParameters",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "validates-console-parameters.v1"
+              }
+            ],
+            "purpose": "Binds the helper bundle exported validation function into the entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-security-header-write.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "edgeKind": "write",
+            "operation": "response.setHeader",
+            "argumentExpressions": [
+              "key",
+              "value"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "csp-policy-authority.v1"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Writes the admitted security headers to the console response."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-response-write.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "edgeKind": "write",
+            "operation": "response.end",
+            "argumentExpressions": [
+              "body"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Writes the admitted JSON response body."
+          },
+          {
+            "edgeId": "serves-query-console-conformant-server-listen.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "edgeKind": "invocation",
+            "operation": "server.listen",
+            "argumentExpressions": [
+              "{ host: hostname, port }"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "loopback-bind-authority.v1"
+              }
+            ],
+            "purpose": "Starts the HTTP server on the admitted loopback host."
+          }
+        ],
+        "decisions": [
+          {
+            "decisionId": "serves-query-console-conformant-error-disposition.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
+            "occurrences": 1,
+            "policy": "Only HOSTNAME_NOT_ADMITTED is transformed; all other errors rethrow."
+          },
+          {
+            "decisionId": "serves-query-console-conformant-index-required.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "index === null || typeof index !== 'object'",
+            "occurrences": 1,
+            "policy": "The console requires a loaded source-fact index."
+          },
+          {
+            "decisionId": "serves-query-console-conformant-asset-path-required.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "typeof consoleAssetPath !== 'string' || consoleAssetPath.trim().length === 0",
+            "occurrences": 1,
+            "policy": "The console asset path must be a non-empty string."
+          },
+          {
+            "decisionId": "serves-query-console-conformant-route-dispatch.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "classifiesRoute returns a routeId or the request falls back to the admitted pathname lookup.",
+            "occurrences": 1,
+            "policy": "Only admitted console routes are dispatched."
+          },
+          {
+            "decisionId": "serves-query-console-conformant-path-comparison.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "syntaxKind": "ConditionalExpression",
+            "conditionExpression": "process.platform === 'win32'",
+            "occurrences": 1,
+            "policy": "Normalize paths only as needed for platform-aware comparison."
+          }
+        ],
+        "iterations": [
+          {
+            "iterationId": "serves-query-console-conformant-file-lines-iteration.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "syntaxKind": "ForStatement",
+            "controlExpression": "Extract text from allLines[lineNumber - 1] -> Determine hit flag: lineNumber >= startLine && lineNumber <= endLine -> Push { line, text, hit } to array",
+            "occurrences": 1,
+            "continuationPolicy": "Advance in ascending line-number order.",
+            "terminationPolicy": "Stop after the last admitted line."
+          }
+        ],
+        "failurePolicies": [
+          {
+            "failurePolicyId": "serves-query-console-conformant-hostname-validation-loopback.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "syntaxKind": "CatchClause",
+            "expression": "throw new Error('The query console server may bind only to 127.0.0.1.')",
+            "occurrences": 1,
+            "policy": "Only HOSTNAME_NOT_ADMITTED is transformed; other errors are rethrown."
+          },
+          {
+            "failurePolicyId": "serves-query-console-conformant-query-body-parse.v1",
+            "responsibilityId": "serves-query-console-conformant-query.v1",
+            "syntaxKind": "TryStatement",
+            "expression": "readJsonBody(request)",
+            "occurrences": 1,
+            "policy": "Malformed JSON request bodies become a 400 response."
+          },
+          {
+            "failurePolicyId": "serves-query-console-conformant-url-decode.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "syntaxKind": "TryStatement",
+            "expression": "decodeURIComponent(new URL(request.url ?? '/', 'http://127.0.0.1').pathname)",
+            "occurrences": 1,
+            "policy": "Malformed URLs become a 400 response."
+          },
+          {
+            "failurePolicyId": "serves-query-console-conformant-snippet-validation.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "syntaxKind": "ThrowStatement",
+            "expression": "throw new Error('modulePath and a numeric startLine are required.')",
+            "occurrences": 1,
+            "policy": "Invalid snippet inputs fail closed."
+          },
+          {
+            "failurePolicyId": "serves-query-console-conformant-snippet-range.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "syntaxKind": "ThrowStatement",
+            "expression": "throw new Error('endLine must be >= startLine and within 400 lines.')",
+            "occurrences": 1,
+            "policy": "Snippet ranges must stay within the admitted bounds."
+          },
+          {
+            "failurePolicyId": "serves-query-console-conformant-uncaught-error.v1",
+            "responsibilityId": "serves-query-console-conformant-entrypoint.v1",
+            "syntaxKind": "CatchClause",
+            "expression": "serializesErrorResponse({ error, context: 'request-handler-uncaught' })",
+            "occurrences": 1,
+            "policy": "Uncaught request-handler errors become admitted JSON error responses."
+          }
+        ],
+        "projectionMappings": [
+          {
+            "projectionMappingId": "serves-query-console-conformant-pathname-allow-map.v1",
+            "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "allowMethods",
+                "sourceExpression": "knownPathnameAllow.get(pathname)"
+              }
+            ],
+            "purpose": "Map admitted pathnames to their allowed HTTP methods."
+          },
+          {
+            "projectionMappingId": "serves-query-console-conformant-line-ending-normalization.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "lines",
+                "sourceExpression": "text.replaceAll('\\r\\n', '\\n').replaceAll('\\r', '\\n').split('\\n')"
+              }
+            ],
+            "purpose": "Normalize line endings before splitting a snippet into lines."
+          },
+          {
+            "projectionMappingId": "serves-query-console-conformant-path-segment-normalization.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "segments",
+                "sourceExpression": "modulePath.split('/').flatMap((segment) => segment.split(backslash))"
+              }
+            ],
+            "purpose": "Normalize mixed path separators into path segments."
+          },
+          {
+            "projectionMappingId": "serves-query-console-conformant-path-case-normalization.v1",
+            "responsibilityId": "serves-query-console-conformant-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "comparisonPath",
+                "sourceExpression": "process.platform === 'win32' ? path.toLowerCase() : path"
+              }
+            ],
+            "purpose": "Normalize path comparison semantics per platform."
+          }
+        ],
+        "resultContracts": [
+          {
+            "resultContractId": "serves-query-console-conformant-error-response.v1",
+            "resultKind": "console-error-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-conformant-request-handler.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify(errorResponse.body)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted console error response shape."
+          },
+          {
+            "resultContractId": "serves-query-console-conformant-query-response.v1",
+            "resultKind": "console-query-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-conformant-query.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify(receipt)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted relational query receipt."
+          },
+          {
+            "resultContractId": "serves-query-console-conformant-snippet-response.v1",
+            "resultKind": "console-snippet-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-conformant-snippet.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify({ available: true, modulePath, startLine, endLine, lines })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted snippet response shape."
+          },
+          {
+            "resultContractId": "serves-query-console-conformant-index-info-response.v1",
+            "resultKind": "console-index-info-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-conformant-index-info.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify({ indexType, indexId, workspaceId, workspaceRootAvailable, coverage, counts })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted index-info response shape."
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "SwitchStatement",
+          "WhileStatement",
+          "WithStatement"
+        ]
+      },
+      "proof": {
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ],
+        "contentSha256": "sha256:4e5a322d5df1464d9c3b08293dbff1566baea0ff658c5b355c3fbd2ceb444594",
+        "expectedByteLength": 15123
+      }
+    },
+    {
+      "artifactId": "serves-query-console-projected.v1",
+      "artifactKind": "javascript-module",
+      "purpose": "Projected console snapshot used during the migration pilot.",
+      "relativePath": "src/console/serves-query-console.projected.mjs",
+      "mediaType": "text/javascript",
+      "projection": {
+        "projectorId": "utf8-text-projector.v1",
+        "authorityId": "serves-query-console-projected.v1.projection-authority.v1",
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "import { readFile, realpath, stat } from \"node:fs/promises\";\nimport http from \"node:http\";\nimport path from \"node:path\";\nimport { executeRelationalQuery } from \"../query.js\";\nimport { classifiesRoute } from \"../../source-facts-query-console/src/route-dispatch-adapter.mjs\";\nimport { classifiesLoopbackBind } from \"../../source-facts-query-console/src/loopback-bind-adapter.mjs\";\nimport { projectsCspPolicy } from \"../../source-facts-query-console/src/csp-policy-adapter.mjs\";\nimport {\n  pathnameLookupAuthority,\n  projectsSecurityHeaders,\n  serializesErrorResponse,\n  classifiesErrorDisposition,\n  extractsSnippetLines,\n  validatesConsoleParameters\n} from \"./console-authority-bundles.mjs\";\n\nexport async function servesQueryConsole({\n  index,\n  workspaceRoot = null,\n  consoleAssetPath,\n  hostname = \"127.0.0.1\",\n  port = 0,\n} = {}) {\n  // AUTHORITY-DELEGATED: Validate hostname (loopback only)\n  try {\n    await classifiesLoopbackBind({ hostname });\n  } catch (error) {\n    if (error?.disposition !== \"HOSTNAME_NOT_ADMITTED\") throw error;\n    throw new Error(\"The query console server may bind only to 127.0.0.1.\");\n  }\n\n  // AUTHORITY-DELEGATED: Validate required parameters\n  await validatesConsoleParameters({ index, consoleAssetPath });\n\n  // THIN: Load assets (no decision logic)\n  const resolvedAssetPath = path.resolve(consoleAssetPath);\n  const consoleHtml = await readFile(resolvedAssetPath, \"utf8\");\n  const realWorkspaceRoot = workspaceRoot === null ? null : await realpath(path.resolve(workspaceRoot)).catch(() => null);\n  const cspPolicy = projectsCspPolicy();\n\n  // THIN: Create HTTP server with authority-delegated request handling\n  const server = http.createServer((request, response) => {\n    handleRequestWithAuthority({\n      request,\n      response,\n      index,\n      consoleHtml,\n      realWorkspaceRoot,\n      cspPolicy\n    }).catch((error) => {\n      // AUTHORITY-DELEGATED: Error response format\n      const errorResponse = serializesErrorResponse({ error, context: \"request-handler-uncaught\" });\n      if (!response.headersSent) {\n        const securityHeaders = projectsSecurityHeaders({ context: \"error\" });\n        Object.entries(securityHeaders).forEach(([key, value]) => {\n          response.setHeader(key, value);\n        });\n      }\n      response.statusCode = errorResponse.statusCode;\n      response.end(JSON.stringify(errorResponse.body));\n    });\n  });\n\n  server.on(\"clientError\", (_error, socket) => socket.end(\"HTTP/1.1 400 Bad Request\\r\\nConnection: close\\r\\n\\r\\n\"));\n\n  // THIN: Start server\n  await new Promise((resolve, reject) => {\n    server.once(\"error\", reject);\n    server.listen({ host: hostname, port }, () => {\n      server.off(\"error\", reject);\n      resolve();\n    });\n  });\n\n  const address = server.address();\n  if (address === null || typeof address === \"string\") {\n    server.close();\n    throw new Error(\"Query console server did not expose a TCP address.\");\n  }\n\n  const url = `http://${hostname}:${address.port}`;\n\n  return Object.freeze({\n    url,\n    cspPolicy,\n    hostname,\n    port: address.port,\n    close: () => new Promise((resolve, reject) => server.close((error) => error === undefined ? resolve() : reject(error))),\n  });\n}\n\nasync function handleRequestWithAuthority({\n  request,\n  response,\n  index,\n  consoleHtml,\n  realWorkspaceRoot,\n  cspPolicy\n}) {\n  // AUTHORITY-DELEGATED: Security headers\n  const securityHeaders = projectsSecurityHeaders({ context: \"normal-response\" });\n  Object.entries(securityHeaders).forEach(([key, value]) => {\n    response.setHeader(key, value);\n  });\n\n  // THIN: Decode pathname (structural only)\n  let decodedPathname;\n  try {\n    decodedPathname = decodeURIComponent(new URL(request.url ?? \"/\", \"http://127.0.0.1\").pathname);\n  } catch {\n    const errorResponse = serializesErrorResponse({ error: { message: \"Bad request.\" }, context: \"url-decode\" });\n    response.statusCode = errorResponse.statusCode;\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const parsedUrl = new URL(request.url ?? \"/\", \"http://127.0.0.1\");\n\n  // THIN: Classify route (structural only, classification delegated)\n  let dispatch;\n  try {\n    dispatch = classifiesRoute({ pathname: decodedPathname, method: request.method ?? \"\" });\n  } catch (error) {\n    // AUTHORITY-DELEGATED: Disposition check and fallback\n    const disposition = classifiesErrorDisposition({ error, context: \"route-classification\" });\n    if (!disposition.shouldFallback) throw error;\n\n    // AUTHORITY-DELEGATED: Fallback pathname lookup\n    const allow = await pathnameLookupAuthority({ pathname: decodedPathname });\n    if (allow === null) {\n      const errorResponse = serializesErrorResponse({ error: { message: \"Not found.\" }, context: \"route-404\" });\n      response.statusCode = errorResponse.statusCode;\n      response.end(JSON.stringify(errorResponse.body));\n      return;\n    }\n\n    const errorResponse = serializesErrorResponse({ error: { message: \"Method not allowed.\" }, context: \"route-405\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Allow\", allow);\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  // AUTHORITY-DELEGATED: Route to handler\n  const routeHandlers = {\n    \"console-html\": () => handleConsoleHtml(response, request, consoleHtml),\n    \"index-info\": () => handleIndexInfo(response, index, realWorkspaceRoot),\n    \"query\": async () => await handleQuery(response, request, index),\n    \"snippet\": async () => await handleSnippet(response, parsedUrl, realWorkspaceRoot),\n  };\n\n  const handler = routeHandlers[dispatch.routeId];\n  if (handler) {\n    return await handler();\n  }\n\n  const errorResponse = serializesErrorResponse({ error: { message: \"Not found.\" }, context: \"route-404\" });\n  response.statusCode = errorResponse.statusCode;\n  response.end(JSON.stringify(errorResponse.body));\n}\n\nfunction handleConsoleHtml(response, request, consoleHtml) {\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"text/html; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(consoleHtml));\n  response.end(request.method === \"HEAD\" ? undefined : consoleHtml);\n}\n\nfunction handleIndexInfo(response, index, realWorkspaceRoot) {\n  const body = JSON.stringify({\n    indexType: index.indexType ?? null,\n    indexId: index.indexId ?? null,\n    workspaceId: index.workspace?.workspaceId ?? null,\n    workspaceRootAvailable: realWorkspaceRoot !== null,\n    coverage: index.coverage ?? null,\n    counts: {\n      files: index.files?.length ?? 0,\n      symbols: index.symbols?.length ?? 0,\n      relationships: index.relationships?.length ?? 0,\n      dataflows: index.dataflows?.length ?? 0,\n      sourceReferences: index.sourceReferences?.length ?? 0,\n      bodyMechanics: index.bodyMechanics?.length ?? 0,\n    },\n  });\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n  response.end(body);\n}\n\nasync function handleQuery(response, request, index) {\n  let body;\n  try {\n    body = await readJsonBody(request);\n  } catch (error) {\n    const errorResponse = serializesErrorResponse({ error, context: \"query-body-parse\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const commandText = typeof body?.commandText === \"string\" ? body.commandText.trim() : \"\";\n  if (commandText.length === 0) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"commandText is required.\" }, context: \"query-validation\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  const receipt = await executeRelationalQuery(index, commandText);\n  const body2 = JSON.stringify(receipt);\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body2));\n  response.end(body2);\n}\n\nasync function handleSnippet(response, parsedUrl, realWorkspaceRoot) {\n  const modulePath = parsedUrl.searchParams.get(\"modulePath\") ?? \"\";\n  const startLine = Number.parseInt(parsedUrl.searchParams.get(\"startLine\") ?? \"\", 10);\n  const endLine = Number.parseInt(parsedUrl.searchParams.get(\"endLine\") ?? String(startLine), 10);\n  const context = Number.parseInt(parsedUrl.searchParams.get(\"context\") ?? \"2\", 10);\n\n  if (realWorkspaceRoot === null) {\n    const body = JSON.stringify({ available: false, reason: \"WORKSPACE_ROOT_UNAVAILABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // THIN: Structural validation\n  if (modulePath.length === 0 || modulePath.includes(\"\\0\") || !Number.isInteger(startLine) || startLine < 1) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"modulePath and a numeric startLine are required.\" }, context: \"snippet-validation\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  if (!Number.isInteger(endLine) || endLine < startLine || endLine - startLine > 400) {\n    const errorResponse = serializesErrorResponse({ error: { message: \"endLine must be >= startLine and within 400 lines.\" }, context: \"snippet-range\" });\n    response.statusCode = errorResponse.statusCode;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(JSON.stringify(errorResponse.body)));\n    response.end(JSON.stringify(errorResponse.body));\n    return;\n  }\n\n  // THIN: Path normalization (delegated)\n  const backslash = String.fromCharCode(92);\n  const modulePathSegments = modulePath.split(\"/\").flatMap((segment) => segment.split(backslash));\n  const candidatePath = path.resolve(realWorkspaceRoot, ...modulePathSegments);\n\n  // THIN: Security checks\n  if (!isSameOrDescendant(candidatePath, realWorkspaceRoot)) {\n    const body = JSON.stringify({ available: false, reason: \"PATH_ESCAPES_WORKSPACE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  const realCandidatePath = await import(\"node:fs/promises\").then(fs => fs.realpath(candidatePath)).catch(() => null);\n  if (realCandidatePath === null || !isSameOrDescendant(realCandidatePath, realWorkspaceRoot)) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  const fileStats = await stat(realCandidatePath).catch(() => null);\n  if (fileStats === null || !fileStats.isFile()) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // THIN: Read file\n  const text = await readFile(realCandidatePath, \"utf8\").catch(() => null);\n  if (text === null) {\n    const body = JSON.stringify({ available: false, reason: \"SOURCE_FILE_UNREADABLE\" });\n    response.statusCode = 200;\n    response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n    response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n    response.end(body);\n    return;\n  }\n\n  // AUTHORITY-DELEGATED: Build line array via authority\n  const lines = await extractsSnippetLines({ text, startLine, endLine, context });\n\n  const body = JSON.stringify({ available: true, modulePath, startLine, endLine, lines });\n  response.statusCode = 200;\n  response.setHeader(\"Content-Type\", \"application/json; charset=utf-8\");\n  response.setHeader(\"Content-Length\", Buffer.byteLength(body));\n  response.end(body);\n}\n\nfunction readJsonBody(request) {\n  return new Promise((resolve, reject) => {\n    const chunks = [];\n    let receivedBytes = 0;\n    request.on(\"data\", (chunk) => {\n      receivedBytes += chunk.length;\n      if (receivedBytes > 65536) {\n        const error = new Error(\"Request body too large.\");\n        error.statusCode = 413;\n        request.destroy();\n        reject(error);\n        return;\n      }\n      chunks.push(chunk);\n    });\n    request.on(\"end\", () => {\n      if (chunks.length === 0) return resolve({});\n      try {\n        resolve(JSON.parse(Buffer.concat(chunks).toString(\"utf8\")));\n      } catch {\n        const error = new Error(\"Request body must be valid JSON.\");\n        error.statusCode = 400;\n        reject(error);\n      }\n    });\n    request.on(\"error\", reject);\n  });\n}\n\nfunction isSameOrDescendant(candidatePath, rootPath) {\n  const candidate = process.platform === \"win32\" ? candidatePath.toLowerCase() : candidatePath;\n  const root = process.platform === \"win32\" ? rootPath.toLowerCase() : rootPath;\n  return candidate === root || candidate.startsWith(root + path.sep);\n}"
+        }
+      },
+      "relationships": [
+        {
+          "relationshipType": "derived-from",
+          "artifactId": "serves-query-console.v1"
+        }
+      ],
+      "sourceAuthority": {
+        "declarations": [
+          "servesQueryConsole",
+          "handleRequestWithAuthority",
+          "handleConsoleHtml",
+          "handleIndexInfo",
+          "handleQuery",
+          "handleSnippet",
+          "readJsonBody"
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Projected console snapshot used during the migration pilot.",
+            "responsibilityId": "serves-query-console-projected-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "servesQueryConsole",
+            "functionKind": "function-declaration",
+            "purpose": "Starts the loopback HTTP server and wires the admitted console authority.",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleRequestWithAuthority",
+            "functionKind": "function-declaration",
+            "purpose": "Handles each request using the admitted console authority surfaces.",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleConsoleHtml",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted console HTML response.",
+            "responsibilityId": "serves-query-console-projected-console-html.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleIndexInfo",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted index metadata response.",
+            "responsibilityId": "serves-query-console-projected-index-info.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleQuery",
+            "functionKind": "function-declaration",
+            "purpose": "Delegates query execution to the admitted relational engine.",
+            "responsibilityId": "serves-query-console-projected-query.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "handleSnippet",
+            "functionKind": "function-declaration",
+            "purpose": "Projects the admitted snippet response.",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "responsibilityType": "function"
+          },
+          {
+            "declaration": "readJsonBody",
+            "functionKind": "function-declaration",
+            "purpose": "Reads and parses a JSON request body.",
+            "responsibilityId": "serves-query-console-projected-json-body.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "semanticEdges": [
+          {
+            "edgeId": "serves-query-console-projected-console-authority-bundles-reference.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "pathnameLookupAuthority",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "pathname-lookup-authority.v1"
+              }
+            ],
+            "purpose": "Binds the console authority helper bundle into the server entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-projected-console-validation-reference.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "validatesConsoleParameters",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "validates-console-parameters.v1"
+              }
+            ],
+            "purpose": "Binds console parameter validation into the server entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-projected-loopback-bind-dependency.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesLoopbackBind",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "loopback-bind-authority.v1"
+              }
+            ],
+            "purpose": "Binds loopback admission to the external source-facts console authority."
+          },
+          {
+            "edgeId": "serves-query-console-projected-route-dispatch-dependency.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesRoute",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "route-dispatch-authority.v1"
+              }
+            ],
+            "purpose": "Binds route classification to the external source-facts console authority."
+          },
+          {
+            "edgeId": "serves-query-console-projected-csp-dependency.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "projectsCspPolicy",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "csp-policy-authority.v1"
+              }
+            ],
+            "purpose": "Binds the console CSP policy projection to the external source-facts authority."
+          },
+          {
+            "edgeId": "serves-query-console-projected-relational-query-dependency.v1",
+            "responsibilityId": "serves-query-console-projected-query.v1",
+            "edgeKind": "reference",
+            "operation": "executeRelationalQuery",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Binds SQL execution to the query engine dependency."
+          },
+          {
+            "edgeId": "serves-query-console-projected-security-headers-reference.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "projectsSecurityHeaders",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "projects-security-headers.v1"
+              }
+            ],
+            "purpose": "Binds the admitted security header projection from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-projected-error-response-reference.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "serializesErrorResponse",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "serializes-error-response.v1"
+              }
+            ],
+            "purpose": "Binds console error serialization from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-projected-error-disposition-reference.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "edgeKind": "reference",
+            "operation": "classifiesErrorDisposition",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "classifies-error-disposition.v1"
+              }
+            ],
+            "purpose": "Binds error disposition handling from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-projected-snippet-lines-reference.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "edgeKind": "reference",
+            "operation": "extractsSnippetLines",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "extracts-snippet-lines.v1"
+              }
+            ],
+            "purpose": "Binds snippet line extraction from the helper bundle."
+          },
+          {
+            "edgeId": "serves-query-console-projected-failure-policies-reference.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "edgeKind": "reference",
+            "operation": "validatesConsoleParameters",
+            "argumentExpressions": [],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "responsibility-authority",
+                "responsibilityId": "validates-console-parameters.v1"
+              }
+            ],
+            "purpose": "Binds the helper bundle exported validation function into the entrypoint."
+          },
+          {
+            "edgeId": "serves-query-console-projected-security-header-write.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "edgeKind": "write",
+            "operation": "response.setHeader",
+            "argumentExpressions": [
+              "key",
+              "value"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "csp-policy-authority.v1"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Writes the admitted security headers to the console response."
+          },
+          {
+            "edgeId": "serves-query-console-projected-response-write.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "edgeKind": "write",
+            "operation": "response.end",
+            "argumentExpressions": [
+              "body"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "relational-query-runtime.v1"
+              }
+            ],
+            "purpose": "Writes the admitted JSON response body."
+          },
+          {
+            "edgeId": "serves-query-console-projected-server-listen.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "edgeKind": "invocation",
+            "operation": "server.listen",
+            "argumentExpressions": [
+              "{ host: hostname, port }"
+            ],
+            "occurrences": 1,
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "loopback-bind-authority.v1"
+              }
+            ],
+            "purpose": "Starts the HTTP server on the admitted loopback host."
+          }
+        ],
+        "decisions": [
+          {
+            "decisionId": "serves-query-console-projected-error-disposition.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
+            "occurrences": 1,
+            "policy": "Only HOSTNAME_NOT_ADMITTED is transformed; all other errors rethrow."
+          },
+          {
+            "decisionId": "serves-query-console-projected-index-required.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "index === null || typeof index !== 'object'",
+            "occurrences": 1,
+            "policy": "The console requires a loaded source-fact index."
+          },
+          {
+            "decisionId": "serves-query-console-projected-asset-path-required.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "typeof consoleAssetPath !== 'string' || consoleAssetPath.trim().length === 0",
+            "occurrences": 1,
+            "policy": "The console asset path must be a non-empty string."
+          },
+          {
+            "decisionId": "serves-query-console-projected-route-dispatch.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "syntaxKind": "IfStatement",
+            "conditionExpression": "classifiesRoute returns a routeId or the request falls back to the admitted pathname lookup.",
+            "occurrences": 1,
+            "policy": "Only admitted console routes are dispatched."
+          },
+          {
+            "decisionId": "serves-query-console-projected-path-comparison.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "syntaxKind": "ConditionalExpression",
+            "conditionExpression": "process.platform === 'win32'",
+            "occurrences": 1,
+            "policy": "Normalize paths only as needed for platform-aware comparison."
+          }
+        ],
+        "iterations": [
+          {
+            "iterationId": "serves-query-console-projected-file-lines-iteration.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "syntaxKind": "ForStatement",
+            "controlExpression": "Extract text from allLines[lineNumber - 1] -> Determine hit flag: lineNumber >= startLine && lineNumber <= endLine -> Push { line, text, hit } to array",
+            "occurrences": 1,
+            "continuationPolicy": "Advance in ascending line-number order.",
+            "terminationPolicy": "Stop after the last admitted line."
+          }
+        ],
+        "failurePolicies": [
+          {
+            "failurePolicyId": "serves-query-console-projected-hostname-validation-loopback.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "syntaxKind": "CatchClause",
+            "expression": "throw new Error('The query console server may bind only to 127.0.0.1.')",
+            "occurrences": 1,
+            "policy": "Only HOSTNAME_NOT_ADMITTED is transformed; other errors are rethrown."
+          },
+          {
+            "failurePolicyId": "serves-query-console-projected-query-body-parse.v1",
+            "responsibilityId": "serves-query-console-projected-query.v1",
+            "syntaxKind": "TryStatement",
+            "expression": "readJsonBody(request)",
+            "occurrences": 1,
+            "policy": "Malformed JSON request bodies become a 400 response."
+          },
+          {
+            "failurePolicyId": "serves-query-console-projected-url-decode.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "syntaxKind": "TryStatement",
+            "expression": "decodeURIComponent(new URL(request.url ?? '/', 'http://127.0.0.1').pathname)",
+            "occurrences": 1,
+            "policy": "Malformed URLs become a 400 response."
+          },
+          {
+            "failurePolicyId": "serves-query-console-projected-snippet-validation.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "syntaxKind": "ThrowStatement",
+            "expression": "throw new Error('modulePath and a numeric startLine are required.')",
+            "occurrences": 1,
+            "policy": "Invalid snippet inputs fail closed."
+          },
+          {
+            "failurePolicyId": "serves-query-console-projected-snippet-range.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "syntaxKind": "ThrowStatement",
+            "expression": "throw new Error('endLine must be >= startLine and within 400 lines.')",
+            "occurrences": 1,
+            "policy": "Snippet ranges must stay within the admitted bounds."
+          },
+          {
+            "failurePolicyId": "serves-query-console-projected-uncaught-error.v1",
+            "responsibilityId": "serves-query-console-projected-entrypoint.v1",
+            "syntaxKind": "CatchClause",
+            "expression": "serializesErrorResponse({ error, context: 'request-handler-uncaught' })",
+            "occurrences": 1,
+            "policy": "Uncaught request-handler errors become admitted JSON error responses."
+          }
+        ],
+        "projectionMappings": [
+          {
+            "projectionMappingId": "serves-query-console-projected-pathname-allow-map.v1",
+            "responsibilityId": "serves-query-console-projected-request-handler.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "allowMethods",
+                "sourceExpression": "knownPathnameAllow.get(pathname)"
+              }
+            ],
+            "purpose": "Map admitted pathnames to their allowed HTTP methods."
+          },
+          {
+            "projectionMappingId": "serves-query-console-projected-line-ending-normalization.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "lines",
+                "sourceExpression": "text.replaceAll('\\r\\n', '\\n').replaceAll('\\r', '\\n').split('\\n')"
+              }
+            ],
+            "purpose": "Normalize line endings before splitting a snippet into lines."
+          },
+          {
+            "projectionMappingId": "serves-query-console-projected-path-segment-normalization.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "segments",
+                "sourceExpression": "modulePath.split('/').flatMap((segment) => segment.split(backslash))"
+              }
+            ],
+            "purpose": "Normalize mixed path separators into path segments."
+          },
+          {
+            "projectionMappingId": "serves-query-console-projected-path-case-normalization.v1",
+            "responsibilityId": "serves-query-console-projected-snippet.v1",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "comparisonPath",
+                "sourceExpression": "process.platform === 'win32' ? path.toLowerCase() : path"
+              }
+            ],
+            "purpose": "Normalize path comparison semantics per platform."
+          }
+        ],
+        "resultContracts": [
+          {
+            "resultContractId": "serves-query-console-projected-error-response.v1",
+            "resultKind": "console-error-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-projected-request-handler.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify(errorResponse.body)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted console error response shape."
+          },
+          {
+            "resultContractId": "serves-query-console-projected-query-response.v1",
+            "resultKind": "console-query-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-projected-query.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify(receipt)",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted relational query receipt."
+          },
+          {
+            "resultContractId": "serves-query-console-projected-snippet-response.v1",
+            "resultKind": "console-snippet-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-projected-snippet.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify({ available: true, modulePath, startLine, endLine, lines })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted snippet response shape."
+          },
+          {
+            "resultContractId": "serves-query-console-projected-index-info-response.v1",
+            "resultKind": "console-index-info-response",
+            "mediaType": "application/json",
+            "source": {
+              "sourceType": "return",
+              "responsibilityId": "serves-query-console-projected-index-info.v1",
+              "returnKind": "explicit-return",
+              "expression": "JSON.stringify({ indexType, indexId, workspaceId, workspaceRootAvailable, coverage, counts })",
+              "occurrences": 1
+            },
+            "purpose": "Returns the admitted index-info response shape."
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "SwitchStatement",
+          "WhileStatement",
+          "WithStatement"
+        ]
+      },
+      "proof": {
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ],
+        "contentSha256": "sha256:4ec13d8332348d097a274ee17b210d4b199480506e8f86a5b7c3dfea3ade6c34",
+        "expectedByteLength": 13809
+      }
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "console-contract-complete.v1",
+      "claim": "COMPLETE"
+    },
+    {
+      "claimId": "console-contract-authority-closed.v1",
+      "claim": "CONTRACT_AUTHORITY_CLOSED"
+    }
+  ],
+  "conformance": {
+    "artifactEvaluations": [
+      {
+        "evaluationId": "validate-console-governed-contract.v1",
+        "verifierId": "command-exit-verifier.v1",
+        "command": [
+          "node",
+          "C:\\lab\\repos\\contract-driven-artifact-governance-engine\\bin\\governed-artifacts.mjs",
+          "validate",
+          "--contract",
+          "C:\\lab\\repos\\source-facts-semantic-search-engine\\contracts\\serves-query-console.governed.contract.json"
+        ],
+        "expectedExitCode": 0,
+        "expectedStdoutContains": "CONTRACT_VALID"
+      }
+    ]
+  },
+  "contract": {
+    "contractType": "governed-artifact-contract.v1",
+    "contractId": "serves-query-console-governed-contract",
+    "status": "admitted",
+    "contractVersion": "1.0.0"
+  },
+  "dependencies": [
+    {
+      "dependencyId": "semantic-authority-runtime.v1",
+      "specifier": "../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs",
+      "allowedImports": [
+        "executeSemanticAuthority"
+      ],
+      "allowedInvocations": [
+        "executeSemanticAuthority"
+      ],
+      "usedByArtifacts": [
+        "console-routing-adapter.v1",
+        "console-validation-adapter.v1",
+        "console-snippet-adapter.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "execute-semantic-authority",
+        "portId": "semantic-authority-runtime.v1"
+      }
+    },
+    {
+      "dependencyId": "relational-query-runtime.v1",
+      "specifier": "../query.js",
+      "allowedImports": [
+        "executeRelationalQuery"
+      ],
+      "allowedInvocations": [
+        "executeRelationalQuery"
+      ],
+      "usedByArtifacts": [
+        "serves-query-console.v1",
+        "serves-query-console-conformant.v1",
+        "serves-query-console-projected.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "execute-relational-query",
+        "portId": "relational-query-runtime.v1"
+      }
+    },
+    {
+      "dependencyId": "route-dispatch-authority.v1",
+      "specifier": "../../source-facts-query-console/src/route-dispatch-adapter.mjs",
+      "allowedImports": [
+        "classifiesRoute"
+      ],
+      "allowedInvocations": [
+        "classifiesRoute"
+      ],
+      "usedByArtifacts": [
+        "serves-query-console.v1",
+        "serves-query-console-conformant.v1",
+        "serves-query-console-projected.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "classify-route",
+        "portId": "route-dispatch-authority.v1"
+      }
+    },
+    {
+      "dependencyId": "loopback-bind-authority.v1",
+      "specifier": "../../source-facts-query-console/src/loopback-bind-adapter.mjs",
+      "allowedImports": [
+        "classifiesLoopbackBind"
+      ],
+      "allowedInvocations": [
+        "classifiesLoopbackBind"
+      ],
+      "usedByArtifacts": [
+        "serves-query-console.v1",
+        "serves-query-console-conformant.v1",
+        "serves-query-console-projected.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "classify-loopback-bind",
+        "portId": "loopback-bind-authority.v1"
+      }
+    },
+    {
+      "dependencyId": "csp-policy-authority.v1",
+      "specifier": "../../source-facts-query-console/src/csp-policy-adapter.mjs",
+      "allowedImports": [
+        "projectsCspPolicy"
+      ],
+      "allowedInvocations": [
+        "projectsCspPolicy"
+      ],
+      "usedByArtifacts": [
+        "serves-query-console.v1",
+        "serves-query-console-conformant.v1",
+        "serves-query-console-projected.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "project-csp-policy",
+        "portId": "csp-policy-authority.v1"
+      }
+    },
+    {
+      "dependencyId": "console-request-routing-bundle.v1",
+      "specifier": "./contracts/console-request-routing.bundle.json",
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [],
+      "usedByArtifacts": [
+        "console-routing-adapter.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-semantic-authority",
+        "portId": "console-request-routing-bundle.v1"
+      }
+    },
+    {
+      "dependencyId": "console-validation-bundle.v1",
+      "specifier": "./contracts/console-validation.bundle.json",
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [],
+      "usedByArtifacts": [
+        "console-validation-adapter.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-semantic-authority",
+        "portId": "console-validation-bundle.v1"
+      }
+    },
+    {
+      "dependencyId": "console-snippet-retrieval-bundle.v1",
+      "specifier": "./contracts/console-snippet-retrieval.bundle.json",
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [],
+      "usedByArtifacts": [
+        "console-snippet-adapter.v1"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-semantic-authority",
+        "portId": "console-snippet-retrieval-bundle.v1"
+      }
+    }
+  ],
+  "designAuthority": {
+    "authorityType": "conversation-design-authority.v1",
+    "conversationDigest": "sha256:7b9649b68cb78c5ffebfc90be65b3f50661d7c5b629691ac0022bff0f1b95e76",
+    "decisions": [
+      {
+        "decisionId": "console-stage-4-translator.v1",
+        "source": "docs/automated-conformance-projection-strategy.md",
+        "statement": "Project the console governed contract from the current authority complete file and the console source bytes.",
+        "disposition": "accepted"
+      },
+      {
+        "decisionId": "console-draft-contract-as-separate-artifact.v1",
+        "source": "docs/automated-conformance-projection-strategy.md",
+        "statement": "Emit the governed contract draft as a separate artifact instead of overwriting the template example in place.",
+        "disposition": "accepted"
+      }
+    ],
+    "deviations": [
+      {
+        "decisionId": "bundle-generation-pending.v1",
+        "proposed": "Generate the console helper bundle JSON files from governed semantic authorities.",
+        "implemented": "The translator declares the bundle JSONs as dependencies while the runtime bundle files remain pending.",
+        "reason": "The contract drafting step is intentionally ahead of bundle materialization.",
+        "impact": "The contract is reviewable now while the bundle projection step remains a follow-on task."
+      }
+    ],
+    "tieOut": [
+      {
+        "decisionId": "console-stage-4-translator.v1",
+        "artifactIds": [
+          "console-authority-bundles.v1",
+          "console-routing-adapter.v1",
+          "console-validation-adapter.v1",
+          "console-snippet-adapter.v1",
+          "serves-query-console.v1",
+          "serves-query-console-conformant.v1",
+          "serves-query-console-projected.v1"
+        ]
+      },
+      {
+        "decisionId": "console-draft-contract-as-separate-artifact.v1",
+        "artifactIds": [
+          "serves-query-console-governed-contract.v1"
+        ]
+      }
+    ]
+  },
+  "effects": [],
+  "exclusions": [],
+  "interpretationBase": {
+    "conformanceProfile": {
+      "digest": "sha256:e3362972b4629c285cb9ef5474936379b6b87b7f4124dc5670927792f049b1f7",
+      "identity": "closed-world-artifact-conformance.v8"
+    },
+    "engine": {
+      "digest": "sha256:2fc2f89e1ec5402d34ff86655f554b3e8add78a4bc6f6ba07086a86e8e927ad3",
+      "identity": "governed-artifact-engine.0.21.0"
+    },
+    "migrationRegistry": {
+      "digest": "sha256:7b4e0ee1074288b095d6f71d7430299447a9498c40ceb14106c858b2991a766b",
+      "identity": "governed-artifact-migration-registry.v1"
+    },
+    "projectorRegistry": {
+      "digest": "sha256:1ab8ec48c80324c862cf598813554847fc4224ecb146e8dbddf7d9b1efdb2785",
+      "identity": "governed-artifact-projector-registry.v1"
+    },
+    "schema": {
+      "digest": "sha256:beea2f82130ea5c4b419c70374deb0aaa0c7a98763a92eabac24894af635e8d4",
+      "identity": "https://canonical.local/schemas/governed-artifact-contract.schema.json"
+    },
+    "verifierRegistry": {
+      "digest": "sha256:fb7df5deb813be792c2da1fd573f2456236c5af17594001c803d2fc10899c17a",
+      "identity": "governed-artifact-verifier-registry.v1"
+    }
+  },
+  "lineage": {
+    "authorityType": "canonical-lineage-authority.v1",
+    "projectId": "serves-query-console",
+    "features": [
+      {
+        "featureId": "serve-query-console",
+        "projectId": "serves-query-console",
+        "purpose": "Serve the query console HTTP entrypoint with authority-backed routing, validation, and snippet retrieval."
+      },
+      {
+        "featureId": "delegate-console-authority",
+        "projectId": "serves-query-console",
+        "purpose": "Delegate the admitted console mechanics to helper authorities and runtime dependencies."
+      },
+      {
+        "featureId": "project-console-contract",
+        "projectId": "serves-query-console",
+        "purpose": "Project a governed contract draft from the current authority and source-fact evidence."
+      }
+    ],
+    "scenarios": [
+      {
+        "featureId": "serve-query-console",
+        "scenarioId": "serve-console-over-loopback",
+        "purpose": "The console binds only to loopback and serves query, index, and snippet responses."
+      },
+      {
+        "featureId": "delegate-console-authority",
+        "scenarioId": "delegate-console-mechanics",
+        "purpose": "The console body delegates routing, validation, and snippet extraction to admitted authorities."
+      },
+      {
+        "featureId": "project-console-contract",
+        "scenarioId": "project-governed-console-contract",
+        "purpose": "The translator emits a governed contract draft without hand-authoring the contract bytes."
+      }
+    ],
+    "obligations": [
+      {
+        "obligationId": "console-serves-loopback-only",
+        "scenarioId": "serve-console-over-loopback",
+        "statement": "The console server must bind only to the loopback interface."
+      },
+      {
+        "obligationId": "console-delegates-mechanics",
+        "scenarioId": "delegate-console-mechanics",
+        "statement": "The console source body must delegate admitted mechanics to authority surfaces."
+      },
+      {
+        "obligationId": "console-contract-is-projected",
+        "scenarioId": "project-governed-console-contract",
+        "statement": "The console governed contract must be projected from source facts and admitted authority data."
+      }
+    ],
+    "responsibilities": [
+      {
+        "artifactId": "console-authority-bundles.v1",
+        "obligationId": "console-delegates-mechanics",
+        "projectionProfileId": "utf8-text-projector.v1",
+        "responsibilityId": "console-authority-bundles.v1.responsibility.v1",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "console-routing-adapter.v1",
+        "obligationId": "console-contract-is-projected",
+        "projectionProfileId": "utf8-text-projector.v1",
+        "responsibilityId": "console-routing-adapter.v1.responsibility.v1",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "console-validation-adapter.v1",
+        "obligationId": "console-contract-is-projected",
+        "projectionProfileId": "utf8-text-projector.v1",
+        "responsibilityId": "console-validation-adapter.v1.responsibility.v1",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "console-snippet-adapter.v1",
+        "obligationId": "console-contract-is-projected",
+        "projectionProfileId": "utf8-text-projector.v1",
+        "responsibilityId": "console-snippet-adapter.v1.responsibility.v1",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "serves-query-console.v1",
+        "obligationId": "console-serves-loopback-only",
+        "projectionProfileId": "utf8-text-projector.v1",
+        "responsibilityId": "serves-query-console.v1.responsibility.v1",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "serves-query-console-conformant.v1",
+        "obligationId": "console-serves-loopback-only",
+        "projectionProfileId": "utf8-text-projector.v1",
+        "responsibilityId": "serves-query-console-conformant.v1.responsibility.v1",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "serves-query-console-projected.v1",
+        "obligationId": "console-serves-loopback-only",
+        "projectionProfileId": "utf8-text-projector.v1",
+        "responsibilityId": "serves-query-console-projected.v1.responsibility.v1",
+        "responsibilityType": "semantic-execution"
+      }
+    ]
+  },
+  "projectionLedger": {
+    "relativePath": ".governance/projections/serves-query-console.governed.ledger.json"
+  },
+  "receipt": {
+    "relativePath": ".governance/receipts/serves-query-console.governed.receipt.json"
+  },
+  "runtimeAuthorities": [],
+  "subject": {
+    "subjectType": "console-module-family",
+    "subjectId": "serves-query-console",
+    "purpose": "Query console HTTP server and its helper modules are projected from contract-authored authority.",
+    "authority": {
+      "closedLoop": [
+        "authority",
+        "binding",
+        "projection",
+        "workspace",
+        "trust"
+      ],
+      "consoleArtifacts": [
+        "console-authority-bundles.v1",
+        "console-routing-adapter.v1",
+        "console-validation-adapter.v1",
+        "console-snippet-adapter.v1",
+        "serves-query-console.v1",
+        "serves-query-console-conformant.v1",
+        "serves-query-console-projected.v1"
+      ],
+      "consoleWorkspaceRoot": "src/console"
+    }
+  },
+  "workspace": {
+    "workspaceRoot": ".",
+    "artifactRoot": ".",
+    "governedScope": {
+      "scopeType": "declared-artifact-scope.v1",
+      "inventoryMode": "declared-paths",
+      "governedDirectories": [
+        "src/console"
+      ],
+      "outsideScopePosture": "outside-authority",
+      "requiredDisposition": "ARTIFACT_SCOPE_CLOSED"
+    },
+    "pathExceptions": []
+  }
+}
