@@ -24,7 +24,7 @@ import {
 } from "./validates-composition-artifacts.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const defaultAuthoritiesDirectory = path.join(repositoryRoot, "composition-authorities");
+const defaultAuthoritiesDirectory = path.join(repositoryRoot, "contracts", "composition-authorities");
 
 export const compositionArtifactNames = Object.freeze({
   request: "composition-request.json",

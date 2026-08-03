@@ -7,7 +7,7 @@ import { projectsWebSurfaceInventory } from "../src/web/inventory.js";
 import { projectsWebSurfaceIndex } from "../src/web/project-web-surfaces.js";
 import { validatesWebSurfaceIndex, validatesWebSurfaceInventory, validatesWebKnowWorkspace } from "../src/web/validate-web-index.js";
 
-const defaultPolicyPath = fileURLToPath(new URL("../web-know.workspace.json", import.meta.url));
+const defaultPolicyPath = fileURLToPath(new URL("../contracts/web-know.workspace.json", import.meta.url));
 const policyPath = path.resolve(process.env.WEB_KNOW_SMOKE_POLICY ?? process.argv[2] ?? defaultPolicyPath);
 const policy = JSON.parse(fs.readFileSync(policyPath, "utf8"));
 await validatesWebKnowWorkspace(policy);

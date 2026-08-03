@@ -45,8 +45,8 @@ The final preview is a script-free simulation of composed authority. It does not
 
 Two workspace policies are included:
 
-- [`web-know.workspace.json`](web-know.workspace.json) is the small pilot corpus.
-- [`web-know.enterprise.workspace.json`](web-know.enterprise.workspace.json) covers `C:\source\repos\bpm\intelligence\01...09`, `C:\source\repos\bpm\clients`, and `C:\lab\repos` as eleven separately identified roots.
+- [`contracts/web-know.workspace.json`](contracts/web-know.workspace.json) is the small pilot corpus.
+- [`contracts/web-know.enterprise.workspace.json`](contracts/web-know.enterprise.workspace.json) covers `C:\source\repos\bpm\intelligence\01...09`, `C:\source\repos\bpm\clients`, and `C:\lab\repos` as eleven separately identified roots.
 
 Because `C:\lab\repos` is a governed source root, write enterprise inventory, index, gallery, and composition output outside it, for example beneath `C:\lab\temp`.
 
@@ -135,12 +135,12 @@ The lower-level commands remain available when an operator needs to pause, inspe
 
 ```powershell
 node src/cli.js web inventory `
-  --policy web-know.enterprise.workspace.json `
+  --policy contracts\web-know.enterprise.workspace.json `
   --output C:\lab\temp\web-know-enterprise\web-surface.inventory.json `
   --summary
 
 node src/cli.js web project `
-  --policy web-know.enterprise.workspace.json `
+  --policy contracts\web-know.enterprise.workspace.json `
   --inventory C:\lab\temp\web-know-enterprise\web-surface.inventory.json `
   --output C:\lab\temp\web-know-enterprise\web-surface-index.json `
   --summary
@@ -165,7 +165,7 @@ node src/cli.js web gallery serve `
 
 ```powershell
 node src/cli.js web compose sign-in `
-  --request compositions\enterprise-learning-sign-in.request.v1.json `
+  --request contracts\compositions\enterprise-learning-sign-in.request.v1.json `
   --manifest C:\lab\temp\web-know-enterprise\sign-in-gallery\enterprise-gallery-manifest.json `
   --output C:\lab\temp\web-know-enterprise\enterprise-learning-sign-in `
   --summary

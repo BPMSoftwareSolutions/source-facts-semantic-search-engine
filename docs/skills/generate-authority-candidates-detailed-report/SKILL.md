@@ -87,16 +87,16 @@ Gate status: NOT_READY
 ```
 
 **Candidate types generated:**
-- `decision-authority-candidate.v1` — Branch conditions (if/else)
-- `failure-disposition-authority-candidate.v1` — Throw statements
-- `projection-mapping-candidate.v1` — Object construction/field mapping
-- `iteration-authority-candidate.v1` — For loops, array.map, etc.
-- `state-transition-authority-candidate.v1` — State mutations
-- `serialization-profile-candidate.v1` — JSON serialization, encoding
-- `validation-policy-candidate.v1` — Validation predicates
-- `failure-observation-candidate.v1` — Exception handling (catch blocks)
-- `fallback-policy-candidate.v1` — Fallback values, default assignments
-- `normalization-authority-candidate.v1` — Normalization transforms
+- `decision-authority-candidate.v1`
+- `failure-disposition-authority-candidate.v1`
+- `projection-mapping-candidate.v1`
+- `iteration-authority-candidate.v1`
+- `state-transition-authority-candidate.v1`
+- `serialization-profile-candidate.v1`
+- `validation-policy-candidate.v1`
+- `failure-observation-candidate.v1`
+- `fallback-policy-candidate.v1`
+- `normalization-authority-candidate.v1`
 
 ### Step 3: Deduplicate Candidates
 
@@ -134,7 +134,7 @@ $result = $data
 $result.candidates = $deduped
 $result | ConvertTo-Json -Depth 100 | Set-Content $outputPath
 
-Write-Host "Deduplicated: $($data.candidates.Count) → $($deduped.Count) unique"
+Write-Host "Deduplicated: $($data.candidates.Count) -> $($deduped.Count) unique"
 ```
 
 **Node.js approach:**
@@ -158,7 +158,7 @@ data.candidates.forEach(cand => {
 const result = { ...data, candidates: deduped };
 fs.writeFileSync('your-candidates-deduped.json', JSON.stringify(result, null, 2));
 
-console.log(`Deduplicated: ${data.candidates.length} → ${deduped.length}`);
+console.log(`Deduplicated: ${data.candidates.length} -> ${deduped.length}`);
 ```
 
 ### Step 4: Generate Detailed Report with Real Source Code
@@ -252,54 +252,60 @@ This report is presentation only. The projector JSON remains the source of truth
 
 `;
 
-// Type mapping
-const typeMap = {
-  'decision-authority-candidate.v1': 'Branch → Decision Authority Candidate',
-  'failure-disposition-authority-candidate.v1': 'Throw → Failure Disposition Candidate',
-  'projection-mapping-candidate.v1': 'Object Construction → Projection Mapping Candidate',
-  'iteration-authority-candidate.v1': 'Iteration → Iteration Authority Candidate',
-  'state-transition-authority-candidate.v1': 'State Mutation → State Transition Candidate',
-  'serialization-profile-candidate.v1': 'Serialization → Serialization Profile Candidate',
-  'validation-policy-candidate.v1': 'Validation → Validation Policy Candidate',
-  'failure-observation-candidate.v1': 'Exception Handling → Failure Observation Candidate',
-  'fallback-policy-candidate.v1': 'Fallback → Fallback Policy Candidate',
-  'normalization-authority-candidate.v1': 'Normalization → Normalization Candidate'
-};
+for (const type of orderedTypes) {
+  const items = grouped.get(type) ?? [];
+  markdown += `## ${type}\n\n`;
+  markdown += `**Count:** ${items.length}\n\n`;
 
-// Generate sections
-for (const [type, title] of Object.entries(typeMap)) {
-  const candidates = grouped[type];
-  if (!candidates || candidates.length === 0) continue;
+  for (const candidate of items) {
+    const source = candidate.source ?? {};
+    const location = typeof source.modulePath === 'string' && Number.isInteger(source.startLine)
+      ? `${source.modulePath}:${source.startLine}`
+      : (source.modulePath ?? '(unknown)');
+    const snippet = getCodeSnippet(source);
+    const draftMechanic = draftByCandidateId.get(candidate.candidateId) ?? null;
 
-  markdown += `## ${title}\n\n`;
-  markdown += `**Count:** ${candidates.length}\n\n`;
+    markdown += `### ${candidate.candidateId ?? location}\n\n`;
+    markdown += `- Location: \`${location}\`\n`;
+    markdown += `- Responsibility: \`${candidate.responsibility?.responsibilityId ?? '(none)'}\`\n`;
+    markdown += `- Status: \`${candidate.status ?? '(unknown)'}\`\n`;
+    markdown += `- Coverage: \`${candidate.coverageDisposition ?? '(unknown)'}\`\n\n`;
 
-  const ex = candidates[0];
-  markdown += `### Example from \`${ex.source.modulePath}:${ex.source.startLine}\`\n\n`;
+    if (snippet) {
+      markdown += `**Observed code**\n\n\`\`\`\n${snippet}\n\`\`\`\n\n`;
+    } else {
+      markdown += `**Observed code:** unavailable for this workspace path\n\n`;
+    }
 
-  const snippet = getCodeSnippet(ex.source.modulePath, ex.source.startLine);
-  if (snippet) {
-    markdown += `**Observed code:**\n\n\`\`\`\n${snippet}\`\`\`\n\n`;
-  } else {
-    markdown += `**Observed code location:** \`${ex.source.modulePath}:${ex.source.startLine}\`\n\n`;
+    if (draftMechanic) {
+      markdown += `**Projected authority draft**\n\n\`\`\`json\n${JSON.stringify(draftMechanic, null, 2)}\n\`\`\`\n\n`;
+    }
+
+    markdown += `**Projected candidate**\n\n\`\`\`json\n${JSON.stringify(candidate, null, 2)}\n\`\`\`\n\n`;
+
+    const unresolved = Array.isArray(candidate.requiredHumanResolution) ? candidate.requiredHumanResolution : [];
+    if (unresolved.length > 0) {
+      markdown += `**Unresolved decisions**\n`;
+      for (const decision of unresolved) {
+        markdown += `- ${decision}\n`;
+      }
+      markdown += `\n`;
+    }
   }
 
-  markdown += `**Projected candidate:**\n\n\`\`\`json\n${JSON.stringify(ex, null, 2)}\n\`\`\`\n\n`;
-
-  markdown += `**Unresolved decisions:**\n`;
-  ex.requiredHumanResolution.forEach(d => markdown += `- ${d}\n`);
-  markdown += `\n**Pattern frequency:** ${candidates.length} occurrence(s)\n\n---\n\n`;
+  markdown += `---\n\n`;
 }
 
-// Coverage summary
 markdown += `## Coverage Summary
 
 | Metric | Value |
 |--------|-------|
-| Total Mechanics Observed | ${data.coverageSummary.totalMechanics} |
-| Unique Candidates | ${data.candidates.length} |
-| Authority Conformance Ratio | ${(data.coverageSummary.authorityConformanceRatio * 100).toFixed(1)}% |
-| Admission Gate Status | ${data.coverageSummary.admissionGateStatus} |
+| Total mechanics observed | ${data.coverageSummary?.totalMechanics ?? 0} |
+| Fully authorized | ${data.coverageSummary?.fullyAuthorized ?? 0} |
+| Partially covered | ${data.coverageSummary?.partiallyCovered ?? 0} |
+| Unresolved | ${data.coverageSummary?.unresolved ?? 0} |
+| Authority conformance ratio | ${(((data.coverageSummary?.authorityConformanceRatio) ?? 0) * 100).toFixed(1)}% |
+| Admission gate status | ${data.coverageSummary?.admissionGateStatus ?? '(unknown)'} |
 
 ---
 
@@ -307,7 +313,7 @@ markdown += `## Coverage Summary
 
 1. Review candidates with domain experts
 2. Resolve unresolved decisions
-3. Bind to authority files
+3. Bind to authority files or contracts
 4. Recalculate coverage
 5. Generate deterministic replacements
 
@@ -319,35 +325,39 @@ console.log('Report generated: ' + outputMarkdown);
 
 ### Step 5: Review and Share
 
-The markdown report is now ready for your team:
-- **Real source code** with context and line numbers
-- **Projected JSON scaffolds** with all extracted fields
-- **Unresolved decisions** clearly flagged
-- **Coverage metrics** tracking progress
+The markdown report is ready for team review:
+- Compare observed code with the projected candidate JSON
+- Treat the projector output as the source of truth
+- Use `authorityDraft` to inspect the normalized draft that would be bound later
+- Keep changes in the contract or projection flow, not in the report itself
 
 Example structure:
 ```
 # Authority Candidate Projections
 
-## Branch → Decision Authority Candidate
+## decision-authority-candidate.v1
 ### Example from `serves-query-console.js:45`
 
 **Observed code:**
+```text
   40: port = 0,
   41: } = {}) {
   42: try {
   43: classifiesLoopbackBind({ hostname });
   44: } catch (error) {
-→ 45: if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
+-> 45: if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
   46: throw new Error(...)
+```
 
 **Projected candidate:**
+```json
 { "authorityCandidateType": "decision-authority-candidate.v1", ... }
+```
 
 **Unresolved decisions:**
 - extract condition from source
 - confirm input type
-- ...
+- confirm no-match behavior
 ```
 
 ---
@@ -387,10 +397,10 @@ node src/cli.js query --index your-index.json \
 
 **Why deduplicate?**
 - Index queries can return duplicate mechanics (same line, multiple query contexts)
-- Without dedup: 3,316 candidates → 44 unique (reduces cognitive load 75x)
-- With dedup: Each candidate represents one actual mechanic occurrence
+- Without dedup: merged exports can over-count the same mechanic many times
+- With dedup: each candidate represents one actual mechanic occurrence
 
-**Key field:** `${modulePath}:${startLine}:${mechanic}`
+**Key field:** `${modulePath}:${sourceReferenceId ?? startLine ?? ""}:${mechanic}`
 
 This tuple uniquely identifies one mechanic in one source file at one line.
 
@@ -399,16 +409,13 @@ This tuple uniquely identifies one mechanic in one source file at one line.
 ## Troubleshooting
 
 ### "File not found" in report
-**Cause:** Workspace path in generator script doesn't match actual file location
+**Cause:** `workspaceRoot` in the projector output does not point at the files being rendered
 
-**Fix:** Update `baseWorkspacePath` in script to match your workspace root
+**Fix:** Resolve snippets from `data.workspaceRoot` and keep module paths relative to that root
 
 ```javascript
-// Wrong:
-const baseWorkspacePath = 'C:\\source\\...\\sterilizer\\...\\src\\runtime\\';
-
-// Right (matches index workspace):
-const baseWorkspacePath = 'C:\\lab\\repos\\contract-driven-artifact-governance-engine\\lib\\';
+const workspaceRoot = data.workspaceRoot ?? process.cwd();
+const fullPath = path.resolve(workspaceRoot, source.modulePath);
 ```
 
 ### No candidates generated
@@ -458,44 +465,44 @@ For large codebases (9,000+ mechanics):
 - Candidates represent: validation, error handling, serialization, iteration
 
 **Candidate breakdown:**
-- 1× Branch (error disposition check)
-- 3× Throw (validation failures)
-- 1× Object Construction (pathname allow map)
-- 1× Iteration (file line loop)
-- 1× State Mutation (request body accumulation)
-- 1× Serialization (JSON responses)
-- 1× Exception Handling (URL parsing error)
+- 1x Branch (error disposition check)
+- 3x Throw (validation failures)
+- 1x Object Construction (pathname allow map)
+- 1x Iteration (file line loop)
+- 1x State Mutation (request body accumulation)
+- 1x Serialization (JSON responses)
+- 1x Exception Handling (URL parsing error)
 
 **Team review time:** ~15 minutes to read all 8 candidates and resolve semantic decisions
 
-**Migration readiness:** HIGH — small file, clear responsibilities, actionable candidates
+**Migration readiness:** HIGH - small file, clear responsibilities, actionable candidates
 
 ---
 
 ## When to Use This Skill
 
-✅ **Good candidates for this workflow:**
+**Good candidates for this workflow:**
 - Single-responsibility functions (HTTP handlers, validators)
 - Files under 500 lines (easier visual inspection)
 - Code with clear business logic (not boilerplate)
 - Teams doing code-to-authority migration
 - Files where semantic authority is not yet documented
 
-❌ **Not suitable for:**
+**Not suitable for:**
 - Files that already have complete authority documentation
 - Auto-generated code
-- Massive files (10,000+ lines) — consider breaking into smaller analysis units
+- Massive files (10,000+ lines) - consider breaking into smaller analysis units
 
 ---
 
 ## Integration with Migration Loop
 
-This skill generates the **"Observe → Map → Project → Author"** stage:
+This skill generates the **"Observe -> Map -> Project -> Author"** stage:
 
 1. **Observe:** Index captures mechanics from source
 2. **Map:** Project translates mechanics to candidate scaffolds
 3. **Project:** Report visualizes candidates with real code
-4. **Author:** Team reviews report and fills semantic decisions ← **You are here**
+4. **Author:** Team reviews report and fills semantic decisions <- **You are here**
 
 Next stage: Binding candidates to authority files once team confirms meaning.
 
@@ -517,7 +524,7 @@ Keep the `.md` report in version control. Archive the `.json` files if you prefe
 ## Next Skill: Authority Binding
 
 Once your team reviews this report and resolves all `requiredHumanResolution` decisions, the next skill is:
-- Bind decisions to authority files (authority candidates → authority declarations)
+- Bind decisions to authority files (authority candidates -> authority declarations)
 - Generate replacement implementations
 - Recalculate coverage ratio
 - Move from 0% to 100% conformance

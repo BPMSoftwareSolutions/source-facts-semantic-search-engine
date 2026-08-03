@@ -1303,8 +1303,8 @@ The north-star sign-in path is now implemented as a narrow Level 4 vertical slic
 
 The added materialized boundary consists of:
 
-- the enterprise scope policy in [`web-know.enterprise.workspace.json`](../web-know.enterprise.workspace.json), covering intelligence roots 01 through 09, BPM clients, and lab repositories as eleven separately identified roots;
-- the registered [`sign-in-pages`](../gallery-queries/sign-in-pages.query.v1.json) query, which maps the user-facing sign-in concept to the classifier's governed `login` taxonomy value;
+- the enterprise scope policy in [`web-know.enterprise.workspace.json`](../contracts/web-know.enterprise.workspace.json), covering intelligence roots 01 through 09, BPM clients, and lab repositories as eleven separately identified roots;
+- the registered [`sign-in-pages`](../contracts/gallery-queries/sign-in-pages.query.v1.json) query, which maps the user-facing sign-in concept to the classifier's governed `login` taxonomy value;
 - reviewed candidate declarations under [`composition-authorities/`](../composition-authorities/) for layout, authentication entry, messaging, and theme;
 - strict schemas for composition authority, request, compatibility report, candidate contract, and projection receipt under [`contracts/`](../contracts/);
 - fail-closed compatibility and deterministic contract/document/AST/preview projection in [`src/composition/`](../src/composition/); and

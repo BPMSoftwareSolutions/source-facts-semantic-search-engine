@@ -772,7 +772,7 @@ Every manual step becomes a future deterministic or inferential tool boundary.
 ### 1. Scope policy
 
 ```text
-web-know.workspace.json
+contracts/web-know.workspace.json
 ```
 
 Contains:
@@ -1195,7 +1195,7 @@ Repeated occurrence proves recurrence, not correctness or authority.
 Add orchestration commands without changing the meaning of the existing `project` command:
 
 ```text
-source-facts-se web inventory --policy web-know.workspace.json
+source-facts-se web inventory --policy contracts/web-know.workspace.json
 source-facts-se web project --inventory web-surface.inventory.json
 ```
 

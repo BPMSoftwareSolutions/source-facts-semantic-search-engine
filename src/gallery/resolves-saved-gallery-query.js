@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { executesWebRelationalQuery } from "../web/web-query.js";
 import { validatesGalleryQuery } from "./validates-gallery-artifacts.js";
 
-const defaultGalleryQueriesDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "gallery-queries");
+const defaultGalleryQueriesDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "contracts", "gallery-queries");
 
 export async function resolvesSavedGalleryQuery(queryId, { galleryQueriesDirectory = defaultGalleryQueriesDirectory } = {}) {
   const entries = await readdir(galleryQueriesDirectory);

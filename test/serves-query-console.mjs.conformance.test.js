@@ -3,56 +3,68 @@ import * as assert from "node:assert";
 import { readFileSync } from "node:fs";
 
 /**
- * Test: serves-query-console.mjs embedded mechanics vs authority
+ * Test: console runtime embedded mechanics vs authority
  *
- * Identifies mechanics that are still embedded in the mjs file
- * and verifies them against the authority declarations.
+ * src/console/serves-query-console.mjs is a thin re-export (see
+ * serves-query-console.runtime.mjs -> serves-query-console.runtime.impl.mjs).
+ * The mechanics this test tracks live in two places after that split:
+ *   - runtime.impl.mjs: the two calls that ARE delegated to an authority adapter
+ *   - console-authority-runtime.mjs: the mechanics that are still embedded as
+ *     literal JS, despite contracts/serves-query-console.authority.json
+ *     declaring all of them AUTHORITY_BOUND
  */
 
-const mjs_content = readFileSync("src/console/serves-query-console.mjs", "utf8");
+const runtimeContent = readFileSync("src/console/serves-query-console.runtime.impl.mjs", "utf8");
+const authorityRuntimeContent = readFileSync("src/console/console-authority-runtime.mjs", "utf8");
 const authorityContent = readFileSync("contracts/serves-query-console.authority.json", "utf8");
 const authority = JSON.parse(authorityContent);
 
 test("VIOLATION 1: knownPathnameAllow hardcoded", () => {
-  assert.ok(mjs_content.includes('const knownPathnameAllow = new Map(['), "VIOLATION: hardcoded in code");
+  assert.ok(authorityRuntimeContent.includes('const knownPathnameAllow = new Map(['), "VIOLATION: hardcoded in code");
   const mechanic = authority.authority.mechanics.find(m => m.mechanicId === "known-pathname-allow-map");
   assert.ok(mechanic, "Mechanic not found");
   assert.strictEqual(mechanic.coverage, "AUTHORITY_BOUND", "Authority says BOUND but code is embedded");
 });
 
 test("DELEGATED: classifiesLoopbackBind", () => {
-  assert.ok(mjs_content.includes('await classifiesLoopbackBind({ hostname })'), "correctly delegated");
+  assert.ok(runtimeContent.includes('await classifiesLoopbackBind({ hostname })'), "correctly delegated");
 });
 
 test("DELEGATED: validatesConsoleParameters", () => {
-  assert.ok(mjs_content.includes('await validatesConsoleParameters({ index, consoleAssetPath })'), "correctly delegated");
+  assert.ok(runtimeContent.includes('await validatesConsoleParameters({ index, consoleAssetPath })'), "correctly delegated");
 });
 
 test("VIOLATION 2: Security headers hardcoded", () => {
-  assert.ok(mjs_content.includes('response.setHeader("Content-Security-Policy", cspPolicy)'), "VIOLATION: hardcoded in code");
+  assert.ok(
+    authorityRuntimeContent.includes('"Content-Security-Policy": "default-src \'self\';'),
+    "VIOLATION: hardcoded in code",
+  );
   const mechanic = authority.authority.mechanics.find(m => m.mechanicId === "headers-sent-state-mutation");
   assert.ok(mechanic, "Mechanic not found");
   assert.strictEqual(mechanic.coverage, "AUTHORITY_BOUND", "Authority says BOUND but code is embedded");
 });
 
 test("VIOLATION 3: Error responses hardcoded", () => {
-  const errorCount = (mjs_content.match(/response\.end\(JSON\.stringify\({ error:/g) || []).length;
-  assert.ok(errorCount > 5, `VIOLATION: Expected 5+ error responses embedded, found ${errorCount}`);
+  assert.ok(authorityRuntimeContent.includes('const statusCodeMap = {'), "VIOLATION: hardcoded in code");
   const mechanic = authority.authority.mechanics.find(m => m.mechanicId === "error-response-serialization");
   assert.ok(mechanic, "Mechanic not found");
   assert.strictEqual(mechanic.coverage, "AUTHORITY_BOUND", "Authority says BOUND but code is embedded");
 });
 
 test("VIOLATION 4: Disposition checks hardcoded", () => {
-  assert.ok(mjs_content.includes('error?.disposition !== "HOSTNAME_NOT_ADMITTED"'), "VIOLATION: check 1 hardcoded");
-  assert.ok(mjs_content.includes('error?.disposition !== "ROUTE_OR_METHOD_NOT_ADMITTED"'), "VIOLATION: check 2 hardcoded");
+  assert.ok(runtimeContent.includes('error?.disposition !== "HOSTNAME_NOT_ADMITTED"'), "VIOLATION: check 1 hardcoded");
+  assert.ok(authorityRuntimeContent.includes('const fallbackDispositions = ['), "VIOLATION: check 2 hardcoded");
+  assert.ok(authorityRuntimeContent.includes('"ROUTE_OR_METHOD_NOT_ADMITTED"'), "VIOLATION: check 2 hardcoded");
   const mechanic = authority.authority.mechanics.find(m => m.mechanicId === "error-disposition-check");
   assert.ok(mechanic, "Mechanic not found");
   assert.strictEqual(mechanic.coverage, "AUTHORITY_BOUND", "Authority says BOUND but code is embedded");
 });
 
 test("VIOLATION 5: File-lines iteration embedded", () => {
-  assert.ok(mjs_content.includes('for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1)'), "VIOLATION: iteration hardcoded");
+  assert.ok(
+    authorityRuntimeContent.includes('for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1)'),
+    "VIOLATION: iteration hardcoded",
+  );
   const mechanic = authority.authority.mechanics.find(m => m.mechanicId === "file-lines-iteration");
   assert.ok(mechanic, "Mechanic not found");
   assert.strictEqual(mechanic.coverage, "AUTHORITY_BOUND", "Authority says BOUND but code is embedded");

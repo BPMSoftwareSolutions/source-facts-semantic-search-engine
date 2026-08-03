@@ -672,7 +672,7 @@ async function runWebQuery(rawArgs) {
 
 async function readsPolicy(policyPath) {
   if (policyPath === undefined) {
-    throw new Error("--policy <web-know.workspace.json> is required.");
+    throw new Error("--policy <contracts/web-know.workspace.json> is required.");
   }
   const policy = JSON.parse(stripsByteOrderMark(await fs.readFile(path.resolve(policyPath), "utf8")));
   await validatesWebKnowWorkspace(policy);
@@ -818,8 +818,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project [--workspace <path>] [--workspace-id <id>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se query [--index <file>] --query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se query \"<sql>\" [--pretty]\n`);
-  stream.write(`  source-facts-se web inventory --policy <web-know.workspace.json> [--output <file>] [--pretty] [--summary]\n`);
-  stream.write(`  source-facts-se web project --policy <web-know.workspace.json> [--inventory <file>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se web inventory --policy <contracts/web-know.workspace.json> [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se web project --policy <contracts/web-know.workspace.json> [--inventory <file>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web query [--index <file>] --query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se web query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se web gallery plan [--index <file>] [--inventory <file>] [--query <saved-query-id>] [--policy <policy-id-or-file>] [--output <dir>] [--summary]\n`);
@@ -837,11 +837,11 @@ function writeUsage(stream) {
   stream.write(`Examples:\n`);
   stream.write(`  source-facts-se project --workspace C:/lab/repos/contract-driven-artifact-governance-engine --pretty\n`);
   stream.write(`  source-facts-se query --index ./source-fact-index.json \"SELECT symbolId, name FROM symbols\"\n`);
-  stream.write(`  source-facts-se web inventory --policy ./web-know.workspace.json --pretty --summary\n`);
-  stream.write(`  source-facts-se web project --policy ./web-know.workspace.json --pretty --summary\n`);
+  stream.write(`  source-facts-se web inventory --policy ./contracts/web-know.workspace.json --pretty --summary\n`);
+  stream.write(`  source-facts-se web project --policy ./contracts/web-know.workspace.json --pretty --summary\n`);
   stream.write(`  source-facts-se web query --index ./web-surface-index.json \"SELECT familyId, entryRelativePath FROM webFamilies\"\n`);
   stream.write(`  source-facts-se web gallery project --index ./web-surface-index.json --inventory ./web-surface.inventory.json --query enterprise-pages --output ./enterprise-gallery --summary\n`);
-  stream.write(`  source-facts-se web compose sign-in --request ./compositions/enterprise-sign-in.request.v1.json --manifest ./sign-in-gallery/enterprise-gallery-manifest.json --output ./sign-in-composition --summary\n`);
+  stream.write(`  source-facts-se web compose sign-in --request ./contracts/compositions/enterprise-learning-sign-in.request.v1.json --manifest ./sign-in-gallery/enterprise-gallery-manifest.json --output ./sign-in-composition --summary\n`);
   stream.write(`  source-facts-se web north-star sign-in --index ./web-surface-index.json --inventory ./web-surface.inventory.json --output ./sign-in-north-star --prove --summary\n`);
   stream.write(`  source-facts-se project-authority-violations --workspace ./src/console --authority-file ./contracts/serves-query-console.authority.json --output ./contracts/serves-query-console.candidates.json --authority-output ./contracts/serves-query-console.authority.draft.json --summary\n`);
   stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --project --summary\n`);

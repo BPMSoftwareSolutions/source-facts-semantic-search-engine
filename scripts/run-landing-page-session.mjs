@@ -20,7 +20,7 @@ import { buildsLandingPageContract } from "../src/session/landing-page-contract.
 import { projectsDesignDocument, projectsCandidateAstText } from "../src/session/design-document-projector.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const policy = JSON.parse(await fs.readFile(path.join(repoRoot, "web-know.workspace.json"), "utf8"));
+const policy = JSON.parse(await fs.readFile(path.join(repoRoot, "contracts", "web-know.workspace.json"), "utf8"));
 
 const inventory = await projectsWebSurfaceInventory({ policy });
 const index = await projectsWebSurfaceIndex({ policy, inventory });
@@ -231,12 +231,12 @@ await validatesIntentSession(session);
 const designDocument = projectsDesignDocument({ session, contract });
 const candidateAst = projectsCandidateAstText({ contract });
 
-await fs.mkdir(path.join(repoRoot, "sessions"), { recursive: true });
-await fs.mkdir(path.join(repoRoot, "design"), { recursive: true });
-await fs.writeFile(path.join(repoRoot, "sessions", "know-how-center-landing-page.json"), JSON.stringify(session, null, 2), "utf8");
-await fs.writeFile(path.join(repoRoot, "sessions", "know-how-center-landing-page.contract.json"), JSON.stringify(contract, null, 2), "utf8");
-await fs.writeFile(path.join(repoRoot, "design", "know-how-center-landing-page.md"), designDocument, "utf8");
-await fs.writeFile(path.join(repoRoot, "design", "know-how-center-landing-page.ast.txt"), candidateAst, "utf8");
+await fs.mkdir(path.join(repoRoot, "contracts", "sessions"), { recursive: true });
+await fs.mkdir(path.join(repoRoot, "docs", "design"), { recursive: true });
+await fs.writeFile(path.join(repoRoot, "contracts", "sessions", "know-how-center-landing-page.json"), JSON.stringify(session, null, 2), "utf8");
+await fs.writeFile(path.join(repoRoot, "contracts", "sessions", "know-how-center-landing-page.contract.json"), JSON.stringify(contract, null, 2), "utf8");
+await fs.writeFile(path.join(repoRoot, "docs", "design", "know-how-center-landing-page.md"), designDocument, "utf8");
+await fs.writeFile(path.join(repoRoot, "docs", "design", "know-how-center-landing-page.ast.txt"), candidateAst, "utf8");
 
 console.log(JSON.stringify({
   disposition: "LANDING_PAGE_SESSION_COMPLETE",
@@ -246,9 +246,9 @@ console.log(JSON.stringify({
   considerations: session.considerations.length,
   selections: session.selections.length,
   outputs: [
-    "sessions/know-how-center-landing-page.json",
-    "sessions/know-how-center-landing-page.contract.json",
-    "design/know-how-center-landing-page.md",
-    "design/know-how-center-landing-page.ast.txt",
+    "contracts/sessions/know-how-center-landing-page.json",
+    "contracts/sessions/know-how-center-landing-page.contract.json",
+    "docs/design/know-how-center-landing-page.md",
+    "docs/design/know-how-center-landing-page.ast.txt",
   ],
 }, null, 2));

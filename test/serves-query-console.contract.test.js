@@ -10,10 +10,25 @@ import Ajv from "ajv";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cliPath = path.join(repoRoot, "src", "cli.js");
 const schemaPath = "C:/lab/repos/contract-driven-artifact-governance-engine/schemas/governed-artifact-contract.schema.json";
+const expectedSourceArtifactPaths = [
+  "src/console/console-authority-bundles.mjs",
+  "src/console/console-routing-adapter.mjs",
+  "src/console/console-validation-adapter.mjs",
+  "src/console/console-snippet-adapter.mjs",
+  "src/console/serves-query-console.mjs",
+  "src/console/serves-query-console.conformant.mjs",
+  "src/console/serves-query-console.projected.mjs",
+];
+const expectedBundleArtifactPaths = [
+  "src/console/contracts/console-request-routing.bundle.json",
+  "src/console/contracts/console-snippet-retrieval.bundle.json",
+];
 const expectedArtifactPaths = [
   "src/console/console-authority-bundles.mjs",
   "src/console/console-routing-adapter.mjs",
   "src/console/console-validation-adapter.mjs",
+  "src/console/contracts/console-request-routing.bundle.json",
+  "src/console/contracts/console-snippet-retrieval.bundle.json",
   "src/console/console-snippet-adapter.mjs",
   "src/console/serves-query-console.mjs",
   "src/console/serves-query-console.conformant.mjs",
@@ -45,7 +60,7 @@ test("project-console-contract writes a governed console contract draft", () => 
     `CLI failed with status ${result.status}\nSTDOUT:\n${result.stdout}\nSTDERR:\n${result.stderr}`,
   );
   assert.ok(result.stdout.includes(outputPath), "CLI should print the governed contract path");
-  assert.ok(result.stdout.includes("Artifact count: 7"), "CLI should report the projected artifact count");
+  assert.ok(result.stdout.includes("Artifact count: 9"), "CLI should report the projected artifact count");
 
   const contract = JSON.parse(readFileSync(outputPath, "utf8"));
   const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
@@ -57,30 +72,50 @@ test("project-console-contract writes a governed console contract draft", () => 
   assert.equal(contract.contract.contractId, "serves-query-console-governed-contract");
   assert.equal(contract.contract.status, "admitted");
   assert.equal(contract.artifacts.length, expectedArtifactPaths.length);
+
+  const sourceArtifacts = contract.artifacts.filter((artifact) => expectedSourceArtifactPaths.includes(artifact.relativePath));
+  const bundleArtifacts = contract.artifacts.filter((artifact) => expectedBundleArtifactPaths.includes(artifact.relativePath));
+  assert.equal(sourceArtifacts.length, expectedSourceArtifactPaths.length);
+  assert.equal(bundleArtifacts.length, expectedBundleArtifactPaths.length);
+
   assert.ok(
-    contract.artifacts.every((artifact) => artifact.projection.projectorId === "provenance-sealed-source-projector.v1"),
-    "all console artifacts should be projected as provenance-sealed source",
+    sourceArtifacts.every((artifact) => artifact.projection.projectorId === "provenance-sealed-source-projector.v1"),
+    "console source artifacts should be projected as provenance-sealed source",
   );
   assert.ok(
-    contract.artifacts.every((artifact) => artifact.projection.authority.authorityType === "lossless-source-tokens.v1"),
-    "all console artifacts should carry lossless source-token authority",
+    sourceArtifacts.every((artifact) => artifact.projection.authority.authorityType === "lossless-source-tokens.v1"),
+    "console source artifacts should carry lossless source-token authority",
   );
   assert.ok(
-    contract.artifacts.every(
+    sourceArtifacts.every(
       (artifact) =>
         artifact.proof.verifierIds.includes("artifact-provenance-verifier.v1")
         && artifact.proof.verifierIds.includes("authority-closure-verifier.v1")
         && artifact.proof.verifierIds.includes("content-digest-verifier.v1")
         && artifact.proof.verifierIds.includes("source-token-structure-verifier.v1"),
     ),
-    "all console artifacts should use the source proof verifier set",
+    "console source artifacts should use the source proof verifier set",
   );
   assert.ok(
-    contract.artifacts.every(
+    sourceArtifacts.every(
       (artifact) => Array.isArray(artifact.projection.authority.tokens) && artifact.projection.authority.tokens.length > 0,
     ),
-    "all console artifacts should include lossless source tokens",
+    "console source artifacts should include lossless source tokens",
   );
+
+  assert.ok(
+    bundleArtifacts.every((artifact) => artifact.projection.projectorId === "canonical-json-value-projector.v1"),
+    "console bundle artifacts should be projected as canonical JSON values",
+  );
+  assert.ok(
+    bundleArtifacts.every((artifact) => artifact.projection.authority.authorityType === "canonical-json-value.v1"),
+    "console bundle artifacts should carry canonical-json-value authority",
+  );
+  assert.ok(
+    bundleArtifacts.every((artifact) => artifact.proof.verifierIds.includes("content-digest-verifier.v1")),
+    "console bundle artifacts should use the content-digest verifier",
+  );
+
   assert.deepEqual(
     contract.artifacts.map((artifact) => artifact.relativePath),
     expectedArtifactPaths,
@@ -90,9 +125,9 @@ test("project-console-contract writes a governed console contract draft", () => 
   assert.equal(contract.subject.authority.consoleWorkspaceRoot, "src/console");
   assert.ok(
     contract.lineage.responsibilities.every(
-      (responsibility) => responsibility.projectionProfileId === "provenance-sealed-source-projector.v1",
+      (responsibility) => responsibility.projectionProfileId === "javascript-semantic-execution-body.v1",
     ),
-    "lineage should describe the provenance-sealed source projection profile",
+    "lineage should describe the javascript-semantic-execution-body projection profile",
   );
   assert.ok(
     /^sha256:[a-f0-9]{64}$/.test(contract.designAuthority.conversationDigest),

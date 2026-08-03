@@ -20,8 +20,8 @@ import {
 } from "./validates-gallery-artifacts.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const defaultPoliciesDirectory = path.join(repoRoot, "gallery-policies");
-const defaultProjectorsDirectory = path.join(repoRoot, "gallery-projectors");
+const defaultPoliciesDirectory = path.join(repoRoot, "contracts", "gallery-policies");
+const defaultProjectorsDirectory = path.join(repoRoot, "contracts", "gallery-projectors");
 
 export const galleryArtifactNames = Object.freeze({
   selection: "gallery-selection.json",
