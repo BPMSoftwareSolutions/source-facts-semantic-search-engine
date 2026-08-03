@@ -1,26 +1,58 @@
-Source Facts Self-Governance Report
-Generated: 2026-08-03T17:48:09.296Z
-Repository: src
-Workspace: C:\lab\repos\source-facts-semantic-search-engine\src
+# Source Facts Self-Governance Report
 
-Execution mechanics observed:      3358
-Governed by semantic authority:    0
-Unknown classification:            3358
+| | |
+|---|---|
+| **Report type** | `source-facts-self-governance-report.v1` |
+| **Generated** | 2026-08-03T17:54:56.444Z |
+| **Repository** | src |
+| **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
+| **Scan ID** | 3adc831a26dcaa05f27b234dd0bf76b2766358d5601822782b062a2545727a88 |
+| **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
-By mechanic type:
-  object-construction  observed 1233  governed 0
-  fallback             observed 672  governed 0
-  branch               observed 648  governed 0
-  state-mutation       observed 211  governed 0
-  iteration            observed 153  governed 0
-  validation           observed 103  governed 0
-  throw                observed 93  governed 0
-  serialization        observed 86  governed 0
-  exception-handling   observed 84  governed 0
-  normalization        observed 74  governed 0
-  retry                observed 1  governed 0
+## Executive Summary
 
-Authority sources:
-  contracts/serves-query-console.authority.json -> src/console/serves-query-console.js (11/11 bound)
+SourceFacts indexed its own source tree and classified every observed executable
+mechanic against admitted (`AUTHORITY_BOUND`) semantic authority. This report is
+**observational**: no build gate, backlog baseline, or regression policy is wired
+to it yet, so nothing here blocks a build.
 
-Disposition: OBSERVATIONAL_NO_GATE_APPLIED (no build gate wired yet)
+| Metric | Count | Share of observed |
+|---|---:|---:|
+| Execution mechanics observed | 3,372 | 100.0% |
+| Governed by semantic authority | 0 | 0.0% |
+| Unknown classification | 3,372 | 100.0% |
+| Authorized temporary backlog | 0 | 0.0% |
+| Unauthorized executable meaning | 0 | 0.0% |
+| Mechanical adapter operation | 0 | 0.0% |
+| Kernel primitive | 0 | 0.0% |
+
+## Coverage by Mechanic Type
+
+| Mechanic | Observed | Governed | Coverage |
+|---|---:|---:|---:|
+| object-construction | 1,234 | 0 | 0.0% |
+| fallback | 677 | 0 | 0.0% |
+| branch | 653 | 0 | 0.0% |
+| state-mutation | 211 | 0 | 0.0% |
+| iteration | 156 | 0 | 0.0% |
+| validation | 103 | 0 | 0.0% |
+| throw | 93 | 0 | 0.0% |
+| serialization | 86 | 0 | 0.0% |
+| exception-handling | 84 | 0 | 0.0% |
+| normalization | 74 | 0 | 0.0% |
+| retry | 1 | 0 | 0.0% |
+
+## Authority Sources
+
+| Authority file | Declares governance for | Mechanics declared | Authority-bound | Resolved against observed code |
+|---|---|---:|---:|---:|
+| `contracts/serves-query-console.authority.json` | `src/console/serves-query-console.js` | 11 | 11 | 0 ⚠️ |
+
+## Notable Findings
+
+- **Dangling authority source:** `contracts/serves-query-console.authority.json` declares 11 `AUTHORITY_BOUND` mechanic(s) against `src/console/serves-query-console.js`, but none resolved against any observed occurrence in this scan. The declared source file most likely no longer exists at that path (renamed or moved), so its coverage cannot currently be verified.
+
+## Disposition
+
+`OBSERVATIONAL_NO_GATE_APPLIED` — this run only observes and classifies; it does not gate a build. A future slice adds a registered query catalog, a backlog baseline, and a regression gate that can act on these classifications.
+

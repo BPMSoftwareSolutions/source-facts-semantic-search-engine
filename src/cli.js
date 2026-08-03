@@ -36,7 +36,7 @@ import { projectsConsoleGovernedContract } from "./projects-governed-console-con
 import { discoversAuthorityDocuments } from "./governance/discovers-authority-documents.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
-import { formatsSelfGovernanceReportSummary } from "./governance/formats-self-governance-report-summary.js";
+import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -302,7 +302,7 @@ async function runGovern(rawArgs) {
   const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "source-facts-self-governance-report.json"));
   const summaryPath = outputPath.replace(/\.json$/i, ".md");
   await writesJsonFile(outputPath, report, { pretty });
-  await fs.writeFile(summaryPath, formatsSelfGovernanceReportSummary(report), "utf8");
+  await fs.writeFile(summaryPath, formatsSelfGovernanceReportMarkdown(report), "utf8");
 
   process.stdout.write(`${outputPath}\n${summaryPath}\n`);
   if (flags.summary === true) {
