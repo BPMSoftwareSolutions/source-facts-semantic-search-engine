@@ -1680,3 +1680,551 @@ What happens next?
 At that point, the self-governance report becomes more than an audit.
 
 It becomes the **interactive repair conveyor for moving executable meaning out of code and into authority**.
+
+#############################################################
+
+Exactly. At this point, the report should stop asking only:
+
+```text
+Does authority exist?
+```
+
+and start asking:
+
+```text
+Can this authority be connected automatically?
+```
+
+Because the current state already proves a large amount of **reachable semantic inventory** exists. The report shows 170 reachable draft mechanics, 85 reachable elements in the governed contract, and only the stale 33-element contract plus stale 11-mechanic admitted authority are fully orphaned. 
+
+So the next operating model is not just coverage.
+
+It is **automation readiness**.
+
+# The new remediation question
+
+For every executable mechanic:
+
+```text
+Observed executable mechanic
+        ↓
+Candidate authority family known?
+        ↓
+Reachable authority already exists?
+        ↓
+Owning body and responsibility resolved?
+        ↓
+Authority can be projected or promoted?
+        ↓
+Binding can be generated?
+        ↓
+Body can consume authority?
+        ↓
+Equivalence can be proven?
+```
+
+That gives you a very practical classification:
+
+```text
+AUTOMATABLE_NOW
+AUTOMATABLE_AFTER_REVIEW
+AUTOMATABLE_AFTER_AUTHORITY_COMPLETION
+REQUIRES_NEW_AUTHORITY
+REQUIRES_HUMAN_SEMANTIC_DECISION
+NOT_CURRENTLY_PROJECTABLE
+```
+
+# The low-hanging fruit
+
+The strongest low-hanging-fruit case is:
+
+```text
+Executable body exists
+        +
+reachable authority candidate exists
+        +
+authority family is known
+        +
+source location resolves uniquely
+        +
+projection profile already exists
+        =
+connection can be automated
+```
+
+For the `serves-query-console` draft:
+
+```text
+170 authority candidates
+170 reachable
+0 orphaned
+unique suffix resolution succeeds
+current body exists
+```
+
+That strongly suggests a substantial portion of the next step is not fresh authoring. It is:
+
+```text
+promote
+bind
+wire
+reproject
+prove
+```
+
+The report should call that out explicitly.
+
+# Automation tiers
+
+I would establish four tiers.
+
+## Tier 1 — Directly automatable
+
+No new semantic meaning is required.
+
+```text
+Authority exists
+Source target exists
+Mechanic identity resolves
+Responsibility resolves
+Projection profile exists
+Binding shape is known
+```
+
+Action:
+
+```text
+GENERATE_BINDING
+```
+
+or:
+
+```text
+PROMOTE_AND_BIND
+```
+
+Example:
+
+```json
+{
+  "automationDisposition": "AUTOMATABLE_NOW",
+  "recommendedAction": "PROMOTE_AND_BIND",
+  "sourceBody": "src/console/serves-query-console.runtime.impl.mjs",
+  "authorityDocument": "contracts/serves-query-console.authority.draft.json",
+  "reachableMechanics": 170
+}
+```
+
+This is the real low-hanging fruit.
+
+---
+
+## Tier 2 — Automatable after review
+
+The authority is reachable and structurally complete, but it has not been human-admitted.
+
+```text
+Candidate projected
+Source reachable
+Semantic shape complete
+Promotion status pending
+```
+
+Action:
+
+```text
+REVIEW_CANDIDATE
+        ↓
+ADMIT
+        ↓
+GENERATE_BINDING
+```
+
+The machine can prepare everything, but admission remains an explicit governance act.
+
+This may be the most accurate initial classification for the 170-mechanic draft.
+
+---
+
+## Tier 3 — Automatable after authority completion
+
+An authority home exists, but one or more required families are incomplete.
+
+For example:
+
+```text
+Decision authority exists
+Projection mappings missing
+Failure policy missing
+Result contract exists
+```
+
+Action:
+
+```text
+PROJECT_MISSING_AUTHORITY_FAMILY
+```
+
+Then:
+
+```text
+review
+admit
+bind
+```
+
+This is still highly automatable because the report already knows:
+
+* the executable mechanic,
+* the authority family,
+* the owning file,
+* the responsibility,
+* the source location,
+* and often the semantic shape.
+
+---
+
+## Tier 4 — Requires human meaning
+
+The scanner sees mechanics but cannot safely infer intent.
+
+Examples:
+
+```text
+Branch condition detected,
+but no unambiguous business disposition can be inferred.
+
+Object construction detected,
+but the target canonical result contract is unknown.
+
+Fallback detected,
+but no declared missing-value policy exists.
+
+State mutation detected,
+but the intended state model is absent.
+```
+
+Action:
+
+```text
+HUMAN_SEMANTIC_DECISION_REQUIRED
+```
+
+The system should still scaffold the work:
+
+```text
+Observed mechanic
+Candidate family
+Source evidence
+Likely authority shape
+Unresolved decision
+```
+
+But it should not fabricate meaning.
+
+# What “wiring” actually means
+
+The connection is not one generic link. It is a small authority chain.
+
+```text
+Observed mechanic
+    ↓
+Authority mechanic entry
+    ↓
+Responsibility authority
+    ↓
+Semantic authority family
+    ↓
+Execution binding
+    ↓
+Runtime invocation
+    ↓
+Projected body
+```
+
+For a branch:
+
+```text
+Observed IfStatement
+        ↓
+decision authority
+        ↓
+execution binding
+        ↓
+semantic runtime
+        ↓
+body no longer owns branch meaning
+```
+
+For object construction:
+
+```text
+Observed object construction
+        ↓
+projection mapping
+        ↓
+result contract
+        ↓
+projection binding
+        ↓
+body consumes projected result
+```
+
+For failure handling:
+
+```text
+Observed try/catch or throw
+        ↓
+failure policy
+        ↓
+failure classification binding
+        ↓
+semantic execution
+```
+
+So the report should show not only “authority reachable,” but:
+
+```text
+Which connection is missing?
+```
+
+# Missing tissue classification
+
+This is probably the most useful next report layer.
+
+```text
+AUTHORITY_DOCUMENT_MISSING
+AUTHORITY_FAMILY_MISSING
+AUTHORITY_ENTRY_MISSING
+RESPONSIBILITY_BINDING_MISSING
+SOURCE_BINDING_MISSING
+EXECUTION_BINDING_MISSING
+RUNTIME_WIRING_MISSING
+PROJECTED_BODY_MISSING
+EQUIVALENCE_PROOF_MISSING
+```
+
+That turns vague remediation into exact missing connective tissue.
+
+Example:
+
+| File                                    | Mechanic            | Authority                 | Missing tissue       | Automation                     |
+| --------------------------------------- | ------------------- | ------------------------- | -------------------- | ------------------------------ |
+| `serves-query-console.runtime.impl.mjs` | branch              | reachable draft           | admission + binding  | Automatable after review       |
+| `serves-query-console.runtime.impl.mjs` | object construction | reachable draft           | projection binding   | Automatable now                |
+| `cli.js`                                | fallback            | no authority home         | missing-value policy | Human decision required        |
+| `project.js`                            | retry               | no continuation authority | retry policy         | Authority projection candidate |
+
+# Add an Automation Readiness section
+
+The report should include a top-level rollup like:
+
+| Automation posture                     | Mechanics | Files | Share |
+| -------------------------------------- | --------: | ----: | ----: |
+| Automatable now                        |        94 |     1 |  2.6% |
+| Automatable after review               |        76 |     1 |  2.1% |
+| Automatable after authority completion |       420 |    12 | 11.7% |
+| Requires new authority                 |     2,500 |    48 | 69.4% |
+| Requires human semantic decision       |       510 |    19 | 14.2% |
+
+The current exact numbers would need to be computed, but the report now has enough evidence to derive them honestly.
+
+# Projectability must be explicit
+
+For each remediation item, declare:
+
+```text
+Projectable?
+```
+
+But not as a loose boolean.
+
+Use:
+
+```text
+PROJECTABLE_NOW
+PROJECTABLE_AFTER_PROMOTION
+PROJECTABLE_AFTER_AUTHORITY_COMPLETION
+PROJECTABLE_AFTER_HUMAN_DECISION
+NOT_PROJECTABLE_WITH_CURRENT_PROFILE
+```
+
+And explain why.
+
+```json
+{
+  "projectability": {
+    "status": "PROJECTABLE_AFTER_PROMOTION",
+    "missingPrerequisites": [
+      "authority-admission",
+      "execution-binding"
+    ],
+    "availableProjectors": [
+      "projects-authority-binding.v1",
+      "projects-semantic-runtime-body.v1"
+    ]
+  }
+}
+```
+
+# The automation pipeline
+
+For the directly projectable case:
+
+```text
+1. Select reachable candidate mechanics.
+2. Resolve current source body.
+3. Resolve owning responsibilities.
+4. Validate candidate authority shape.
+5. Promote candidate into admitted authority.
+6. Generate authority binding.
+7. Generate or update runtime wiring.
+8. Project collapsed execution body.
+9. Execute direct semantic evaluation.
+10. Execute projected body.
+11. Compare canonical results.
+12. Update governance report.
+```
+
+The operator experience could be nearly trivial:
+
+```bash
+source-facts govern show --automation-ready
+```
+
+Then:
+
+```bash
+source-facts govern project \
+  --remediation promote-and-bind-serves-query-console
+```
+
+Then:
+
+```text
+170 reachable candidate mechanics found
+170 source locations resolved
+170 authority entries validated
+1 binding projected
+1 runtime body projected
+semantic equivalence: GREEN
+governed coverage updated
+```
+
+# One important safeguard
+
+Reachability alone must not equal admission.
+
+```text
+Reachable
+    ≠
+Semantically correct
+```
+
+A candidate can point at current source and still encode the wrong interpretation.
+
+So automation should distinguish:
+
+```text
+Mechanical automation:
+path resolution
+binding generation
+projection
+body wiring
+receipt generation
+
+Governance decision:
+candidate meaning is accepted
+```
+
+The machine can automate everything around the decision.
+
+The actual admission decision remains explicit unless a policy already authorizes automatic promotion for that candidate class.
+
+# Report-driven buttons
+
+Every drill-down item should effectively expose one action.
+
+```text
+PROMOTE AND BIND
+EXTEND EXISTING AUTHORITY
+PROJECT MISSING FAMILY
+PROJECT EXECUTION BINDING
+PROJECT COLLAPSED BODY
+RUN EQUIVALENCE PROOF
+REVIEW SEMANTIC DECISION
+RETIRE ORPHANED AUTHORITY
+```
+
+That is where the report becomes operational.
+
+Not:
+
+```text
+Here are your problems.
+```
+
+But:
+
+```text
+Here are the problems,
+here is what is already complete,
+here is what can be automated,
+and here is the exact next operation.
+```
+
+# The simplest mental model
+
+```text
+Meaning exists?
+    ├── no  → author meaning
+    └── yes
+         ↓
+Source reachable?
+    ├── no  → migrate or retire
+    └── yes
+         ↓
+Admitted?
+    ├── no  → review and promote
+    └── yes
+         ↓
+Bound?
+    ├── no  → generate binding
+    └── yes
+         ↓
+Body consumes authority?
+    ├── no  → project wiring/body
+    └── yes
+         ↓
+Equivalent?
+    ├── no  → repair projection
+    └── yes → GOVERNED
+```
+
+That is the conveyor.
+
+## The key operational metric
+
+The next report should surface:
+
+```text
+Automation Opportunity
+=
+reachable authority
++
+known authority family
++
+resolvable source target
++
+available projector
+-
+unresolved semantic decisions
+```
+
+That gives you the low-hanging-fruit score.
+
+And for the current console authority draft, the report is already telling you something very valuable:
+
+> There are 170 reachable mechanic candidates that likely do not need to be rediscovered. They need to be reviewed, promoted, bound, and seated into the executable path.
+
+That is exactly the kind of inventory movement the system should automate.

@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-03T19:18:24.923Z |
+| **Generated** | 2026-08-03T19:28:34.471Z |
 | **Repository** | src |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Scan ID** | 820dbd7b2c55714c73e36394131bceae83b6f122897b74c39557050cd127798e |
+| **Scan ID** | 2cf355a16eea8e080131ffda099ac5ffd60d5563737147b1a351bb6fa0318cb1 |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
 ## Executive Summary
@@ -18,9 +18,9 @@ to it yet, so nothing here blocks a build.
 
 | Metric | Count | Share of observed |
 |---|---:|---:|
-| Execution mechanics observed | 3,533 | 100.0% |
+| Execution mechanics observed | 3,600 | 100.0% |
 | Governed by semantic authority | 0 | 0.0% |
-| Unknown classification | 3,533 | 100.0% |
+| Unknown classification | 3,600 | 100.0% |
 | Authorized temporary backlog | 0 | 0.0% |
 | Unauthorized executable meaning | 0 | 0.0% |
 | Mechanical adapter operation | 0 | 0.0% |
@@ -34,16 +34,16 @@ authority *file* claiming that mechanic's file exists at all, even incompletely.
 
 | Mechanic | Authority family | Observed | Files | Governed | Home exists | Home incomplete | Home missing | Coverage |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| object-construction | projection-mapping | 1,277 | 58 | 0 | 0 | 0 | 1,277 | 0.0% |
-| fallback | missing-value-policy | 713 | 53 | 0 | 0 | 0 | 713 | 0.0% |
-| branch | decision | 699 | 53 | 0 | 0 | 0 | 699 | 0.0% |
-| state-mutation | state-transition | 221 | 34 | 0 | 0 | 0 | 221 | 0.0% |
-| iteration | iteration | 176 | 41 | 0 | 0 | 0 | 176 | 0.0% |
+| object-construction | projection-mapping | 1,299 | 59 | 0 | 0 | 0 | 1,299 | 0.0% |
+| fallback | missing-value-policy | 723 | 54 | 0 | 0 | 0 | 723 | 0.0% |
+| branch | decision | 711 | 54 | 0 | 0 | 0 | 711 | 0.0% |
+| state-mutation | state-transition | 234 | 36 | 0 | 0 | 0 | 234 | 0.0% |
+| iteration | iteration | 184 | 42 | 0 | 0 | 0 | 184 | 0.0% |
 | validation | validation-policy | 103 | 18 | 0 | 0 | 0 | 103 | 0.0% |
 | throw | failure-disposition | 92 | 33 | 0 | 0 | 0 | 92 | 0.0% |
 | serialization | serialization-profile | 85 | 19 | 0 | 0 | 0 | 85 | 0.0% |
 | exception-handling | failure-policy | 84 | 19 | 0 | 0 | 0 | 84 | 0.0% |
-| normalization | translation | 82 | 16 | 0 | 0 | 0 | 82 | 0.0% |
+| normalization | translation | 84 | 17 | 0 | 0 | 0 | 84 | 0.0% |
 | retry | continuation-policy | 1 | 1 | 0 | 0 | 0 | 1 | 0.0% |
 
 ## File Drill-Down
@@ -61,7 +61,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/web/html-projector.js` | 56 | 0 | AUTHORITY_HOME_MISSING | buildsDiagnostic, handlesScriptBlock, handlesStyleBlock |
 | `src/gallery/projects-gallery.js` | 52 | 0 | AUTHORITY_HOME_MISSING | buildsGalleryProjectionReceipt, calculatesProjectorAuthorityHash, plansGalleryProjection |
 
-*53 more file(s) for `object-construction` omitted; see `fileBreakdown` in the JSON report.*
+*54 more file(s) for `object-construction` omitted; see `fileBreakdown` in the JSON report.*
 
 ### fallback (missing-value-policy authority family)
 
@@ -73,7 +73,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/web/html-projector.js` | 28 | 0 | AUTHORITY_HOME_MISSING | decodesEntities, handlesScriptBlock, handlesUnterminatedScript |
 | `src/project.js` | 27 | 0 | AUTHORITY_HOME_MISSING | buildsDeclarationRows, projectSourceFactsWorkspace, projectsControlMechanics |
 
-*48 more file(s) for `fallback` omitted; see `fileBreakdown` in the JSON report.*
+*49 more file(s) for `fallback` omitted; see `fileBreakdown` in the JSON report.*
 
 ### branch (decision authority family)
 
@@ -85,7 +85,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/web/html-projector.js` | 36 | 0 | AUTHORITY_HOME_MISSING | decodesEntities, handlesScriptBlock, handlesStyleBlock |
 | `src/web/css-projector.js` | 32 | 0 | AUTHORITY_HOME_MISSING | extractsImportTarget, extractsUrls, findsStatementBoundary |
 
-*48 more file(s) for `branch` omitted; see `fileBreakdown` in the JSON report.*
+*49 more file(s) for `branch` omitted; see `fileBreakdown` in the JSON report.*
 
 ### state-mutation (state-transition authority family)
 
@@ -97,19 +97,19 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/projects-governed-console-contract.js` | 15 | 0 | AUTHORITY_HOME_MISSING | buildsConsoleGovernedContract |
 | `src/gallery/plans-surface-previews.js` | 13 | 0 | AUTHORITY_HOME_MISSING | plansOneItem |
 
-*29 more file(s) for `state-mutation` omitted; see `fileBreakdown` in the JSON report.*
+*31 more file(s) for `state-mutation` omitted; see `fileBreakdown` in the JSON report.*
 
 ### iteration (iteration authority family)
 
 | File | Occurrences | Governed | Home status | Responsibilities |
 |---|---:|---:|---|---|
 | `src/web/html-projector.js` | 26 | 0 | AUTHORITY_HOME_MISSING | idRefsForAttributes, isWithinClaimedRange, parsesAttributes |
+| `src/governance/formats-self-governance-report-summary.js` | 19 | 0 | AUTHORITY_HOME_MISSING | formatsContractSemanticVolume, formatsDataDrivenWiring, formatsFileDrillDown |
 | `src/project.js` | 17 | 0 | AUTHORITY_HOME_MISSING | buildsDeclarationRows, loadsScanner, projectSourceFactsWorkspace |
-| `src/governance/formats-self-governance-report-summary.js` | 15 | 0 | AUTHORITY_HOME_MISSING | formatsDataDrivenWiring, formatsFileDrillDown, formatsSelfGovernanceReportMarkdown |
 | `src/web/relationship-resolver.js` | 10 | 0 | AUTHORITY_HOME_MISSING | buildsResolutionContext, existsSyncAnyExtension, extractsJsReferences |
 | `src/projects-authority-candidates.js` | 8 | 0 | AUTHORITY_HOME_MISSING | buildAuthorityMechanicDraft, buildsNormalizedSourceCodeMap, deduplicateMechanics |
 
-*36 more file(s) for `iteration` omitted; see `fileBreakdown` in the JSON report.*
+*37 more file(s) for `iteration` omitted; see `fileBreakdown` in the JSON report.*
 
 ### validation (validation-policy authority family)
 
@@ -169,7 +169,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/gallery/projects-gallery.js` | 7 | 0 | AUTHORITY_HOME_MISSING | buildsGalleryProjectionReceipt, canonicalizesJson, plansGalleryProjection |
 | `src/composition/runs-sign-in-north-star.js` | 4 | 0 | AUTHORITY_HOME_MISSING | appliesSelectionOverrides, buildsSignInAuthorityChoices |
 
-*11 more file(s) for `normalization` omitted; see `fileBreakdown` in the JSON report.*
+*12 more file(s) for `normalization` omitted; see `fileBreakdown` in the JSON report.*
 
 ### retry (continuation-policy authority family)
 
@@ -187,14 +187,14 @@ Detected from the scanner's import (`dependency`) relationships.
 
 | Wiring posture | Files | Share |
 |---|---:|---:|
-| Direct data and runtime | 1 | 1.7% |
+| Direct data and runtime | 1 | 1.6% |
 | Direct runtime only | 2 | 3.3% |
 | Direct data only | 0 | 0.0% |
-| Transitive data and runtime | 4 | 6.7% |
+| Transitive data and runtime | 4 | 6.6% |
 | Transitive runtime only | 2 | 3.3% |
 | Transitive data only | 0 | 0.0% |
 | Not determined (beyond max depth) | 2 | 3.3% |
-| None determined | 49 | 81.7% |
+| None determined | 50 | 82.0% |
 
 | File | Wiring | Direct evidence | Transitive evidence | Hops | Hop path |
 |---|---|---|---|---:|---|
@@ -209,6 +209,48 @@ Detected from the scanner's import (`dependency`) relationships.
 | `src/projects-governed-console-contract.js` | RUNTIME_ONLY | `../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs` | — | — | — |
 | `src/web/classification-overlay.js` | RUNTIME_ONLY | `@deterministic-solutions/semantic-kernel` | — | — | — |
 | `src/web/project-web-surfaces.js` | TRANSITIVE_RUNTIME_ONLY | — | `@deterministic-solutions/semantic-kernel` | 1 | `src/web/project-web-surfaces.js` → `src/web/classification-overlay.js` |
+
+## Contract Semantic Volume
+
+A third question, distinct from coverage and wiring: how much declared
+meaning -- decisions, semantic edges, failure policies, projection
+mappings, result contracts, mechanics -- exists across every discovered
+authority-shaped document, and how much of it still points at a file that
+exists in the current scan versus one that moved, was renamed, or was
+removed. This is measured per-artifact or per-mechanic where the document
+shape allows it (exact), and left undetermined where it doesn't rather
+than guessed.
+
+299 total semantic element(s) declared across 16 document(s).
+
+| | Elements | Share |
+|---|---:|---:|
+| Reachable | 255 | 85.3% |
+| Orphaned (target moved or removed) | 44 | 14.7% |
+| Undetermined | 0 | 0.0% |
+
+| Document | Kind | Total | Reachable | Orphaned | Undetermined |
+|---|---|---:|---:|---:|---:|
+| `contracts/serves-query-console.authority.draft.json` | authority-declaration.draft.v1 | 170 | 170 | 0 | 0 |
+| `contracts/serves-query-console.governed.contract.json` | governed-artifact-contract | 85 | 85 | 0 | 0 |
+| `contracts/serves-query-console.contract.json` | governed-artifact-contract | 33 | 0 | 33 | 0 |
+| `contracts/serves-query-console.authority.json` | authority-declaration.v1 | 11 | 0 | 11 | 0 |
+
+**contracts/serves-query-console.authority.draft.json** -- mechanic-location reachability (170 mechanic(s) declared):
+
+- Resolved (matched by unique suffix): 170
+
+**contracts/serves-query-console.contract.json** -- orphaned artifacts (semantic content whose declared file no longer exists):
+
+| Artifact | Declared path | Orphaned elements |
+|---|---|---:|
+| `message-projector.v1` | `src/project-message.mjs` | 13 |
+| `message-command.v1` | `bin/run-message.mjs` | 11 |
+| `message-verification.v1` | `verification/verifies-message.mjs` | 9 |
+
+**contracts/serves-query-console.authority.json** -- mechanic-location reachability (11 mechanic(s) declared):
+
+- Moved or removed: 11
 
 ## Authority Sources
 
@@ -245,7 +287,7 @@ than being silently ignored.
 ## Notable Findings
 
 - **Dangling authority source:** `contracts/serves-query-console.authority.json` declares 11 `AUTHORITY_BOUND` mechanic(s) against `src/console/serves-query-console.js`, but none resolved against any observed occurrence in this scan. The declared source file most likely no longer exists at that path (renamed or moved), so its coverage cannot currently be verified.
-- **60 distinct file(s)** contain at least one mechanic with no authority document claiming them at all (`AUTHORITY_HOME_MISSING`). See File Drill-Down above and `fileBreakdown` in the JSON report for the full list.
+- **61 distinct file(s)** contain at least one mechanic with no authority document claiming them at all (`AUTHORITY_HOME_MISSING`). See File Drill-Down above and `fileBreakdown` in the JSON report for the full list.
 
 ## Disposition
 

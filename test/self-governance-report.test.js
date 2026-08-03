@@ -4,6 +4,7 @@ import { classifiesMechanicOccurrence, extractsDeclaredAuthorityMechanics } from
 import { detectsAuthorityDocumentKind, authorityDeclarationKind } from "../src/governance/detects-authority-document-kind.js";
 import { resolvesAuthorityFamily } from "../src/governance/mechanic-authority-families.js";
 import { resolvesDataDrivenWiring } from "../src/governance/resolves-data-driven-wiring.js";
+import { resolvesMechanicLocationReachability, measuresContractSemanticVolume } from "../src/governance/measures-contract-semantic-volume.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -346,4 +347,118 @@ test("projectsSelfGovernanceReport exposes dataDrivenWiring scoped to files with
   assert.equal(oneHopEntry.wiringDisposition, "TRANSITIVE_DATA_AND_RUNTIME");
   // cycle-a.mjs has no observed mechanics, so it's outside this report's scope entirely.
   assert.equal(report.dataDrivenWiring.some((entry) => entry.modulePath === "src/cycle-a.mjs"), false);
+});
+
+test("resolvesMechanicLocationReachability resolves exact matches, unique suffix matches, ambiguity, and moved/removed files", () => {
+  const knownModulePaths = new Set(["src/console/foo.mjs", "src/other/foo.mjs", "src/console/bar.mjs"]);
+
+  const exact = resolvesMechanicLocationReachability("src/console/bar.mjs:10", knownModulePaths);
+  assert.equal(exact.status, "RESOLVED");
+  assert.equal(exact.resolvedModulePath, "src/console/bar.mjs");
+
+  // "foo.mjs" alone matches two known files by suffix -- must not silently pick one.
+  const ambiguous = resolvesMechanicLocationReachability("foo.mjs:5", knownModulePaths);
+  assert.equal(ambiguous.status, "AMBIGUOUS");
+  assert.equal(ambiguous.resolvedModulePath, null);
+
+  const suffix = resolvesMechanicLocationReachability("bar.mjs:5", knownModulePaths);
+  assert.equal(suffix.status, "RESOLVED_BY_SUFFIX");
+  assert.equal(suffix.resolvedModulePath, "src/console/bar.mjs");
+
+  const moved = resolvesMechanicLocationReachability("src/console/gone.mjs:1", knownModulePaths);
+  assert.equal(moved.status, "MOVED_OR_REMOVED");
+
+  const unresolvable = resolvesMechanicLocationReachability("", knownModulePaths);
+  assert.equal(unresolvable.status, "UNRESOLVABLE_LOCATION");
+});
+
+test("measuresContractSemanticVolume measures per-mechanic reachability for authority-declaration-shaped documents", () => {
+  const draftDocument = {
+    schemaVersion: "authority-declaration.draft.v1",
+    authority: {
+      mechanics: [
+        { mechanicId: "m1", mechanic: "branch", sourceLocation: "src/console/bar.mjs:10", coverage: "AUTHORITY_CANDIDATE_PROJECTED" },
+        { mechanicId: "m2", mechanic: "fallback", sourceLocation: "src/console/vanished.mjs:5", coverage: "AUTHORITY_CANDIDATE_PROJECTED" },
+        { mechanicId: "m3", mechanic: "throw", sourceLocation: "bar.mjs:20", coverage: "AUTHORITY_CANDIDATE_PROJECTED" },
+      ],
+    },
+  };
+  const knownModulePaths = new Set(["src/console/bar.mjs"]);
+  const [measurement] = measuresContractSemanticVolume(
+    [{ document: draftDocument, filePath: "contracts/x.draft.json", documentKind: "authority-declaration.draft.v1" }],
+    knownModulePaths,
+  );
+
+  assert.equal(measurement.totalSemanticElements, 3);
+  assert.equal(measurement.semanticElementCounts.mechanics, 3);
+  assert.equal(measurement.reachableSemanticElements, 2); // m1 (exact) + m3 (suffix)
+  assert.equal(measurement.orphanedSemanticElements, 1); // m2, moved or removed
+  assert.equal(measurement.mechanicReachability.total, 3);
+  assert.equal(measurement.mechanicReachability.byStatus.RESOLVED, 1);
+  assert.equal(measurement.mechanicReachability.byStatus.RESOLVED_BY_SUFFIX, 1);
+  assert.equal(measurement.mechanicReachability.byStatus.MOVED_OR_REMOVED, 1);
+  assert.equal(measurement.artifactReachability, null);
+});
+
+test("measuresContractSemanticVolume measures per-artifact reachability for governed-artifact-contract documents", () => {
+  const contractDocument = {
+    contract: { contractId: "example.v1" },
+    artifacts: [
+      {
+        artifactId: "reachable-artifact.v1",
+        relativePath: "src/console/bar.mjs",
+        sourceAuthority: { decisions: [{ decisionId: "d1" }], semanticEdges: [{ edgeId: "e1" }, { edgeId: "e2" }] },
+      },
+      {
+        artifactId: "orphaned-artifact.v1",
+        relativePath: "src/console/vanished.mjs",
+        sourceAuthority: { failurePolicies: [{ failurePolicyId: "f1" }] },
+      },
+    ],
+  };
+  const knownModulePaths = new Set(["src/console/bar.mjs"]);
+  const [measurement] = measuresContractSemanticVolume(
+    [{ document: contractDocument, filePath: "contracts/example.contract.json", documentKind: "governed-artifact-contract" }],
+    knownModulePaths,
+  );
+
+  assert.equal(measurement.totalSemanticElements, 4);
+  assert.equal(measurement.reachableSemanticElements, 3); // decisions + semanticEdges on the reachable artifact
+  assert.equal(measurement.orphanedSemanticElements, 1); // failurePolicies on the orphaned artifact
+  assert.equal(measurement.mechanicReachability, null);
+  assert.equal(measurement.artifactReachability.length, 2);
+  const orphaned = measurement.artifactReachability.find((artifact) => artifact.artifactId === "orphaned-artifact.v1");
+  assert.equal(orphaned.reachable, false);
+  assert.equal(orphaned.semanticElementCount, 1);
+});
+
+test("measuresContractSemanticVolume returns an empty measurement for documents with neither mechanics nor artifacts", () => {
+  const bundleDocument = { bundleType: "semantic-execution-bundle.v1", bundleId: "x.v1" };
+  const [measurement] = measuresContractSemanticVolume(
+    [{ document: bundleDocument, filePath: "contracts/x.bundle.json", documentKind: "semantic-execution-bundle.v1" }],
+    new Set(),
+  );
+  assert.equal(measurement.totalSemanticElements, 0);
+  assert.equal(measurement.mechanicReachability, null);
+  assert.equal(measurement.artifactReachability, null);
+});
+
+test("projectsSelfGovernanceReport exposes contractSemanticVolume for every discovered authority document", async () => {
+  const index = buildsSyntheticIndex();
+  const draftAuthorityDocument = {
+    schemaVersion: "authority-declaration.draft.v1",
+    authority: { mechanics: [{ mechanicId: "d1", mechanic: "branch", sourceLocation: "src/example.js:11", coverage: "AUTHORITY_CANDIDATE_PROJECTED" }] },
+  };
+  const authorityDocuments = [
+    buildsAuthorityDocumentEntry("contracts/example.authority.json"),
+    { filePath: "contracts/example.draft.json", document: draftAuthorityDocument, documentKind: detectsAuthorityDocumentKind(draftAuthorityDocument) },
+  ];
+
+  const report = await projectsSelfGovernanceReport({ index, repositoryId: "self-governance-test", authorityDocuments });
+  await validatesSelfGovernanceReport(report);
+
+  assert.equal(report.contractSemanticVolume.length, 2);
+  const draftMeasurement = report.contractSemanticVolume.find((entry) => entry.authorityFile === "contracts/example.draft.json");
+  assert.equal(draftMeasurement.reachableSemanticElements, 1);
+  assert.equal(draftMeasurement.orphanedSemanticElements, 0);
 });

@@ -12,6 +12,7 @@
     "executionMechanics",
     "fileBreakdown",
     "dataDrivenWiring",
+    "contractSemanticVolume",
     "occurrences",
     "disposition"
   ],
@@ -179,6 +180,84 @@
               "NOT_DETERMINED_BEYOND_MAX_DEPTH",
               "NONE"
             ]
+          }
+        }
+      }
+    },
+    "contractSemanticVolume": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "authorityFile",
+          "documentKind",
+          "semanticElementCounts",
+          "totalSemanticElements",
+          "reachableSemanticElements",
+          "orphanedSemanticElements",
+          "undeterminedSemanticElements",
+          "mechanicReachability",
+          "artifactReachability"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "authorityFile": { "type": "string", "minLength": 1 },
+          "documentKind": { "type": "string", "minLength": 1 },
+          "semanticElementCounts": {
+            "type": "object",
+            "required": ["decisions", "semanticEdges", "failurePolicies", "projectionMappings", "resultContracts", "responsibilities", "declarations", "mechanics"],
+            "additionalProperties": false,
+            "properties": {
+              "decisions": { "type": "integer", "minimum": 0 },
+              "semanticEdges": { "type": "integer", "minimum": 0 },
+              "failurePolicies": { "type": "integer", "minimum": 0 },
+              "projectionMappings": { "type": "integer", "minimum": 0 },
+              "resultContracts": { "type": "integer", "minimum": 0 },
+              "responsibilities": { "type": "integer", "minimum": 0 },
+              "declarations": { "type": "integer", "minimum": 0 },
+              "mechanics": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "totalSemanticElements": { "type": "integer", "minimum": 0 },
+          "reachableSemanticElements": { "type": "integer", "minimum": 0 },
+          "orphanedSemanticElements": { "type": "integer", "minimum": 0 },
+          "undeterminedSemanticElements": { "type": "integer", "minimum": 0 },
+          "mechanicReachability": {
+            "type": ["object", "null"],
+            "required": ["total", "resolved", "unresolved", "ambiguous", "byStatus"],
+            "additionalProperties": false,
+            "properties": {
+              "total": { "type": "integer", "minimum": 0 },
+              "resolved": { "type": "integer", "minimum": 0 },
+              "unresolved": { "type": "integer", "minimum": 0 },
+              "ambiguous": { "type": "integer", "minimum": 0 },
+              "byStatus": {
+                "type": "object",
+                "required": ["RESOLVED", "RESOLVED_BY_SUFFIX", "MOVED_OR_REMOVED", "AMBIGUOUS", "UNRESOLVABLE_LOCATION"],
+                "additionalProperties": false,
+                "properties": {
+                  "RESOLVED": { "type": "integer", "minimum": 0 },
+                  "RESOLVED_BY_SUFFIX": { "type": "integer", "minimum": 0 },
+                  "MOVED_OR_REMOVED": { "type": "integer", "minimum": 0 },
+                  "AMBIGUOUS": { "type": "integer", "minimum": 0 },
+                  "UNRESOLVABLE_LOCATION": { "type": "integer", "minimum": 0 }
+                }
+              }
+            }
+          },
+          "artifactReachability": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "object",
+              "required": ["artifactId", "relativePath", "reachable", "semanticElementCount"],
+              "additionalProperties": false,
+              "properties": {
+                "artifactId": { "type": ["string", "null"] },
+                "relativePath": { "type": ["string", "null"] },
+                "reachable": { "type": "boolean" },
+                "semanticElementCount": { "type": "integer", "minimum": 0 }
+              }
+            }
           }
         }
       }

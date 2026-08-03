@@ -128,6 +128,103 @@ function formatsDataDrivenWiring(report) {
   return lines;
 }
 
+const mechanicReachabilityStatusLabels = Object.freeze({
+  RESOLVED: "Resolved (exact path)",
+  RESOLVED_BY_SUFFIX: "Resolved (matched by unique suffix)",
+  MOVED_OR_REMOVED: "Moved or removed",
+  AMBIGUOUS: "Ambiguous (multiple files match)",
+  UNRESOLVABLE_LOCATION: "No usable sourceLocation",
+});
+
+const maxUnreachableArtifactsShown = 5;
+
+/**
+ * "How much declared meaning exists in this repo's contracts, and how much of
+ * it is reachable from files that still exist." Not the same question as
+ * governance coverage or wiring -- a document can carry real decisions,
+ * semantic edges, and mechanics that were authored in good faith and then
+ * orphaned when the file they described moved or was replaced.
+ */
+function formatsContractSemanticVolume(report) {
+  const documents = report.contractSemanticVolume;
+  const totals = documents.reduce((accumulator, entry) => {
+    accumulator.total += entry.totalSemanticElements;
+    accumulator.reachable += entry.reachableSemanticElements;
+    accumulator.orphaned += entry.orphanedSemanticElements;
+    accumulator.undetermined += entry.undeterminedSemanticElements;
+    return accumulator;
+  }, { total: 0, reachable: 0, orphaned: 0, undetermined: 0 });
+
+  const lines = [
+    "## Contract Semantic Volume",
+    "",
+    "A third question, distinct from coverage and wiring: how much declared",
+    "meaning -- decisions, semantic edges, failure policies, projection",
+    "mappings, result contracts, mechanics -- exists across every discovered",
+    "authority-shaped document, and how much of it still points at a file that",
+    "exists in the current scan versus one that moved, was renamed, or was",
+    "removed. This is measured per-artifact or per-mechanic where the document",
+    "shape allows it (exact), and left undetermined where it doesn't rather",
+    "than guessed.",
+    "",
+    `${formatsCount(totals.total)} total semantic element(s) declared across ${formatsCount(documents.length)} document(s).`,
+    "",
+    "| | Elements | Share |",
+    "|---|---:|---:|",
+    `| Reachable | ${formatsCount(totals.reachable)} | ${formatsPercent(totals.reachable, totals.total)} |`,
+    `| Orphaned (target moved or removed) | ${formatsCount(totals.orphaned)} | ${formatsPercent(totals.orphaned, totals.total)} |`,
+    `| Undetermined | ${formatsCount(totals.undetermined)} | ${formatsPercent(totals.undetermined, totals.total)} |`,
+    "",
+  ];
+
+  const withContent = documents.filter((entry) => entry.totalSemanticElements > 0);
+  if (withContent.length === 0) {
+    lines.push("No discovered document carries measurable semantic content.");
+    lines.push("");
+    return lines;
+  }
+
+  lines.push("| Document | Kind | Total | Reachable | Orphaned | Undetermined |");
+  lines.push("|---|---|---:|---:|---:|---:|");
+  for (const entry of withContent) {
+    lines.push(`| \`${entry.authorityFile}\` | ${entry.documentKind} | ${entry.totalSemanticElements} | ${entry.reachableSemanticElements} | ${entry.orphanedSemanticElements} | ${entry.undeterminedSemanticElements} |`);
+  }
+  lines.push("");
+
+  for (const entry of withContent) {
+    if (entry.mechanicReachability !== null) {
+      lines.push(`**${entry.authorityFile}** -- mechanic-location reachability (${entry.mechanicReachability.total} mechanic(s) declared):`);
+      lines.push("");
+      for (const [status, label] of Object.entries(mechanicReachabilityStatusLabels)) {
+        const count = entry.mechanicReachability.byStatus[status];
+        if (count > 0) lines.push(`- ${label}: ${count}`);
+      }
+      lines.push("");
+    }
+    if (entry.artifactReachability !== null) {
+      const unreachableArtifacts = entry.artifactReachability
+        .filter((artifact) => !artifact.reachable && artifact.semanticElementCount > 0)
+        .sort((left, right) => right.semanticElementCount - left.semanticElementCount);
+      if (unreachableArtifacts.length > 0) {
+        lines.push(`**${entry.authorityFile}** -- orphaned artifacts (semantic content whose declared file no longer exists):`);
+        lines.push("");
+        lines.push("| Artifact | Declared path | Orphaned elements |");
+        lines.push("|---|---|---:|");
+        for (const artifact of unreachableArtifacts.slice(0, maxUnreachableArtifactsShown)) {
+          lines.push(`| \`${artifact.artifactId ?? "(unnamed)"}\` | \`${artifact.relativePath ?? "(unspecified)"}\` | ${artifact.semanticElementCount} |`);
+        }
+        if (unreachableArtifacts.length > maxUnreachableArtifactsShown) {
+          lines.push("");
+          lines.push(`*${unreachableArtifacts.length - maxUnreachableArtifactsShown} more orphaned artifact(s) omitted; see \`contractSemanticVolume\` in the JSON report.*`);
+        }
+        lines.push("");
+      }
+    }
+  }
+
+  return lines;
+}
+
 export function formatsSelfGovernanceReportMarkdown(report) {
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
@@ -189,6 +286,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     "",
     ...formatsFileDrillDown(report),
     ...formatsDataDrivenWiring(report),
+    ...formatsContractSemanticVolume(report),
     "## Authority Sources",
     "",
   ];
@@ -269,7 +367,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -314,6 +412,15 @@ export function formatsSelfGovernanceReportSummary(report) {
     const hopSuffix = entry.hopPath !== null ? ` via ${entry.hopPath.slice(1).join(" -> ")}` : "";
     lines.push(`  ${entry.modulePath} [${entry.wiringDisposition}]${hopSuffix}`);
   }
+
+  const semanticTotals = contractSemanticVolume.reduce((accumulator, entry) => {
+    accumulator.total += entry.totalSemanticElements;
+    accumulator.reachable += entry.reachableSemanticElements;
+    accumulator.orphaned += entry.orphanedSemanticElements;
+    return accumulator;
+  }, { total: 0, reachable: 0, orphaned: 0 });
+  lines.push("");
+  lines.push(`Contract semantic volume: ${semanticTotals.total} element(s) declared across ${contractSemanticVolume.length} document(s) -- ${semanticTotals.reachable} reachable, ${semanticTotals.orphaned} orphaned`);
 
   const dangling = findsDanglingAuthoritySources(report);
   if (dangling.length > 0) {
