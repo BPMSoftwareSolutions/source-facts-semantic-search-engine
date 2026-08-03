@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import os from "node:os";
+import path from "node:path";
+import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
 import { classifiesMechanicOccurrence, extractsDeclaredAuthorityMechanics } from "../src/governance/classifies-execution-mechanics.js";
 import { detectsAuthorityDocumentKind, authorityDeclarationKind } from "../src/governance/detects-authority-document-kind.js";
 import { resolvesAuthorityFamily } from "../src/governance/mechanic-authority-families.js";
@@ -7,6 +10,8 @@ import { resolvesDataDrivenWiring } from "../src/governance/resolves-data-driven
 import { resolvesMechanicLocationReachability, measuresContractSemanticVolume } from "../src/governance/measures-contract-semantic-volume.js";
 import { extractsCandidateAuthorityMechanics, resolvesCandidateAuthorityMatch, classifiesAutomationReadiness } from "../src/governance/classifies-automation-readiness.js";
 import { resolvesAuthoritySuccession } from "../src/governance/resolves-authority-succession.js";
+import { discoversSemanticOverlapProposalBatches } from "../src/governance/discovers-semantic-overlap-proposals.js";
+import { summarizesSemanticOverlapProposalBatch } from "../src/governance/summarizes-semantic-overlap-proposals.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -781,4 +786,78 @@ test("projectsSelfGovernanceReport exposes authoritySuccession, resolving a re-e
   assert.equal(report.authoritySuccession[0].succession, "AUTHORITY_SUCCESSOR_RESOLVED");
   assert.equal(report.authoritySuccession[0].successorFile, "impl.mjs");
   assert.equal(report.authoritySuccession[0].recommendedAction, "REVIEW_AND_REBIND_TO_SUCCESSOR");
+});
+
+function buildsProposalBatchDocument({ withReviewFindings = true } = {}) {
+  return {
+    documentKind: "semantic-overlap-proposal-batch.v1",
+    lifecycle: "INFERRED_NOT_ADMITTED",
+    subject: { historicalAuthorityFile: "contracts/x.authority.complete.json", resolvedSuccessorFile: "src/x.runtime.impl.mjs" },
+    inference: { resolvedModel: "gemini-flash-latest", completedAt: "2026-08-03T21:17:46.489Z" },
+    proposals: [
+      { authorityMechanicId: "m1", overlapDisposition: "PROPOSED_EXACT_OVERLAP" },
+      { authorityMechanicId: "m2", overlapDisposition: "PROPOSED_EXACT_OVERLAP" },
+      { authorityMechanicId: "m3", overlapDisposition: "PROPOSED_NO_MATCH" },
+    ],
+    reviewFindings: withReviewFindings
+      ? [{ authorityMechanicId: "m2", reviewVerdict: "AMEND_TO_PARTIAL_OVERLAP", correctedDisposition: "PROPOSED_PARTIAL_OVERLAP", reason: "Overclaimed coverage on the success path." }]
+      : [],
+  };
+}
+
+test("summarizesSemanticOverlapProposalBatch derives disposition tallies from proposals and reviewFindings rather than trusting a self-reported summary block", () => {
+  const summary = summarizesSemanticOverlapProposalBatch({ filePath: "reviews/x.json", document: buildsProposalBatchDocument() });
+
+  assert.equal(summary.lifecycle, "INFERRED_NOT_ADMITTED");
+  assert.equal(summary.historicalAuthorityFile, "contracts/x.authority.complete.json");
+  assert.equal(summary.resolvedSuccessorFile, "src/x.runtime.impl.mjs");
+  assert.equal(summary.totalProposed, 3);
+  // Raw model output, unamended.
+  assert.deepEqual(summary.modelDispositionCounts, { PROPOSED_EXACT_OVERLAP: 2, PROPOSED_NO_MATCH: 1 });
+  // m2's disposition flips to PARTIAL_OVERLAP once the review finding is applied; m1 and m3 are untouched.
+  assert.deepEqual(summary.reviewedDispositionCounts, { PROPOSED_EXACT_OVERLAP: 1, PROPOSED_PARTIAL_OVERLAP: 1, PROPOSED_NO_MATCH: 1 });
+  assert.equal(summary.reviewFindings.length, 1);
+  assert.equal(summary.reviewFindings[0].authorityMechanicId, "m2");
+});
+
+test("summarizesSemanticOverlapProposalBatch leaves both tallies identical when no review findings exist yet -- unreviewed is not the same as confirmed", () => {
+  const summary = summarizesSemanticOverlapProposalBatch({ filePath: "reviews/x.json", document: buildsProposalBatchDocument({ withReviewFindings: false }) });
+  assert.deepEqual(summary.modelDispositionCounts, summary.reviewedDispositionCounts);
+  assert.equal(summary.reviewFindings.length, 0);
+});
+
+test("discoversSemanticOverlapProposalBatches finds only documentKind semantic-overlap-proposal-batch.v1 files, recursively, ignoring unrelated JSON", async () => {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), "sfse-reviews-"));
+  try {
+    await mkdir(path.join(tempDir, "nested"), { recursive: true });
+    await writeFile(path.join(tempDir, "batch-a.json"), JSON.stringify(buildsProposalBatchDocument()), "utf8");
+    await writeFile(path.join(tempDir, "nested", "batch-b.json"), JSON.stringify(buildsProposalBatchDocument()), "utf8");
+    await writeFile(path.join(tempDir, "not-a-batch.json"), JSON.stringify({ documentKind: "something-else.v1" }), "utf8");
+    await writeFile(path.join(tempDir, "unparseable.json"), "{ not valid json", "utf8");
+
+    const batches = await discoversSemanticOverlapProposalBatches(tempDir, { relativeTo: tempDir });
+    assert.deepEqual(batches.map((batch) => batch.filePath).sort(), ["batch-a.json", "nested/batch-b.json"]);
+    assert.equal(batches[0].document.documentKind, "semantic-overlap-proposal-batch.v1");
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("discoversSemanticOverlapProposalBatches returns an empty list for a directory that does not exist", async () => {
+  const batches = await discoversSemanticOverlapProposalBatches("C:/definitely/does/not/exist/reviews");
+  assert.deepEqual(batches, []);
+});
+
+test("projectsSelfGovernanceReport exposes semanticOverlapProposals as a purely observational tally, never affecting governance counts", async () => {
+  const index = buildsSyntheticIndex();
+  const semanticOverlapProposalBatches = [{ filePath: "reviews/x.json", document: buildsProposalBatchDocument() }];
+
+  const report = await projectsSelfGovernanceReport({ index, repositoryId: "self-governance-test", authorityDocuments: [], semanticOverlapProposalBatches });
+  await validatesSelfGovernanceReport(report);
+
+  assert.equal(report.semanticOverlapProposals.length, 1);
+  assert.equal(report.semanticOverlapProposals[0].proposalFile, "reviews/x.json");
+  assert.deepEqual(report.semanticOverlapProposals[0].reviewedDispositionCounts, { PROPOSED_EXACT_OVERLAP: 1, PROPOSED_PARTIAL_OVERLAP: 1, PROPOSED_NO_MATCH: 1 });
+  // Untouched by the proposal batch -- this remains purely deterministic.
+  assert.equal(report.executionMechanics.governed, 0);
 });

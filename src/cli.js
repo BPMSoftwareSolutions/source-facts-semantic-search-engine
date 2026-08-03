@@ -34,6 +34,7 @@ import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
 import { discoversAuthorityDocumentsAcrossRoots } from "./governance/discovers-authority-documents.js";
+import { discoversSemanticOverlapProposalBatches } from "./governance/discovers-semantic-overlap-proposals.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
@@ -293,10 +294,14 @@ async function runGovern(rawArgs) {
   const authorityRoots = [authorityDir, ...(typeof workspaceRoot === "string" ? [workspaceRoot] : [])];
   const authorityDocuments = await discoversAuthorityDocumentsAcrossRoots(authorityRoots, { relativeTo: repositoryRoot });
 
+  const reviewsDir = path.resolve(flags.reviewsDir ?? path.join(repositoryRoot, "reviews"));
+  const semanticOverlapProposalBatches = await discoversSemanticOverlapProposalBatches(reviewsDir, { relativeTo: repositoryRoot });
+
   const report = await projectsSelfGovernanceReport({
     index,
     repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
     authorityDocuments,
+    semanticOverlapProposalBatches,
     workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
   });
   await validatesSelfGovernanceReport(report);
@@ -889,7 +894,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
-  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);

@@ -14,6 +14,7 @@
     "dataDrivenWiring",
     "contractSemanticVolume",
     "authoritySuccession",
+    "semanticOverlapProposals",
     "automationReadiness",
     "occurrences",
     "disposition"
@@ -333,6 +334,51 @@
               "RECONCILE_MANUALLY_NO_SUCCESSOR",
               "RECONCILE_MANUALLY_NO_ANCHOR"
             ]
+          }
+        }
+      }
+    },
+    "semanticOverlapProposals": {
+      "type": "array",
+      "description": "Agent-inferred, human-reviewed proposals discovered from reviews/ (never contracts/). Never governance evidence -- purely observational alongside the deterministic findings.",
+      "items": {
+        "type": "object",
+        "required": [
+          "proposalFile",
+          "lifecycle",
+          "historicalAuthorityFile",
+          "resolvedSuccessorFile",
+          "inferenceModel",
+          "inferredAtUtc",
+          "totalProposed",
+          "modelDispositionCounts",
+          "reviewedDispositionCounts",
+          "reviewFindings"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "proposalFile": { "type": "string", "minLength": 1 },
+          "lifecycle": { "type": "string", "minLength": 1 },
+          "historicalAuthorityFile": { "type": ["string", "null"] },
+          "resolvedSuccessorFile": { "type": ["string", "null"] },
+          "inferenceModel": { "type": ["string", "null"] },
+          "inferredAtUtc": { "type": ["string", "null"] },
+          "totalProposed": { "type": "integer", "minimum": 0 },
+          "modelDispositionCounts": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+          "reviewedDispositionCounts": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+          "reviewFindings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["authorityMechanicId", "reviewVerdict", "correctedDisposition", "reason"],
+              "additionalProperties": false,
+              "properties": {
+                "authorityMechanicId": { "type": ["string", "null"] },
+                "reviewVerdict": { "type": ["string", "null"] },
+                "correctedDisposition": { "type": ["string", "null"] },
+                "reason": { "type": ["string", "null"] }
+              }
+            }
           }
         }
       }

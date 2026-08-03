@@ -370,6 +370,62 @@ function formatsAuthoritySuccession(report) {
   return lines;
 }
 
+function formatsDispositionCounts(counts) {
+  const entries = Object.entries(counts);
+  if (entries.length === 0) return "(none)";
+  return entries.map(([disposition, count]) => `${disposition}: ${count}`).join(", ");
+}
+
+/**
+ * A sixth section, structurally different from every other one: everything
+ * here originated outside this deterministic pipeline (a live model call,
+ * reviewed by a human) and is discovered from reviews/ rather than computed.
+ * It is never governance evidence -- lifecycle stays INFERRED_NOT_ADMITTED
+ * (or whatever a review recorded) and nothing here feeds executionMechanics,
+ * automationReadiness, or any other coverage number in this report.
+ */
+function formatsSemanticOverlapProposals(report) {
+  const batches = report.semanticOverlapProposals;
+  const lines = [
+    "## Semantic Overlap Proposals",
+    "",
+    "A sixth source, gathered from outside the deterministic pipeline: agent-",
+    "inferred, human-reviewed proposals for whether current code still embodies",
+    "specific historical authority meaning. Discovered from `reviews/` (never",
+    "`contracts/`, never scanned as authority). Every batch keeps its own",
+    "lifecycle -- nothing here is admitted authority, and nothing here changes",
+    "any coverage number elsewhere in this report.",
+    "",
+  ];
+
+  if (batches.length === 0) {
+    lines.push("No semantic-overlap proposal batches found under `reviews/`.");
+    lines.push("");
+    return lines;
+  }
+
+  for (const batch of batches) {
+    lines.push(`### \`${batch.proposalFile}\``);
+    lines.push("");
+    lines.push(`- **Lifecycle:** \`${batch.lifecycle}\``);
+    lines.push(`- **Subject:** \`${batch.historicalAuthorityFile ?? "(unspecified)"}\` -> \`${batch.resolvedSuccessorFile ?? "(unspecified)"}\``);
+    lines.push(`- **Inferred by:** ${batch.inferenceModel ?? "(unspecified)"} at ${batch.inferredAtUtc ?? "(unspecified)"}`);
+    lines.push(`- **Model proposed:** ${formatsCount(batch.totalProposed)} proposal(s) -- ${formatsDispositionCounts(batch.modelDispositionCounts)}`);
+    lines.push(`- **After human review:** ${formatsDispositionCounts(batch.reviewedDispositionCounts)}`);
+    lines.push("");
+    if (batch.reviewFindings.length > 0) {
+      lines.push("| Mechanic | Review verdict | Corrected disposition | Reason |");
+      lines.push("|---|---|---|---|");
+      for (const finding of batch.reviewFindings) {
+        lines.push(`| \`${finding.authorityMechanicId ?? "(unspecified)"}\` | ${finding.reviewVerdict ?? "(unspecified)"} | ${finding.correctedDisposition ?? "—"} | ${finding.reason ?? ""} |`);
+      }
+      lines.push("");
+    }
+  }
+
+  return lines;
+}
+
 export function formatsSelfGovernanceReportMarkdown(report) {
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
@@ -433,6 +489,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     ...formatsDataDrivenWiring(report),
     ...formatsContractSemanticVolume(report),
     ...formatsAuthoritySuccession(report),
+    ...formatsSemanticOverlapProposals(report),
     ...formatsAutomationReadiness(report),
     "## Authority Sources",
     "",
@@ -514,7 +571,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, automationReadiness, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, semanticOverlapProposals, automationReadiness, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -574,6 +631,14 @@ export function formatsSelfGovernanceReportSummary(report) {
   lines.push(`Authority succession: ${authoritySuccession.length} document(s) checked, ${needsSuccessionAttention.length} need attention`);
   for (const entry of needsSuccessionAttention) {
     lines.push(`  ${entry.authorityFile} [${entry.succession}] -> ${entry.successorFile ?? "(none)"} :: ${entry.recommendedAction}`);
+  }
+
+  lines.push("");
+  lines.push(`Semantic overlap proposals (inferred, reviewed -- not authority): ${semanticOverlapProposals.length} batch(es) found under reviews/`);
+  for (const batch of semanticOverlapProposals) {
+    lines.push(`  ${batch.proposalFile} [${batch.lifecycle}] ${batch.historicalAuthorityFile ?? "(unspecified)"} -> ${batch.resolvedSuccessorFile ?? "(unspecified)"}`);
+    lines.push(`    model: ${formatsDispositionCounts(batch.modelDispositionCounts)}`);
+    lines.push(`    after review: ${formatsDispositionCounts(batch.reviewedDispositionCounts)}`);
   }
 
   lines.push("");
