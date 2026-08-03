@@ -17,12 +17,14 @@
     "check:deps": "node ./scripts/check-deps.mjs",
     "test": "node --test test",
     "prove:smoke": "node ./scripts/prove-smoke.mjs",
-    "prove:smoke:web": "node ./scripts/prove-smoke-web.mjs"
+    "prove:smoke:web": "node ./scripts/prove-smoke-web.mjs",
+    "gate:workspace": "workspace-fs evaluate --contract ./contracts/workspace-file-system.contract.json"
   },
   "dependencies": {
     "@deterministic-solutions/source-code-taxonomy-scanner": "file:../source-code-taxonomy-scanner",
     "@deterministic-solutions/sej-runtime-query": "file:../sej-runtime-query",
     "@deterministic-solutions/semantic-kernel": "file:../semantic-kernel",
+    "@deterministic-solutions/workspace-file-system-governor": "file:../workspace-file-system-governor",
     "webpage-classification-scanner": "file:../webpage-classification-scanner",
     "ajv": "^8.17.1",
     "playwright": "^1.48.0",
