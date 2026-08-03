@@ -1,0 +1,73 @@
+{
+  "$schema": "../../workspace-file-system-governor/src/schemas/workspace-file-system-contract.schema.json",
+  "contract": {
+    "contractType": "workspace-file-system-contract.v1",
+    "contractId": "source-facts-semantic-search-engine-workspace",
+    "contractVersion": "1.0.0",
+    "status": "admitted"
+  },
+  "workspace": {
+    "workspaceRoot": "..",
+    "scope": {
+      "scopeType": "declared-workspace-paths.v1",
+      "governedDirectories": ["contracts", "docs", "scripts", "source-facts-query-console", "src", "test"],
+      "outsideScopePosture": "outside-authority"
+    },
+    "unexpectedPaths": { "policy": "reject" }
+  },
+  "directories": [
+    { "directoryId": "contracts-directory", "relativePath": "contracts", "required": true },
+    { "directoryId": "contracts-composition-authorities-directory", "relativePath": "contracts/composition-authorities", "required": true },
+    { "directoryId": "contracts-compositions-directory", "relativePath": "contracts/compositions", "required": true },
+    { "directoryId": "contracts-gallery-policies-directory", "relativePath": "contracts/gallery-policies", "required": true },
+    { "directoryId": "contracts-gallery-projectors-directory", "relativePath": "contracts/gallery-projectors", "required": true },
+    { "directoryId": "contracts-gallery-queries-directory", "relativePath": "contracts/gallery-queries", "required": true },
+    { "directoryId": "contracts-sessions-directory", "relativePath": "contracts/sessions", "required": true },
+
+    { "directoryId": "docs-directory", "relativePath": "docs", "required": true },
+    { "directoryId": "docs-design-directory", "relativePath": "docs/design", "required": true },
+    { "directoryId": "docs-skills-directory", "relativePath": "docs/skills", "required": true },
+    { "directoryId": "docs-skills-generate-authority-candidates-detailed-report-directory", "relativePath": "docs/skills/generate-authority-candidates-detailed-report", "required": true },
+    { "directoryId": "docs-skills-generate-test-scenarios-from-source-facts-directory", "relativePath": "docs/skills/generate-test-scenarios-from-source-facts", "required": true },
+    { "directoryId": "docs-skills-project-authority-candidates-from-mechanics-directory", "relativePath": "docs/skills/project-authority-candidates-from-mechanics", "required": true },
+    { "directoryId": "docs-skills-query-source-facts-before-reading-code-directory", "relativePath": "docs/skills/query-source-facts-before-reading-code", "required": true },
+    { "directoryId": "docs-skills-verify-capability-is-operational-directory", "relativePath": "docs/skills/verify-capability-is-operational", "required": true },
+
+    { "directoryId": "scripts-directory", "relativePath": "scripts", "required": true },
+    { "directoryId": "scripts-sql-directory", "relativePath": "scripts/sql", "required": true },
+
+    { "directoryId": "source-facts-query-console-directory", "relativePath": "source-facts-query-console", "required": true },
+    { "directoryId": "source-facts-query-console-contracts-directory", "relativePath": "source-facts-query-console/contracts", "required": true },
+    { "directoryId": "source-facts-query-console-src-directory", "relativePath": "source-facts-query-console/src", "required": true },
+
+    { "directoryId": "src-directory", "relativePath": "src", "required": true },
+    { "directoryId": "src-composition-directory", "relativePath": "src/composition", "required": true },
+    { "directoryId": "src-console-directory", "relativePath": "src/console", "required": true },
+    { "directoryId": "src-console-governance-directory", "relativePath": "src/console/.governance", "required": true },
+    { "directoryId": "src-console-governance-projections-directory", "relativePath": "src/console/.governance/projections", "required": true },
+    { "directoryId": "src-console-contracts-directory", "relativePath": "src/console/contracts", "required": true },
+    { "directoryId": "src-console-governed-message-artifact-family-directory", "relativePath": "src/console/governed-message-artifact-family", "required": true },
+    { "directoryId": "src-console-governed-message-artifact-family-architecture-directory", "relativePath": "src/console/governed-message-artifact-family/architecture", "required": true },
+    { "directoryId": "src-console-governed-message-artifact-family-architecture-decisions-directory", "relativePath": "src/console/governed-message-artifact-family/architecture/decisions", "required": true },
+    { "directoryId": "src-console-governed-message-artifact-family-bin-directory", "relativePath": "src/console/governed-message-artifact-family/bin", "required": true },
+    { "directoryId": "src-console-governed-message-artifact-family-contracts-directory", "relativePath": "src/console/governed-message-artifact-family/contracts", "required": true },
+    { "directoryId": "src-console-governed-message-artifact-family-src-directory", "relativePath": "src/console/governed-message-artifact-family/src", "required": true },
+    { "directoryId": "src-console-governed-message-artifact-family-verification-directory", "relativePath": "src/console/governed-message-artifact-family/verification", "required": true },
+    { "directoryId": "src-gallery-directory", "relativePath": "src/gallery", "required": true },
+    { "directoryId": "src-lib-directory", "relativePath": "src/lib", "required": true },
+    { "directoryId": "src-session-directory", "relativePath": "src/session", "required": true },
+    { "directoryId": "src-sqlserver-directory", "relativePath": "src/sqlserver", "required": true },
+    { "directoryId": "src-web-directory", "relativePath": "src/web", "required": true },
+
+    { "directoryId": "test-directory", "relativePath": "test", "required": true }
+  ],
+  "artifactFamilies": [
+    { "familyId": "contracts-files", "pathPattern": "contracts/**/*", "artifactKind": "contract-artifact", "cardinality": { "min": 1 } },
+    { "familyId": "docs-files", "pathPattern": "docs/**/*", "artifactKind": "documentation", "cardinality": { "min": 1 } },
+    { "familyId": "scripts-files", "pathPattern": "scripts/**/*", "artifactKind": "script", "cardinality": { "min": 1 } },
+    { "familyId": "source-facts-query-console-files", "pathPattern": "source-facts-query-console/**/*", "artifactKind": "console-source", "cardinality": { "min": 1 } },
+    { "familyId": "src-files", "pathPattern": "src/**/*", "artifactKind": "engine-source", "cardinality": { "min": 1 } },
+    { "familyId": "src-console-governance-files", "pathPattern": "src/console/.governance/**/*", "artifactKind": "governance-ledger", "cardinality": { "min": 1 } },
+    { "familyId": "test-files", "pathPattern": "test/**/*", "artifactKind": "test", "cardinality": { "min": 1 } }
+  ]
+}
