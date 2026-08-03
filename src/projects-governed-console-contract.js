@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { sourceTokens } from "../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -14,6 +15,12 @@ const defaultViolationBindingsPath = path.join(consoleContractsRoot, "serves-que
 const defaultOutputPath = path.join(consoleContractsRoot, "serves-query-console.governed.contract.json");
 const defaultStrategyDocPath = path.join(repositoryRoot, "docs", "automated-conformance-projection-strategy.md");
 const externalGovernanceEnginePath = path.resolve(repositoryRoot, "..", "contract-driven-artifact-governance-engine", "bin", "governed-artifacts.mjs");
+const sourceArtifactProofVerifierIds = Object.freeze([
+  "artifact-provenance-verifier.v1",
+  "authority-closure-verifier.v1",
+  "content-digest-verifier.v1",
+  "source-token-structure-verifier.v1",
+]);
 
 function normalizesPathKey(value) {
   return typeof value === "string" ? value.replaceAll("\\", "/") : "";
@@ -299,6 +306,7 @@ function buildTextArtifact({
 }) {
   const absolutePath = absoluteFilePath(relativePath);
   const { contentSha256, expectedByteLength, text } = fileDigest(absolutePath);
+  const tokens = sourceTokens(text, "javascript");
   return Object.freeze({
     artifactId,
     artifactKind: "javascript-module",
@@ -306,17 +314,18 @@ function buildTextArtifact({
     relativePath: normalizesPathKey(relativePath),
     mediaType: "text/javascript",
     projection: Object.freeze({
-      projectorId: "utf8-text-projector.v1",
+      projectorId: "provenance-sealed-source-projector.v1",
       authorityId: `${artifactId}.projection-authority.v1`,
       authority: Object.freeze({
-        authorityType: "utf8-text.v1",
-        text,
+        authorityType: "lossless-source-tokens.v1",
+        language: "javascript",
+        tokens,
       }),
     }),
     relationships: Object.freeze(relationships),
     sourceAuthority,
     proof: Object.freeze({
-      verifierIds: Object.freeze(["content-digest-verifier.v1"]),
+      verifierIds: sourceArtifactProofVerifierIds,
       contentSha256,
       expectedByteLength,
     }),
@@ -362,7 +371,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         "Classifies route or hostname error disposition for the fallback path."
       ),
       buildFunctionResponsibility(
-        "extracts-snippet-lines.v1",
+        "extracts-snippet-lines-reexport.v1",
         "extractsSnippetLines",
         "Builds the ordered snippet line list from the input text."
       ),
@@ -392,7 +401,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         "Selects the admitted default value when the primary value is falsy."
       ),
       buildFunctionResponsibility(
-        "validates-console-parameters.v1",
+        "validates-console-parameters-reexport.v1",
         "validatesConsoleParameters",
         "Re-exports the console parameter validation authority."
       ),
@@ -410,7 +419,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
     ],
     decisions: [
       buildDecisionAuthority({
-        decisionId: "classifies-error-disposition.v1",
+        decisionId: "classifies-error-disposition-decision.v1",
         responsibilityId: "classifies-error-disposition.v1",
         syntaxKind: "IfStatement",
         conditionExpression: "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
@@ -418,7 +427,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         policy: "Only HOSTNAME_NOT_ADMITTED is transformed; all other errors rethrow.",
       }),
       buildDecisionAuthority({
-        decisionId: "normalizes-path-for-comparison.v1",
+        decisionId: "normalizes-path-for-comparison-decision.v1",
         responsibilityId: "normalizes-path-for-comparison.v1",
         syntaxKind: "ConditionalExpression",
         conditionExpression: "process.platform === 'win32' && toLowerCase",
@@ -426,7 +435,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         policy: "Lowercase only on Windows when requested.",
       }),
       buildDecisionAuthority({
-        decisionId: "selects-default-value.v1",
+        decisionId: "selects-default-value-decision.v1",
         responsibilityId: "selects-default-value.v1",
         syntaxKind: "LogicalOrExpression",
         conditionExpression: "value || defaultValue",
@@ -436,8 +445,8 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
     ],
     iterations: [
       buildIterationAuthority({
-        iterationId: "extracts-snippet-lines.v1",
-        responsibilityId: "extracts-snippet-lines.v1",
+        iterationId: "extracts-snippet-lines-iteration.v1",
+        responsibilityId: "extracts-snippet-lines-reexport.v1",
         syntaxKind: "ForStatement",
         controlExpression: "for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1)",
         occurrences: 1,
@@ -447,7 +456,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
     ],
     projectionMappings: [
       buildProjectionMapping({
-        projectionMappingId: "pathname-lookup-authority.v1",
+        projectionMappingId: "pathname-lookup-authority-projection.v1",
         responsibilityId: "pathname-lookup-authority.v1",
         occurrences: 1,
         fields: [
@@ -459,7 +468,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         purpose: "Map each admitted pathname to the allowed HTTP methods.",
       }),
       buildProjectionMapping({
-        projectionMappingId: "projects-security-headers.v1",
+        projectionMappingId: "projects-security-headers-projection.v1",
         responsibilityId: "projects-security-headers.v1",
         occurrences: 1,
         fields: [
@@ -471,7 +480,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         purpose: "Project the admitted console security headers.",
       }),
       buildProjectionMapping({
-        projectionMappingId: "normalizes-path-segments.v1",
+        projectionMappingId: "normalizes-path-segments-projection.v1",
         responsibilityId: "normalizes-path-segments.v1",
         occurrences: 1,
         fields: [
@@ -483,7 +492,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         purpose: "Normalize mixed path separators into path segments.",
       }),
       buildProjectionMapping({
-        projectionMappingId: "normalizes-line-endings.v1",
+        projectionMappingId: "normalizes-line-endings-projection.v1",
         responsibilityId: "normalizes-line-endings.v1",
         occurrences: 1,
         fields: [
@@ -495,7 +504,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         purpose: "Normalize line endings to LF before splitting text.",
       }),
       buildProjectionMapping({
-        projectionMappingId: "builds-error-response.v1",
+        projectionMappingId: "builds-error-response-projection.v1",
         responsibilityId: "builds-error-response.v1",
         occurrences: 1,
         fields: [
@@ -509,7 +518,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
     ],
     resultContracts: [
       buildResultContract({
-        resultContractId: "serializes-error-response.v1",
+        resultContractId: "serializes-error-response-result.v1",
         resultKind: "console-error-response",
         mediaType: "application/json",
         source: {
@@ -522,12 +531,12 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         purpose: "Returns the admitted console error response body.",
       }),
       buildResultContract({
-        resultContractId: "extracts-snippet-lines.v1",
+        resultContractId: "extracts-snippet-lines-result.v1",
         resultKind: "console-snippet-lines",
         mediaType: "application/json",
         source: {
           sourceType: "return",
-          responsibilityId: "extracts-snippet-lines.v1",
+          responsibilityId: "extracts-snippet-lines-reexport.v1",
           returnKind: "explicit-return",
           expression: "lines",
           occurrences: 1,
@@ -535,7 +544,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         purpose: "Returns the admitted snippet line array.",
       }),
       buildResultContract({
-        resultContractId: "builds-error-response.v1",
+        resultContractId: "builds-error-response-result.v1",
         resultKind: "console-error-envelope",
         mediaType: "application/json",
         source: {
@@ -548,12 +557,12 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         purpose: "Returns the admitted statusCode/body error envelope.",
       }),
       buildResultContract({
-        resultContractId: "validates-console-parameters.v1",
+        resultContractId: "validates-console-parameters-result.v1",
         resultKind: "console-validation-result",
         mediaType: "application/json",
         source: {
           sourceType: "return",
-          responsibilityId: "validates-console-parameters.v1",
+          responsibilityId: "validates-console-parameters-reexport.v1",
           returnKind: "explicit-return",
           expression: "executeSemanticAuthority(consoleValidationBundle, parameters)",
           occurrences: 1,
@@ -1501,8 +1510,8 @@ function buildsConsoleGovernedContract({
           ? "console-serves-loopback-only"
           : artifact.artifactId === "console-authority-bundles.v1"
             ? "console-delegates-mechanics"
-            : "console-contract-is-projected",
-      projectionProfileId: "utf8-text-projector.v1",
+        : "console-contract-is-projected",
+      projectionProfileId: "provenance-sealed-source-projector.v1",
       responsibilityId: `${artifact.artifactId}.responsibility.v1`,
       responsibilityType: "semantic-execution",
     })),

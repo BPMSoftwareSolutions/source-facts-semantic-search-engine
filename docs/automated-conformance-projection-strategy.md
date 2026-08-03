@@ -131,8 +131,10 @@ A deterministic converter — written once, run against every module — that
 takes this repo's authored `authority.json` + `violation-bindings.json` +
 the source-fact index and emits one
 `governed-artifact-contract.schema.json`-conformant document per target file:
-artifact declaration (`relativePath`, `artifactKind: source-module`,
-`projectorId`), `sourceAuthority.responsibilities[]` from `symbols`,
+artifact declaration (`relativePath`, `artifactKind: javascript-module`,
+`projectorId: provenance-sealed-source-projector.v1`),
+`projection.authority.authorityType: lossless-source-tokens.v1`,
+`sourceAuthority.responsibilities[]` from `symbols`,
 `decisions[]`/`iterations[]`/`failurePolicies[]`/`projectionMappings[]`/
 `resultContracts[]` from the mapping table above, `semanticEdges[]` binding
 every remaining invocation to its authority, and a `forbiddenSyntaxKinds[]`
@@ -157,6 +159,12 @@ authored input. Delete the hand-written bundle/conformant/projected files once
 a module's projected output supersedes them — keeping them around would be
 authoring code that the contract already governs.
 
+For the console pilot, the repo wrapper now exposes the same handoff directly:
+
+```text
+source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --project --write
+```
+
 ### Stage 6 — Gate
 
 ```
@@ -174,6 +182,12 @@ observe a forbidden mechanic type. The engine's check is exhaustive over AST
 heuristic mechanic list, so it catches escapes the current detector structurally
 cannot (e.g. a forbidden mechanic hidden inside a helper the query tool
 doesn't classify the same way).
+
+The repo wrapper can also invoke the gate directly:
+
+```text
+source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --gate
+```
 
 Recommendation: keep the existing detector as a cheap pre-flight check (it's
 already fast and already wired), but make `governed-artifacts gate` the
@@ -234,23 +248,25 @@ Being explicit about what doesn't exist yet, so this isn't oversold as
    the `project-authority-violations` command wired earlier in this
    session — can actually run end-to-end from the CLI entrypoint.
 
+Console pilot status: the repo wrapper now generates the governed contract and can hand it to the external engine. The remaining work is to tighten the authority JSON and reduce the remaining red findings, not to fix a CLI import crash.
+
 ## Pilot plan
 
 1. Target `src/console/serves-query-console.mjs` first — it already has the
    most scaffolding (`contracts/serves-query-console.authority.json`,
    `.binding.json`, `.violation-bindings.json`, and
    `docs/console-authority-coverage-report.md`).
-2. Fix the `console-validation-adapter.mjs` path bug (blocker, above).
-3. Run Stage 3 (automated authoring + review) against the existing candidate
+2. Run Stage 3 (automated authoring + review) against the existing candidate
    set for this module.
-4. Build and run the Stage 4 translator once, against this one module, to
-   produce `contracts/serves-query-console.governed.contract.json`.
-5. `governed-artifacts project --write`, then `governed-artifacts gate
-   --write-receipt`. Treat anything other than `TRUSTED` as a contract gap,
-   not a reason to hand-edit the projected file.
-6. Delete `console-authority-bundles.mjs`, `serves-query-console.conformant.mjs`,
+3. Keep `contracts/serves-query-console.governed.contract.json` synchronized
+   with the Stage 4 translator output.
+4. Use the repo wrapper to invoke the external engine: `source-facts-se
+   project-console-contract --project --write`, then `source-facts-se
+   project-console-contract --gate`. Treat anything other than `TRUSTED` as a
+   contract gap, not a reason to hand-edit the projected file.
+5. Delete `console-authority-bundles.mjs`, `serves-query-console.conformant.mjs`,
    and `serves-query-console.projected.mjs` once the projected file is live.
-7. Generalize the Stage 4 translator across the remaining 6 files (of the 493
+6. Generalize the Stage 4 translator across the remaining 6 files (of the 493
    currently-live violations) one module at a time.
 
 ## Open questions / risks

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -38,6 +39,7 @@ const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
 const consoleAuthorityFile = path.join(repositoryRoot, "contracts", "serves-query-console.authority.json");
 const consoleCandidatesOutputFile = path.join(repositoryRoot, "contracts", "serves-query-console.candidates.json");
 const consoleAuthorityDraftOutputFile = path.join(repositoryRoot, "contracts", "serves-query-console.authority.draft.json");
+const externalGovernanceEnginePath = path.resolve(repositoryRoot, "..", "contract-driven-artifact-governance-engine", "bin", "governed-artifacts.mjs");
 const consoleViolationModulePaths = Object.freeze([
   "console-authority-bundles.mjs",
   "console-routing-adapter.mjs",
@@ -194,8 +196,9 @@ async function runProjectAuthorityViolations(rawArgs) {
 
 async function runProjectConsoleContract(rawArgs) {
   const { flags } = parseArgs(rawArgs);
+  const workspaceRoot = typeof flags.workspace === "string" ? path.resolve(flags.workspace) : consoleWorkspaceRoot;
   const result = projectsConsoleGovernedContract({
-    ...(typeof flags.workspace === "string" ? { workspaceRoot: path.resolve(flags.workspace) } : {}),
+    workspaceRoot,
     ...(typeof flags.templateContract === "string" ? { templateContractPath: path.resolve(flags.templateContract) } : {}),
     ...(typeof flags.authorityFile === "string" ? { authorityPath: path.resolve(flags.authorityFile) } : {}),
     ...(typeof flags.authorityComplete === "string" ? { authorityCompletePath: path.resolve(flags.authorityComplete) } : {}),
@@ -214,6 +217,53 @@ async function runProjectConsoleContract(rawArgs) {
     process.stdout.write(`Artifact count: ${result.artifactCount}\n`);
     process.stdout.write(`${result.message}\n`);
   }
+
+  if (flags.project === true || flags.gate === true) {
+    const engineResults = [];
+    if (flags.project === true) {
+      engineResults.push(runsGovernedArtifactsOperation("project", result.file, workspaceRoot, flags.write === true));
+    }
+    if (flags.gate === true) {
+      engineResults.push(runsGovernedArtifactsOperation("gate", result.file, workspaceRoot, true));
+    }
+    const failingResult = engineResults.find((entry) => entry.status !== 0);
+    if (failingResult) {
+      process.exitCode = failingResult.status ?? 1;
+    }
+  }
+}
+
+function runsGovernedArtifactsOperation(operation, contractPath, workspaceRoot, writeMode) {
+  const commandArgs = [
+    externalGovernanceEnginePath,
+    operation,
+    "--contract",
+    contractPath,
+    "--workspace",
+    workspaceRoot,
+  ];
+  if (operation === "project") {
+    commandArgs.push(writeMode ? "--write" : "--check");
+  } else if (operation === "gate") {
+    commandArgs.push("--write-receipt");
+  }
+
+  const result = spawnSync(process.execPath, commandArgs, {
+    cwd: repositoryRoot,
+    encoding: "utf8",
+    maxBuffer: 50 * 1024 * 1024,
+  });
+
+  if (typeof result.stdout === "string" && result.stdout.length > 0) {
+    process.stdout.write(result.stdout);
+  }
+  if (typeof result.stderr === "string" && result.stderr.length > 0) {
+    process.stderr.write(result.stderr);
+  }
+  if (result.error) {
+    throw result.error;
+  }
+  return result;
 }
 
 function formatsViolationCandidatesSummary(violations, candidatesData) {
@@ -696,6 +746,10 @@ function parseArgs(rawArgs) {
       case "--pretty":
       case "--summary":
       case "--prove":
+      case "--project":
+      case "--gate":
+      case "--write":
+      case "--write-receipt":
         flags[current.slice(2)] = true;
         break;
       default:
@@ -741,7 +795,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web compose sign-in --request <file> --manifest <gallery-manifest> [--authorities <dir>] [--output <dir>] [--summary]\n`);
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
-  stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--summary]\n`);
+  stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
@@ -756,7 +810,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web compose sign-in --request ./compositions/enterprise-sign-in.request.v1.json --manifest ./sign-in-gallery/enterprise-gallery-manifest.json --output ./sign-in-composition --summary\n`);
   stream.write(`  source-facts-se web north-star sign-in --index ./web-surface-index.json --inventory ./web-surface.inventory.json --output ./sign-in-north-star --prove --summary\n`);
   stream.write(`  source-facts-se project-authority-violations --workspace ./src/console --authority-file ./contracts/serves-query-console.authority.json --output ./contracts/serves-query-console.candidates.json --authority-output ./contracts/serves-query-console.authority.draft.json --summary\n`);
-  stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --summary\n`);
+  stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --project --summary\n`);
+  stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --gate --summary\n`);
   stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
   stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);

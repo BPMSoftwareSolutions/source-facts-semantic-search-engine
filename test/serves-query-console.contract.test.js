@@ -57,6 +57,30 @@ test("project-console-contract writes a governed console contract draft", () => 
   assert.equal(contract.contract.contractId, "serves-query-console-governed-contract");
   assert.equal(contract.contract.status, "admitted");
   assert.equal(contract.artifacts.length, expectedArtifactPaths.length);
+  assert.ok(
+    contract.artifacts.every((artifact) => artifact.projection.projectorId === "provenance-sealed-source-projector.v1"),
+    "all console artifacts should be projected as provenance-sealed source",
+  );
+  assert.ok(
+    contract.artifacts.every((artifact) => artifact.projection.authority.authorityType === "lossless-source-tokens.v1"),
+    "all console artifacts should carry lossless source-token authority",
+  );
+  assert.ok(
+    contract.artifacts.every(
+      (artifact) =>
+        artifact.proof.verifierIds.includes("artifact-provenance-verifier.v1")
+        && artifact.proof.verifierIds.includes("authority-closure-verifier.v1")
+        && artifact.proof.verifierIds.includes("content-digest-verifier.v1")
+        && artifact.proof.verifierIds.includes("source-token-structure-verifier.v1"),
+    ),
+    "all console artifacts should use the source proof verifier set",
+  );
+  assert.ok(
+    contract.artifacts.every(
+      (artifact) => Array.isArray(artifact.projection.authority.tokens) && artifact.projection.authority.tokens.length > 0,
+    ),
+    "all console artifacts should include lossless source tokens",
+  );
   assert.deepEqual(
     contract.artifacts.map((artifact) => artifact.relativePath),
     expectedArtifactPaths,
@@ -64,6 +88,12 @@ test("project-console-contract writes a governed console contract draft", () => 
   );
   assert.equal(contract.subject.subjectId, "serves-query-console");
   assert.equal(contract.subject.authority.consoleWorkspaceRoot, "src/console");
+  assert.ok(
+    contract.lineage.responsibilities.every(
+      (responsibility) => responsibility.projectionProfileId === "provenance-sealed-source-projector.v1",
+    ),
+    "lineage should describe the provenance-sealed source projection profile",
+  );
   assert.ok(
     /^sha256:[a-f0-9]{64}$/.test(contract.designAuthority.conversationDigest),
     "designAuthority.conversationDigest must be a sha256 hash",
