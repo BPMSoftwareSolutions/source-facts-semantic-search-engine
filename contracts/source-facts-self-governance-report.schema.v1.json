@@ -8,6 +8,7 @@
     "repository",
     "index",
     "authoritySources",
+    "otherAuthorityDocuments",
     "executionMechanics",
     "fileBreakdown",
     "occurrences",
@@ -67,6 +68,19 @@
           "sourceFile": { "type": ["string", "null"] },
           "mechanicsDeclared": { "type": "integer", "minimum": 0 },
           "mechanicsAuthorityBound": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "otherAuthorityDocuments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["authorityFile", "documentKind", "claimedFiles"],
+        "additionalProperties": false,
+        "properties": {
+          "authorityFile": { "type": "string", "minLength": 1 },
+          "documentKind": { "type": "string", "minLength": 1 },
+          "claimedFiles": { "type": "array", "items": { "type": "string", "minLength": 1 } }
         }
       }
     },
@@ -134,7 +148,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["mechanic", "modulePath", "authorityFamily", "occurrenceCount", "governedCount", "responsibilities", "homeStatus", "authorityFile"],
+        "required": ["mechanic", "modulePath", "authorityFamily", "occurrenceCount", "governedCount", "responsibilities", "homeStatus", "authorityFile", "authorityHomeVerified"],
         "additionalProperties": false,
         "properties": {
           "mechanic": { "type": "string", "minLength": 1 },
@@ -144,7 +158,8 @@
           "governedCount": { "type": "integer", "minimum": 0 },
           "responsibilities": { "type": "array", "items": { "type": "string", "minLength": 1 } },
           "homeStatus": { "$ref": "#/$defs/authorityHomeStatus" },
-          "authorityFile": { "type": ["string", "null"] }
+          "authorityFile": { "type": ["string", "null"] },
+          "authorityHomeVerified": { "type": "boolean" }
         }
       }
     },
@@ -163,7 +178,8 @@
           "governingAuthorityFile",
           "authorityFamily",
           "authorityHomeStatus",
-          "authorityHomeFile"
+          "authorityHomeFile",
+          "authorityHomeVerified"
         ],
         "additionalProperties": false,
         "properties": {
@@ -177,7 +193,8 @@
           "governingAuthorityFile": { "type": ["string", "null"] },
           "authorityFamily": { "type": "string", "minLength": 1 },
           "authorityHomeStatus": { "$ref": "#/$defs/authorityHomeStatus" },
-          "authorityHomeFile": { "type": ["string", "null"] }
+          "authorityHomeFile": { "type": ["string", "null"] },
+          "authorityHomeVerified": { "type": "boolean" }
         }
       }
     },

@@ -33,7 +33,7 @@ import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./s
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
-import { discoversAuthorityDocuments } from "./governance/discovers-authority-documents.js";
+import { discoversAuthorityDocumentsAcrossRoots } from "./governance/discovers-authority-documents.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
@@ -290,7 +290,8 @@ async function runGovern(rawArgs) {
   }
 
   const authorityDir = path.resolve(flags.authorityDir ?? path.join(repositoryRoot, "contracts"));
-  const authorityDocuments = await discoversAuthorityDocuments(authorityDir, { relativeTo: repositoryRoot });
+  const authorityRoots = [authorityDir, ...(typeof workspaceRoot === "string" ? [workspaceRoot] : [])];
+  const authorityDocuments = await discoversAuthorityDocumentsAcrossRoots(authorityRoots, { relativeTo: repositoryRoot });
 
   const report = await projectsSelfGovernanceReport({
     index,

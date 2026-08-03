@@ -48,7 +48,10 @@ function formatsFileDrillDown(report) {
     lines.push("|---|---:|---:|---|---|");
     for (const file of files.slice(0, maxFilesShownPerMechanic)) {
       const responsibilities = file.responsibilities.length > 0 ? file.responsibilities.slice(0, 3).join(", ") : "(module scope)";
-      lines.push(`| \`${file.modulePath}\` | ${file.occurrenceCount} | ${file.governedCount} | ${file.homeStatus} | ${responsibilities} |`);
+      const homeStatusCell = file.homeStatus === "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE" && !file.authorityHomeVerified
+        ? `${file.homeStatus} (unverified schema)`
+        : file.homeStatus;
+      lines.push(`| \`${file.modulePath}\` | ${file.occurrenceCount} | ${file.governedCount} | ${homeStatusCell} | ${responsibilities} |`);
     }
     if (files.length > maxFilesShownPerMechanic) {
       lines.push("");
@@ -61,7 +64,7 @@ function formatsFileDrillDown(report) {
 }
 
 export function formatsSelfGovernanceReportMarkdown(report) {
-  const { executionMechanics, authoritySources, repository, index, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
   const danglingSources = findsDanglingAuthoritySources(report);
 
@@ -138,6 +141,28 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     }
   }
 
+  lines.push("");
+  lines.push("## Other Authority Documents");
+  lines.push("");
+  lines.push("Authority-shaped JSON documents this report found but cannot verify mechanic-by-");
+  lines.push("mechanic, because they use a different convention than `authority-declaration.v1`");
+  lines.push("(a bundle, a full governed-artifact contract, a projection ledger, ...). They still");
+  lines.push("count toward `AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE` for any file they claim, rather");
+  lines.push("than being silently ignored.");
+  lines.push("");
+  if (otherAuthorityDocuments.length === 0) {
+    lines.push("None found.");
+  } else {
+    lines.push("| Document | Kind | Claimed files |");
+    lines.push("|---|---|---|");
+    for (const other of otherAuthorityDocuments) {
+      const claimedFiles = other.claimedFiles.length > 0
+        ? other.claimedFiles.map((file) => `\`${file}\``).join(", ")
+        : "(not determinable from this document alone)";
+      lines.push(`| \`${other.authorityFile}\` | ${other.documentKind} | ${claimedFiles} |`);
+    }
+  }
+
   const ambiguousFiles = report.fileBreakdown.filter((entry) => entry.homeStatus === "AUTHORITY_HOME_AMBIGUOUS");
   const missingHomeFileCount = new Set(
     report.fileBreakdown.filter((entry) => entry.homeStatus === "AUTHORITY_HOME_MISSING").map((entry) => entry.modulePath),
@@ -178,7 +203,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -208,6 +233,12 @@ export function formatsSelfGovernanceReportSummary(report) {
     for (const source of authoritySources) {
       lines.push(`  ${source.authorityFile} -> ${source.sourceFile ?? "(unspecified)"} (${source.mechanicsAuthorityBound}/${source.mechanicsDeclared} bound)`);
     }
+  }
+
+  lines.push("");
+  lines.push(`Other authority-shaped documents found (unverified schemas): ${otherAuthorityDocuments.length}`);
+  for (const other of otherAuthorityDocuments) {
+    lines.push(`  ${other.authorityFile} (${other.documentKind}) -> ${other.claimedFiles.length > 0 ? other.claimedFiles.join(", ") : "(no claimed files determinable)"}`);
   }
 
   const dangling = findsDanglingAuthoritySources(report);

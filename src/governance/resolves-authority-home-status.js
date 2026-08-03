@@ -1,3 +1,6 @@
+import { authorityDeclarationKind } from "./detects-authority-document-kind.js";
+import { resolvesClaimedFiles } from "./resolves-authority-document-claims.js";
+
 const knownHomeStatuses = Object.freeze([
   "AUTHORITY_HOME_EXISTS",
   "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
@@ -10,22 +13,36 @@ function normalizesPathKey(value) {
 }
 
 /**
- * Indexes admitted authority documents by the single file each one claims to
- * govern (authorityDocument.sourceFile). More than one document claiming the
- * same source file is a real authoring conflict, not something to silently
- * pick a winner for -- it surfaces as AUTHORITY_HOME_AMBIGUOUS.
+ * Builds two claim tiers per file:
+ *  - verified: authority-declaration.v1 documents, whose sourceFile + per-
+ *    mechanic sourceLocation this report can check against actual occurrences.
+ *  - unverified: every other recognized authority-shaped document (governed-
+ *    artifact contracts, projection bundles, ledgers, ...). Their claimed
+ *    files (where resolvesClaimedFiles can determine them) still count as "a
+ *    home exists" -- just not one this report can confirm covers a specific
+ *    mechanic occurrence.
  */
 export function buildsAuthorityHomeIndex(authorityDocuments) {
-  const bySourceFile = new Map();
-  for (const { document, filePath } of authorityDocuments) {
-    if (document?.schemaVersion !== "authority-declaration.v1") continue;
-    const sourceFile = normalizesPathKey(document.sourceFile);
-    if (sourceFile.length === 0) continue;
-    const claimants = bySourceFile.get(sourceFile) ?? [];
-    claimants.push(filePath);
-    bySourceFile.set(sourceFile, claimants);
+  const verifiedBySourceFile = new Map();
+  const unverifiedBySourceFile = new Map();
+
+  for (const { document, filePath, documentKind } of authorityDocuments) {
+    if (documentKind === authorityDeclarationKind) {
+      const sourceFile = normalizesPathKey(document.sourceFile);
+      if (sourceFile.length === 0) continue;
+      const claimants = verifiedBySourceFile.get(sourceFile) ?? [];
+      claimants.push(filePath);
+      verifiedBySourceFile.set(sourceFile, claimants);
+      continue;
+    }
+    for (const claimedFile of resolvesClaimedFiles(documentKind, document)) {
+      const claimants = unverifiedBySourceFile.get(claimedFile) ?? [];
+      claimants.push({ filePath, documentKind });
+      unverifiedBySourceFile.set(claimedFile, claimants);
+    }
   }
-  return bySourceFile;
+
+  return { verifiedBySourceFile, unverifiedBySourceFile };
 }
 
 /**
@@ -34,17 +51,32 @@ export function buildsAuthorityHomeIndex(authorityDocuments) {
  * emits -- see joinsRepositoryRelativePath.
  */
 export function resolvesAuthorityHomeStatus({ modulePath, isGoverned }, authorityHomeIndex) {
-  const claimants = authorityHomeIndex.get(normalizesPathKey(modulePath)) ?? [];
-  if (claimants.length === 0) {
-    return Object.freeze({ status: "AUTHORITY_HOME_MISSING", authorityFile: null });
+  const normalizedModulePath = normalizesPathKey(modulePath);
+  const verifiedClaimants = authorityHomeIndex.verifiedBySourceFile.get(normalizedModulePath) ?? [];
+  if (verifiedClaimants.length > 1) {
+    return Object.freeze({ status: "AUTHORITY_HOME_AMBIGUOUS", authorityFile: verifiedClaimants[0], authorityHomeVerified: false });
   }
-  if (claimants.length > 1) {
-    return Object.freeze({ status: "AUTHORITY_HOME_AMBIGUOUS", authorityFile: claimants[0] });
+  if (verifiedClaimants.length === 1) {
+    return Object.freeze({
+      status: isGoverned ? "AUTHORITY_HOME_EXISTS" : "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
+      authorityFile: verifiedClaimants[0],
+      authorityHomeVerified: true,
+    });
   }
-  return Object.freeze({
-    status: isGoverned ? "AUTHORITY_HOME_EXISTS" : "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
-    authorityFile: claimants[0],
-  });
+
+  const unverifiedClaimants = authorityHomeIndex.unverifiedBySourceFile.get(normalizedModulePath) ?? [];
+  if (unverifiedClaimants.length > 1) {
+    return Object.freeze({ status: "AUTHORITY_HOME_AMBIGUOUS", authorityFile: unverifiedClaimants[0].filePath, authorityHomeVerified: false });
+  }
+  if (unverifiedClaimants.length === 1) {
+    return Object.freeze({
+      status: "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
+      authorityFile: unverifiedClaimants[0].filePath,
+      authorityHomeVerified: false,
+    });
+  }
+
+  return Object.freeze({ status: "AUTHORITY_HOME_MISSING", authorityFile: null, authorityHomeVerified: false });
 }
 
 export function joinsRepositoryRelativePath(workspaceRelativePrefix, modulePath) {

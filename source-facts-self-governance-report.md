@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-03T18:39:17.031Z |
+| **Generated** | 2026-08-03T18:53:47.580Z |
 | **Repository** | src |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Scan ID** | 2242e0bf589af3b9e2b2bdb747d71e8105c181481214973899335e26aca99d1e |
+| **Scan ID** | caffea0eebfc4bbf02964c4dc94ce50910dffa904e97aa36b711bc8ea1658cd9 |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
 ## Executive Summary
@@ -18,9 +18,9 @@ to it yet, so nothing here blocks a build.
 
 | Metric | Count | Share of observed |
 |---|---:|---:|
-| Execution mechanics observed | 3,433 | 100.0% |
+| Execution mechanics observed | 3,469 | 100.0% |
 | Governed by semantic authority | 0 | 0.0% |
-| Unknown classification | 3,433 | 100.0% |
+| Unknown classification | 3,469 | 100.0% |
 | Authorized temporary backlog | 0 | 0.0% |
 | Unauthorized executable meaning | 0 | 0.0% |
 | Mechanical adapter operation | 0 | 0.0% |
@@ -34,16 +34,16 @@ authority *file* claiming that mechanic's file exists at all, even incompletely.
 
 | Mechanic | Authority family | Observed | Files | Governed | Home exists | Home incomplete | Home missing | Coverage |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| object-construction | projection-mapping | 1,250 | 57 | 0 | 0 | 0 | 1,250 | 0.0% |
-| fallback | missing-value-policy | 701 | 50 | 0 | 0 | 0 | 701 | 0.0% |
-| branch | decision | 663 | 50 | 0 | 0 | 0 | 663 | 0.0% |
+| object-construction | projection-mapping | 1,260 | 57 | 0 | 0 | 0 | 1,260 | 0.0% |
+| fallback | missing-value-policy | 706 | 52 | 0 | 0 | 0 | 706 | 0.0% |
+| branch | decision | 676 | 52 | 0 | 0 | 0 | 676 | 0.0% |
 | state-mutation | state-transition | 214 | 33 | 0 | 0 | 0 | 214 | 0.0% |
-| iteration | iteration | 162 | 40 | 0 | 0 | 0 | 162 | 0.0% |
+| iteration | iteration | 167 | 40 | 0 | 0 | 0 | 167 | 0.0% |
 | validation | validation-policy | 103 | 18 | 0 | 0 | 0 | 103 | 0.0% |
 | throw | failure-disposition | 92 | 33 | 0 | 0 | 0 | 92 | 0.0% |
 | serialization | serialization-profile | 85 | 19 | 0 | 0 | 0 | 85 | 0.0% |
 | exception-handling | failure-policy | 84 | 19 | 0 | 0 | 0 | 84 | 0.0% |
-| normalization | translation | 78 | 14 | 0 | 0 | 0 | 78 | 0.0% |
+| normalization | translation | 81 | 15 | 0 | 0 | 0 | 81 | 0.0% |
 | retry | continuation-policy | 1 | 1 | 0 | 0 | 0 | 1 | 0.0% |
 
 ## File Drill-Down
@@ -73,7 +73,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/web/html-projector.js` | 28 | 0 | AUTHORITY_HOME_MISSING | decodesEntities, handlesScriptBlock, handlesUnterminatedScript |
 | `src/project.js` | 27 | 0 | AUTHORITY_HOME_MISSING | buildsDeclarationRows, projectSourceFactsWorkspace, projectsControlMechanics |
 
-*45 more file(s) for `fallback` omitted; see `fileBreakdown` in the JSON report.*
+*47 more file(s) for `fallback` omitted; see `fileBreakdown` in the JSON report.*
 
 ### branch (decision authority family)
 
@@ -85,7 +85,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/web/html-projector.js` | 36 | 0 | AUTHORITY_HOME_MISSING | decodesEntities, handlesScriptBlock, handlesStyleBlock |
 | `src/web/css-projector.js` | 32 | 0 | AUTHORITY_HOME_MISSING | extractsImportTarget, extractsUrls, findsStatementBoundary |
 
-*45 more file(s) for `branch` omitted; see `fileBreakdown` in the JSON report.*
+*47 more file(s) for `branch` omitted; see `fileBreakdown` in the JSON report.*
 
 ### state-mutation (state-transition authority family)
 
@@ -105,7 +105,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 |---|---:|---:|---|---|
 | `src/web/html-projector.js` | 26 | 0 | AUTHORITY_HOME_MISSING | idRefsForAttributes, isWithinClaimedRange, parsesAttributes |
 | `src/project.js` | 17 | 0 | AUTHORITY_HOME_MISSING | buildsDeclarationRows, loadsScanner, projectSourceFactsWorkspace |
-| `src/governance/formats-self-governance-report-summary.js` | 10 | 0 | AUTHORITY_HOME_MISSING | formatsFileDrillDown, formatsSelfGovernanceReportMarkdown, formatsSelfGovernanceReportSummary |
+| `src/governance/formats-self-governance-report-summary.js` | 12 | 0 | AUTHORITY_HOME_MISSING | formatsFileDrillDown, formatsSelfGovernanceReportMarkdown, formatsSelfGovernanceReportSummary |
 | `src/web/relationship-resolver.js` | 10 | 0 | AUTHORITY_HOME_MISSING | buildsResolutionContext, existsSyncAnyExtension, extractsJsReferences |
 | `src/projects-authority-candidates.js` | 8 | 0 | AUTHORITY_HOME_MISSING | buildAuthorityMechanicDraft, buildsNormalizedSourceCodeMap, deduplicateMechanics |
 
@@ -169,7 +169,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/gallery/projects-gallery.js` | 7 | 0 | AUTHORITY_HOME_MISSING | buildsGalleryProjectionReceipt, canonicalizesJson, plansGalleryProjection |
 | `src/composition/runs-sign-in-north-star.js` | 4 | 0 | AUTHORITY_HOME_MISSING | appliesSelectionOverrides, buildsSignInAuthorityChoices |
 
-*9 more file(s) for `normalization` omitted; see `fileBreakdown` in the JSON report.*
+*10 more file(s) for `normalization` omitted; see `fileBreakdown` in the JSON report.*
 
 ### retry (continuation-policy authority family)
 
@@ -183,10 +183,36 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 |---|---|---:|---:|---:|
 | `contracts/serves-query-console.authority.json` | `src/console/serves-query-console.js` | 11 | 11 | 0 ⚠️ |
 
+## Other Authority Documents
+
+Authority-shaped JSON documents this report found but cannot verify mechanic-by-
+mechanic, because they use a different convention than `authority-declaration.v1`
+(a bundle, a full governed-artifact contract, a projection ledger, ...). They still
+count toward `AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE` for any file they claim, rather
+than being silently ignored.
+
+| Document | Kind | Claimed files |
+|---|---|---|
+| `contracts/composition-authorities/app-lab-email-password-entry.authority.v1.json` | composition-authority.v1 | (not determinable from this document alone) |
+| `contracts/composition-authorities/app-lab-split-auth-layout.authority.v1.json` | composition-authority.v1 | (not determinable from this document alone) |
+| `contracts/composition-authorities/loga-midnight-theme.authority.v1.json` | composition-authority.v1 | (not determinable from this document alone) |
+| `contracts/composition-authorities/loga-student-access-messaging.authority.v1.json` | composition-authority.v1 | (not determinable from this document alone) |
+| `contracts/serves-query-console.admitted.contract.json` | governed-artifact-contract | `src/console/serves-query-console.js`, `contracts/serves-query-console.authority.json` |
+| `contracts/serves-query-console.authority.draft.json` | authority-declaration.draft.v1 | `serves-query-console.runtime.impl.mjs` |
+| `contracts/serves-query-console.binding.json` | authority-binding.v1 | `src/console/serves-query-console.js` |
+| `contracts/serves-query-console.contract.json` | governed-artifact-contract | `contracts/message.schema.json`, `contracts/message.json`, `contracts/project-message.authority.json`, `src/project-message.mjs`, `bin/run-message.mjs`, `verification/verifies-message.mjs`, `README.md`, `architecture/closed-loop.mmd`, `package.json`, `architecture/decisions/cryptographic-lineage.md` |
+| `contracts/serves-query-console.governed.contract.json` | governed-artifact-contract | `src/console/console-authority-bundles.mjs`, `src/console/console-routing-adapter.mjs`, `src/console/console-validation-adapter.mjs`, `src/console/contracts/console-request-routing.bundle.json`, `src/console/contracts/console-snippet-retrieval.bundle.json`, `src/console/console-snippet-adapter.mjs`, `src/console/serves-query-console.mjs`, `src/console/serves-query-console.conformant.mjs`, `src/console/serves-query-console.projected.mjs` |
+| `contracts/workspace-file-system.contract.json` | governed-artifact-contract | (not determinable from this document alone) |
+| `src/console/.governance/projections/governed-message-artifact-family.ledger.json` | governed-artifact-projection-ledger.v1 | (not determinable from this document alone) |
+| `src/console/contracts/console-request-routing.bundle.json` | semantic-execution-bundle.v1 | (not determinable from this document alone) |
+| `src/console/contracts/console-snippet-retrieval.bundle.json` | semantic-execution-bundle.v1 | (not determinable from this document alone) |
+| `src/console/contracts/console-validation.bundle.json` | semantic-execution-bundle.v1 | (not determinable from this document alone) |
+| `src/console/governed-message-artifact-family/contracts/project-message.authority.json` | semantic-projection-authority.v1 | (not determinable from this document alone) |
+
 ## Notable Findings
 
 - **Dangling authority source:** `contracts/serves-query-console.authority.json` declares 11 `AUTHORITY_BOUND` mechanic(s) against `src/console/serves-query-console.js`, but none resolved against any observed occurrence in this scan. The declared source file most likely no longer exists at that path (renamed or moved), so its coverage cannot currently be verified.
-- **57 distinct file(s)** contain at least one mechanic with no authority document claiming them at all (`AUTHORITY_HOME_MISSING`). See File Drill-Down above and `fileBreakdown` in the JSON report for the full list.
+- **59 distinct file(s)** contain at least one mechanic with no authority document claiming them at all (`AUTHORITY_HOME_MISSING`). See File Drill-Down above and `fileBreakdown` in the JSON report for the full list.
 
 ## Disposition
 
