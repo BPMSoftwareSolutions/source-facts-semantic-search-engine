@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Source Facts Self-Governance Report",
+  "type": "object",
+  "required": [
+    "reportType",
+    "generatedAtUtc",
+    "repository",
+    "index",
+    "authoritySources",
+    "executionMechanics",
+    "occurrences",
+    "disposition"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "reportType": { "const": "source-facts-self-governance-report.v1" },
+    "generatedAtUtc": { "type": "string", "format": "date-time" },
+    "repository": {
+      "type": "object",
+      "required": ["repositoryId", "workspaceId", "workspaceRoot"],
+      "additionalProperties": false,
+      "properties": {
+        "repositoryId": { "type": "string", "minLength": 1 },
+        "workspaceId": { "type": ["string", "null"] },
+        "workspaceRoot": { "type": ["string", "null"] }
+      }
+    },
+    "index": {
+      "type": "object",
+      "required": ["indexId", "scanId"],
+      "additionalProperties": false,
+      "properties": {
+        "indexId": { "type": ["string", "null"] },
+        "scanId": { "type": ["string", "null"] }
+      }
+    },
+    "authoritySources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["authorityFile", "sourceFile", "mechanicsDeclared", "mechanicsAuthorityBound"],
+        "additionalProperties": false,
+        "properties": {
+          "authorityFile": { "type": "string", "minLength": 1 },
+          "sourceFile": { "type": ["string", "null"] },
+          "mechanicsDeclared": { "type": "integer", "minimum": 0 },
+          "mechanicsAuthorityBound": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "executionMechanics": {
+      "type": "object",
+      "required": ["observed", "governed", "byPosture", "byMechanicType"],
+      "additionalProperties": false,
+      "properties": {
+        "observed": { "type": "integer", "minimum": 0 },
+        "governed": { "type": "integer", "minimum": 0 },
+        "byPosture": {
+          "type": "object",
+          "required": [
+            "GOVERNED_BY_SEMANTIC_AUTHORITY",
+            "MECHANICAL_ADAPTER_OPERATION",
+            "KERNEL_PRIMITIVE",
+            "AUTHORIZED_TEMPORARY_BACKLOG",
+            "UNAUTHORIZED_EXECUTABLE_MEANING",
+            "UNKNOWN_CLASSIFICATION"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "GOVERNED_BY_SEMANTIC_AUTHORITY": { "type": "integer", "minimum": 0 },
+            "MECHANICAL_ADAPTER_OPERATION": { "type": "integer", "minimum": 0 },
+            "KERNEL_PRIMITIVE": { "type": "integer", "minimum": 0 },
+            "AUTHORIZED_TEMPORARY_BACKLOG": { "type": "integer", "minimum": 0 },
+            "UNAUTHORIZED_EXECUTABLE_MEANING": { "type": "integer", "minimum": 0 },
+            "UNKNOWN_CLASSIFICATION": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "byMechanicType": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["mechanic", "observed", "governed"],
+            "additionalProperties": false,
+            "properties": {
+              "mechanic": { "type": "string", "minLength": 1 },
+              "observed": { "type": "integer", "minimum": 0 },
+              "governed": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "occurrences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["mechanic", "modulePath", "startLine", "endLine", "symbolName", "posture", "governingMechanicId", "governingAuthorityFile"],
+        "additionalProperties": false,
+        "properties": {
+          "mechanic": { "type": "string", "minLength": 1 },
+          "modulePath": { "type": "string" },
+          "startLine": { "type": ["integer", "null"] },
+          "endLine": { "type": ["integer", "null"] },
+          "symbolName": { "type": ["string", "null"] },
+          "posture": {
+            "enum": [
+              "GOVERNED_BY_SEMANTIC_AUTHORITY",
+              "MECHANICAL_ADAPTER_OPERATION",
+              "KERNEL_PRIMITIVE",
+              "AUTHORIZED_TEMPORARY_BACKLOG",
+              "UNAUTHORIZED_EXECUTABLE_MEANING",
+              "UNKNOWN_CLASSIFICATION"
+            ]
+          },
+          "governingMechanicId": { "type": ["string", "null"] },
+          "governingAuthorityFile": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "disposition": { "const": "OBSERVATIONAL_NO_GATE_APPLIED" }
+  }
+}

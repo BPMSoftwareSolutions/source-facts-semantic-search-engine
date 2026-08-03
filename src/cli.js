@@ -33,6 +33,10 @@ import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./s
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
+import { discoversAuthorityDocuments } from "./governance/discovers-authority-documents.js";
+import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
+import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
+import { formatsSelfGovernanceReportSummary } from "./governance/formats-self-governance-report-summary.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -65,6 +69,8 @@ if (command === "project") {
   await runProjectAuthorityViolations(args.slice(1));
 } else if (command === "project-console-contract" || command === "project-governed-console-contract") {
   await runProjectConsoleContract(args.slice(1));
+} else if (command === "govern") {
+  await runGovern(args.slice(1));
 } else if (command === "web") {
   await runWeb(args.slice(1));
 } else if (command === "console") {
@@ -264,6 +270,43 @@ async function runProjectConsoleContract(rawArgs) {
     if (failingResult) {
       process.exitCode = failingResult.status ?? 1;
     }
+  }
+}
+
+async function runGovern(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const pretty = flags.pretty === true;
+
+  let index;
+  let workspaceRoot;
+  if (typeof flags.index === "string") {
+    index = await readsJsonFile(path.resolve(flags.index));
+    workspaceRoot = index.manifest?.scanRequest?.workspaceRoot ?? null;
+  } else {
+    workspaceRoot = path.resolve(flags.workspace ?? path.join(repositoryRoot, "src"));
+    const workspaceId = flags.workspaceId ?? path.basename(workspaceRoot);
+    index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId, languageId: "typescript" });
+    await validatesSourceFactIndex(index);
+  }
+
+  const authorityDir = path.resolve(flags.authorityDir ?? path.join(repositoryRoot, "contracts"));
+  const authorityDocuments = await discoversAuthorityDocuments(authorityDir, { relativeTo: repositoryRoot });
+
+  const report = await projectsSelfGovernanceReport({
+    index,
+    repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
+    authorityDocuments,
+  });
+  await validatesSelfGovernanceReport(report);
+
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "source-facts-self-governance-report.json"));
+  const summaryPath = outputPath.replace(/\.json$/i, ".md");
+  await writesJsonFile(outputPath, report, { pretty });
+  await fs.writeFile(summaryPath, formatsSelfGovernanceReportSummary(report), "utf8");
+
+  process.stdout.write(`${outputPath}\n${summaryPath}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(formatsSelfGovernanceReportSummary(report));
   }
 }
 
@@ -830,6 +873,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
+  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
@@ -846,6 +890,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project-authority-violations --workspace ./src/console --authority-file ./contracts/serves-query-console.authority.json --output ./contracts/serves-query-console.candidates.json --authority-output ./contracts/serves-query-console.authority.draft.json --summary\n`);
   stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --project --summary\n`);
   stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --gate --summary\n`);
+  stream.write(`  source-facts-se govern --workspace ./src --output ./source-facts-self-governance-report.json --summary\n`);
   stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
   stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);

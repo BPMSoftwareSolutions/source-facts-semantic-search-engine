@@ -13,6 +13,7 @@
   "scripts": {
     "project": "node src/cli.js project",
     "query": "node src/cli.js query",
+    "govern": "node src/cli.js govern",
     "start": "node src/cli.js",
     "check:deps": "node ./scripts/check-deps.mjs",
     "test": "node --test test",
