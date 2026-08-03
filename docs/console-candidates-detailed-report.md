@@ -1,49 +1,53 @@
-# Authority Candidate Projections: serves-query-console.js
+# Authority Candidate Detailed Report: serves-query-console
 
-**Generated:** 2026-08-02T21:43:49.581Z
-**Total Candidates:** 8
-**Coverage Status:** Authority Conformance Ratio: 0.0%
+**Generated:** 2026-08-03T13:02:29.329Z
+**Candidate source:** `C:/lab/repos/source-facts-semantic-search-engine/src/console/serves-query-console.mjs`
+**Workspace:** `C:\lab\repos\source-facts-semantic-search-engine\src\console`
+**Violations detected:** 493
+**Candidates projected:** 493
+**Bindings mapped to known authority:** 477
+**Bindings still requiring authority:** 16
+**Engine findings:** 41
 
-**Source file:** `C:\lab\repos\source-facts-semantic-search-engine\src\console\serves-query-console.js`
+## Executive Summary
 
----
+The query tool now classifies real mechanic families instead of `unknown`, which makes the authority candidate report usable for semantic migration. The remaining work is concentrated in projection mappings, fallback/default policies, state transitions, serialization, and a small set of unresolved throw/validation cases.
 
-## Overview
+## Data Transition Map
 
-The source facts engine has automatically projected **8 authority candidate scaffolds** from observable executable mechanics in `serves-query-console.js`.
+| Candidate Type | Mechanics Observed | Data Transition Needed |
+| --- | --- | --- |
+| `decision-authority-candidate.v1` | 48 | Decision tables, predicate data, and AST-backed branch conditions |
+| `failure-disposition-authority-candidate.v1` | 12 | Error ontology, failure-policy data, and canonical rejection semantics |
+| `projection-mapping-candidate.v1` | 130 | AST object-shape data, field mapping declarations, and schema projections |
+| `iteration-authority-candidate.v1` | 1 | Iteration policy, collection order data, and explicit continuation/termination rules |
+| `state-transition-authority-candidate.v1` | 73 | Effect data, state-transition declarations, and proof requirements |
+| `serialization-profile-candidate.v1` | 90 | Canonical byte rules, encoding policy, and stable serialization profiles |
+| `validation-policy-candidate.v1` | 4 | Validation schema data and explicit failure-policy declarations |
+| `failure-observation-candidate.v1` | 30 | Catch semantics, error-classification data, and observation policy |
+| `fallback-policy-candidate.v1` | 74 | Missing-value policy, default-value data, and canonical fallback rules |
 
-This is an HTTP server entrypoint that serves a query console UI and handles client requests. The file is relatively compact (**259 lines**) but has clear responsibilities:
-- **Console asset serving:** HTTP GET for HTML/assets
-- **Index metadata queries:** GET /api/index-info
-- **Relational queries:** POST /api/query with request body
-- **Source snippet retrieval:** GET /api/snippet with path and line range
-- **Request validation:** Path decoding, method routing, body size limits
-- **Security:** CSP headers, path traversal prevention, workspace isolation
+## Candidate Families
 
-Each candidate captures a structural mechanic that requires semantic authority to declare **why** this specific validation, error, or transformation is required.
+### Branch → Decision Authority Candidate
 
----
-
-## Branch → Decision Authority Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:45`
+**Count:** 48
+**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** Decision tables, predicate data, and AST-backed branch conditions
+**Representative source:** `serves-query-console.conformant.mjs:68`
 
 **Observed code:**
 
-```
-    40:   port = 0,
-    41: } = {}) {
-    42:   try {
-    43:     classifiesLoopbackBind({ hostname });
-    44:   } catch (error) {
-→   45:     if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
-    46:     throw new Error("The query console server may bind only to 127.0.0.1.");
-    47:   }
-    48:   if (index === null || typeof index !== "object") throw new Error("A loaded source-fact-index.v1 is required.");
-    49:   if (typeof consoleAssetPath !== "string" || consoleAssetPath.trim().length === 0) {
-    50:     throw new Error("consoleAssetPath is required.");
+```text
+   64:   // AUTHORITY-DELEGATED: Validate hostname (loopback only)
+   65:   try {
+   66:     await classifiesLoopbackBind({ hostname });
+   67:   } catch (error) {
+-> 68:     if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
+   69:     throw new Error("The query console server may bind only to 127.0.0.1.");
+   70:   }
+   71: 
+   72:   // AUTHORITY-DELEGATED: Validate required parameters
 ```
 
 **Projected candidate:**
@@ -51,16 +55,21 @@ Each candidate captures a structural mechanic that requires semantic authority t
 ```json
 {
   "authorityCandidateType": "decision-authority-candidate.v1",
-  "candidateId": "resolve-undefined",
+  "candidateId": "resolve-serves-query-console",
   "responsibility": {
-    "description": "Decision point in undefined"
+    "responsibilityId": "servesQueryConsole",
+    "description": "Decision point in servesQueryConsole"
   },
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "serves-query-console.conformant.mjs",
+    "sourceReferenceId": "serves-query-console.conformant.mjs:2900:64",
+    "enclosingSymbol": "servesQueryConsole",
     "mechanic": "branch",
-    "startLine": 45,
-    "startColumn": 5,
-    "sourceSnippet": "<source snippet unavailable>"
+    "startLine": 68,
+    "endLine": 68,
+    "startColumn": 1,
+    "endColumn": 1,
+    "sourceSnippet": "    if (error?.disposition !== \"HOSTNAME_NOT_ADMITTED\") throw error;"
   },
   "inputs": [
     {
@@ -121,38 +130,36 @@ Each candidate captures a structural mechanic that requires semantic authority t
 }
 ```
 
-**Unresolved decisions:**
-- confirm condition is complete and accurate
+**Unresolved prompts:**
 - confirm all outcomes are identified
-- confirm no-match behavior
-- confirm result type per outcome
+- confirm condition is complete and accurate
 - confirm decision priority/precedence
+- confirm no-match behavior
+- confirm no-match handling
+- confirm result type per outcome
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+These mechanics still need condition semantics, outcome semantics, and no-match policy to be described as data instead of control flow.
 
----
+### Throw → Failure Disposition Candidate
 
-## Throw → Failure Disposition Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:45`
+**Count:** 12
+**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** Error ontology, failure-policy data, and canonical rejection semantics
+**Representative source:** `serves-query-console.conformant.mjs:68`
 
 **Observed code:**
 
-```
-    40:   port = 0,
-    41: } = {}) {
-    42:   try {
-    43:     classifiesLoopbackBind({ hostname });
-    44:   } catch (error) {
-→   45:     if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
-    46:     throw new Error("The query console server may bind only to 127.0.0.1.");
-    47:   }
-    48:   if (index === null || typeof index !== "object") throw new Error("A loaded source-fact-index.v1 is required.");
-    49:   if (typeof consoleAssetPath !== "string" || consoleAssetPath.trim().length === 0) {
-    50:     throw new Error("consoleAssetPath is required.");
+```text
+   64:   // AUTHORITY-DELEGATED: Validate hostname (loopback only)
+   65:   try {
+   66:     await classifiesLoopbackBind({ hostname });
+   67:   } catch (error) {
+-> 68:     if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
+   69:     throw new Error("The query console server may bind only to 127.0.0.1.");
+   70:   }
+   71: 
+   72:   // AUTHORITY-DELEGATED: Validate required parameters
 ```
 
 **Projected candidate:**
@@ -160,18 +167,23 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 ```json
 {
   "authorityCandidateType": "failure-disposition-authority-candidate.v1",
-  "candidateId": "failure-error",
-  "responsibility": {},
+  "candidateId": "failure-serves-query-console-error",
+  "responsibility": {
+    "responsibilityId": "servesQueryConsole"
+  },
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "serves-query-console.conformant.mjs",
+    "sourceReferenceId": "serves-query-console.conformant.mjs:2952:12",
+    "enclosingSymbol": "servesQueryConsole",
     "mechanic": "throw",
-    "startLine": 45,
-    "sourceSnippet": "throw <error>"
+    "startLine": 68,
+    "endLine": 68,
+    "sourceSnippet": "    if (error?.disposition !== \"HOSTNAME_NOT_ADMITTED\") throw error;"
   },
   "failureIdentity": {
     "errorType": "Error",
-    "errorCode": null,
-    "errorMessage": null,
+    "errorCode": "HOSTNAME_NOT_ADMITTED",
+    "errorMessage": "HOSTNAME_NOT_ADMITTED",
     "canonicalFailureId": "failure-error"
   },
   "precondition": {
@@ -198,37 +210,36 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 }
 ```
 
-**Unresolved decisions:**
+**Unresolved prompts:**
+- confirm error classification
 - confirm failure identity (type, code, message)
 - confirm precondition
 - confirm whether canonical behavior or fallback
-- confirm error classification
+- confirm whether this is canonical vs error-handling throw
+- identify exact precondition that triggers this throw
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+These mechanics need the error identity, precondition, and fallback-vs-canonical disposition to move out of executable throw sites.
 
----
+### Object Construction → Projection Mapping Candidate
 
-## Object Construction → Projection Mapping Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:13`
+**Count:** 130
+**Unique source files:** console-authority-bundles.mjs, console-validation-adapter.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** AST object-shape data, field mapping declarations, and schema projections
+**Representative source:** `console-authority-bundles.mjs:30`
 
 **Observed code:**
 
-```
-     8: 
-     9: // Which pathname belongs to which route, and what it admits, is declared meaning
-    10: // now owned by contracts/route-dispatch.authority.json (see docs/serves-query-console-closure-tracker.md).
-    11: // This map is residual, mechanical-only: it exists solely to choose 404 vs 405 when
-    12: // the authority rejects a request, not to make the routing decision itself.
-→   13: const knownPathnameAllow = new Map([
-    14:   ["/", "GET, HEAD"],
-    15:   ["/index.html", "GET, HEAD"],
-    16:   ["/api/index-info", "GET, HEAD"],
-    17:   ["/api/query", "POST"],
-    18:   ["/api/snippet", "GET, HEAD"],
+```text
+   26:  * Authority source: known-pathname-allow-map
+   27:  * Mechanic type: object-construction
+   28:  */
+   29: export function pathnameLookupAuthority({ pathname }) {
+-> 30:   const knownPathnameAllow = new Map([
+   31:     ["/", "GET, HEAD"],
+   32:     ["/index.html", "GET, HEAD"],
+   33:     ["/api/index-info", "GET, HEAD"],
+   34:     ["/api/query", "POST"],
 ```
 
 **Projected candidate:**
@@ -236,16 +247,21 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 ```json
 {
   "authorityCandidateType": "projection-mapping-candidate.v1",
-  "projectionMappingId": "project-undefined-result",
-  "responsibility": {},
+  "projectionMappingId": "project-pathname-lookup-authority-result",
+  "responsibility": {
+    "responsibilityId": "pathnameLookupAuthority"
+  },
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "console-authority-bundles.mjs",
+    "sourceReferenceId": "console-authority-bundles.mjs:1276:173",
+    "enclosingSymbol": "pathnameLookupAuthority",
     "mechanic": "object-construction",
-    "startLine": 13,
-    "sourceSnippet": "return { ... }"
+    "startLine": 30,
+    "endLine": 36,
+    "sourceSnippet": "  const knownPathnameAllow = new Map([\n    [\"/\", \"GET, HEAD\"],\n    [\"/index.html\", \"GET, HEAD\"],\n    [\"/api/index-info\", \"GET, HEAD\"],\n    [\"/api/query\", \"POST\"],\n    [\"/api/snippet\", \"GET, HEAD\"],\n  ]);"
   },
   "resultContract": {
-    "contractId": "undefined-result",
+    "contractId": "pathnameLookupAuthority-result",
     "description": "Result object constructed by this function"
   },
   "fields": [
@@ -282,38 +298,38 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 }
 ```
 
-**Unresolved decisions:**
-- confirm result contract identity
+**Unresolved prompts:**
 - confirm all field mappings are correct
-- confirm transformation functions
 - confirm field ordering semantics
+- confirm no data loss
+- confirm omission is intentional
 - confirm omitted-field policy
+- confirm result contract identity
+- confirm transformation functions
+- identify which input fields are omitted
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+These mechanics are still constructing output objects in code; the field-by-field projection should become declarative mapping data.
 
----
+### Iteration → Iteration Authority Candidate
 
-## Iteration → Iteration Authority Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:192`
+**Count:** 1
+**Unique source files:** console-authority-bundles.mjs
+**Data transition:** Iteration policy, collection order data, and explicit continuation/termination rules
+**Representative source:** `console-authority-bundles.mjs:122`
 
 **Observed code:**
 
-```
-   187: 
-   188:   const allLines = text.replaceAll("\r\n", "\n").replaceAll("\r", "\n").split("\n");
-   189:   const firstLine = clamp(startLine - context, 1, allLines.length);
-   190:   const lastLine = clamp(endLine + context, 1, allLines.length);
-   191:   const lines = [];
-→  192:   for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1) {
-   193:     lines.push({ line: lineNumber, text: allLines[lineNumber - 1] ?? "", hit: lineNumber >= startLine && lineNumber <= endLine });
-   194:   }
-   195:   return writesJson(response, 200, { available: true, modulePath, startLine, endLine, lines });
-   196: }
-   197: 
+```text
+   118:   const lastLine = Math.max(1, Math.min(endLine + contextLines, allLines.length));
+   119: 
+   120:   // Authority: Iteration in ascending order, hit-flag classification
+   121:   const lines = [];
+-> 122:   for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1) {
+   123:     lines.push({
+   124:       line: lineNumber,
+   125:       text: allLines[lineNumber - 1] ?? "",
+   126:       hit: lineNumber >= startLine && lineNumber <= endLine
 ```
 
 **Projected candidate:**
@@ -321,12 +337,15 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 ```json
 {
   "authorityCandidateType": "iteration-authority-candidate.v1",
-  "iterationId": "iterate-undefined",
+  "iterationId": "iterate-extracts-snippet-lines",
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "console-authority-bundles.mjs",
+    "sourceReferenceId": "console-authority-bundles.mjs:4289:232",
+    "enclosingSymbol": "extractsSnippetLines",
     "mechanic": "iteration",
-    "startLine": 192,
-    "sourceSnippet": "for (...) { ... }"
+    "startLine": 122,
+    "endLine": 128,
+    "sourceSnippet": "  for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1) {\n    lines.push({\n      line: lineNumber,\n      text: allLines[lineNumber - 1] ?? \"\",\n      hit: lineNumber >= startLine && lineNumber <= endLine\n    });\n  }"
   },
   "sourceCollectionExpression": "<collection>",
   "itemIdentity": "<item-variable>",
@@ -355,38 +374,35 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 }
 ```
 
-**Unresolved decisions:**
-- identify collection source
+**Unresolved prompts:**
+- confirm collection/aggregation behavior
 - confirm iteration order is semantically significant
 - confirm per-item processing
-- confirm collection/aggregation behavior
 - confirm stopping conditions
+- identify collection source
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+This mechanic should be a data-driven iteration contract instead of a hard-coded loop body.
 
----
+### State Mutation → State Transition Candidate
 
-## State Mutation → State Transition Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:60`
+**Count:** 73
+**Unique source files:** console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** Effect data, state-transition declarations, and proof requirements
+**Representative source:** `console-authority-bundles.mjs:122`
 
 **Observed code:**
 
-```
-    55:   const cspPolicy = buildsConsoleCsp();
-    56: 
-    57:   const server = http.createServer((request, response) => {
-    58:     handlesRequest({ request, response, index, consoleHtml, realWorkspaceRoot, cspPolicy }).catch(() => {
-    59:       if (!response.headersSent) writesSecurityHeaders(response, cspPolicy);
-→   60:       response.statusCode = 500;
-    61:       response.end(JSON.stringify({ error: "Query console server error." }));
-    62:     });
-    63:   });
-    64:   server.on("clientError", (_error, socket) => socket.end("HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n"));
-    65: 
+```text
+   118:   const lastLine = Math.max(1, Math.min(endLine + contextLines, allLines.length));
+   119: 
+   120:   // Authority: Iteration in ascending order, hit-flag classification
+   121:   const lines = [];
+-> 122:   for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1) {
+   123:     lines.push({
+   124:       line: lineNumber,
+   125:       text: allLines[lineNumber - 1] ?? "",
+   126:       hit: lineNumber >= startLine && lineNumber <= endLine
 ```
 
 **Projected candidate:**
@@ -394,12 +410,15 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 ```json
 {
   "authorityCandidateType": "state-transition-authority-candidate.v1",
-  "stateTransitionId": "transition-undefined",
+  "stateTransitionId": "transition-extracts-snippet-lines",
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "console-authority-bundles.mjs",
+    "sourceReferenceId": "console-authority-bundles.mjs:4346:15",
+    "enclosingSymbol": "extractsSnippetLines",
     "mechanic": "state-mutation",
-    "startLine": 60,
-    "sourceSnippet": "<mutation>"
+    "startLine": 122,
+    "endLine": 122,
+    "sourceSnippet": "  for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1) {"
   },
   "mutatedState": {
     "stateIdentity": "<variable-or-object>",
@@ -437,38 +456,40 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 }
 ```
 
-**Unresolved decisions:**
-- identify mutated state
-- confirm preconditions
-- prove safety
+**Unresolved prompts:**
+- confirm commutativity guarantee
 - confirm idempotency
+- confirm idempotency guarantee
+- confirm mutation safety
+- confirm no deadlock risk
 - confirm no side effects beyond declared state
+- confirm preconditions
+- identify all preconditions
+- identify mutated state
+- prove safety
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+These mechanics still mutate state directly and need effect declarations that can be audited independently of the code path.
 
----
+### Serialization → Serialization Profile Candidate
 
-## Serialization → Serialization Profile Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:61`
+**Count:** 90
+**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** Canonical byte rules, encoding policy, and stable serialization profiles
+**Representative source:** `serves-query-console.conformant.mjs:92`
 
 **Observed code:**
 
-```
-    56: 
-    57:   const server = http.createServer((request, response) => {
-    58:     handlesRequest({ request, response, index, consoleHtml, realWorkspaceRoot, cspPolicy }).catch(() => {
-    59:       if (!response.headersSent) writesSecurityHeaders(response, cspPolicy);
-    60:       response.statusCode = 500;
-→   61:       response.end(JSON.stringify({ error: "Query console server error." }));
-    62:     });
-    63:   });
-    64:   server.on("clientError", (_error, socket) => socket.end("HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n"));
-    65: 
-    66:   await new Promise((resolve, reject) => {
+```text
+   88:       realWorkspaceRoot,
+   89:       cspPolicy
+   90:     }).catch((error) => {
+   91:       // AUTHORITY-DELEGATED: Error disposition and response format
+-> 92:       const errorResponse = serializesErrorResponse({ error, context: "request-handler-uncaught" });
+   93:       if (!response.headersSent) {
+   94:         const securityHeaders = projectsSecurityHeaders({ context: "error" });
+   95:         Object.entries(securityHeaders).forEach(([key, value]) => {
+   96:           response.setHeader(key, value);
 ```
 
 **Projected candidate:**
@@ -476,12 +497,15 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 ```json
 {
   "authorityCandidateType": "serialization-profile-candidate.v1",
-  "serializationProfileId": "serialize-undefined",
+  "serializationProfileId": "serialize-serves-query-console",
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "serves-query-console.conformant.mjs",
+    "sourceReferenceId": "serves-query-console.conformant.mjs:3892:71",
+    "enclosingSymbol": "servesQueryConsole",
     "mechanic": "serialization",
-    "startLine": 61,
-    "sourceSnippet": "JSON.stringify(...)"
+    "startLine": 92,
+    "endLine": 92,
+    "sourceSnippet": "      const errorResponse = serializesErrorResponse({ error, context: \"request-handler-uncaught\" });"
   },
   "encoding": {
     "format": "unknown",
@@ -512,7 +536,7 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
       ]
     }
   },
-  "resultContractId": "undefined-serialized",
+  "resultContractId": "servesQueryConsole-serialized",
   "requiredHumanResolution": [
     "confirm encoding format",
     "confirm canonicalization strategy",
@@ -524,37 +548,107 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 }
 ```
 
-**Unresolved decisions:**
-- confirm encoding format
+**Unresolved prompts:**
 - confirm canonicalization strategy
 - confirm determinism requirement
+- confirm encoding format
 - confirm whether hash-sensitive
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+These mechanics should be described as serialization data so byte-for-byte output is reproducible and reviewable.
 
----
+### Validation → Validation Policy Candidate
 
-## Exception Handling → Failure Observation Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:42`
+**Count:** 4
+**Unique source files:** console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** Validation schema data and explicit failure-policy declarations
+**Representative source:** `console-authority-bundles.mjs:189`
 
 **Observed code:**
 
+```text
+   185:  *
+   186:  * Delegates through the validation adapter so the body stays thin and projected.
+   187:  */
+   188: export function validatesConsoleParameters(parameters) {
+-> 189:   return validatesConsoleParametersFromAdapter(parameters);
+   190: }
+   191: 
 ```
-    37:   workspaceRoot = null,
-    38:   consoleAssetPath,
-    39:   hostname = "127.0.0.1",
-    40:   port = 0,
-    41: } = {}) {
-→   42:   try {
-    43:     classifiesLoopbackBind({ hostname });
-    44:   } catch (error) {
-    45:     if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
-    46:     throw new Error("The query console server may bind only to 127.0.0.1.");
-    47:   }
+
+**Projected candidate:**
+
+```json
+{
+  "authorityCandidateType": "validation-policy-candidate.v1",
+  "validationPolicyId": "validate-validates-console-parameters",
+  "source": {
+    "modulePath": "console-authority-bundles.mjs",
+    "sourceReferenceId": "console-authority-bundles.mjs:6347:49",
+    "enclosingSymbol": "validatesConsoleParameters",
+    "mechanic": "validation",
+    "startLine": 189,
+    "endLine": 189,
+    "sourceSnippet": "  return validatesConsoleParametersFromAdapter(parameters);"
+  },
+  "validatedContract": {
+    "contractId": "<contract being validated>",
+    "schemaPath": "<path-to-schema>",
+    "validator": "<ajv|joi|custom>"
+  },
+  "successPath": {
+    "behavior": "continue",
+    "resultType": "<type-after-success>"
+  },
+  "failurePath": {
+    "behavior": "throw",
+    "errorIdentity": "<error-type>",
+    "requiredHumanResolution": [
+      "confirm error handling strategy",
+      "confirm error type and message"
+    ]
+  },
+  "requiredHumanResolution": [
+    "identify validated contract",
+    "confirm success path behavior",
+    "confirm failure path behavior",
+    "confirm error classification"
+  ],
+  "status": "AUTHORITY_CANDIDATE_PROJECTED",
+  "coverageDisposition": "SEMANTIC_DECISION_REQUIRED"
+}
+```
+
+**Unresolved prompts:**
+- confirm error classification
+- confirm error handling strategy
+- confirm error type and message
+- confirm failure path behavior
+- confirm success path behavior
+- identify validated contract
+
+**Why this still needs data:**
+These mechanics still encode validation decisions in code and should move into policy data plus declared failure handling.
+
+### Exception Handling → Failure Observation Candidate
+
+**Count:** 30
+**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** Catch semantics, error-classification data, and observation policy
+**Representative source:** `serves-query-console.conformant.mjs:65`
+
+**Observed code:**
+
+```text
+   61:   hostname = "127.0.0.1",
+   62:   port = 0,
+   63: } = {}) {
+   64:   // AUTHORITY-DELEGATED: Validate hostname (loopback only)
+-> 65:   try {
+   66:     await classifiesLoopbackBind({ hostname });
+   67:   } catch (error) {
+   68:     if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
+   69:     throw new Error("The query console server may bind only to 127.0.0.1.");
 ```
 
 **Projected candidate:**
@@ -562,12 +656,15 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 ```json
 {
   "authorityCandidateType": "failure-observation-candidate.v1",
-  "failureObservationId": "observe-failure-undefined",
+  "failureObservationId": "observe-failure-serves-query-console",
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "serves-query-console.conformant.mjs",
+    "sourceReferenceId": "serves-query-console.conformant.mjs:2822:223",
+    "enclosingSymbol": "servesQueryConsole",
     "mechanic": "exception-handling",
-    "startLine": 42,
-    "sourceSnippet": "try { ... } catch { ... }"
+    "startLine": 65,
+    "endLine": 70,
+    "sourceSnippet": "  try {\n    await classifiesLoopbackBind({ hostname });\n  } catch (error) {\n    if (error?.disposition !== \"HOSTNAME_NOT_ADMITTED\") throw error;\n    throw new Error(\"The query console server may bind only to 127.0.0.1.\");\n  }"
   },
   "caughtErrors": {
     "errorTypes": [
@@ -597,37 +694,36 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 }
 ```
 
-**Unresolved decisions:**
-- identify caught error types
-- confirm observe-only vs transform behavior
+**Unresolved prompts:**
+- confirm catch block observes only vs transforms
+- confirm error classification
 - confirm error classification authority
+- confirm observe-only vs transform behavior
 - confirm post-catch disposition
+- identify caught error types
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+These mechanics should describe which failures are observed and which are rethrown as data, not as nested try/catch logic.
 
----
+### Fallback → Fallback Policy Candidate
 
-## Fallback → Fallback Policy Candidate
-
-**Count:** 1 candidate(s) of this type
-
-### Example from `serves-query-console.js:48`
+**Count:** 74
+**Unique source files:** console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Data transition:** Missing-value policy, default-value data, and canonical fallback rules
+**Representative source:** `console-authority-bundles.mjs:37`
 
 **Observed code:**
 
-```
-    43:     classifiesLoopbackBind({ hostname });
-    44:   } catch (error) {
-    45:     if (error?.disposition !== "HOSTNAME_NOT_ADMITTED") throw error;
-    46:     throw new Error("The query console server may bind only to 127.0.0.1.");
-    47:   }
-→   48:   if (index === null || typeof index !== "object") throw new Error("A loaded source-fact-index.v1 is required.");
-    49:   if (typeof consoleAssetPath !== "string" || consoleAssetPath.trim().length === 0) {
-    50:     throw new Error("consoleAssetPath is required.");
-    51:   }
-    52:   const resolvedAssetPath = path.resolve(consoleAssetPath);
-    53:   const consoleHtml = await readFile(resolvedAssetPath, "utf8");
+```text
+   33:     ["/api/index-info", "GET, HEAD"],
+   34:     ["/api/query", "POST"],
+   35:     ["/api/snippet", "GET, HEAD"],
+   36:   ]);
+-> 37:   return knownPathnameAllow.get(pathname) ?? null;
+   38: }
+   39: 
+   40: /**
+   41:  * BUNDLE 2: projectsSecurityHeaders
 ```
 
 **Projected candidate:**
@@ -635,12 +731,15 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 ```json
 {
   "authorityCandidateType": "fallback-policy-candidate.v1",
-  "fallbackPolicyId": "fallback-undefined",
+  "fallbackPolicyId": "fallback-pathname-lookup-authority",
   "source": {
-    "modulePath": "serves-query-console.js",
+    "modulePath": "console-authority-bundles.mjs",
+    "sourceReferenceId": "console-authority-bundles.mjs:1460:40",
+    "enclosingSymbol": "pathnameLookupAuthority",
     "mechanic": "fallback",
-    "startLine": 48,
-    "sourceSnippet": "value ?? default"
+    "startLine": 37,
+    "endLine": 37,
+    "sourceSnippet": "  return knownPathnameAllow.get(pathname) ?? null;"
   },
   "missingValueDetection": {
     "condition": "<null|undefined|falsy>",
@@ -672,66 +771,77 @@ This pattern appears **1 time(s)** in the indexed codebase. Each occurrence repr
 }
 ```
 
-**Unresolved decisions:**
-- confirm missing-value detection
+**Unresolved prompts:**
 - confirm fallback value
-- confirm whether fallback is canonical or emergency
+- confirm fallback value is correct
+- confirm missing-value condition
+- confirm missing-value detection
 - confirm no data loss
+- confirm whether fallback is canonical or emergency
 
-**Why this pattern matters:**
-This pattern appears **1 time(s)** in the indexed codebase. Each occurrence represents a point where semantic authority must declare the **why** that is currently hidden in code structure.
+**Why this still needs data:**
+These mechanics still embed default selection behavior in code and should become explicit fallback data.
 
----
+## Unresolved Binding Audit
 
-## Coverage Summary
+The following mechanics still need authority binding after projection (16 unresolved mappings):
 
-| Metric | Value |
-|--------|-------|
-| Total Mechanics Observed | 8 |
-| Unique Candidates Generated | 8 |
-| Fully Authorized | 0 |
-| Partially Covered | 0 |
-| Unresolved (Awaiting Semantic Decision) | 8 |
-| Authority Conformance Ratio | 0.0% |
-| Admission Gate Status | NOT_READY |
+| Violation | Mechanic | Source Location | Why it is unresolved |
+| --- | --- | --- | --- |
+| `validation-violation-17` | `validation` | `console-authority-bundles.mjs:189` | No authority mechanic was matched for validation |
+| `throw-violation-25` | `throw` | `serves-query-console.conformant.mjs:68` | No authority mechanic was matched for throw |
+| `throw-violation-27` | `throw` | `serves-query-console.conformant.mjs:69` | No authority mechanic was matched for throw |
+| `validation-violation-29` | `validation` | `serves-query-console.conformant.mjs:73` | No authority mechanic was matched for validation |
+| `throw-violation-42` | `throw` | `serves-query-console.conformant.mjs:118` | No authority mechanic was matched for throw |
+| `throw-violation-65` | `throw` | `serves-query-console.conformant.mjs:166` | No authority mechanic was matched for throw |
+| `throw-violation-183` | `throw` | `serves-query-console.mjs:42` | No authority mechanic was matched for throw |
+| `throw-violation-185` | `throw` | `serves-query-console.mjs:43` | No authority mechanic was matched for throw |
+| `validation-violation-187` | `validation` | `serves-query-console.mjs:47` | No authority mechanic was matched for validation |
+| `throw-violation-200` | `throw` | `serves-query-console.mjs:92` | No authority mechanic was matched for throw |
+| `throw-violation-223` | `throw` | `serves-query-console.mjs:140` | No authority mechanic was matched for throw |
+| `throw-violation-341` | `throw` | `serves-query-console.projected.mjs:42` | No authority mechanic was matched for throw |
+| `throw-violation-343` | `throw` | `serves-query-console.projected.mjs:43` | No authority mechanic was matched for throw |
+| `validation-violation-345` | `validation` | `serves-query-console.projected.mjs:47` | No authority mechanic was matched for validation |
+| `throw-violation-358` | `throw` | `serves-query-console.projected.mjs:92` | No authority mechanic was matched for throw |
+| `throw-violation-381` | `throw` | `serves-query-console.projected.mjs:140` | No authority mechanic was matched for throw |
 
----
+## Engine Audit
 
-## The Productivity Advantage
+| Artifact | Findings | Audit note |
+| --- | --- | --- |
+| `console-authority-bundles.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:5cc66ee3c54f818c1374752e10ddb1f0d5401d5bae372f863a1b8b17a307ab12, observed sha256:4d57ab91d3c4ee4f04a05ff3d41971ea374ba8218461feb5bfb021aa4ae30ed5. |
+| `console-routing-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:5c4dfb669b60eb17e78cc9e7510e4d92f6268bc9211aa846f315050947209a66, observed sha256:ddcd9000b6d448e678765573c8c4e15fed0308038f61797e3f456fb56680baa3. |
+| `console-snippet-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:6c200cc369fe40279d6c0d23360a157d79ab1f6e259808c689dcc6672b687625, observed sha256:64ae105a1a19ceb562e3d97fbdf60e6ca78738a04d5d7b737386d33d575c1f50. |
+| `console-validation-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:9838d8bd71c8cc49282b2c61d538f133716d99fdd560bfae3e621ea21d4a92d2, observed sha256:4705cdf94fdc5caa43561328d31531576eea6784d18940fcdd3023b0ef6d905b. |
+| `serves-query-console-conformant.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch`, `semantic-edge-authority-unresolved` | Content digest mismatch: expected sha256:d240eab49e9b87da69495c9bd3e64b401c32ae71b5fa766ae8a107cc7b215c83, observed sha256:f76f955d1246f4510ba948f51f9fb0f16fb444908d2f43a49ed215b81bd5b43e. |
+| `serves-query-console-projected.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch`, `semantic-edge-authority-unresolved` | Content digest mismatch: expected sha256:94481a642dd3cf5d29a69376008ccdcbf1424ce8cfb3ffa1d6240a4d5601cd59, observed sha256:55dcdcd3eeaf8d93545ca098d6082fe14adfc70f814175a3c30c401618db0fb5. |
+| `serves-query-console.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch`, `semantic-edge-authority-unresolved` | Content digest mismatch: expected sha256:643f8253d9b946554b258f02828215ca2980964df8b4b8181f649cd17bfdd3a7, observed sha256:7e58bea1f0cff62c98d386ec872704a736b003a2dec07ac10a797f54379c6d71. |
 
-This HTTP server file shows how projection surfaces only the semantic decisions:
+### Content Digest Mismatch
 
-**Without authority projection:** An agent must understand 259 lines of async I/O, Node.js HTTP APIs, path manipulation, error recovery, and validation logic. High cognitive load to reconstruct all constraints.
+| Artifact | Expected | Observed |
+| --- | --- | --- |
+| `console-authority-bundles.v1` | `sha256:5cc66ee3c54f818c1374752e10ddb1f0d5401d5bae372f863a1b8b17a307ab12` | `sha256:4d57ab91d3c4ee4f04a05ff3d41971ea374ba8218461feb5bfb021aa4ae30ed5` |
+| `console-routing-adapter.v1` | `sha256:5c4dfb669b60eb17e78cc9e7510e4d92f6268bc9211aa846f315050947209a66` | `sha256:ddcd9000b6d448e678765573c8c4e15fed0308038f61797e3f456fb56680baa3` |
+| `console-snippet-adapter.v1` | `sha256:6c200cc369fe40279d6c0d23360a157d79ab1f6e259808c689dcc6672b687625` | `sha256:64ae105a1a19ceb562e3d97fbdf60e6ca78738a04d5d7b737386d33d575c1f50` |
+| `console-validation-adapter.v1` | `sha256:9838d8bd71c8cc49282b2c61d538f133716d99fdd560bfae3e621ea21d4a92d2` | `sha256:4705cdf94fdc5caa43561328d31531576eea6784d18940fcdd3023b0ef6d905b` |
+| `serves-query-console-conformant.v1` | `sha256:d240eab49e9b87da69495c9bd3e64b401c32ae71b5fa766ae8a107cc7b215c83` | `sha256:f76f955d1246f4510ba948f51f9fb0f16fb444908d2f43a49ed215b81bd5b43e` |
+| `serves-query-console-projected.v1` | `sha256:94481a642dd3cf5d29a69376008ccdcbf1424ce8cfb3ffa1d6240a4d5601cd59` | `sha256:55dcdcd3eeaf8d93545ca098d6082fe14adfc70f814175a3c30c401618db0fb5` |
+| `serves-query-console.v1` | `sha256:643f8253d9b946554b258f02828215ca2980964df8b4b8181f649cd17bfdd3a7` | `sha256:7e58bea1f0cff62c98d386ec872704a736b003a2dec07ac10a797f54379c6d71` |
 
-**With authority projection:** An agent confirms decisions in pre-shaped JSON scaffolds. Low token cost, high precision, only semantic gaps remain flagged.
+### Transition Notes
 
-Each candidate shows:
-- **Source location:** Exact file, line of the mechanic
-- **Observed code:** Real code snippet from the source
-- **Extracted structure:** Conditions, fields, invocations parsed from syntax
-- **Unresolved decisions:** Precisely what a human must confirm
+The governed-artifacts engine is still rejecting the projected artifacts because the code bodies are not yet fully data-driven. The audit surface splits into two groups:
 
-### What Each Candidate Represents
+| Group | What remains executable | What should become data |
+| --- | --- | --- |
+| Helper bundle | route maps, header policy, error serialization, fallback/default logic, snippet iteration | authority JSON for decisions, projections, iteration bounds, and failure policies |
+| Thin adapters | import/execute wrappers still carrying boundary mechanics | sealed semantic invocation contracts and imported bundle data |
+| Console entrypoints | route fallback and response shaping still contain branches, exceptions, and object construction | AST-backed projection mappings and explicit result contracts |
 
-All candidates are `AUTHORITY_CANDIDATE_PROJECTED` — they capture everything syntax reveals, with flags marking what only semantics can determine.
+## Next Steps
 
-**Examples of unresolved semantic decisions:**
-
-- **Decision:** "Is this pathname validation canonical or overly strict?"
-- **Failure:** "Should failed path traversal checks return 404 or 403?"
-- **Validation:** "What is the correct max request body size? Why 65536?"
-- **Throw:** "Is this error condition canonical or does it indicate a bug?"
-- **Fallback:** "Should missing snippet context default to 2 lines or 0?"
-
----
-
-## Next Steps for Your Team
-
-1. **Review candidates** with domain experts to resolve unresolved decisions
-2. **Document authority** once semantic meaning is confirmed (e.g., "path traversal checks MUST be canonical for security")
-3. **Bind candidates to authority** once semantic meaning is confirmed
-4. **Mark as `AUTHORITY_BOUND`** when all unresolved decisions are answered
-5. **Recalculate coverage** — as binding progresses, conformance ratio rises
-
-The engine does not claim syntax alone reveals complete meaning. Rather, it surfaces exactly where human semantic judgment is required, and provides a scaffold so agents spend their tokens on meaning, not structure.
+1. Move the remaining throw/validation mechanics in `serves-query-console*.mjs` into explicit validation and failure-policy data.
+2. Promote the helper bundle policies to declared projection mappings and result contracts.
+3. Reproject the governed contract, then rerun the trust gate until digest and semantic-edge findings disappear.
 

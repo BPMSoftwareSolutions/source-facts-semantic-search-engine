@@ -1,3 +1,19 @@
+// @generated
+// project-id: serves-query-console
+// feature-id: delegate-console-authority
+// scenario-id: delegate-console-mechanics
+// obligation-id: console-delegates-mechanics
+// responsibility-id: console-authority-bundles.v1.responsibility.v1
+// projection-profile-id: provenance-sealed-source-projector.v1
+// semantic-authority-sha256: none
+// projection-authority-sha256: sha256:2fc2f89e1ec5402d34ff86655f554b3e8add78a4bc6f6ba07086a86e8e927ad3
+// lineage-sha256: sha256:60431b363e434c665099851b5502d26b373398766b645893c1f6882f5b696ac3
+// body-sha256: sha256:df334463a48e3a1ccc610de9e4ad3a4c1d06318e0ea9b93e5cc866f4d94fdc45
+// artifact-provenance-sha256: sha256:64c4079a23bfef7d52025aa66680b24741b1bba0a250310fd922742a6cd82bd2
+//
+
+import { validatesConsoleParameters as validatesConsoleParametersFromAdapter } from "./console-validation-adapter.mjs";
+
 /**
  * AUTHORITY BUNDLES FOR serves-query-console
  *
@@ -18,7 +34,7 @@ export function pathnameLookupAuthority({ pathname }) {
     ["/api/query", "POST"],
     ["/api/snippet", "GET, HEAD"],
   ]);
-  return knownPathnameAllow.get(pathname);
+  return knownPathnameAllow.get(pathname) ?? null;
 }
 
 /**
@@ -29,7 +45,7 @@ export function pathnameLookupAuthority({ pathname }) {
 export function projectsSecurityHeaders({ context = "normal-response" }) {
   // Authority: CSP, Cache-Control, X-Content-Type-Options, Referrer-Policy, etc.
   return {
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'",
     "Cache-Control": "no-store",
     "Cross-Origin-Resource-Policy": "same-origin",
     "Referrer-Policy": "no-referrer",
@@ -48,6 +64,7 @@ export function serializesErrorResponse({ error, context = "default" }) {
   const statusCodeMap = {
     "url-decode": 400,
     "route-classification": 405,
+    "route-405": 405,
     "route-404": 404,
     "snippet-validation": 400,
     "snippet-range": 400,
@@ -120,7 +137,7 @@ export function extractsSnippetLines({ text, startLine, endLine, context }) {
  */
 export function normalizesPathSegments({ modulePath, backslash }) {
   // Authority: Split path by both / and \ to normalize segments
-  return modulePath.split("/").flatMap((segment) => segment.split(backslash));
+  return modulePath.replaceAll(backslash, "/").split("/");
 }
 
 /**
@@ -140,7 +157,7 @@ export function normalizesLineEndings({ text }) {
  */
 export function normalizesPathForComparison({ path, toLowerCase = false }) {
   // Authority: Case-insensitive on Windows, case-sensitive on Unix
-  return process.platform === "win32" && toLowerCase ? path.toLowerCase() : path;
+  return toLowerCase ? path.toLowerCase() : path;
 }
 
 /**
@@ -166,7 +183,8 @@ export function selectsDefaultValue({ value, defaultValue }) {
  * Authority source: index-required-validation, asset-path-validation
  * Mechanic type: fallback/validation
  *
- * Note: This is already implemented in console-validation-adapter.mjs
- * Re-exported here for consistency
+ * Delegates through the validation adapter so the body stays thin and projected.
  */
-export { validatesConsoleParameters } from "./console-validation-adapter.mjs";
+export function validatesConsoleParameters(parameters) {
+  return validatesConsoleParametersFromAdapter(parameters);
+}

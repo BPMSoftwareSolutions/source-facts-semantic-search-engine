@@ -4,7 +4,7 @@ This ledger links each risk section to code and command evidence and points back
 
 ## 1) Dependency entry-point and consumability checks
 
-- Evidence files: [source-facts-semantic-search-engine/scripts/check-deps.mjs](C:/lab/repos/source-facts-semantic-search-engine/scripts/check-deps.mjs), [source-facts-semantic-search-engine/src/project.js](C:/lab/repos/source-facts-semantic-search-engine/src/project.js), [source-facts-semantic-search-engine/src/query.js](C:/lab/repos/source-facts-semantic-search-engine/src/query.js).
+- Evidence files: [source-facts-semantic-search-engine/scripts/check-deps.mjs](C:/lab/repos/source-facts-semantic-search-engine/scripts/check-deps.mjs), [source-facts-semantic-search-engine/src/project.js](C:/lab/repos/source-facts-semantic-search-engine/src/project.js), [source-facts-semantic-search-engine/src/query-engine-loader.js](C:/lab/repos/source-facts-semantic-search-engine/src/query-engine-loader.js), [source-facts-semantic-search-engine/src/query.js](C:/lab/repos/source-facts-semantic-search-engine/src/query.js).
 - Command evidence: `npm run check:deps` output includes `dependencies resolved`.
 - Cross-reference: [discussion section](C:/lab/repos/source-facts-semantic-search-engine/docs/source-facts-semantic-search-engine-discussion.md#1-dependency-entry-point-and-consumability-checks).
 
@@ -16,7 +16,7 @@ This ledger links each risk section to code and command evidence and points back
 
 ## 3) Query startup and positional-form blockers
 
-- Evidence files: [source-facts-semantic-search-engine/src/cli.js](C:/lab/repos/source-facts-semantic-search-engine/src/cli.js), [source-facts-semantic-search-engine/src/query.js](C:/lab/repos/source-facts-semantic-search-engine/src/query.js).
+- Evidence files: [source-facts-semantic-search-engine/src/cli.js](C:/lab/repos/source-facts-semantic-search-engine/src/cli.js), [source-facts-semantic-search-engine/src/query-engine-loader.js](C:/lab/repos/source-facts-semantic-search-engine/src/query-engine-loader.js), [source-facts-semantic-search-engine/src/query.js](C:/lab/repos/source-facts-semantic-search-engine/src/query.js).
 - Command evidence: `node src/cli.js query "SELECT symbolId, name FROM symbols LIMIT 3" --index <proof-index> --pretty` and `node src/cli.js query --query "select symbolId, name FROM symbols limit 3" --index <proof-index> --pretty` both return `RELATIONAL_QUERY_EXECUTED`.
 - Cross-reference: [discussion section](C:/lab/repos/source-facts-semantic-search-engine/docs/source-facts-semantic-search-engine-discussion.md#3-query-startup-blockers-and-positional-sql).
 

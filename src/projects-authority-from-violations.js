@@ -118,6 +118,8 @@ function loadsAuthorityMechanics(authorityFile) {
 }
 
 function suggestsAuthorityMechanicId(violation, authorityMechanics) {
+  const mechanicType = violation.mechanicType ?? violation.mechanic ?? null;
+
   if (typeof violation.authorityMechanicId === "string" && violation.authorityMechanicId.length > 0) {
     return violation.authorityMechanicId;
   }
@@ -127,7 +129,7 @@ function suggestsAuthorityMechanicId(violation, authorityMechanics) {
   }
 
   const exactMatch = authorityMechanics.find((mechanic) => {
-    if (mechanic.mechanic !== violation.mechanicType) {
+    if (mechanic.mechanic !== mechanicType) {
       return false;
     }
     const authorityLocations = parsesAuthoritySourceLocations(mechanic.sourceLocation);
@@ -137,7 +139,7 @@ function suggestsAuthorityMechanicId(violation, authorityMechanics) {
     return exactMatch.mechanicId;
   }
 
-  const sameMechanicType = authorityMechanics.find((mechanic) => mechanic.mechanic === violation.mechanicType);
+  const sameMechanicType = authorityMechanics.find((mechanic) => mechanic.mechanic === mechanicType);
   return sameMechanicType?.mechanicId ?? null;
 }
 
@@ -172,6 +174,7 @@ function buildsCoverageSummary(violations, candidates, bindingSuggestions, autho
 
 function normalizesViolation(violation, index, defaults) {
   const parsedLocation = parseViolationLocation(violation.sourceLocation ?? "");
+  const mechanicType = violation.mechanicType ?? violation.mechanic ?? "unknown";
   const modulePath = normalizesPathKey(
     violation.modulePath
       ?? parsedLocation.modulePath
@@ -184,8 +187,8 @@ function normalizesViolation(violation, index, defaults) {
   const symbolName = violation.symbolName ?? violation.enclosingSymbol ?? null;
   const symbolId = violation.symbolId ?? (sourceReferenceId ? `${sourceReferenceId}#symbol` : null);
   return Object.freeze({
-    violationId: violation.violationId ?? `${violation.mechanicType ?? "unknown"}-violation-${index + 1}`,
-    mechanicType: violation.mechanicType ?? "unknown",
+    violationId: violation.violationId ?? `${mechanicType}-violation-${index + 1}`,
+    mechanicType,
     modulePath,
     sourceLocation: violation.sourceLocation ?? (sourceReferenceId ? `${modulePath}:${startLine}${endLine !== startLine ? `-${endLine}` : ""}` : null),
     sourceReferenceId,
@@ -235,13 +238,13 @@ function buildsPseudoIndex(normalizedViolations, workspaceRoot) {
       }));
     }
 
-    bodyMechanics.push(Object.freeze({
+      bodyMechanics.push(Object.freeze({
       mechanicId: violation.violationId,
-      mechanic: violation.mechanicType,
+      mechanic: violation.mechanicType ?? violation.mechanic ?? "unknown",
       modulePath: violation.modulePath,
       sourceReferenceId: violation.sourceReferenceId ?? null,
       fromSymbolId: violation.symbolId ?? null,
-      evidenceKind: violation.codePattern ?? violation.mechanicType,
+      evidenceKind: violation.codePattern ?? violation.mechanicType ?? violation.mechanic ?? "unknown",
       classification: "observed-violation",
       verificationDisposition: "OBSERVED_NOT_EVALUATED",
     }));

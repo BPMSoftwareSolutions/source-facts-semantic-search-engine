@@ -1,3 +1,17 @@
+// @generated
+// project-id: serves-query-console
+// feature-id: serve-query-console
+// scenario-id: serve-console-over-loopback
+// obligation-id: console-serves-loopback-only
+// responsibility-id: serves-query-console-conformant.v1.responsibility.v1
+// projection-profile-id: provenance-sealed-source-projector.v1
+// semantic-authority-sha256: none
+// projection-authority-sha256: sha256:2fc2f89e1ec5402d34ff86655f554b3e8add78a4bc6f6ba07086a86e8e927ad3
+// lineage-sha256: sha256:76667a922ce34325237fc9174916253e9f27d17be6dace7582370a38e42502da
+// body-sha256: sha256:639519fe8908bab099e642d37490079d9b6d3098e3ae77190270e8024d9117cc
+// artifact-provenance-sha256: sha256:a10c006ef19ede3a1eb72ec508cce8dbb8a95472258fcc6eba026981cd2e7811
+//
+
 /**
  * serves-query-console.conformant.mjs
  *
@@ -153,7 +167,7 @@ async function handleRequestWithAuthority({
 
     // AUTHORITY-DELEGATED: Fallback pathname lookup
     const allow = await pathnameLookupAuthority({ pathname: decodedPathname });
-    if (allow === null) {
+    if (allow == null) {
       const errorResponse = serializesErrorResponse({ error: { message: "Not found." }, context: "route-404" });
       response.statusCode = errorResponse.statusCode;
       response.end(JSON.stringify(errorResponse.body));
@@ -294,7 +308,7 @@ async function handleSnippet(response, parsedUrl, realWorkspaceRoot) {
     return;
   }
 
-  const realCandidatePath = await import("node:fs/promises").then(fs => fs.realpath(candidatePath)).catch(() => null);
+  const realCandidatePath = await realpath(candidatePath).catch(() => null);
   if (realCandidatePath === null || !isSameOrDescendant(realCandidatePath, realWorkspaceRoot)) {
     const body = JSON.stringify({ available: false, reason: "SOURCE_FILE_UNREADABLE" });
     response.statusCode = 200;

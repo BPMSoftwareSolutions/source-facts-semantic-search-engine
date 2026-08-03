@@ -2326,7 +2326,7 @@ Direct module probe proof:
 Implemented guardrails in code reflect this:
 
 - `src/project.js` (`loadsScanner`) tries concrete scanner entry candidates under the resolved package root (`dist/index.js`, `src/index.ts`, etc.).
-- `src/query.js` (`deduceSejPackageRoots` + `importStartsQueryEngine`) resolves SEJ by trying `dist/composition-root/starts-query-engine.js` and `composition-root/starts-query-engine.js` across local root candidates.
+- `src/query-engine-loader.js` (`deduceSejPackageRoots` + `importStartsQueryEngine`) resolves SEJ once and memoizes the default engine start result. `src/query.js` and `src/web/web-query.js` now consume that shared loader instead of re-probing module roots on every call.
 
 ### 2) Positional `query` form proof
 
@@ -2454,7 +2454,8 @@ Evidence:
 
 - [source-facts-semantic-search-engine/scripts/check-deps.mjs](C:/lab/repos/source-facts-semantic-search-engine/scripts/check-deps.mjs)
 - [source-facts-semantic-search-engine/src/project.js:204](C:/lab/repos/source-facts-semantic-search-engine/src/project.js)
-- [source-facts-semantic-search-engine/src/query.js:32](C:/lab/repos/source-facts-semantic-search-engine/src/query.js)
+- [source-facts-semantic-search-engine/src/query-engine-loader.js:17](C:/lab/repos/source-facts-semantic-search-engine/src/query-engine-loader.js)
+- [source-facts-semantic-search-engine/src/query.js:8](C:/lab/repos/source-facts-semantic-search-engine/src/query.js)
 
 Runtime assertion: `npm run check:deps` prints `dependencies resolved`.
 
@@ -2478,7 +2479,8 @@ Status: closed.
 Evidence:
 
 - [source-facts-semantic-search-engine/src/cli.js:55](C:/lab/repos/source-facts-semantic-search-engine/src/cli.js)
-- [source-facts-semantic-search-engine/src/query.js:13](C:/lab/repos/source-facts-semantic-search-engine/src/query.js)
+- [source-facts-semantic-search-engine/src/query-engine-loader.js:17](C:/lab/repos/source-facts-semantic-search-engine/src/query-engine-loader.js)
+- [source-facts-semantic-search-engine/src/query.js:8](C:/lab/repos/source-facts-semantic-search-engine/src/query.js)
 
 Runtime assertion: both query forms return `RELATIONAL_QUERY_EXECUTED`.
 

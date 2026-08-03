@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { sourceTokens } from "../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs";
+import { sourceTokens, splitProvenanceSealedText } from "../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -306,7 +306,8 @@ function buildTextArtifact({
 }) {
   const absolutePath = absoluteFilePath(relativePath);
   const { contentSha256, expectedByteLength, text } = fileDigest(absolutePath);
-  const tokens = sourceTokens(text, "javascript");
+  const projectedBody = splitProvenanceSealedText(text)?.body ?? text;
+  const tokens = sourceTokens(projectedBody, "javascript");
   return Object.freeze({
     artifactId,
     artifactKind: "javascript-module",
@@ -403,18 +404,16 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
       buildFunctionResponsibility(
         "validates-console-parameters-reexport.v1",
         "validatesConsoleParameters",
-        "Re-exports the console parameter validation authority."
+        "Delegates the console parameter validation authority."
       ),
     ],
     semanticEdges: [
-      buildArtifactReferenceEdge({
-        edgeId: "console-validation-adapter-reexport.v1",
+      buildDependencyReferenceEdge({
+        edgeId: "console-validation-adapter-dependency.v1",
         responsibilityId: "console-authority-bundles-module.v1",
         operation: "validatesConsoleParameters",
-        purpose: "Re-exports the validation adapter authority into the helper bundle module.",
-        artifactId: "console-validation-adapter.v1",
-        artifactResponsibilityId: "validates-console-parameters.v1",
-        semanticEdge: "console-validation-adapter-reexport.v1",
+        purpose: "Delegates console parameter validation into the helper bundle module.",
+        dependencyId: "console-validation-adapter.v1",
       }),
     ],
     decisions: [
@@ -430,9 +429,9 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         decisionId: "normalizes-path-for-comparison-decision.v1",
         responsibilityId: "normalizes-path-for-comparison.v1",
         syntaxKind: "ConditionalExpression",
-        conditionExpression: "process.platform === 'win32' && toLowerCase",
+        conditionExpression: "toLowerCase",
         occurrences: 1,
-        policy: "Lowercase only on Windows when requested.",
+        policy: "Lowercase paths only when requested.",
       }),
       buildDecisionAuthority({
         decisionId: "selects-default-value-decision.v1",
@@ -486,7 +485,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
         fields: [
           {
             outputField: "segments",
-            sourceExpression: "modulePath.split('/').flatMap((segment) => segment.split(backslash))",
+            sourceExpression: "modulePath.replaceAll(backslash, '/').split('/')",
           },
         ],
         purpose: "Normalize mixed path separators into path segments.",
@@ -564,7 +563,7 @@ function buildsConsoleAuthorityBundlesSourceAuthority() {
           sourceType: "return",
           responsibilityId: "validates-console-parameters-reexport.v1",
           returnKind: "explicit-return",
-          expression: "executeSemanticAuthority(consoleValidationBundle, parameters)",
+          expression: "validatesConsoleParametersFromAdapter(parameters)",
           occurrences: 1,
         },
         purpose: "Returns the admitted console validation result.",
@@ -1142,7 +1141,7 @@ function buildsConsoleGovernedContract({
             functionName: "validatesConsoleParameters",
             responsibilityId: "validates-console-parameters.v1",
             purpose: "Validates the admitted console server initialization parameters.",
-            argumentExpression: "parameters",
+            argumentExpression: "{ ...parameters, validation: 'parameters' }",
             resultContractId: "console-validation-result.v1",
             resultKind: "console-validation-result",
             resultPurpose: "Returns the admitted console parameter validation result.",
@@ -1353,6 +1352,14 @@ function buildsConsoleGovernedContract({
       allowedImports: ["projectsCspPolicy"],
       allowedInvocations: ["projectsCspPolicy"],
       portEffect: "project-csp-policy",
+    }),
+    buildDependency({
+      dependencyId: "console-validation-adapter.v1",
+      specifier: "./console-validation-adapter.mjs",
+      usedByArtifacts: ["console-authority-bundles.v1"],
+      allowedImports: ["validatesConsoleParameters"],
+      allowedInvocations: ["validatesConsoleParameters"],
+      portEffect: "delegate-console-validation",
     }),
     buildDependency({
       dependencyId: "console-request-routing-bundle.v1",

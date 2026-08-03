@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { projectSourceFactsWorkspace } from "../src/project.js";
-import { servesQueryConsole } from "../src/console/serves-query-console.js";
+import { servesQueryConsole } from "../src/console/serves-query-console.mjs";
 
 const consoleAssetPath = path.join(process.cwd(), "source-facts-query-console", "index.html");
 
