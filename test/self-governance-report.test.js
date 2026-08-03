@@ -12,6 +12,7 @@ import { extractsCandidateAuthorityMechanics, resolvesCandidateAuthorityMatch, c
 import { resolvesAuthoritySuccession } from "../src/governance/resolves-authority-succession.js";
 import { discoversSemanticOverlapProposalBatches } from "../src/governance/discovers-semantic-overlap-proposals.js";
 import { summarizesSemanticOverlapProposalBatch } from "../src/governance/summarizes-semantic-overlap-proposals.js";
+import { summarizesInferenceQuality } from "../src/governance/summarizes-inference-quality.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -826,6 +827,51 @@ test("summarizesSemanticOverlapProposalBatch leaves both tallies identical when 
   assert.equal(summary.reviewFindings.length, 0);
 });
 
+function buildsInferenceQualityDocument() {
+  return {
+    proposals: [
+      { authorityMechanicId: "m1", overlapDisposition: "PROPOSED_EXACT_OVERLAP", confidence: 1 },
+      { authorityMechanicId: "m2", overlapDisposition: "PROPOSED_EXACT_OVERLAP", confidence: 1 },
+      { authorityMechanicId: "m3", overlapDisposition: "PROPOSED_EXACT_OVERLAP", confidence: 1 },
+    ],
+    reviewOutcomes: [
+      { authorityMechanicId: "m1", outcome: "APPROVED_UNCHANGED" },
+      { authorityMechanicId: "m2", outcome: "AMENDED" },
+      // m3 intentionally has no recorded outcome.
+    ],
+    reviewFindings: [
+      { authorityMechanicId: "m2", correctedDisposition: "PROPOSED_PARTIAL_OVERLAP", correctedConfidence: 0.5, additionalFinding: "found something else along the way" },
+    ],
+    knowHowExtracted: ["insight one", "insight two"],
+    candidateAuthorities: [{ candidateAuthorityId: "cand-1", family: "serialization", rationale: "because" }],
+  };
+}
+
+test("summarizesInferenceQuality tallies review outcomes, tracks unrecorded outcomes as unrecorded (not as an assumed pass), and averages confidence before/after review", () => {
+  const quality = summarizesInferenceQuality(buildsInferenceQualityDocument());
+  assert.equal(quality.proposalsGenerated, 3);
+  assert.deepEqual(quality.reviewOutcomeCounts, { APPROVED_UNCHANGED: 1, AMENDED: 1, APPROVED_WITH_ADDITIONAL_FINDING: 0, REJECTED: 0 });
+  assert.equal(quality.unrecordedOutcomes, 1);
+  assert.equal(quality.modelConfidenceAverage, 1);
+  // m1 keeps confidence 1 (no finding), m2 drops to its correctedConfidence 0.5, m3 keeps 1 (no finding).
+  assert.equal(quality.reviewedConfidenceAverage, (1 + 0.5 + 1) / 3);
+  assert.equal(quality.newDeterministicFindingsFromReview, 1);
+  assert.deepEqual(quality.knowHowExtracted, ["insight one", "insight two"]);
+  assert.equal(quality.candidateAuthorities.length, 1);
+  assert.equal(quality.candidateAuthorities[0].candidateAuthorityId, "cand-1");
+});
+
+test("summarizesInferenceQuality tolerates a document with none of the optional review fields present", () => {
+  const quality = summarizesInferenceQuality({ proposals: [{ authorityMechanicId: "m1", overlapDisposition: "PROPOSED_EXACT_OVERLAP" }] });
+  assert.equal(quality.proposalsGenerated, 1);
+  assert.equal(quality.unrecordedOutcomes, 1);
+  assert.equal(quality.modelConfidenceAverage, null);
+  assert.equal(quality.reviewedConfidenceAverage, null);
+  assert.equal(quality.newDeterministicFindingsFromReview, 0);
+  assert.deepEqual(quality.knowHowExtracted, []);
+  assert.deepEqual(quality.candidateAuthorities, []);
+});
+
 test("discoversSemanticOverlapProposalBatches finds only documentKind semantic-overlap-proposal-batch.v1 files, recursively, ignoring unrelated JSON", async () => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "sfse-reviews-"));
   try {
@@ -858,6 +904,7 @@ test("projectsSelfGovernanceReport exposes semanticOverlapProposals as a purely 
   assert.equal(report.semanticOverlapProposals.length, 1);
   assert.equal(report.semanticOverlapProposals[0].proposalFile, "reviews/x.json");
   assert.deepEqual(report.semanticOverlapProposals[0].reviewedDispositionCounts, { PROPOSED_EXACT_OVERLAP: 1, PROPOSED_PARTIAL_OVERLAP: 1, PROPOSED_NO_MATCH: 1 });
+  assert.equal(report.semanticOverlapProposals[0].inferenceQuality.proposalsGenerated, 3);
   // Untouched by the proposal batch -- this remains purely deterministic.
   assert.equal(report.executionMechanics.governed, 0);
 });

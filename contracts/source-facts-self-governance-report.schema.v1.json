@@ -353,7 +353,8 @@
           "totalProposed",
           "modelDispositionCounts",
           "reviewedDispositionCounts",
-          "reviewFindings"
+          "reviewFindings",
+          "inferenceQuality"
         ],
         "additionalProperties": false,
         "properties": {
@@ -377,6 +378,53 @@
                 "reviewVerdict": { "type": ["string", "null"] },
                 "correctedDisposition": { "type": ["string", "null"] },
                 "reason": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "inferenceQuality": {
+            "type": "object",
+            "description": "Not a benchmark of the model -- a benchmark of how efficiently this review converted candidate understanding into admitted knowledge.",
+            "required": [
+              "proposalsGenerated",
+              "reviewOutcomeCounts",
+              "unrecordedOutcomes",
+              "modelConfidenceAverage",
+              "reviewedConfidenceAverage",
+              "newDeterministicFindingsFromReview",
+              "knowHowExtracted",
+              "candidateAuthorities"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "proposalsGenerated": { "type": "integer", "minimum": 0 },
+              "reviewOutcomeCounts": {
+                "type": "object",
+                "required": ["APPROVED_UNCHANGED", "AMENDED", "APPROVED_WITH_ADDITIONAL_FINDING", "REJECTED"],
+                "additionalProperties": false,
+                "properties": {
+                  "APPROVED_UNCHANGED": { "type": "integer", "minimum": 0 },
+                  "AMENDED": { "type": "integer", "minimum": 0 },
+                  "APPROVED_WITH_ADDITIONAL_FINDING": { "type": "integer", "minimum": 0 },
+                  "REJECTED": { "type": "integer", "minimum": 0 }
+                }
+              },
+              "unrecordedOutcomes": { "type": "integer", "minimum": 0 },
+              "modelConfidenceAverage": { "type": ["number", "null"] },
+              "reviewedConfidenceAverage": { "type": ["number", "null"] },
+              "newDeterministicFindingsFromReview": { "type": "integer", "minimum": 0 },
+              "knowHowExtracted": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+              "candidateAuthorities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["candidateAuthorityId", "family", "rationale"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "candidateAuthorityId": { "type": ["string", "null"] },
+                    "family": { "type": ["string", "null"] },
+                    "rationale": { "type": ["string", "null"] }
+                  }
+                }
               }
             }
           }

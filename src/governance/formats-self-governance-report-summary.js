@@ -421,6 +421,42 @@ function formatsSemanticOverlapProposals(report) {
       }
       lines.push("");
     }
+
+    const quality = batch.inferenceQuality;
+    lines.push("**Inference quality** -- not a benchmark of the model; a benchmark of how efficiently this review converted candidate understanding into admitted knowledge:");
+    lines.push("");
+    lines.push("| Metric | Value |");
+    lines.push("|---|---:|");
+    lines.push(`| Proposals generated | ${formatsCount(quality.proposalsGenerated)} |`);
+    lines.push(`| Approved unchanged | ${formatsCount(quality.reviewOutcomeCounts.APPROVED_UNCHANGED)} |`);
+    lines.push(`| Approved with additional finding | ${formatsCount(quality.reviewOutcomeCounts.APPROVED_WITH_ADDITIONAL_FINDING)} |`);
+    lines.push(`| Amended | ${formatsCount(quality.reviewOutcomeCounts.AMENDED)} |`);
+    lines.push(`| Rejected | ${formatsCount(quality.reviewOutcomeCounts.REJECTED)} |`);
+    if (quality.unrecordedOutcomes > 0) {
+      lines.push(`| Unrecorded (no review outcome logged) | ${formatsCount(quality.unrecordedOutcomes)} |`);
+    }
+    lines.push(`| Model confidence (average) | ${quality.modelConfidenceAverage === null ? "n/a" : quality.modelConfidenceAverage.toFixed(2)} |`);
+    lines.push(`| Confidence after review (average) | ${quality.reviewedConfidenceAverage === null ? "n/a" : quality.reviewedConfidenceAverage.toFixed(2)} |`);
+    lines.push(`| New deterministic findings from review | ${formatsCount(quality.newDeterministicFindingsFromReview)} |`);
+    lines.push(`| Know-how extracted | ${formatsCount(quality.knowHowExtracted.length)} |`);
+    lines.push(`| Candidate authorities identified | ${formatsCount(quality.candidateAuthorities.length)} |`);
+    lines.push("");
+
+    if (quality.knowHowExtracted.length > 0) {
+      lines.push("Know-how extracted:");
+      lines.push("");
+      for (const item of quality.knowHowExtracted) lines.push(`- ${item}`);
+      lines.push("");
+    }
+
+    if (quality.candidateAuthorities.length > 0) {
+      lines.push("Candidate authorities identified:");
+      lines.push("");
+      for (const candidate of quality.candidateAuthorities) {
+        lines.push(`- **${candidate.candidateAuthorityId ?? "(unnamed)"}** (${candidate.family ?? "unclassified"}) -- ${candidate.rationale ?? ""}`);
+      }
+      lines.push("");
+    }
   }
 
   return lines;
@@ -639,6 +675,14 @@ export function formatsSelfGovernanceReportSummary(report) {
     lines.push(`  ${batch.proposalFile} [${batch.lifecycle}] ${batch.historicalAuthorityFile ?? "(unspecified)"} -> ${batch.resolvedSuccessorFile ?? "(unspecified)"}`);
     lines.push(`    model: ${formatsDispositionCounts(batch.modelDispositionCounts)}`);
     lines.push(`    after review: ${formatsDispositionCounts(batch.reviewedDispositionCounts)}`);
+    const quality = batch.inferenceQuality;
+    lines.push(
+      `    inference quality: ${quality.reviewOutcomeCounts.APPROVED_UNCHANGED} unchanged, `
+      + `${quality.reviewOutcomeCounts.APPROVED_WITH_ADDITIONAL_FINDING} approved+finding, `
+      + `${quality.reviewOutcomeCounts.AMENDED} amended, ${quality.reviewOutcomeCounts.REJECTED} rejected -- `
+      + `confidence ${quality.modelConfidenceAverage?.toFixed(2) ?? "n/a"} -> ${quality.reviewedConfidenceAverage?.toFixed(2) ?? "n/a"}, `
+      + `${quality.knowHowExtracted.length} know-how item(s), ${quality.candidateAuthorities.length} candidate authority(ies)`,
+    );
   }
 
   lines.push("");

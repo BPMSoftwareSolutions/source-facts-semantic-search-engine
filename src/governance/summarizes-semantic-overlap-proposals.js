@@ -1,3 +1,5 @@
+import { summarizesInferenceQuality } from "./summarizes-inference-quality.js";
+
 function tallyDispositions(dispositions) {
   const counts = {};
   for (const disposition of dispositions) {
@@ -48,5 +50,6 @@ export function summarizesSemanticOverlapProposalBatch({ filePath, document }) {
       correctedDisposition: typeof finding?.correctedDisposition === "string" ? finding.correctedDisposition : null,
       reason: typeof finding?.reason === "string" ? finding.reason : null,
     }))),
+    inferenceQuality: summarizesInferenceQuality(document),
   });
 }
