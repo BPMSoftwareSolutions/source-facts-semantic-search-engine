@@ -1,7 +1,7 @@
 # Authority Candidate Detailed Report: serves-query-console
 
-**Generated:** 2026-08-03T13:02:29.329Z
-**Candidate source:** `C:/lab/repos/source-facts-semantic-search-engine/src/console/serves-query-console.mjs`
+**Generated:** 2026-08-03T13:22:19.844Z
+**Candidate sources:** `console-authority-bundles.mjs`, `console-validation-adapter.mjs`, `serves-query-console.conformant.mjs`, `serves-query-console.mjs`, `serves-query-console.projected.mjs`
 **Workspace:** `C:\lab\repos\source-facts-semantic-search-engine\src\console`
 **Violations detected:** 493
 **Candidates projected:** 493

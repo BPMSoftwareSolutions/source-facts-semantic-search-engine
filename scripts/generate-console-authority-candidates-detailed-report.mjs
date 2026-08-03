@@ -161,7 +161,7 @@ function buildReport({ candidatesData, engineResult, workspaceRoot, contextLines
   lines.push(`# Authority Candidate Detailed Report: serves-query-console`);
   lines.push("");
   lines.push(`**Generated:** ${now}`);
-  lines.push(`**Candidate source:** \`${toWorkspaceRelative(candidatesData.generatedFromViolations?.codeFile ?? "contracts/serves-query-console.candidates.json")}\``);
+  lines.push(`**${sourceFilesLabel(candidatesData)}:** ${renderSourceFiles(candidatesData)}`);
   lines.push(`**Workspace:** \`${workspaceRoot}\``);
   lines.push(`**Violations detected:** ${candidatesData.generatedFromViolations?.violationCount ?? candidatesData.violations?.length ?? 0}`);
   lines.push(`**Candidates projected:** ${candidatesData.candidates.length}`);
@@ -427,4 +427,21 @@ function summarizeGenericFinding(finding) {
 function toWorkspaceRelative(value) {
   if (typeof value !== "string") return "";
   return value.replaceAll("\\", "/");
+}
+
+function resolvedSourceFiles(candidatesData) {
+  const sourceFiles = candidatesData.generatedFromViolations?.sourceFiles;
+  if (Array.isArray(sourceFiles) && sourceFiles.length > 0) return sourceFiles;
+  const codeFile = candidatesData.generatedFromViolations?.codeFile;
+  return [codeFile ?? "contracts/serves-query-console.candidates.json"];
+}
+
+function sourceFilesLabel(candidatesData) {
+  return resolvedSourceFiles(candidatesData).length > 1 ? "Candidate sources" : "Candidate source";
+}
+
+function renderSourceFiles(candidatesData) {
+  return resolvedSourceFiles(candidatesData)
+    .map((file) => `\`${toWorkspaceRelative(file)}\``)
+    .join(", ");
 }
