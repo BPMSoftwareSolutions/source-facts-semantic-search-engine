@@ -27,6 +27,39 @@ function findsDanglingAuthoritySources(report) {
     .filter((source) => source.mechanicsAuthorityBound > 0 && source.resolvedCount === 0);
 }
 
+const maxFilesShownPerMechanic = 5;
+
+function formatsFileDrillDown(report) {
+  const lines = [];
+  const filesByMechanic = new Map();
+  for (const entry of report.fileBreakdown) {
+    const entries = filesByMechanic.get(entry.mechanic) ?? [];
+    entries.push(entry);
+    filesByMechanic.set(entry.mechanic, entries);
+  }
+
+  for (const mechanicEntry of report.executionMechanics.byMechanicType) {
+    const files = filesByMechanic.get(mechanicEntry.mechanic) ?? [];
+    if (files.length === 0) continue;
+
+    lines.push(`### ${mechanicEntry.mechanic} (${mechanicEntry.authorityFamily} authority family)`);
+    lines.push("");
+    lines.push("| File | Occurrences | Governed | Home status | Responsibilities |");
+    lines.push("|---|---:|---:|---|---|");
+    for (const file of files.slice(0, maxFilesShownPerMechanic)) {
+      const responsibilities = file.responsibilities.length > 0 ? file.responsibilities.slice(0, 3).join(", ") : "(module scope)";
+      lines.push(`| \`${file.modulePath}\` | ${file.occurrenceCount} | ${file.governedCount} | ${file.homeStatus} | ${responsibilities} |`);
+    }
+    if (files.length > maxFilesShownPerMechanic) {
+      lines.push("");
+      lines.push(`*${files.length - maxFilesShownPerMechanic} more file(s) for \`${mechanicEntry.mechanic}\` omitted; see \`fileBreakdown\` in the JSON report.*`);
+    }
+    lines.push("");
+  }
+
+  return lines;
+}
+
 export function formatsSelfGovernanceReportMarkdown(report) {
   const { executionMechanics, authoritySources, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
@@ -63,12 +96,30 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     "",
     "## Coverage by Mechanic Type",
     "",
-    "| Mechanic | Observed | Governed | Coverage |",
-    "|---|---:|---:|---:|",
-    ...executionMechanics.byMechanicType.map(
-      (entry) => `| ${entry.mechanic} | ${formatsCount(entry.observed)} | ${formatsCount(entry.governed)} | ${formatsPercent(entry.governed, entry.observed)} |`,
-    ),
+    "Home status answers a different question than coverage: coverage is whether an",
+    "occurrence resolves to an admitted authority mechanic; home status is whether an",
+    "authority *file* claiming that mechanic's file exists at all, even incompletely.",
     "",
+    "| Mechanic | Authority family | Observed | Files | Governed | Home exists | Home incomplete | Home missing | Coverage |",
+    "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+    ...executionMechanics.byMechanicType.map((entry) => [
+      "|", entry.mechanic,
+      "|", entry.authorityFamily,
+      "|", formatsCount(entry.observed),
+      "|", formatsCount(entry.files),
+      "|", formatsCount(entry.governed),
+      "|", formatsCount(entry.byHomeStatus.AUTHORITY_HOME_EXISTS),
+      "|", formatsCount(entry.byHomeStatus.AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE),
+      "|", formatsCount(entry.byHomeStatus.AUTHORITY_HOME_MISSING),
+      "|", formatsPercent(entry.governed, entry.observed), "|",
+    ].join(" ")),
+    "",
+    "## File Drill-Down",
+    "",
+    "Top files per mechanic type by occurrence count. Full per-file detail for every",
+    "mechanic/file pair is in `fileBreakdown` in the JSON report.",
+    "",
+    ...formatsFileDrillDown(report),
     "## Authority Sources",
     "",
   ];
@@ -87,19 +138,34 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     }
   }
 
+  const ambiguousFiles = report.fileBreakdown.filter((entry) => entry.homeStatus === "AUTHORITY_HOME_AMBIGUOUS");
+  const missingHomeFileCount = new Set(
+    report.fileBreakdown.filter((entry) => entry.homeStatus === "AUTHORITY_HOME_MISSING").map((entry) => entry.modulePath),
+  ).size;
+
   lines.push("");
   lines.push("## Notable Findings");
   lines.push("");
-  if (danglingSources.length === 0 && observed > 0 && executionMechanics.governed === 0) {
-    lines.push("- No admitted authority mechanic resolved against any observed occurrence. No governance findings beyond the coverage totals above.");
-  } else if (danglingSources.length === 0) {
-    lines.push("- No dangling authority sources detected.");
+  const findings = [];
+  for (const source of danglingSources) {
+    findings.push(
+      `**Dangling authority source:** \`${source.authorityFile}\` declares ${source.mechanicsAuthorityBound} \`AUTHORITY_BOUND\` mechanic(s) against \`${source.sourceFile ?? "(unspecified)"}\`, but none resolved against any observed occurrence in this scan. The declared source file most likely no longer exists at that path (renamed or moved), so its coverage cannot currently be verified.`,
+    );
+  }
+  for (const entry of ambiguousFiles) {
+    findings.push(
+      `**Ambiguous authority home:** \`${entry.modulePath}\` (${entry.mechanic}) is claimed by more than one authority document as its \`sourceFile\`. Only one is being used for resolution; this needs an authoring decision, not an automatic pick.`,
+    );
+  }
+  if (missingHomeFileCount > 0) {
+    findings.push(
+      `**${missingHomeFileCount} distinct file(s)** contain at least one mechanic with no authority document claiming them at all (\`AUTHORITY_HOME_MISSING\`). See File Drill-Down above and \`fileBreakdown\` in the JSON report for the full list.`,
+    );
+  }
+  if (findings.length === 0) {
+    lines.push("- No dangling, ambiguous, or missing authority-home findings.");
   } else {
-    for (const source of danglingSources) {
-      lines.push(
-        `- **Dangling authority source:** \`${source.authorityFile}\` declares ${source.mechanicsAuthorityBound} \`AUTHORITY_BOUND\` mechanic(s) against \`${source.sourceFile ?? "(unspecified)"}\`, but none resolved against any observed occurrence in this scan. The declared source file most likely no longer exists at that path (renamed or moved), so its coverage cannot currently be verified.`,
-      );
-    }
+    for (const finding of findings) lines.push(`- ${finding}`);
   }
 
   lines.push("");
@@ -128,7 +194,10 @@ export function formatsSelfGovernanceReportSummary(report) {
 
   const mechanicWidth = Math.max(8, ...executionMechanics.byMechanicType.map((entry) => entry.mechanic.length)) + 2;
   for (const entry of executionMechanics.byMechanicType) {
-    lines.push(`  ${padsColumn(entry.mechanic, mechanicWidth)}observed ${entry.observed}  governed ${entry.governed}`);
+    lines.push(
+      `  ${padsColumn(entry.mechanic, mechanicWidth)}observed ${entry.observed}  files ${entry.files}  governed ${entry.governed}  `
+      + `home[exists ${entry.byHomeStatus.AUTHORITY_HOME_EXISTS} incomplete ${entry.byHomeStatus.AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE} missing ${entry.byHomeStatus.AUTHORITY_HOME_MISSING}]`,
+    );
   }
 
   lines.push("");

@@ -9,10 +9,31 @@
     "index",
     "authoritySources",
     "executionMechanics",
+    "fileBreakdown",
     "occurrences",
     "disposition"
   ],
   "additionalProperties": false,
+  "$defs": {
+    "posture": {
+      "enum": [
+        "GOVERNED_BY_SEMANTIC_AUTHORITY",
+        "MECHANICAL_ADAPTER_OPERATION",
+        "KERNEL_PRIMITIVE",
+        "AUTHORIZED_TEMPORARY_BACKLOG",
+        "UNAUTHORIZED_EXECUTABLE_MEANING",
+        "UNKNOWN_CLASSIFICATION"
+      ]
+    },
+    "authorityHomeStatus": {
+      "enum": [
+        "AUTHORITY_HOME_EXISTS",
+        "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
+        "AUTHORITY_HOME_MISSING",
+        "AUTHORITY_HOME_AMBIGUOUS"
+      ]
+    }
+  },
   "properties": {
     "reportType": { "const": "source-facts-self-governance-report.v1" },
     "generatedAtUtc": { "type": "string", "format": "date-time" },
@@ -80,14 +101,50 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["mechanic", "observed", "governed"],
+            "required": ["mechanic", "authorityFamily", "observed", "governed", "files", "byHomeStatus"],
             "additionalProperties": false,
             "properties": {
               "mechanic": { "type": "string", "minLength": 1 },
+              "authorityFamily": { "type": "string", "minLength": 1 },
               "observed": { "type": "integer", "minimum": 0 },
-              "governed": { "type": "integer", "minimum": 0 }
+              "governed": { "type": "integer", "minimum": 0 },
+              "files": { "type": "integer", "minimum": 0 },
+              "byHomeStatus": {
+                "type": "object",
+                "required": [
+                  "AUTHORITY_HOME_EXISTS",
+                  "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
+                  "AUTHORITY_HOME_MISSING",
+                  "AUTHORITY_HOME_AMBIGUOUS"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "AUTHORITY_HOME_EXISTS": { "type": "integer", "minimum": 0 },
+                  "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE": { "type": "integer", "minimum": 0 },
+                  "AUTHORITY_HOME_MISSING": { "type": "integer", "minimum": 0 },
+                  "AUTHORITY_HOME_AMBIGUOUS": { "type": "integer", "minimum": 0 }
+                }
+              }
             }
           }
+        }
+      }
+    },
+    "fileBreakdown": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["mechanic", "modulePath", "authorityFamily", "occurrenceCount", "governedCount", "responsibilities", "homeStatus", "authorityFile"],
+        "additionalProperties": false,
+        "properties": {
+          "mechanic": { "type": "string", "minLength": 1 },
+          "modulePath": { "type": "string", "minLength": 1 },
+          "authorityFamily": { "type": "string", "minLength": 1 },
+          "occurrenceCount": { "type": "integer", "minimum": 1 },
+          "governedCount": { "type": "integer", "minimum": 0 },
+          "responsibilities": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "homeStatus": { "$ref": "#/$defs/authorityHomeStatus" },
+          "authorityFile": { "type": ["string", "null"] }
         }
       }
     },
@@ -95,7 +152,19 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["mechanic", "modulePath", "startLine", "endLine", "symbolName", "posture", "governingMechanicId", "governingAuthorityFile"],
+        "required": [
+          "mechanic",
+          "modulePath",
+          "startLine",
+          "endLine",
+          "symbolName",
+          "posture",
+          "governingMechanicId",
+          "governingAuthorityFile",
+          "authorityFamily",
+          "authorityHomeStatus",
+          "authorityHomeFile"
+        ],
         "additionalProperties": false,
         "properties": {
           "mechanic": { "type": "string", "minLength": 1 },
@@ -103,18 +172,12 @@
           "startLine": { "type": ["integer", "null"] },
           "endLine": { "type": ["integer", "null"] },
           "symbolName": { "type": ["string", "null"] },
-          "posture": {
-            "enum": [
-              "GOVERNED_BY_SEMANTIC_AUTHORITY",
-              "MECHANICAL_ADAPTER_OPERATION",
-              "KERNEL_PRIMITIVE",
-              "AUTHORIZED_TEMPORARY_BACKLOG",
-              "UNAUTHORIZED_EXECUTABLE_MEANING",
-              "UNKNOWN_CLASSIFICATION"
-            ]
-          },
+          "posture": { "$ref": "#/$defs/posture" },
           "governingMechanicId": { "type": ["string", "null"] },
-          "governingAuthorityFile": { "type": ["string", "null"] }
+          "governingAuthorityFile": { "type": ["string", "null"] },
+          "authorityFamily": { "type": "string", "minLength": 1 },
+          "authorityHomeStatus": { "$ref": "#/$defs/authorityHomeStatus" },
+          "authorityHomeFile": { "type": ["string", "null"] }
         }
       }
     },

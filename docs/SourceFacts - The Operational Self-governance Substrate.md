@@ -1131,3 +1131,552 @@ Feature: Scan SourceFacts reflexively in parallel
 ```
 
 That gives you more than a faster scanner. It gives you a **parallel, deterministic, observable scan conveyor** whose own progress is continuously projected into the self-governance report.
+
+####################################################################
+
+Exactly. The report should stop being merely a **measurement surface** and become a **remediation workbench**.
+
+Right now, the coverage table says:
+
+```text
+Mechanic
+Observed
+Governed
+Coverage
+```
+
+That tells us how much debt exists.
+
+What you want next is:
+
+> **Where does this debt belong, does its authority home already exist, and what can be projected to close the gap?**
+
+## The upgraded rollup
+
+The top-level table should become something like:
+
+| Mechanic            | Occurrences | Files | Governed | Authority home exists | New authority required | Projection ready | Coverage |
+| ------------------- | ----------: | ----: | -------: | --------------------: | ---------------------: | ---------------: | -------: |
+| object-construction |       1,234 |    87 |        0 |                    18 |                     69 |               11 |     0.0% |
+| fallback            |         677 |    54 |        0 |                    22 |                     32 |                8 |     0.0% |
+| branch              |         653 |    61 |        0 |                    31 |                     30 |               14 |     0.0% |
+| state-mutation      |         211 |    26 |        0 |                     9 |                     17 |                4 |     0.0% |
+
+That immediately changes the conversation.
+
+Instead of:
+
+```text
+Object construction is 0% governed.
+```
+
+you get:
+
+```text
+Object construction appears in 87 files.
+
+18 files already have a candidate projection authority home.
+
+69 files require a new or extended authority contract.
+
+11 files are ready for direct projection.
+```
+
+Now the report tells you what to do.
+
+---
+
+# The drill-down hierarchy
+
+The drill-down should follow the inventory naturally.
+
+```text
+Mechanic type
+    ↓
+Files containing mechanic
+    ↓
+Responsibilities / symbols
+    ↓
+Observed occurrences
+    ↓
+Candidate authority family
+    ↓
+Existing authority home
+    ↓
+Missing authority artifacts
+    ↓
+Projection action
+```
+
+For example:
+
+```text
+object-construction
+    ↓
+src/console/serves-query-console.js
+    ↓
+servesQueryConsole
+    ↓
+12 object-construction occurrences
+    ↓
+Candidate family:
+projection authority
+    ↓
+Existing home:
+contracts/serves-query-console.authority.json
+    ↓
+Gap:
+projectionMappings missing for 8 occurrences
+    ↓
+Action:
+PROJECT MISSING PROJECTION AUTHORITY
+```
+
+That is exactly the “move inventory into bins” model.
+
+---
+
+# The authority-family classifier
+
+Every observed mechanic should be classified into the authority family that owns its meaning.
+
+| Mechanic               | Primary authority family                                 |
+| ---------------------- | -------------------------------------------------------- |
+| branch                 | decision authority                                       |
+| logical fallback       | decision or defaulting authority                         |
+| iteration              | iteration authority                                      |
+| exception handling     | failure policy                                           |
+| throw                  | failure disposition                                      |
+| object construction    | projection mapping                                       |
+| serialization          | result or serialization authority                        |
+| normalization          | transformation or projection authority                   |
+| validation             | obligation, constraint, or contract authority            |
+| retry                  | continuation or retry policy                             |
+| state mutation         | state transition authority                               |
+| meaning hidden in text | concept, disposition, translation, or taxonomy authority |
+
+This mapping should itself be governed and queryable.
+
+```json
+{
+  "mechanicKind": "object-construction",
+  "candidateAuthorityFamilies": [
+    "projection-mapping",
+    "result-contract"
+  ],
+  "defaultFamily": "projection-mapping"
+}
+```
+
+Then the report can distinguish:
+
+```text
+Observed mechanic
+        ↓
+Known authority family
+        ↓
+Existing authority home?
+```
+
+---
+
+# Authority home resolution
+
+For every file or responsibility, resolve one of these states:
+
+```text
+AUTHORITY_HOME_EXISTS
+
+AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE
+
+AUTHORITY_HOME_AMBIGUOUS
+
+AUTHORITY_HOME_MISSING
+
+AUTHORITY_FAMILY_UNRESOLVED
+```
+
+Example:
+
+```json
+{
+  "bodyId": "serves-query-console",
+  "mechanicKind": "object-construction",
+  "authorityFamily": "projection-mapping",
+  "authorityHome": {
+    "status": "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
+    "path": "contracts/serves-query-console.authority.json",
+    "authorityId": "serves-query-console-authority"
+  },
+  "gap": {
+    "missingProjectionMappings": 8
+  }
+}
+```
+
+That gives you a direct remediation instruction.
+
+---
+
+# Existing home versus new contract
+
+This is the crucial split.
+
+## Existing authority home
+
+```text
+Mechanic observed
+    ↓
+Owning responsibility resolved
+    ↓
+Authority file already exists
+    ↓
+Required family section exists?
+```
+
+Possible outcomes:
+
+```text
+EXTEND_EXISTING_DECISION_AUTHORITY
+
+EXTEND_EXISTING_PROJECTION_MAPPING
+
+EXTEND_EXISTING_FAILURE_POLICY
+
+EXTEND_EXISTING_ITERATION_AUTHORITY
+```
+
+## No authority home
+
+```text
+Mechanic observed
+    ↓
+No admitted authority file owns responsibility
+    ↓
+Project new authority scaffold
+```
+
+Possible action:
+
+```text
+CREATE_RESPONSIBILITY_AUTHORITY
+
+CREATE_PROJECTION_AUTHORITY
+
+CREATE_DECISION_AUTHORITY
+
+CREATE_FAILURE_POLICY
+
+CREATE_ITERATION_AUTHORITY
+```
+
+The report should never stop at:
+
+```text
+Missing authority.
+```
+
+It should say:
+
+```text
+Missing projection-mapping authority.
+
+Suggested home:
+contracts/projects-query-result.authority.json
+
+Required inputs:
+- owning responsibility
+- observed object fields
+- source expressions
+- target result contract
+
+Projection action:
+AVAILABLE
+```
+
+---
+
+# One-click projection
+
+Yes. Once the report has classified the gap, projection should be mechanical.
+
+```text
+Observed mechanic facts
+        +
+Owning responsibility
+        +
+Authority-family mapping
+        +
+Existing contract context
+        ↓
+Authority scaffold projector
+        ↓
+Candidate JSON authority
+        ↓
+Validation
+        ↓
+Diff / review
+        ↓
+Admit
+```
+
+Example action:
+
+```text
+PROJECT AUTHORITY
+```
+
+Produces:
+
+```json
+{
+  "projectionMappingId": "project-query-console-response",
+  "responsibilityId": "serves-query-console",
+  "occurrences": 8,
+  "fields": [
+    {
+      "outputField": "indexType",
+      "sourceExpression": "index.indexType"
+    },
+    {
+      "outputField": "indexId",
+      "sourceExpression": "index.indexId"
+    }
+  ],
+  "purpose": "Project query-console index response."
+}
+```
+
+This should be a **candidate authority projection**, not silently admitted truth.
+
+The human or policy gate can then:
+
+```text
+review
+accept
+edit
+reject
+```
+
+---
+
+# The report becomes a remediation queue
+
+Each drill-down item should have a remediation disposition.
+
+```text
+NO_ACTION_REQUIRED
+
+EXTEND_EXISTING_AUTHORITY
+
+CREATE_NEW_AUTHORITY
+
+RESOLVE_AMBIGUOUS_HOME
+
+CLASSIFY_MECHANIC
+
+PROJECT_REPLACEMENT_BODY
+
+ADD_RED_SIGNAL
+
+REVIEW_AS_ADAPTER_MECHANIC
+
+REVIEW_AS_KERNEL_PRIMITIVE
+```
+
+So the report becomes:
+
+```text
+Inventory
+    ↓
+Classification
+    ↓
+Authority-home resolution
+    ↓
+Gap detection
+    ↓
+Remediation action
+    ↓
+Projection
+    ↓
+Re-scan
+```
+
+That is a closed operational loop.
+
+---
+
+# Suggested report sections
+
+## 1. Coverage by mechanic type
+
+```text
+How much exists?
+How many files?
+How much is governed?
+```
+
+## 2. Authority-home coverage
+
+```text
+How much already has a home?
+How much requires a new home?
+```
+
+## 3. Projection readiness
+
+```text
+Which gaps can be scaffolded automatically?
+Which are ambiguous?
+Which require human semantic decisions?
+```
+
+## 4. File drill-down
+
+```text
+Which files contain each mechanic?
+Which responsibility owns it?
+```
+
+## 5. Authority-family gaps
+
+```text
+Which decision catalogs are missing?
+Which projection mappings are missing?
+Which failure policies are missing?
+```
+
+## 6. Remediation queue
+
+```text
+What is the exact next action?
+```
+
+---
+
+# Canonical remediation record
+
+Each item should resolve to a machine-readable work item:
+
+```json
+{
+  "remediationItemType": "source-mechanic-authority-gap.v1",
+  "remediationItemId": "gap-object-construction-serves-query-console-01",
+  "mechanic": {
+    "kind": "object-construction",
+    "occurrenceCount": 8,
+    "fileCount": 1
+  },
+  "subject": {
+    "relativePath": "src/console/serves-query-console.js",
+    "responsibilityId": "serves-query-console"
+  },
+  "authorityClassification": {
+    "family": "projection-mapping",
+    "homeStatus": "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
+    "authorityPath": "contracts/serves-query-console.authority.json"
+  },
+  "requiredArtifacts": [
+    "projection-mapping"
+  ],
+  "recommendedAction": "EXTEND_EXISTING_AUTHORITY",
+  "projection": {
+    "available": true,
+    "projectorId": "projects-projection-authority-from-object-construction"
+  }
+}
+```
+
+That record can feed:
+
+* the Markdown report,
+* a UI drill-down,
+* a CLI remediation command,
+* a backlog,
+* a projection request,
+* or an agent continuation.
+
+---
+
+# CLI shape
+
+```bash
+source-facts govern
+```
+
+Then:
+
+```bash
+source-facts govern show object-construction
+```
+
+```bash
+source-facts govern show object-construction \
+  --file src/console/serves-query-console.js
+```
+
+```bash
+source-facts govern project \
+  gap-object-construction-serves-query-console-01
+```
+
+```bash
+source-facts govern apply \
+  candidate-projection-authority.json
+```
+
+And then:
+
+```bash
+source-facts govern
+```
+
+again to observe the inventory move.
+
+---
+
+# The simple mental model
+
+```text
+Mechanic observed
+    ↓
+Which bin does it belong in?
+    ↓
+Does that bin already exist?
+    ├── yes → place inventory there
+    └── no  → project the bin
+    ↓
+Project authority
+    ↓
+Reproject body
+    ↓
+Re-scan
+```
+
+That is beautifully simple.
+
+The intelligence is in classification and authority-home resolution.
+
+Everything after that can become deterministic movement of inventory through declared contracts.
+
+## The north-star report question
+
+For every mechanic, every file, and every responsibility, the report should answer:
+
+```text
+What is it?
+
+Where does it belong?
+
+Does that home exist?
+
+What is missing?
+
+Can we project it?
+
+What happens next?
+```
+
+At that point, the self-governance report becomes more than an audit.
+
+It becomes the **interactive repair conveyor for moving executable meaning out of code and into authority**.

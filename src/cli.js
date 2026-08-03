@@ -296,6 +296,7 @@ async function runGovern(rawArgs) {
     index,
     repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
     authorityDocuments,
+    workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
   });
   await validatesSelfGovernanceReport(report);
 
@@ -308,6 +309,20 @@ async function runGovern(rawArgs) {
   if (flags.summary === true) {
     process.stdout.write(formatsSelfGovernanceReportSummary(report));
   }
+}
+
+/**
+ * Authority documents declare sourceFile/sourceLocation relative to the
+ * repository root; a workspace scan emits modulePath relative to whatever
+ * --workspace was given. Only prefix when the workspace is actually nested
+ * under the repository root -- an out-of-tree scan has no meaningful
+ * repository-relative form, so leave modulePath as-is rather than guess.
+ */
+function resolvesWorkspaceRelativePrefix(repositoryRootPath, workspaceRootPath) {
+  if (typeof workspaceRootPath !== "string" || workspaceRootPath.length === 0) return "";
+  const relative = path.relative(repositoryRootPath, workspaceRootPath).replaceAll("\\", "/");
+  if (relative.length === 0 || relative.startsWith("..") || path.isAbsolute(relative)) return "";
+  return relative;
 }
 
 function runsGovernedArtifactsOperation(operation, contractPath, workspaceRoot, writeMode) {
