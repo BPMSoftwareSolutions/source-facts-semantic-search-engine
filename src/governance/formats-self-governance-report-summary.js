@@ -445,7 +445,9 @@ function formatsSemanticOverlapProposals(report) {
     if (quality.knowHowExtracted.length > 0) {
       lines.push("Know-how extracted:");
       lines.push("");
-      for (const item of quality.knowHowExtracted) lines.push(`- ${item}`);
+      for (const item of quality.knowHowExtracted) {
+        lines.push(`- **[${item.kind}, ${item.generalizability}]** ${item.statement}`);
+      }
       lines.push("");
     }
 
@@ -457,6 +459,65 @@ function formatsSemanticOverlapProposals(report) {
       }
       lines.push("");
     }
+  }
+
+  return lines;
+}
+
+/**
+ * A seventh section, downstream of Semantic Overlap Proposals: what has
+ * actually been admitted, versus what is still merely proposed. know-how/ is
+ * a separate directory from reviews/ on purpose -- everything here already
+ * passed human review and was deliberately kept, but an authority-remediation
+ * candidate is still explicitly not authority (CANDIDATE_NOT_AUTHORED) even
+ * though its know-how lineage has been admitted.
+ */
+function formatsKnowHowRegistry(report) {
+  const registry = report.knowHowRegistry;
+  const lines = [
+    "## Know-How Registry",
+    "",
+    "What review has actually admitted, downstream of Semantic Overlap",
+    "Proposals. Discovered from `know-how/` (distinct from `reviews/`, which",
+    "holds proposals no human has acted on yet). An authority-remediation",
+    "candidate here is still explicitly not authority -- lifecycle stays",
+    "`CANDIDATE_NOT_AUTHORED` until a human writes and admits the real",
+    "authority document.",
+    "",
+  ];
+
+  if (registry.admittedKnowHowCount === 0 && registry.authorityRemediationCandidateCount === 0) {
+    lines.push("No admitted know-how or authority-remediation candidates found under `know-how/`.");
+    lines.push("");
+    return lines;
+  }
+
+  lines.push(`${formatsCount(registry.admittedKnowHowCount)} admitted know-how record(s), ${formatsCount(registry.authorityRemediationCandidateCount)} authority-remediation candidate(s).`);
+  lines.push("");
+  if (Object.keys(registry.byKind).length > 0) {
+    lines.push(`By kind: ${Object.entries(registry.byKind).map(([kind, count]) => `${kind} (${count})`).join(", ")}`);
+  }
+  if (Object.keys(registry.byGeneralizability).length > 0) {
+    lines.push(`By generalizability: ${Object.entries(registry.byGeneralizability).map(([scope, count]) => `${scope} (${count})`).join(", ")}`);
+  }
+  lines.push("");
+
+  if (registry.knowHowRecords.length > 0) {
+    lines.push("| Know-how ID | Kind | Generalizability | Statement |");
+    lines.push("|---|---|---|---|");
+    for (const record of registry.knowHowRecords) {
+      lines.push(`| \`${record.knowHowId ?? "(unnamed)"}\` | ${record.kind} | ${record.generalizability} | ${record.statement} |`);
+    }
+    lines.push("");
+  }
+
+  if (registry.authorityRemediationCandidates.length > 0) {
+    lines.push("| Candidate authority | Lifecycle | Family | Cites know-how | Rationale |");
+    lines.push("|---|---|---|---|---|");
+    for (const candidate of registry.authorityRemediationCandidates) {
+      lines.push(`| \`${candidate.candidateAuthorityId ?? "(unnamed)"}\` | \`${candidate.lifecycle}\` | ${candidate.family ?? "unclassified"} | ${candidate.citesKnowHow.map((id) => `\`${id}\``).join(", ") || "—"} | ${candidate.rationale} |`);
+    }
+    lines.push("");
   }
 
   return lines;
@@ -526,6 +587,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     ...formatsContractSemanticVolume(report),
     ...formatsAuthoritySuccession(report),
     ...formatsSemanticOverlapProposals(report),
+    ...formatsKnowHowRegistry(report),
     ...formatsAutomationReadiness(report),
     "## Authority Sources",
     "",
@@ -607,7 +669,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, semanticOverlapProposals, automationReadiness, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, semanticOverlapProposals, knowHowRegistry, automationReadiness, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -683,6 +745,15 @@ export function formatsSelfGovernanceReportSummary(report) {
       + `confidence ${quality.modelConfidenceAverage?.toFixed(2) ?? "n/a"} -> ${quality.reviewedConfidenceAverage?.toFixed(2) ?? "n/a"}, `
       + `${quality.knowHowExtracted.length} know-how item(s), ${quality.candidateAuthorities.length} candidate authority(ies)`,
     );
+  }
+
+  lines.push("");
+  lines.push(`Know-how registry: ${knowHowRegistry.admittedKnowHowCount} admitted know-how record(s), ${knowHowRegistry.authorityRemediationCandidateCount} authority-remediation candidate(s)`);
+  for (const record of knowHowRegistry.knowHowRecords) {
+    lines.push(`  [${record.kind}/${record.generalizability}] ${record.knowHowId}`);
+  }
+  for (const candidate of knowHowRegistry.authorityRemediationCandidates) {
+    lines.push(`  candidate authority: ${candidate.candidateAuthorityId} [${candidate.lifecycle}] (${candidate.family ?? "unclassified"})`);
   }
 
   lines.push("");

@@ -15,6 +15,7 @@
     "contractSemanticVolume",
     "authoritySuccession",
     "semanticOverlapProposals",
+    "knowHowRegistry",
     "automationReadiness",
     "occurrences",
     "disposition"
@@ -412,7 +413,22 @@
               "modelConfidenceAverage": { "type": ["number", "null"] },
               "reviewedConfidenceAverage": { "type": ["number", "null"] },
               "newDeterministicFindingsFromReview": { "type": "integer", "minimum": 0 },
-              "knowHowExtracted": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+              "knowHowExtracted": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["knowHowId", "statement", "kind", "generalizability", "reviewFinding", "supportingSubjects"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "knowHowId": { "type": ["string", "null"] },
+                    "statement": { "type": "string" },
+                    "kind": { "type": "string", "minLength": 1 },
+                    "generalizability": { "type": "string", "minLength": 1 },
+                    "reviewFinding": { "type": ["string", "null"] },
+                    "supportingSubjects": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              },
               "candidateAuthorities": {
                 "type": "array",
                 "items": {
@@ -426,6 +442,51 @@
                   }
                 }
               }
+            }
+          }
+        }
+      }
+    },
+    "knowHowRegistry": {
+      "type": "object",
+      "description": "Durable, admitted know-how and authority-remediation candidates discovered from know-how/ (distinct from reviews/, which holds not-yet-admitted proposals). Purely descriptive -- never governance evidence.",
+      "required": ["admittedKnowHowCount", "byKind", "byGeneralizability", "knowHowRecords", "authorityRemediationCandidateCount", "authorityRemediationCandidates"],
+      "additionalProperties": false,
+      "properties": {
+        "admittedKnowHowCount": { "type": "integer", "minimum": 0 },
+        "byKind": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "byGeneralizability": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "knowHowRecords": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["recordFile", "knowHowId", "lifecycle", "kind", "generalizability", "statement", "inferenceBatch"],
+            "additionalProperties": false,
+            "properties": {
+              "recordFile": { "type": "string", "minLength": 1 },
+              "knowHowId": { "type": ["string", "null"] },
+              "lifecycle": { "type": "string", "minLength": 1 },
+              "kind": { "type": "string", "minLength": 1 },
+              "generalizability": { "type": "string", "minLength": 1 },
+              "statement": { "type": "string" },
+              "inferenceBatch": { "type": ["string", "null"] }
+            }
+          }
+        },
+        "authorityRemediationCandidateCount": { "type": "integer", "minimum": 0 },
+        "authorityRemediationCandidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["recordFile", "candidateAuthorityId", "lifecycle", "family", "rationale", "citesKnowHow"],
+            "additionalProperties": false,
+            "properties": {
+              "recordFile": { "type": "string", "minLength": 1 },
+              "candidateAuthorityId": { "type": ["string", "null"] },
+              "lifecycle": { "type": "string", "minLength": 1 },
+              "family": { "type": ["string", "null"] },
+              "rationale": { "type": "string" },
+              "citesKnowHow": { "type": "array", "items": { "type": "string" } }
             }
           }
         }

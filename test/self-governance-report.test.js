@@ -13,6 +13,11 @@ import { resolvesAuthoritySuccession } from "../src/governance/resolves-authorit
 import { discoversSemanticOverlapProposalBatches } from "../src/governance/discovers-semantic-overlap-proposals.js";
 import { summarizesSemanticOverlapProposalBatch } from "../src/governance/summarizes-semantic-overlap-proposals.js";
 import { summarizesInferenceQuality } from "../src/governance/summarizes-inference-quality.js";
+import { extractsReviewedKnowHow } from "../src/governance/extracts-reviewed-know-how.js";
+import { admitsKnowHow } from "../src/governance/admits-know-how.js";
+import { projectsAuthorityRemediationCandidate } from "../src/governance/projects-authority-remediation-candidate.js";
+import { discoversKnowHowRegistry } from "../src/governance/discovers-know-how-registry.js";
+import { summarizesKnowHowRegistry } from "../src/governance/summarizes-know-how-registry.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -842,7 +847,10 @@ function buildsInferenceQualityDocument() {
     reviewFindings: [
       { authorityMechanicId: "m2", correctedDisposition: "PROPOSED_PARTIAL_OVERLAP", correctedConfidence: 0.5, additionalFinding: "found something else along the way" },
     ],
-    knowHowExtracted: ["insight one", "insight two"],
+    knowHowExtracted: [
+      { knowHowId: "insight-one", kind: "implementation-gap", generalizability: "repository-specific", statement: "insight one", reviewFinding: "m2", supportingSubjects: ["thing-a"] },
+      "insight two as a legacy bare string",
+    ],
     candidateAuthorities: [{ candidateAuthorityId: "cand-1", family: "serialization", rationale: "because" }],
   };
 }
@@ -856,7 +864,12 @@ test("summarizesInferenceQuality tallies review outcomes, tracks unrecorded outc
   // m1 keeps confidence 1 (no finding), m2 drops to its correctedConfidence 0.5, m3 keeps 1 (no finding).
   assert.equal(quality.reviewedConfidenceAverage, (1 + 0.5 + 1) / 3);
   assert.equal(quality.newDeterministicFindingsFromReview, 1);
-  assert.deepEqual(quality.knowHowExtracted, ["insight one", "insight two"]);
+  assert.equal(quality.knowHowExtracted.length, 2);
+  assert.equal(quality.knowHowExtracted[0].knowHowId, "insight-one");
+  assert.equal(quality.knowHowExtracted[0].kind, "implementation-gap");
+  // A legacy bare-string entry is tolerated, not upgraded by guessing a kind for it.
+  assert.equal(quality.knowHowExtracted[1].statement, "insight two as a legacy bare string");
+  assert.equal(quality.knowHowExtracted[1].kind, "unclassified");
   assert.equal(quality.candidateAuthorities.length, 1);
   assert.equal(quality.candidateAuthorities[0].candidateAuthorityId, "cand-1");
 });
@@ -870,6 +883,112 @@ test("summarizesInferenceQuality tolerates a document with none of the optional 
   assert.equal(quality.newDeterministicFindingsFromReview, 0);
   assert.deepEqual(quality.knowHowExtracted, []);
   assert.deepEqual(quality.candidateAuthorities, []);
+});
+
+test("extractsReviewedKnowHow shapes structured entries, defaults an unknown kind to unclassified, and slugifies a missing knowHowId", () => {
+  const document = {
+    knowHowExtracted: [
+      { knowHowId: "real-id", statement: "a real statement", kind: "implementation-gap", generalizability: "repository-specific", reviewFinding: "m1", supportingSubjects: ["thing"] },
+      { statement: "no id given", kind: "not-a-known-kind" },
+      "a legacy bare string",
+    ],
+  };
+  const candidates = extractsReviewedKnowHow({ filePath: "reviews/x.json", document });
+  assert.equal(candidates.length, 3);
+  assert.equal(candidates[0].knowHowId, "real-id");
+  assert.equal(candidates[0].kind, "implementation-gap");
+  // Unknown kind is not trusted blindly -- falls back to unclassified rather than inventing a category.
+  assert.equal(candidates[1].kind, "unclassified");
+  assert.equal(candidates[1].knowHowId, "reviews-x-json-know-how-2");
+  assert.equal(candidates[2].statement, "a legacy bare string");
+  assert.equal(candidates[2].kind, "unclassified");
+  assert.equal(candidates[2].generalizability, "unclassified");
+});
+
+test("admitsKnowHow stamps a canonical ADMITTED record carrying forward the candidate's evidence lineage", () => {
+  const candidate = {
+    knowHowId: "some-id",
+    statement: "a statement",
+    kind: "governance-invariant",
+    generalizability: "cross-repository",
+    reviewFinding: "m1",
+    supportingSubjects: ["a", "b"],
+    sourceBatchFile: "reviews/x.json",
+  };
+  const record = admitsKnowHow(candidate, { admittedBy: "test-reviewer", admittedAtUtc: "2026-01-01T00:00:00.000Z", repositoryId: "test-repo" });
+  assert.equal(record.documentKind, "reviewed-engineering-know-how.v1");
+  assert.equal(record.lifecycle, "ADMITTED");
+  assert.equal(record.knowHowId, "some-id");
+  assert.equal(record.kind, "governance-invariant");
+  assert.deepEqual(record.scope, { repositoryId: "test-repo", generalizability: "cross-repository" });
+  assert.deepEqual(record.evidence, { inferenceBatch: "reviews/x.json", reviewFinding: "m1", supportingSubjects: ["a", "b"] });
+  assert.equal(record.admittedBy, "test-reviewer");
+});
+
+test("projectsAuthorityRemediationCandidate never claims authored authority -- lifecycle stays CANDIDATE_NOT_AUTHORED", () => {
+  const candidateAuthority = { candidateAuthorityId: "success-response-serialization", family: "serialization", rationale: "close the gap" };
+  const record = projectsAuthorityRemediationCandidate(candidateAuthority, {
+    citesKnowHowIds: ["success-path-serialization-duplicated-inline"],
+    sourceEvidence: { inferenceBatch: "reviews/x.json", targetFile: "src/x.mjs" },
+    projectedAtUtc: "2026-01-01T00:00:00.000Z",
+  });
+  assert.equal(record.documentKind, "authority-remediation-candidate.v1");
+  assert.equal(record.lifecycle, "CANDIDATE_NOT_AUTHORED");
+  assert.equal(record.candidateAuthorityId, "success-response-serialization");
+  assert.deepEqual(record.citesKnowHow, ["success-path-serialization-duplicated-inline"]);
+  assert.deepEqual(record.sourceEvidence, { inferenceBatch: "reviews/x.json", targetFile: "src/x.mjs" });
+});
+
+test("discoversKnowHowRegistry separates admitted know-how from authority-remediation candidates and ignores unrelated JSON", async () => {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), "sfse-know-how-"));
+  try {
+    await mkdir(path.join(tempDir, "authority-remediation-candidates"), { recursive: true });
+    await writeFile(path.join(tempDir, "kh1.json"), JSON.stringify({ documentKind: "reviewed-engineering-know-how.v1", knowHowId: "kh1" }), "utf8");
+    await writeFile(path.join(tempDir, "authority-remediation-candidates", "cand1.json"), JSON.stringify({ documentKind: "authority-remediation-candidate.v1", candidateAuthorityId: "cand1" }), "utf8");
+    await writeFile(path.join(tempDir, "unrelated.json"), JSON.stringify({ documentKind: "something-else.v1" }), "utf8");
+
+    const registry = await discoversKnowHowRegistry(tempDir, { relativeTo: tempDir });
+    assert.equal(registry.admittedKnowHow.length, 1);
+    assert.equal(registry.admittedKnowHow[0].document.knowHowId, "kh1");
+    assert.equal(registry.authorityRemediationCandidates.length, 1);
+    assert.equal(registry.authorityRemediationCandidates[0].document.candidateAuthorityId, "cand1");
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("summarizesKnowHowRegistry tallies admitted know-how by kind and generalizability, and keeps remediation candidates explicitly unauthored", () => {
+  const admittedKnowHow = [
+    { filePath: "know-how/a.json", document: { knowHowId: "a", lifecycle: "ADMITTED", kind: "implementation-gap", statement: "s1", scope: { generalizability: "repository-specific" }, evidence: { inferenceBatch: "reviews/x.json" } } },
+    { filePath: "know-how/b.json", document: { knowHowId: "b", lifecycle: "ADMITTED", kind: "governance-invariant", statement: "s2", scope: { generalizability: "cross-repository" }, evidence: { inferenceBatch: "reviews/x.json" } } },
+  ];
+  const authorityRemediationCandidates = [
+    { filePath: "know-how/authority-remediation-candidates/c.json", document: { candidateAuthorityId: "c", lifecycle: "CANDIDATE_NOT_AUTHORED", family: "serialization", rationale: "r", citesKnowHow: ["a"] } },
+  ];
+
+  const summary = summarizesKnowHowRegistry({ admittedKnowHow, authorityRemediationCandidates });
+  assert.equal(summary.admittedKnowHowCount, 2);
+  assert.deepEqual(summary.byKind, { "implementation-gap": 1, "governance-invariant": 1 });
+  assert.deepEqual(summary.byGeneralizability, { "repository-specific": 1, "cross-repository": 1 });
+  assert.equal(summary.authorityRemediationCandidateCount, 1);
+  assert.equal(summary.authorityRemediationCandidates[0].lifecycle, "CANDIDATE_NOT_AUTHORED");
+  assert.deepEqual(summary.authorityRemediationCandidates[0].citesKnowHow, ["a"]);
+});
+
+test("projectsSelfGovernanceReport exposes knowHowRegistry, purely descriptive and schema-valid, defaulting to empty when nothing is discovered", async () => {
+  const index = buildsSyntheticIndex();
+  const report = await projectsSelfGovernanceReport({ index, repositoryId: "self-governance-test", authorityDocuments: [] });
+  await validatesSelfGovernanceReport(report);
+  assert.equal(report.knowHowRegistry.admittedKnowHowCount, 0);
+  assert.equal(report.knowHowRegistry.authorityRemediationCandidateCount, 0);
+
+  const knowHowRegistry = {
+    admittedKnowHow: [{ filePath: "know-how/a.json", document: { knowHowId: "a", lifecycle: "ADMITTED", kind: "implementation-gap", statement: "s1", scope: { generalizability: "repository-specific" }, evidence: { inferenceBatch: "reviews/x.json" } } }],
+    authorityRemediationCandidates: [],
+  };
+  const reportWithRegistry = await projectsSelfGovernanceReport({ index, repositoryId: "self-governance-test", authorityDocuments: [], knowHowRegistry });
+  await validatesSelfGovernanceReport(reportWithRegistry);
+  assert.equal(reportWithRegistry.knowHowRegistry.admittedKnowHowCount, 1);
 });
 
 test("discoversSemanticOverlapProposalBatches finds only documentKind semantic-overlap-proposal-batch.v1 files, recursively, ignoring unrelated JSON", async () => {

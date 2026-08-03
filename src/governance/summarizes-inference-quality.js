@@ -6,6 +6,33 @@ function averages(values) {
 }
 
 /**
+ * A batch authored before knowHowExtracted carried structure (a bare string)
+ * is tolerated, not upgraded by guessing -- it surfaces as "unclassified"
+ * rather than being silently assigned a kind or generalizability it never
+ * declared.
+ */
+function normalizesKnowHowEntry(entry) {
+  if (typeof entry === "string") {
+    return Object.freeze({
+      knowHowId: null,
+      statement: entry,
+      kind: "unclassified",
+      generalizability: "unclassified",
+      reviewFinding: null,
+      supportingSubjects: Object.freeze([]),
+    });
+  }
+  return Object.freeze({
+    knowHowId: typeof entry?.knowHowId === "string" ? entry.knowHowId : null,
+    statement: typeof entry?.statement === "string" ? entry.statement : "",
+    kind: typeof entry?.kind === "string" ? entry.kind : "unclassified",
+    generalizability: typeof entry?.generalizability === "string" ? entry.generalizability : "unclassified",
+    reviewFinding: typeof entry?.reviewFinding === "string" ? entry.reviewFinding : null,
+    supportingSubjects: Object.freeze(Array.isArray(entry?.supportingSubjects) ? [...entry.supportingSubjects] : []),
+  });
+}
+
+/**
  * Not a benchmark of the model. A benchmark of how efficiently THIS review
  * converted candidate understanding into admitted knowledge -- how much of
  * what the model proposed survived unchanged, how much needed correction,
@@ -66,7 +93,7 @@ export function summarizesInferenceQuality(document) {
     modelConfidenceAverage,
     reviewedConfidenceAverage,
     newDeterministicFindingsFromReview,
-    knowHowExtracted: Object.freeze([...knowHowExtracted]),
+    knowHowExtracted: Object.freeze(knowHowExtracted.map((entry) => normalizesKnowHowEntry(entry))),
     candidateAuthorities: Object.freeze(candidateAuthorities.map((entry) => Object.freeze({
       candidateAuthorityId: typeof entry?.candidateAuthorityId === "string" ? entry.candidateAuthorityId : null,
       family: typeof entry?.family === "string" ? entry.family : null,

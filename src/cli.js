@@ -35,6 +35,7 @@ import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolati
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
 import { discoversAuthorityDocumentsAcrossRoots } from "./governance/discovers-authority-documents.js";
 import { discoversSemanticOverlapProposalBatches } from "./governance/discovers-semantic-overlap-proposals.js";
+import { discoversKnowHowRegistry } from "./governance/discovers-know-how-registry.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
@@ -297,11 +298,15 @@ async function runGovern(rawArgs) {
   const reviewsDir = path.resolve(flags.reviewsDir ?? path.join(repositoryRoot, "reviews"));
   const semanticOverlapProposalBatches = await discoversSemanticOverlapProposalBatches(reviewsDir, { relativeTo: repositoryRoot });
 
+  const knowHowDir = path.resolve(flags.knowHowDir ?? path.join(repositoryRoot, "know-how"));
+  const knowHowRegistry = await discoversKnowHowRegistry(knowHowDir, { relativeTo: repositoryRoot });
+
   const report = await projectsSelfGovernanceReport({
     index,
     repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
     authorityDocuments,
     semanticOverlapProposalBatches,
+    knowHowRegistry,
     workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
   });
   await validatesSelfGovernanceReport(report);
