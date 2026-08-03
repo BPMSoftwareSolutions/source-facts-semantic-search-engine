@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "contract-driven-artifact-governance-engine": "0.11.0"
+  },
+  "name": "governed-message-artifact-family",
+  "private": true,
+  "scripts": {
+    "start": "node bin/run-message.mjs",
+    "test": "node verification/verifies-message.mjs"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}

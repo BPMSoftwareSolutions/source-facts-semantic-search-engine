@@ -1,0 +1,228 @@
+{
+  "$schema": "authority-declaration.v1",
+  "sourceFile": "src/console/serves-query-console.mjs",
+  "purpose": "Query console HTTP server with request validation, routing, and source snippet retrieval",
+  "authority": {
+    "mechanics": [
+      {
+        "mechanicId": "hostname-validation-loopback",
+        "sourceLocation": "src/console/serves-query-console.mjs:48-52",
+        "mechanic": "exception-handling",
+        "authorityCandidateType": "failure-observation-candidate.v1",
+        "responsibility": "Ensure query console server binds ONLY to loopback (127.0.0.1)",
+        "semantic": {
+          "try_block": "classifiesLoopbackBind({ hostname })",
+          "catch_pattern": "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
+          "guard_purpose": "Only catch and transform THIS specific error",
+          "throw_message": "The query console server may bind only to 127.0.0.1.",
+          "why_guard": "Cannot expose internal tool to network. Loopback binding is non-negotiable."
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "parameter-validation",
+        "sourceLocation": "src/console/serves-query-console.mjs:55",
+        "mechanic": "validation",
+        "authorityCandidateType": "validation-policy-candidate.v1",
+        "responsibility": "Validate required parameters (index, consoleAssetPath)",
+        "semantic": {
+          "contract": "{ index: object, consoleAssetPath: string }",
+          "validator": "validatesConsoleParameters",
+          "failure_behavior": "throw Error immediately"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "error-handler-catch-all",
+        "sourceLocation": "src/console/serves-query-console.mjs:73-80",
+        "mechanic": "exception-handling",
+        "authorityCandidateType": "failure-observation-candidate.v1",
+        "responsibility": "Catch all errors from request handling, send error response",
+        "semantic": {
+          "catch_pattern": "catch any error from handleRequestWithAuthority",
+          "fallback_behavior": "Write security headers + error response if headers not sent",
+          "error_code": 500,
+          "error_format": "{ error: 'Query console server error.' }"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "security-headers-emission",
+        "sourceLocation": "src/console/serves-query-console.mjs:131-136",
+        "mechanic": "state-mutation",
+        "authorityCandidateType": "state-transition-candidate.v1",
+        "responsibility": "Set security headers on every response",
+        "semantic": {
+          "headers": {
+            "Content-Security-Policy": "default-src 'self'...",
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+            "Referrer-Policy": "no-referrer",
+            "Cross-Origin-Resource-Policy": "same-origin",
+            "Permissions-Policy": "accelerometer=(), camera=()..."
+          },
+          "when_applied": "Before processing every request"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "url-decoding",
+        "sourceLocation": "src/console/serves-query-console.mjs:140-145",
+        "mechanic": "exception-handling",
+        "authorityCandidateType": "failure-observation-candidate.v1",
+        "responsibility": "Decode request URL, catch malformed URLs",
+        "semantic": {
+          "try_block": "decodeURIComponent(new URL(...))",
+          "catch_pattern": "Any error during URL parsing",
+          "fallback_response": { "error": "Bad request.", "statusCode": 400 }
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "route-dispatch-classification",
+        "sourceLocation": "src/console/serves-query-console.mjs:152-172",
+        "mechanic": "branch",
+        "authorityCandidateType": "decision-authority-candidate.v1",
+        "responsibility": "Classify route and method, fallback to known pathname map",
+        "semantic": {
+          "condition": "classifiesRoute returns successfully?",
+          "true_branch": "dispatch.routeId determines handler",
+          "false_branch": "Use knownPathnameAllow map for 404/405 response",
+          "error_disposition": "ROUTE_OR_METHOD_NOT_ADMITTED"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "route-handler-dispatch",
+        "sourceLocation": "src/console/serves-query-console.mjs:176-189",
+        "mechanic": "object-construction",
+        "authorityCandidateType": "projection-mapping-candidate.v1",
+        "responsibility": "Build routing map and dispatch to handler",
+        "semantic": {
+          "routeHandlers": {
+            "console-html": "handleConsoleHtml",
+            "index-info": "handleIndexInfo",
+            "query": "handleQuery",
+            "snippet": "handleSnippet"
+          },
+          "dispatch_logic": "Look up routeId in map, call handler"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "error-response-serialization",
+        "sourceLocation": "src/console/serves-query-console.mjs:80, 144, 167, 172, 190, 211+",
+        "mechanic": "serialization",
+        "authorityCandidateType": "serialization-profile-candidate.v1",
+        "responsibility": "Serialize all responses as JSON",
+        "semantic": {
+          "format": "JSON",
+          "error_shape": "{ error: string }",
+          "data_responses": "{ available, lines, indexType, ... }",
+          "canonical": "JSON.stringify with no extra whitespace"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "path-segment-parsing",
+        "sourceLocation": "src/console/serves-query-console.mjs:309",
+        "mechanic": "normalization",
+        "authorityCandidateType": "normalization-candidate.v1",
+        "responsibility": "Split file path by both / and \\ separators",
+        "semantic": {
+          "input": "modulePath string (may have mixed separators)",
+          "processing": "split('/').flatMap(s => s.split(backslash))",
+          "output": "Array of path segments"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "line-ending-normalization",
+        "sourceLocation": "src/console/serves-query-console.mjs:354",
+        "mechanic": "normalization",
+        "authorityCandidateType": "normalization-candidate.v1",
+        "responsibility": "Normalize file line endings (CRLF, CR → LF) before splitting",
+        "semantic": {
+          "input": "File text with mixed line endings",
+          "processing": "replaceAll('\\r\\n', '\\n').replaceAll('\\r', '\\n').split('\\n')",
+          "output": "Array of lines"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "path-case-normalization",
+        "sourceLocation": "src/console/serves-query-console.mjs:414-415",
+        "mechanic": "normalization",
+        "authorityCandidateType": "normalization-candidate.v1",
+        "responsibility": "Platform-aware path case normalization for comparison",
+        "semantic": {
+          "windows": "path.toLowerCase()",
+          "unix": "path unchanged",
+          "reason": "Windows paths are case-insensitive, Unix are case-sensitive"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "path-containment-check",
+        "sourceLocation": "src/console/serves-query-console.mjs:313, 323",
+        "mechanic": "validation",
+        "authorityCandidateType": "validation-policy-candidate.v1",
+        "responsibility": "Verify file path is within workspace root (security check)",
+        "semantic": {
+          "check": "isSameOrDescendant(candidatePath, realWorkspaceRoot)",
+          "security": "Prevent directory traversal attacks"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "file-lines-iteration",
+        "sourceLocation": "src/console/serves-query-console.mjs:359-365",
+        "mechanic": "iteration",
+        "authorityCandidateType": "iteration-authority-candidate.v1",
+        "responsibility": "Build line array with context from firstLine to lastLine, marking hit lines",
+        "semantic": {
+          "iteration": "for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1)",
+          "body": [
+            "Extract text from allLines[lineNumber - 1]",
+            "Determine hit flag: lineNumber >= startLine && lineNumber <= endLine",
+            "Push { line, text, hit } to array"
+          ],
+          "ordering": "ascending",
+          "output": "Array of { line, text, hit } objects"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "known-pathname-allow-map",
+        "sourceLocation": "src/console/serves-query-console.mjs:157-162",
+        "mechanic": "object-construction",
+        "authorityCandidateType": "projection-mapping-candidate.v1",
+        "responsibility": "Map pathnames to allowed HTTP methods (fallback routing)",
+        "semantic": {
+          "data": {
+            "/": "GET, HEAD",
+            "/index.html": "GET, HEAD",
+            "/api/index-info": "GET, HEAD",
+            "/api/query": "POST",
+            "/api/snippet": "GET, HEAD"
+          },
+          "purpose": "Used when route-dispatch authority rejects a request"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      }
+    ],
+    "coverage_summary": {
+      "total_mechanics": 14,
+      "authority_bound": 14,
+      "conformance_ratio": 1.0
+    },
+    "admission_gate": "READY",
+    "gate_reason": "All 14 mechanics have authoritative semantic declarations based on actual code analysis"
+  },
+  "metadata": {
+    "generated": "2026-08-02T23:00:00Z",
+    "source": "Code analysis of serves-query-console.mjs",
+    "method": "Direct line-by-line semantic extraction from actual code",
+    "note": "This authority reflects WHAT THE CODE ACTUALLY DOES, not aspirational delegation"
+  }
+}

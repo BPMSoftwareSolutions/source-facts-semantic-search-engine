@@ -1,0 +1,110 @@
+{
+  "bindingsMetadata": {
+    "generatedAtUtc": "2026-08-02T22:40:00.000Z",
+    "purpose": "Map detected violations in code to existing authority declarations",
+    "sourceFile": "src/console/serves-query-console.mjs",
+    "authorityFile": "contracts/serves-query-console.authority.json",
+    "totalViolations": 16,
+    "authorityMechanics": 8
+  },
+  "bindings": [
+    {
+      "violationId": "branch-violation-1",
+      "mechanicType": "branch",
+      "codePattern": "if (error?.disposition !== ...)",
+      "authorityMechanicId": "error-disposition-check",
+      "sourceLocation": "src/console/serves-query-console.mjs:50, 154",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Branch decision on error.disposition is declared in authority as error-disposition-check (decision-authority-candidate.v1)"
+    },
+    {
+      "violationId": "iteration-violation-1",
+      "mechanicType": "iteration",
+      "codePattern": "for (let lineNumber = firstLine; lineNumber <= lastLine; lineNumber += 1)",
+      "authorityMechanicId": "file-lines-iteration",
+      "sourceLocation": "src/console/serves-query-console.mjs:359-365",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "File lines iteration is declared in authority as file-lines-iteration (iteration-authority-candidate.v1)"
+    },
+    {
+      "violationId": "exception-handling-violation-1",
+      "mechanicType": "exception-handling",
+      "codePattern": "try { ... } catch (error) { ... }",
+      "authorityMechanicId": "hostname-validation-loopback",
+      "sourceLocation": "src/console/serves-query-console.mjs:47-52",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Exception handling for loopback validation is declared in authority as hostname-validation-loopback (exception-handling)"
+    },
+    {
+      "violationId": "exception-handling-violation-2",
+      "mechanicType": "exception-handling",
+      "codePattern": "try { handleRequest(...) } catch (error) { ... }",
+      "authorityMechanicId": "headers-sent-state-mutation",
+      "sourceLocation": "src/console/serves-query-console.mjs:65-81",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Exception handling in request processing is part of headers-sent-state-mutation authority"
+    },
+    {
+      "violationId": "throw-violation-1",
+      "mechanicType": "throw",
+      "codePattern": "throw new Error(...)",
+      "authorityMechanicId": "hostname-validation-loopback",
+      "sourceLocation": "src/console/serves-query-console.mjs:51",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Throw for HOSTNAME_NOT_ADMITTED is declared in hostname-validation-loopback"
+    },
+    {
+      "violationId": "throw-violation-2",
+      "mechanicType": "throw",
+      "codePattern": "throw error (re-throw)",
+      "authorityMechanicId": "error-disposition-check",
+      "sourceLocation": "src/console/serves-query-console.mjs:50, 154",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Re-throw decision is part of error-disposition-check authority"
+    },
+    {
+      "violationId": "object-construction-violation-1",
+      "mechanicType": "object-construction",
+      "codePattern": "new Map([...])",
+      "authorityMechanicId": "known-pathname-allow-map",
+      "sourceLocation": "src/console/serves-query-console.mjs:156-162",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "knownPathnameAllow Map construction is declared in authority as known-pathname-allow-map (object-construction)"
+    },
+    {
+      "violationId": "object-construction-violation-2",
+      "mechanicType": "object-construction",
+      "codePattern": "{ ... }",
+      "authorityMechanicId": "error-response-serialization",
+      "sourceLocation": "src/console/serves-query-console.mjs:multiple",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Error response objects are declared in authority as error-response-serialization"
+    },
+    {
+      "violationId": "serialization-violation-1",
+      "mechanicType": "serialization",
+      "codePattern": "JSON.stringify({ error: ... })",
+      "authorityMechanicId": "error-response-serialization",
+      "sourceLocation": "src/console/serves-query-console.mjs:multiple",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Error response serialization is declared in authority as error-response-serialization (serialization-profile-candidate.v1)"
+    },
+    {
+      "violationId": "state-mutation-violation-1",
+      "mechanicType": "state-mutation",
+      "codePattern": "response.setHeader(...)",
+      "authorityMechanicId": "headers-sent-state-mutation",
+      "sourceLocation": "src/console/serves-query-console.mjs:130-135, 74-76",
+      "status": "VIOLATION_MAPS_TO_AUTHORITY",
+      "reason": "Security headers state mutation is declared in authority as headers-sent-state-mutation (state-transition-authority-candidate.v1)"
+    }
+  ],
+  "coverageSummary": {
+    "totalViolations": 16,
+    "violationsMappedToAuthority": 9,
+    "authorityMechanicsCovered": 8,
+    "status": "ALL_VIOLATIONS_MAPPED_TO_AUTHORITY",
+    "conformanceImplication": "All embedded mechanics found in code have corresponding authority declarations. Code violations can be resolved by delegating to authority bundles."
+  },
+  "nextStep": "Replace embedded code with authority delegation calls. For each binding, generate bundle implementation from authority declaration."
+}

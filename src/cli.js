@@ -27,11 +27,26 @@ import {
 } from "./gallery/validates-gallery-artifacts.js";
 import { compositionArtifactNames, writesSignInComposition } from "./composition/writes-sign-in-composition.js";
 import { northStarArtifactNames, runsSignInNorthStar } from "./composition/runs-sign-in-north-star.js";
-import { servesQueryConsole } from "./console/serves-query-console.js";
 import { loadsSourceFactIndexIntoSqlServer } from "./sqlserver/load-sqlserver.js";
 import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./sqlserver/resolves-sql-connection.js";
+import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
+import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
+const consoleAuthorityFile = path.join(repositoryRoot, "contracts", "serves-query-console.authority.json");
+const consoleCandidatesOutputFile = path.join(repositoryRoot, "contracts", "serves-query-console.candidates.json");
+const consoleAuthorityDraftOutputFile = path.join(repositoryRoot, "contracts", "serves-query-console.authority.draft.json");
+const consoleViolationModulePaths = Object.freeze([
+  "console-authority-bundles.mjs",
+  "console-routing-adapter.mjs",
+  "console-snippet-adapter.mjs",
+  "console-validation-adapter.mjs",
+  "serves-query-console.conformant.mjs",
+  "serves-query-console.mjs",
+  "serves-query-console.projected.mjs",
+]);
+const consoleViolationMechanics = Object.freeze(Object.keys(new AuthorityProjectorFromViolations().authorityFamilyMap));
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -40,6 +55,10 @@ if (command === "project") {
   await runProject(args.slice(1));
 } else if (command === "query") {
   await runQuery(args.slice(1));
+} else if (command === "project-authority") {
+  await runProjectAuthority(args.slice(1));
+} else if (command === "project-authority-violations") {
+  await runProjectAuthorityViolations(args.slice(1));
 } else if (command === "web") {
   await runWeb(args.slice(1));
 } else if (command === "console") {
@@ -84,6 +103,102 @@ async function runQuery(rawArgs) {
   const result = await executeRelationalQuery(index, queryText);
   const pretty = flags.pretty === true;
   process.stdout.write(pretty ? JSON.stringify(result, null, 2) : JSON.stringify(result));
+}
+
+async function runProjectAuthority(rawArgs) {
+  const { flags, positional } = parseArgs(rawArgs);
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "authority-candidates.json"));
+  const modulePath = flags.module ?? "";
+  const responsibilityId = flags.responsibility ?? "";
+
+  const index = await readsJsonFile(indexPath);
+  const candidates = await projectsAuthorityFromMechanics(index, new Map(), {
+    modulePath,
+    responsibilityId
+  });
+
+  await writesJsonFile(outputPath, candidates, { pretty: true });
+  process.stdout.write(`${outputPath}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Generated ${candidates.candidates?.length || 0} authority candidates\n`);
+    process.stdout.write(`Coverage: ${(candidates.coverageSummary?.authorityConformanceRatio * 100).toFixed(1)}%\n`);
+    process.stdout.write(`Gate status: ${candidates.coverageSummary?.admissionGateStatus}\n`);
+  }
+}
+
+async function runProjectAuthorityViolations(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const workspaceRoot = path.resolve(flags.workspace ?? consoleWorkspaceRoot);
+  const workspaceId = flags.workspaceId ?? path.basename(workspaceRoot);
+  const codeFile = path.resolve(flags.codeFile ?? path.join(consoleWorkspaceRoot, "serves-query-console.mjs"));
+  const authorityFile = path.resolve(flags.authorityFile ?? consoleAuthorityFile);
+  const outputPath = path.resolve(flags.output ?? consoleCandidatesOutputFile);
+  const authorityOutputPath = path.resolve(flags.authorityOutput ?? consoleAuthorityDraftOutputFile);
+  const modulePaths = typeof flags.modules === "string"
+    ? flags.modules.split(",").map((entry) => entry.trim()).filter(Boolean)
+    : consoleViolationModulePaths;
+
+  const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId, languageId: "typescript" });
+  await validatesSourceFactIndex(index);
+
+  const whereClauses = [`bm.mechanic IN (${consoleViolationMechanics.map(quoteSqlLiteral).join(", ")})`];
+  if (modulePaths !== null && modulePaths.length > 0) {
+    whereClauses.push(`bm.modulePath IN (${modulePaths.map(quoteSqlLiteral).join(", ")})`);
+  }
+
+  const queryText = [
+    "SELECT bm.mechanic AS mechanic,",
+    "       bm.modulePath AS modulePath,",
+    "       bm.sourceReferenceId AS sourceReferenceId,",
+    "       bm.fromSymbolId AS fromSymbolId,",
+    "       sr.startLine AS startLine,",
+    "       sr.endLine AS endLine,",
+    "       sym.name AS symbolName",
+    "FROM bodyMechanics bm",
+    "JOIN sourceReferences sr ON bm.sourceReferenceId = sr.referenceId",
+    "LEFT JOIN symbols sym ON bm.fromSymbolId = sym.symbolId",
+    `WHERE ${whereClauses.join(" AND ")}`,
+    "ORDER BY bm.modulePath, sr.startLine, sr.endLine, bm.mechanic",
+  ].join(" ");
+
+  const receipt = await executeRelationalQuery(index, queryText);
+  if (receipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
+    throw new Error(`Violation query failed: ${JSON.stringify(receipt, null, 2)}`);
+  }
+  const violations = receipt.result.value.rows;
+
+  const result = await projectAuthorityCandidatesFromViolations(
+    codeFile,
+    authorityFile,
+    violations,
+    outputPath,
+    { workspaceRoot, authorityOutputPath },
+  );
+
+  if (!result.success) {
+    throw new Error(`Failed to project authority candidates from violations: ${result.error ?? "unknown error"}`);
+  }
+
+  process.stdout.write(`${outputPath}\n`);
+  if (result.authorityFile) {
+    process.stdout.write(`${result.authorityFile}\n`);
+  }
+  if (flags.summary === true) {
+    process.stdout.write(formatsViolationCandidatesSummary(violations, result.candidatesData));
+  }
+}
+
+function formatsViolationCandidatesSummary(violations, candidatesData) {
+  const coverage = candidatesData?.coverageSummary;
+  const lines = [
+    `Violations detected: ${violations.length}`,
+    `Candidates projected: ${candidatesData?.candidates.length ?? 0}`,
+    `Authority draft mechanics: ${candidatesData?.authorityDraft?.authority?.mechanics?.length ?? 0}`,
+    `Mapped to known authority: ${coverage?.violationsMappedToAuthority ?? 0}`,
+    `Authority mechanics known: ${coverage?.authorityMechanicsKnown ?? 0}`,
+  ];
+  return `${lines.join("\n")}\n`;
 }
 
 function resolvesSqlServerConnection(flags) {
@@ -162,6 +277,7 @@ async function runConsoleServe(rawArgs) {
     : (typeof index.manifest?.scanRequest?.workspaceRoot === "string" ? index.manifest.scanRequest.workspaceRoot : null);
   const consoleAssetPath = path.join(repositoryRoot, "source-facts-query-console", "index.html");
   const port = typeof flags.port === "string" ? Number.parseInt(flags.port, 10) : 0;
+  const { servesQueryConsole } = await import("./console/serves-query-console.mjs");
   const consoleServer = await servesQueryConsole({ index, workspaceRoot, consoleAssetPath, port });
   process.stdout.write(`${consoleServer.url}\n`);
   await waitsForTerminationSignal(consoleServer);
@@ -519,6 +635,12 @@ function parseArgs(rawArgs) {
         case "--inventory":
         case "--dir":
         case "--write-mode":
+        case "--module":
+        case "--responsibility":
+        case "--code-file":
+        case "--authority-file":
+        case "--authority-output":
+        case "--modules":
         case "--request":
         case "--manifest":
         case "--authorities":
@@ -586,6 +708,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web gallery prove --dir <gallery-output-dir>\n`);
   stream.write(`  source-facts-se web compose sign-in --request <file> --manifest <gallery-manifest> [--authorities <dir>] [--output <dir>] [--summary]\n`);
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
+  stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
@@ -599,6 +722,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web gallery project --index ./web-surface-index.json --inventory ./web-surface.inventory.json --query enterprise-pages --output ./enterprise-gallery --summary\n`);
   stream.write(`  source-facts-se web compose sign-in --request ./compositions/enterprise-sign-in.request.v1.json --manifest ./sign-in-gallery/enterprise-gallery-manifest.json --output ./sign-in-composition --summary\n`);
   stream.write(`  source-facts-se web north-star sign-in --index ./web-surface-index.json --inventory ./web-surface.inventory.json --output ./sign-in-north-star --prove --summary\n`);
+  stream.write(`  source-facts-se project-authority-violations --workspace ./src/console --authority-file ./contracts/serves-query-console.authority.json --output ./contracts/serves-query-console.candidates.json --authority-output ./contracts/serves-query-console.authority.draft.json --summary\n`);
   stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
   stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
@@ -633,4 +757,8 @@ function formatsNorthStarSummary(result) {
 function normalizeLongOption(value) {
   const withPrefixRemoved = value.slice(2);
   return withPrefixRemoved.replace(/-([a-z])/g, (_, character) => character.toUpperCase());
+}
+
+function quoteSqlLiteral(value) {
+  return `'${String(value).replaceAll("'", "''")}'`;
 }

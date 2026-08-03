@@ -1,0 +1,2574 @@
+{
+  "$schema": "https://canonical.local/schemas/governed-artifact-contract.schema.json",
+  "artifacts": [
+    {
+      "artifactId": "message-schema.v1",
+      "artifactKind": "json-schema",
+      "mediaType": "application/schema+json",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "$id": "https://governed.local/schemas/message.schema.json",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "additionalProperties": false,
+            "properties": {
+              "message": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "message"
+            ],
+            "title": "Governed Message",
+            "type": "object"
+          }
+        },
+        "authorityId": "message-schema-authority.v1",
+        "projectorId": "canonical-json-value-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:f8c8fda67994548bf132ec4899879fb40690e46ecac65c9343fbdad5503826c6",
+        "expectedByteLength": 337,
+        "metaSchemaValidationRequired": true,
+        "verifierIds": [
+          "content-digest-verifier.v1",
+          "json-meta-schema-verifier.v1"
+        ]
+      },
+      "purpose": "Constrains the governed message value.",
+      "relationships": [],
+      "relativePath": "contracts/message.schema.json"
+    },
+    {
+      "artifactId": "message-contract.v1",
+      "artifactKind": "json-contract",
+      "mediaType": "application/json",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "message": "Schema to contract to artifacts to conformance to trust."
+          }
+        },
+        "authorityId": "message-contract-authority.v1",
+        "projectorId": "canonical-json-value-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:29236fc829a3feb7c122b32c8da5269c8338a2c6ed90d432f2aeccf31cb5452b",
+        "expectedByteLength": 76,
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ]
+      },
+      "purpose": "Declares the message consumed by the artifact family.",
+      "relationships": [
+        {
+          "artifactId": "message-schema.v1",
+          "relationshipType": "conforms-to"
+        }
+      ],
+      "relativePath": "contracts/message.json"
+    },
+    {
+      "artifactId": "message-projector-authority.v1",
+      "artifactKind": "semantic-execution-authority",
+      "mediaType": "application/json",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "authorityType": "semantic-projection-authority.v1",
+            "failure": {
+              "failurePolicyId": "invalid-message-failure.v1",
+              "message": "Message contract is invalid."
+            },
+            "input": {
+              "schemaArtifactId": "message-schema.v1"
+            },
+            "projection": {
+              "fields": [
+                {
+                  "outputField": "message",
+                  "sourcePath": [
+                    "message"
+                  ]
+                }
+              ],
+              "projectionMappingId": "message-output-dto.v1"
+            },
+            "result": {
+              "resultContractId": "projected-message-json.v1",
+              "serialization": "json-two-space-lf"
+            }
+          }
+        },
+        "authorityId": "message-projector-semantic-authority.v1",
+        "projectorId": "canonical-json-value-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:99e7c4623f2beb14eeb0e56038e4bcfcfef9b6eb9a1fa1d19042f0c8cbe17b9b",
+        "expectedByteLength": 553,
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ]
+      },
+      "purpose": "Materializes the contract-declared message projection semantics as runtime data.",
+      "relationships": [
+        {
+          "artifactId": "message-schema.v1",
+          "relationshipType": "reads"
+        }
+      ],
+      "relativePath": "contracts/project-message.authority.json"
+    },
+    {
+      "artifactId": "message-projector.v1",
+      "artifactKind": "javascript-module",
+      "mediaType": "text/javascript",
+      "projection": {
+        "authority": {
+          "authorityType": "lossless-source-tokens.v1",
+          "language": "javascript",
+          "tokens": [
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "executeSemanticProjection"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"contract-driven-artifact-governance-engine\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "messageSchema"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../contracts/message.schema.json\""
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "WithKeyword",
+              "text": "with"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "TypeKeyword",
+              "text": "type"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"json\""
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "projectMessageAuthority"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../contracts/project-message.authority.json\""
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "WithKeyword",
+              "text": "with"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "TypeKeyword",
+              "text": "type"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"json\""
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ExportKeyword",
+              "text": "export"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FunctionKeyword",
+              "text": "function"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "projectMessage"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "value"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": "  "
+            },
+            {
+              "kind": "ReturnKeyword",
+              "text": "return"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "executeSemanticProjection"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "projectMessageAuthority"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "messageSchema"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "value"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            }
+          ]
+        },
+        "authorityId": "message-projector-authority.v1",
+        "projectorId": "provenance-sealed-source-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:14fab807d3312823aea49c1f6b28a06417e817c1f90e4461c69949d6b979714f",
+        "expectedByteLength": 1202,
+        "verifierIds": [
+          "artifact-provenance-verifier.v1",
+          "authority-closure-verifier.v1",
+          "content-digest-verifier.v1",
+          "source-token-structure-verifier.v1"
+        ]
+      },
+      "purpose": "Projects canonical message bytes from a validated value.",
+      "relationships": [
+        {
+          "artifactId": "message-contract.v1",
+          "relationshipType": "projects"
+        },
+        {
+          "artifactId": "message-projector-authority.v1",
+          "relationshipType": "reads"
+        },
+        {
+          "artifactId": "message-schema.v1",
+          "relationshipType": "reads"
+        }
+      ],
+      "relativePath": "src/project-message.mjs",
+      "sourceAuthority": {
+        "decisions": [
+          {
+            "conditionExpression": "!value||typeofvalue!==\"object\"||typeofvalue.message!==\"string\"||value.message.length===0",
+            "decisionId": "invalid-message-guard.v1",
+            "occurrences": 1,
+            "policy": "Reject the value when any admitted message precondition is false.",
+            "responsibilityId": "project-message.v1",
+            "syntaxKind": "IfStatement"
+          },
+          {
+            "conditionExpression": "!value||typeofvalue!==\"object\"||typeofvalue.message!==\"string\"||value.message.length===0",
+            "decisionId": "message-precondition-chain.v1",
+            "occurrences": 3,
+            "policy": "Combine exactly four declared invalid-message predicates.",
+            "responsibilityId": "project-message.v1",
+            "syntaxKind": "LogicalOrExpression"
+          }
+        ],
+        "declarations": [
+          "projectMessage"
+        ],
+        "failurePolicies": [
+          {
+            "expression": "new Error(\"Message contract is invalid.\")",
+            "failurePolicyId": "invalid-message-failure.v1",
+            "occurrences": 1,
+            "policy": "Stop projection immediately with the declared error.",
+            "responsibilityId": "project-message.v1",
+            "syntaxKind": "ThrowStatement"
+          }
+        ],
+        "forbiddenSyntaxKinds": [
+          "CatchClause",
+          "ConditionalExpression",
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "ForStatement",
+          "LogicalAndExpression",
+          "NullishCoalescingExpression",
+          "SwitchStatement",
+          "TryStatement",
+          "WhileStatement"
+        ],
+        "iterations": [],
+        "projectionMappings": [
+          {
+            "fields": [
+              {
+                "outputField": "message",
+                "sourceExpression": "value.message"
+              }
+            ],
+            "occurrences": 1,
+            "projectionMappingId": "message-output-dto.v1",
+            "purpose": "Maps the admitted input message to the output message field.",
+            "responsibilityId": "project-message.v1"
+          }
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Declares the admitted message projection surface.",
+            "responsibilityId": "message-projector-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "projectMessage",
+            "functionKind": "function-declaration",
+            "purpose": "Binds one declared input to the trusted semantic execution authority.",
+            "responsibilityId": "project-message.v1",
+            "responsibilityType": "function"
+          }
+        ],
+        "resultContracts": [
+          {
+            "mediaType": "application/json",
+            "projectionMapping": {
+              "artifactId": "message-projector.v1",
+              "projectionMappingId": "message-output-dto.v1"
+            },
+            "purpose": "Returns deterministic two-space JSON followed by one LF.",
+            "resultContractId": "projected-message-json.v1",
+            "resultKind": "projected-json-text",
+            "source": {
+              "expression": "executeSemanticProjection(projectMessageAuthority,messageSchema,value)",
+              "occurrences": 1,
+              "responsibilityId": "project-message.v1",
+              "returnKind": "explicit-return",
+              "sourceType": "return"
+            }
+          }
+        ],
+        "semanticEdges": [
+          {
+            "argumentExpressions": [
+              "\"Message contract is invalid.\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "failure-authority",
+                "failurePolicyId": "invalid-message-failure.v1"
+              }
+            ],
+            "edgeId": "construct-invalid-message-error.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "new Error",
+            "purpose": "Constructs the declared validation failure.",
+            "responsibilityId": "project-message.v1"
+          },
+          {
+            "argumentExpressions": [
+              "{message:value.message}",
+              "null",
+              "2"
+            ],
+            "authorities": [
+              {
+                "authorityType": "projection-authority",
+                "projectionMappingId": "message-output-dto.v1"
+              },
+              {
+                "authorityType": "result-authority",
+                "resultContractId": "projected-message-json.v1"
+              }
+            ],
+            "edgeId": "serialize-message-dto.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "JSON.stringify",
+            "purpose": "Serializes the declared message projection mapping.",
+            "responsibilityId": "project-message.v1"
+          },
+          {
+            "argumentExpressions": [],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "message-projector-schema-data.v1"
+              }
+            ],
+            "edgeId": "bind-message-schema-authority.v1",
+            "edgeKind": "reference",
+            "occurrences": 1,
+            "operation": "messageSchema",
+            "purpose": "Binds the declared input schema as semantic execution data.",
+            "responsibilityId": "project-message.v1"
+          },
+          {
+            "argumentExpressions": [],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "message-projector-authority-data.v1"
+              }
+            ],
+            "edgeId": "bind-project-message-authority.v1",
+            "edgeKind": "reference",
+            "occurrences": 1,
+            "operation": "projectMessageAuthority",
+            "purpose": "Binds the declared projection authority as semantic execution data.",
+            "responsibilityId": "project-message.v1"
+          },
+          {
+            "argumentExpressions": [
+              "projectMessageAuthority",
+              "messageSchema",
+              "value"
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "semantic-projection-runtime.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "semantic-projection-runtime.v1"
+              },
+              {
+                "authorityType": "result-authority",
+                "resultContractId": "projected-message-json.v1"
+              }
+            ],
+            "edgeId": "execute-project-message-semantics.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "executeSemanticProjection",
+            "purpose": "Forwards the declared input and semantic data through the trusted runtime.",
+            "responsibilityId": "project-message.v1"
+          }
+        ]
+      }
+    },
+    {
+      "artifactId": "message-command.v1",
+      "artifactKind": "javascript-command",
+      "mediaType": "text/javascript",
+      "projection": {
+        "authority": {
+          "authorityType": "lossless-source-tokens.v1",
+          "language": "javascript",
+          "tokens": [
+            {
+              "kind": "Unknown",
+              "text": "#!/usr/bin/env node"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "readFileSync"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"node:fs\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "projectMessage"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../src/project-message.mjs\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "input"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "process"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "argv"
+            },
+            {
+              "kind": "OpenBracketToken",
+              "text": "["
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "2"
+            },
+            {
+              "kind": "CloseBracketToken",
+              "text": "]"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "QuestionQuestionToken",
+              "text": "??"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NewKeyword",
+              "text": "new"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "URL"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../contracts/message.json\""
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "meta"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "url"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "value"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "JSON"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "parse"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "readFileSync"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "input"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"utf8\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "Identifier",
+              "text": "process"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "stdout"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "write"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "projectMessage"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "value"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            }
+          ]
+        },
+        "authorityId": "message-command-authority.v1",
+        "projectorId": "provenance-sealed-source-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:51a4d64bfc007e06f4a2736088c94edc8f152e025bbb6a83a9263f875ebfc52a",
+        "expectedByteLength": 1025,
+        "verifierIds": [
+          "artifact-provenance-verifier.v1",
+          "authority-closure-verifier.v1",
+          "content-digest-verifier.v1",
+          "source-token-structure-verifier.v1"
+        ]
+      },
+      "purpose": "Reads the declared message and writes its canonical bytes.",
+      "relationships": [
+        {
+          "artifactId": "message-contract.v1",
+          "relationshipType": "reads"
+        },
+        {
+          "artifactId": "message-projector.v1",
+          "relationshipType": "invokes"
+        }
+      ],
+      "relativePath": "bin/run-message.mjs",
+      "sourceAuthority": {
+        "decisions": [
+          {
+            "conditionExpression": "process.argv[2]??newURL(\"../contracts/message.json\",import.meta.url)",
+            "decisionId": "default-message-input.v1",
+            "occurrences": 1,
+            "policy": "Use only the declared contract path when no input argument exists.",
+            "responsibilityId": "run-message-command.v1",
+            "syntaxKind": "NullishCoalescingExpression"
+          }
+        ],
+        "declarations": [
+          "input",
+          "value"
+        ],
+        "failurePolicies": [],
+        "forbiddenSyntaxKinds": [
+          "CatchClause",
+          "ConditionalExpression",
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "ForStatement",
+          "IfStatement",
+          "LogicalAndExpression",
+          "LogicalOrExpression",
+          "ObjectLiteralExpression",
+          "ReturnStatement",
+          "SwitchStatement",
+          "ThrowStatement",
+          "TryStatement",
+          "WhileStatement",
+          "WithStatement"
+        ],
+        "iterations": [],
+        "projectionMappings": [],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Reads, projects, and emits one admitted message.",
+            "responsibilityId": "run-message-command.v1",
+            "responsibilityType": "module"
+          }
+        ],
+        "resultContracts": [
+          {
+            "mediaType": "application/json",
+            "projectionMapping": {
+              "artifactId": "message-projector.v1",
+              "projectionMappingId": "message-output-dto.v1"
+            },
+            "purpose": "Emits exactly the admitted projected message.",
+            "resultContractId": "message-command-output.v1",
+            "resultKind": "projected-json-text",
+            "source": {
+              "argumentIndex": 0,
+              "effectId": "write-message-output.v1",
+              "occurrences": 1,
+              "semanticEdgeId": "write-message-output-edge.v1",
+              "sourceType": "effect",
+              "valueExpression": "projectMessage(value)"
+            }
+          }
+        ],
+        "semanticEdges": [
+          {
+            "argumentExpressions": [
+              "readFileSync(input,\"utf8\")"
+            ],
+            "authorities": [
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "parse-json-runtime.v1"
+              }
+            ],
+            "edgeId": "parse-command-message-json.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "JSON.parse",
+            "purpose": "Parses the admitted message-contract bytes.",
+            "responsibilityId": "run-message-command.v1"
+          },
+          {
+            "argumentExpressions": [
+              "value"
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "message-projector-module.v1"
+              }
+            ],
+            "edgeId": "project-command-message.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "projectMessage",
+            "purpose": "Invokes the admitted message projection responsibility.",
+            "responsibilityId": "run-message-command.v1"
+          },
+          {
+            "argumentExpressions": [
+              "input",
+              "\"utf8\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-fs-read.v1"
+              }
+            ],
+            "edgeId": "read-command-message.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "readFileSync",
+            "purpose": "Reads the message through the declared file-system port.",
+            "responsibilityId": "run-message-command.v1"
+          },
+          {
+            "argumentExpressions": [],
+            "authorities": [
+              {
+                "authorityType": "effect-authority",
+                "effectId": "read-message-input.v1"
+              }
+            ],
+            "edgeId": "read-message-input-reference.v1",
+            "edgeKind": "reference",
+            "occurrences": 1,
+            "operation": "process.argv",
+            "purpose": "Reads the optional declared message input argument.",
+            "responsibilityId": "run-message-command.v1"
+          },
+          {
+            "argumentExpressions": [
+              "\"../contracts/message.json\"",
+              "import.meta.url"
+            ],
+            "authorities": [
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "url-construction-runtime.v1"
+              }
+            ],
+            "edgeId": "resolve-command-message-url.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "new URL",
+            "purpose": "Resolves the default declared message-contract URL.",
+            "responsibilityId": "run-message-command.v1"
+          },
+          {
+            "argumentExpressions": [
+              "projectMessage(value)"
+            ],
+            "authorities": [
+              {
+                "authorityType": "effect-authority",
+                "effectId": "write-message-output.v1"
+              },
+              {
+                "authorityType": "result-authority",
+                "resultContractId": "message-command-output.v1"
+              }
+            ],
+            "edgeId": "write-message-output-edge.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "process.stdout.write",
+            "purpose": "Writes the declared projected-message result.",
+            "responsibilityId": "run-message-command.v1"
+          }
+        ]
+      }
+    },
+    {
+      "artifactId": "message-verification.v1",
+      "artifactKind": "verification-command",
+      "mediaType": "text/javascript",
+      "projection": {
+        "authority": {
+          "authorityType": "lossless-source-tokens.v1",
+          "language": "javascript",
+          "tokens": [
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"node:assert/strict\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "readFileSync"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"node:fs\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "projectMessage"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../src/project-message.mjs\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "value"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "JSON"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "parse"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "readFileSync"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "NewKeyword",
+              "text": "new"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "URL"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../contracts/message.json\""
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "meta"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "url"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"utf8\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "projectMessage"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "value"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"{\\n  \\\"message\\\": \\\"Schema to contract to artifacts to conformance to trust.\\\"\\n}\\n\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "Identifier",
+              "text": "process"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "stdout"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "write"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"ARTIFACT_TEST_CONFORMS\\n\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            }
+          ]
+        },
+        "authorityId": "message-verification-authority.v1",
+        "projectorId": "provenance-sealed-source-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:b83984c76f547479e01062cbefcf100818e0c7f4fe6159d3d2b9fd3a1ced16b6",
+        "expectedByteLength": 1141,
+        "verifierIds": [
+          "artifact-provenance-verifier.v1",
+          "authority-closure-verifier.v1",
+          "content-digest-verifier.v1",
+          "source-token-structure-verifier.v1"
+        ]
+      },
+      "purpose": "Evaluates the declared message projection.",
+      "relationships": [
+        {
+          "artifactId": "message-contract.v1",
+          "relationshipType": "verifies"
+        },
+        {
+          "artifactId": "message-projector.v1",
+          "relationshipType": "verifies"
+        },
+        {
+          "artifactId": "message-projector.v1",
+          "relationshipType": "invokes"
+        }
+      ],
+      "relativePath": "verification/verifies-message.mjs",
+      "sourceAuthority": {
+        "decisions": [],
+        "declarations": [
+          "value"
+        ],
+        "failurePolicies": [],
+        "forbiddenSyntaxKinds": [
+          "CatchClause",
+          "ConditionalExpression",
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "ForStatement",
+          "IfStatement",
+          "LogicalAndExpression",
+          "LogicalOrExpression",
+          "NullishCoalescingExpression",
+          "ObjectLiteralExpression",
+          "ReturnStatement",
+          "SwitchStatement",
+          "ThrowStatement",
+          "TryStatement",
+          "WhileStatement",
+          "WithStatement"
+        ],
+        "iterations": [],
+        "projectionMappings": [],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Evaluates the declared message projection proof.",
+            "responsibilityId": "verify-message-projection.v1",
+            "responsibilityType": "module"
+          }
+        ],
+        "resultContracts": [
+          {
+            "mediaType": "text/plain",
+            "purpose": "Emits the exact admitted conformance signal.",
+            "resultContractId": "message-verification-signal.v1",
+            "resultKind": "proof-signal",
+            "source": {
+              "argumentIndex": 0,
+              "effectId": "write-message-output.v1",
+              "occurrences": 1,
+              "semanticEdgeId": "write-verification-proof-edge.v1",
+              "sourceType": "effect",
+              "valueExpression": "\"ARTIFACT_TEST_CONFORMS\\n\""
+            }
+          }
+        ],
+        "semanticEdges": [
+          {
+            "argumentExpressions": [
+              "projectMessage(value)",
+              "\"{\\n  \\\"message\\\": \\\"Schema to contract to artifacts to conformance to trust.\\\"\\n}\\n\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              }
+            ],
+            "edgeId": "assert-message-projection-edge.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "assert.equal",
+            "purpose": "Asserts exact projected-message bytes.",
+            "responsibilityId": "verify-message-projection.v1"
+          },
+          {
+            "argumentExpressions": [
+              "readFileSync(newURL(\"../contracts/message.json\",import.meta.url),\"utf8\")"
+            ],
+            "authorities": [
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "parse-json-runtime.v1"
+              }
+            ],
+            "edgeId": "parse-verification-message-json.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "JSON.parse",
+            "purpose": "Parses the admitted verification input.",
+            "responsibilityId": "verify-message-projection.v1"
+          },
+          {
+            "argumentExpressions": [
+              "value"
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "message-projector-module.v1"
+              }
+            ],
+            "edgeId": "project-verification-message.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "projectMessage",
+            "purpose": "Invokes the admitted message projection responsibility.",
+            "responsibilityId": "verify-message-projection.v1"
+          },
+          {
+            "argumentExpressions": [
+              "newURL(\"../contracts/message.json\",import.meta.url)",
+              "\"utf8\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-fs-read.v1"
+              }
+            ],
+            "edgeId": "read-verification-message.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "readFileSync",
+            "purpose": "Reads verification input through the declared port.",
+            "responsibilityId": "verify-message-projection.v1"
+          },
+          {
+            "argumentExpressions": [
+              "\"../contracts/message.json\"",
+              "import.meta.url"
+            ],
+            "authorities": [
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "url-construction-runtime.v1"
+              }
+            ],
+            "edgeId": "resolve-verification-message-url.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "new URL",
+            "purpose": "Resolves the declared verification input URL.",
+            "responsibilityId": "verify-message-projection.v1"
+          },
+          {
+            "argumentExpressions": [
+              "\"ARTIFACT_TEST_CONFORMS\\n\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "effect-authority",
+                "effectId": "write-message-output.v1"
+              },
+              {
+                "authorityType": "result-authority",
+                "resultContractId": "message-verification-signal.v1"
+              }
+            ],
+            "edgeId": "write-verification-proof-edge.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "process.stdout.write",
+            "purpose": "Writes the declared proof signal.",
+            "responsibilityId": "verify-message-projection.v1"
+          }
+        ]
+      }
+    },
+    {
+      "artifactId": "artifact-family-readme.v1",
+      "artifactKind": "markdown-document",
+      "mediaType": "text/markdown",
+      "projection": {
+        "authority": {
+          "authorityType": "governed-artifact-contract-markdown.v1",
+          "documentStatusLabel": "Governed review projection",
+          "documentTitle": "Governed Message Artifact Family",
+          "futureStatePreview": [
+            "One admitted contract projects the complete artifact family and the architecture review document used to inspect it.",
+            "The review document is derived from structured contract authority, so its artifact inventory, projection bindings, relationships, conformance gates, and trust vocabulary cannot drift independently."
+          ],
+          "reviewChecklist": [
+            "Every artifact path is enumerated and exact.",
+            "Every import and package use resolves to one dependency authority.",
+            "Every function resolves to one declared responsibility.",
+            "Every invocation and governed reference resolves to one semantic edge.",
+            "Every external operation resolves to one effect port.",
+            "Every DTO field resolves to one projection mapping.",
+            "Every branch and iteration resolves to a named authority.",
+            "Every thrown failure resolves to one failure policy.",
+            "Every return or emitted result resolves to one result contract.",
+            "Every trust claim resolves to a named proof requirement.",
+            "The closed-world authority-closure profile is exact and immutable.",
+            "The artifact inventory resolves through one explicit governed-scope authority.",
+            "The contract is the sole authored change authority, every governed artifact is replace-only projected state, and proof is observational."
+          ],
+          "reviewerPerspective": {
+            "objective": "to inspect the complete admitted artifact authority in one deterministic document",
+            "outcome": "projection and conformance decisions can be reviewed without manually reconstructing the JSON contract",
+            "role": "an architecture reviewer"
+          },
+          "sectionOrder": [
+            "future-state-preview",
+            "reviewer-perspective",
+            "governing-loop",
+            "contract-authority",
+            "semantic-subject",
+            "artifact-family",
+            "projection-authorities",
+            "dependency-authorities",
+            "effect-authorities",
+            "runtime-authorities",
+            "source-authority-closures",
+            "authority-closure-profile",
+            "artifact-scope-authority",
+            "operation-authorities",
+            "artifact-relationships",
+            "exclusions",
+            "conformance-evaluation",
+            "terminal-dispositions",
+            "receipt-requirements",
+            "claim-policies",
+            "review-checklist"
+          ]
+        },
+        "authorityId": "artifact-family-readme-authority.v1",
+        "projectorId": "governed-artifact-contract-markdown-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:edb9c2813247152b0eccea71fdf7462ffdada33d1c2e5276e4186e95d24cf2cb",
+        "expectedByteLength": 24686,
+        "requiredSections": [
+          "# Governed Message Artifact Family",
+          "## Future-State Preview",
+          "## Reviewer Perspective",
+          "## Governing Loop",
+          "## Contract Authority",
+          "## Semantic Subject",
+          "## Artifact Family",
+          "## Projection Authorities",
+          "## Dependency Authorities",
+          "## Effect Authorities",
+          "## Runtime Authorities",
+          "## Source Authority Closures",
+          "## Authority Closure Profile",
+          "## Artifact Scope Authority",
+          "## Operation Authorities",
+          "## Artifact Relationships",
+          "## Exclusions",
+          "## Conformance Evaluation",
+          "## Terminal Dispositions",
+          "## Receipt Requirements",
+          "## Claim Policies",
+          "## Review Checklist"
+        ],
+        "verifierIds": [
+          "content-digest-verifier.v1",
+          "markdown-section-verifier.v1"
+        ]
+      },
+      "purpose": "Projects the complete contract authority into an architecture review document.",
+      "relationships": [
+        {
+          "artifactId": "message-command.v1",
+          "relationshipType": "documents"
+        },
+        {
+          "artifactId": "message-verification.v1",
+          "relationshipType": "documents"
+        }
+      ],
+      "relativePath": "README.md"
+    },
+    {
+      "artifactId": "closed-loop-diagram.v1",
+      "artifactKind": "mermaid-diagram",
+      "mediaType": "text/vnd.mermaid",
+      "projection": {
+        "authority": {
+          "authorityType": "utf8-text.v1",
+          "text": "flowchart LR\n  S[Schema] --> C[Contract]\n  C --> A[Artifacts]\n  A --> E[Conformance]\n  E --> T[Trust]\n  T -. admitted change .-> S\n"
+        },
+        "authorityId": "closed-loop-diagram-authority.v1",
+        "projectorId": "utf8-text-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:4d7c0a4417e128935bc534f981c454b42b5655583657c16fc07564bb22660356",
+        "expectedByteLength": 131,
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ]
+      },
+      "purpose": "Shows the governed closed loop.",
+      "relationships": [
+        {
+          "artifactId": "artifact-family-readme.v1",
+          "relationshipType": "documents"
+        }
+      ],
+      "relativePath": "architecture/closed-loop.mmd"
+    },
+    {
+      "artifactId": "artifact-family-manifest.v1",
+      "artifactKind": "package-manifest",
+      "mediaType": "application/json",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "dependencies": {
+              "contract-driven-artifact-governance-engine": "0.11.0"
+            },
+            "name": "governed-message-artifact-family",
+            "private": true,
+            "scripts": {
+              "start": "node bin/run-message.mjs",
+              "test": "node verification/verifies-message.mjs"
+            },
+            "type": "module",
+            "version": "1.0.0"
+          }
+        },
+        "authorityId": "artifact-family-manifest-authority.v1",
+        "projectorId": "canonical-json-value-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:c731ebc968edacacba744243f6341ba9950a1e258034a5b7e525551a3cd12740",
+        "expectedByteLength": 308,
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ]
+      },
+      "purpose": "Declares the executable artifact-family entrypoints.",
+      "relationships": [
+        {
+          "artifactId": "message-command.v1",
+          "relationshipType": "invokes"
+        },
+        {
+          "artifactId": "message-verification.v1",
+          "relationshipType": "invokes"
+        }
+      ],
+      "relativePath": "package.json"
+    },
+    {
+      "artifactId": "design-decision-record.v1",
+      "artifactKind": "markdown-document",
+      "mediaType": "text/markdown",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "recordType": "design-decision-record.v1",
+            "title": "Cryptographic lineage from canonical intent through executable projection"
+          }
+        },
+        "authorityId": "design-decision-record-authority.v1",
+        "projectorId": "design-decision-record-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:08a47d309df7366c5029923d3da8a1e4e0ee15f2eb1fe8ca330e837a1a4d5f9e",
+        "expectedByteLength": 4093,
+        "verifierIds": [
+          "content-digest-verifier.v1"
+        ]
+      },
+      "purpose": "Projects the governed design decision record derived from the authorizing conversation.",
+      "relationships": [
+        {
+          "artifactId": "closed-loop-diagram.v1",
+          "relationshipType": "documents"
+        }
+      ],
+      "relativePath": "architecture/decisions/cryptographic-lineage.md"
+    }
+  ],
+  "claims": [
+    {
+      "claim": "COMPLETE",
+      "claimId": "artifact-family-complete.v1"
+    },
+    {
+      "claim": "CONTRACT_AUTHORITY_CLOSED",
+      "claimId": "contract-authority-closed.v1"
+    },
+    {
+      "claim": "TRUSTED",
+      "claimId": "artifact-family-trusted.v1"
+    }
+  ],
+  "conformance": {
+    "artifactEvaluations": [
+      {
+        "command": [
+          "node",
+          "verification/verifies-message.mjs"
+        ],
+        "evaluationId": "message-projection-evaluation.v1",
+        "expectedExitCode": 0,
+        "expectedStdoutContains": "ARTIFACT_TEST_CONFORMS",
+        "verifierId": "command-exit-verifier.v1"
+      }
+    ]
+  },
+  "contract": {
+    "contractId": "governed-message-artifact-family.v1",
+    "contractType": "governed-artifact-contract.v1",
+    "contractVersion": "1.14.0",
+    "status": "admitted"
+  },
+  "dependencies": [
+    {
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-semantic-authority",
+        "portId": "message-projector-authority-data.v1"
+      },
+      "dependencyId": "message-projector-authority-data.v1",
+      "specifier": "../contracts/project-message.authority.json",
+      "usedByArtifacts": [
+        "message-projector.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "projectMessage"
+      ],
+      "allowedInvocations": [
+        "projectMessage"
+      ],
+      "authority": {
+        "artifactId": "message-projector.v1",
+        "authorityType": "artifact-authority.v1",
+        "responsibilityId": "project-message.v1",
+        "semanticEdge": "invokes"
+      },
+      "dependencyId": "message-projector-module.v1",
+      "specifier": "../src/project-message.mjs",
+      "usedByArtifacts": [
+        "message-command.v1",
+        "message-verification.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-semantic-schema",
+        "portId": "message-projector-schema-data.v1"
+      },
+      "dependencyId": "message-projector-schema-data.v1",
+      "specifier": "../contracts/message.schema.json",
+      "usedByArtifacts": [
+        "message-projector.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [
+        "default.equal"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "evaluate-proof",
+        "portId": "assert-message-projection.v1"
+      },
+      "dependencyId": "node-assert-strict.v1",
+      "specifier": "node:assert/strict",
+      "usedByArtifacts": [
+        "message-verification.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "readFileSync"
+      ],
+      "allowedInvocations": [
+        "readFileSync"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-file-system",
+        "portId": "read-message-contract.v1"
+      },
+      "dependencyId": "node-fs-read.v1",
+      "specifier": "node:fs",
+      "usedByArtifacts": [
+        "message-command.v1",
+        "message-verification.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "executeSemanticProjection"
+      ],
+      "allowedInvocations": [
+        "executeSemanticProjection"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "execute-semantic-authority",
+        "portId": "semantic-projection-runtime.v1"
+      },
+      "dependencyId": "semantic-projection-runtime.v1",
+      "specifier": "contract-driven-artifact-governance-engine",
+      "usedByArtifacts": [
+        "message-projector.v1"
+      ]
+    }
+  ],
+  "designAuthority": {
+    "authorityType": "conversation-design-authority.v1",
+    "conversationDigest": "sha256:ace83903d95c7921f8ccaef2165aafcb7619374751db4fc9995642fb4f9728b6",
+    "decisions": [
+      {
+        "decisionId": "seal-executable-lineage",
+        "disposition": "accepted",
+        "source": "Strong invariant",
+        "statement": "Every executable artifact carries a cryptographic commitment to project, feature, scenario, obligation, responsibility, semantic authority, projection authority, projector implementation, and executable bytes."
+      },
+      {
+        "decisionId": "body-is-proof-surface",
+        "disposition": "accepted",
+        "source": "The executable becomes the proof surface",
+        "statement": "The projected body carries the commitment inline rather than in a separate lineage document."
+      },
+      {
+        "decisionId": "canonical-lineage-subject",
+        "disposition": "accepted",
+        "source": "Canonical lineage hash",
+        "statement": "The lineage commitment is computed from a canonicalized subject with a per-node digest, not from loose strings."
+      },
+      {
+        "decisionId": "three-part-provenance-bind",
+        "disposition": "accepted",
+        "source": "Canonical lineage hash",
+        "statement": "artifact-provenance-sha256 = hash(lineage-sha256 + body-sha256 + projector-implementation-sha256)."
+      },
+      {
+        "decisionId": "cryptographic-not-encryption",
+        "disposition": "accepted",
+        "source": "One important terminology correction",
+        "statement": "The mechanism is cryptographic commitment and tamper evidence, never encryption."
+      },
+      {
+        "decisionId": "break-the-chain-cases",
+        "disposition": "accepted",
+        "source": "What this proves",
+        "statement": "Changing the scenario, the body, the projector, or the semantic authority must each break the commitment."
+      },
+      {
+        "decisionId": "design-authority-is-governed",
+        "disposition": "accepted",
+        "source": "I would actually add this to the contract",
+        "statement": "The conversation becomes a governed artifact: conversationAuthority to designDecisionAuthority to implementationAuthority to conformanceAuthority."
+      },
+      {
+        "decisionId": "decision-tie-out-matrix",
+        "disposition": "accepted",
+        "source": "Decision Tie-Out Matrix",
+        "statement": "Every implemented change maps back to a discussion decision; no implementation exists without a mapped decision."
+      },
+      {
+        "decisionId": "explicit-deviation-report",
+        "disposition": "accepted",
+        "source": "Explicit Deviation Report",
+        "statement": "Every deviation states proposal, implementation, reason, and impact. No silent interpretation."
+      },
+      {
+        "decisionId": "design-lineage-digests",
+        "disposition": "accepted",
+        "source": "Lineage Commitment",
+        "statement": "Conversation, decision record, implementation, and tie-out digests bind the design chain."
+      },
+      {
+        "decisionId": "shebang-placement",
+        "disposition": "modified",
+        "source": "Body header example",
+        "statement": "The seal is written after a shebang rather than above it."
+      },
+      {
+        "decisionId": "semantic-authority-optional",
+        "disposition": "modified",
+        "source": "Canonical lineage hash",
+        "statement": "semanticAuthority is committed as none for bodies that read no semantic authority."
+      },
+      {
+        "decisionId": "feature-slicing",
+        "disposition": "deferred",
+        "source": "Feature slicing becomes natural",
+        "statement": "Query a feature and resolve its scenarios, obligations, responsibilities, bodies, observations, and conformance."
+      },
+      {
+        "decisionId": "replay-engine",
+        "disposition": "deferred",
+        "source": "Replay",
+        "statement": "Resolve every committed authority by digest, reproject, re-execute, and compare, or emit REPLAY_AUTHORITY_UNAVAILABLE."
+      },
+      {
+        "decisionId": "simulation-mode",
+        "disposition": "deferred",
+        "source": "Simulation",
+        "statement": "Execute the semantic authority in simulation before any source projection."
+      },
+      {
+        "decisionId": "receipts-as-secondary-index",
+        "disposition": "deferred",
+        "source": "Receipts should become secondary indexes",
+        "statement": "Receipts shrink to observational records referencing artifactProvenanceSha256."
+      }
+    ],
+    "deviations": [
+      {
+        "decisionId": "shebang-placement",
+        "impact": "Command bodies carry the identical seal one line lower; the sealed payload digest is unchanged.",
+        "implemented": "A shebang line is preserved as line 1 and the seal follows immediately after it.",
+        "proposed": "The header example places @generated on the first line of the body.",
+        "reason": "A command body whose first line is not #! is not executable by the declared port."
+      },
+      {
+        "decisionId": "semantic-authority-optional",
+        "impact": "Those two body kinds commit to a subject with an explicit absence rather than an invented digest.",
+        "implemented": "The node is null and the header records none when the body reads no semantic authority.",
+        "proposed": "The lineage subject example always carries a semanticAuthority node with an authorityId and digest.",
+        "reason": "Command and verification bodies have no semantic authority to commit to; fabricating one would be a false commitment."
+      }
+    ],
+    "tieOut": [
+      {
+        "artifactIds": [
+          "message-projector.v1",
+          "message-command.v1",
+          "message-verification.v1"
+        ],
+        "decisionId": "seal-executable-lineage"
+      },
+      {
+        "artifactIds": [
+          "message-projector.v1"
+        ],
+        "decisionId": "body-is-proof-surface"
+      },
+      {
+        "artifactIds": [
+          "message-projector.v1"
+        ],
+        "decisionId": "canonical-lineage-subject"
+      },
+      {
+        "artifactIds": [
+          "message-projector.v1"
+        ],
+        "decisionId": "three-part-provenance-bind"
+      },
+      {
+        "artifactIds": [
+          "artifact-family-readme.v1"
+        ],
+        "decisionId": "cryptographic-not-encryption"
+      },
+      {
+        "artifactIds": [
+          "message-projector.v1"
+        ],
+        "decisionId": "break-the-chain-cases"
+      },
+      {
+        "artifactIds": [
+          "design-decision-record.v1"
+        ],
+        "decisionId": "design-authority-is-governed"
+      },
+      {
+        "artifactIds": [
+          "design-decision-record.v1"
+        ],
+        "decisionId": "decision-tie-out-matrix"
+      },
+      {
+        "artifactIds": [
+          "design-decision-record.v1"
+        ],
+        "decisionId": "explicit-deviation-report"
+      },
+      {
+        "artifactIds": [
+          "design-decision-record.v1"
+        ],
+        "decisionId": "design-lineage-digests"
+      },
+      {
+        "artifactIds": [
+          "message-command.v1"
+        ],
+        "decisionId": "shebang-placement"
+      },
+      {
+        "artifactIds": [
+          "message-command.v1"
+        ],
+        "decisionId": "semantic-authority-optional"
+      }
+    ]
+  },
+  "effects": [
+    {
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-process-arguments",
+        "portId": "read-message-input.v1"
+      },
+      "effectId": "read-message-input.v1",
+      "operation": "process.argv",
+      "usedByArtifacts": [
+        "message-command.v1"
+      ]
+    },
+    {
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "write-process-output",
+        "portId": "write-message-output.v1"
+      },
+      "effectId": "write-message-output.v1",
+      "operation": "process.stdout.write",
+      "usedByArtifacts": [
+        "message-command.v1",
+        "message-verification.v1"
+      ]
+    }
+  ],
+  "exclusions": [
+    ".env",
+    "secrets.json"
+  ],
+  "interpretationBase": {
+    "conformanceProfile": {
+      "digest": "sha256:e3362972b4629c285cb9ef5474936379b6b87b7f4124dc5670927792f049b1f7",
+      "identity": "closed-world-artifact-conformance.v8"
+    },
+    "engine": {
+      "digest": "sha256:2fc2f89e1ec5402d34ff86655f554b3e8add78a4bc6f6ba07086a86e8e927ad3",
+      "identity": "governed-artifact-engine.0.21.0"
+    },
+    "migrationRegistry": {
+      "digest": "sha256:7b4e0ee1074288b095d6f71d7430299447a9498c40ceb14106c858b2991a766b",
+      "identity": "governed-artifact-migration-registry.v1"
+    },
+    "projectorRegistry": {
+      "digest": "sha256:1ab8ec48c80324c862cf598813554847fc4224ecb146e8dbddf7d9b1efdb2785",
+      "identity": "governed-artifact-projector-registry.v1"
+    },
+    "schema": {
+      "digest": "sha256:beea2f82130ea5c4b419c70374deb0aaa0c7a98763a92eabac24894af635e8d4",
+      "identity": "https://canonical.local/schemas/governed-artifact-contract.schema.json"
+    },
+    "verifierRegistry": {
+      "digest": "sha256:fb7df5deb813be792c2da1fd573f2456236c5af17594001c803d2fc10899c17a",
+      "identity": "governed-artifact-verifier-registry.v1"
+    }
+  },
+  "lineage": {
+    "authorityType": "canonical-lineage-authority.v1",
+    "features": [
+      {
+        "featureId": "project-governed-messages",
+        "projectId": "governed-message-artifact-family",
+        "purpose": "Render a governed message from declared contract meaning."
+      }
+    ],
+    "obligations": [
+      {
+        "obligationId": "produce-one-canonical-message",
+        "scenarioId": "project-a-declared-message",
+        "statement": "Exactly one canonical message must be produced from declared semantic authority."
+      },
+      {
+        "obligationId": "emit-the-message-once",
+        "scenarioId": "run-the-message-command",
+        "statement": "The command must emit the projected message exactly once."
+      },
+      {
+        "obligationId": "prove-the-message-conforms",
+        "scenarioId": "verify-the-projected-message",
+        "statement": "Verification must prove the projected message conforms."
+      }
+    ],
+    "projectId": "governed-message-artifact-family",
+    "responsibilities": [
+      {
+        "artifactId": "message-projector.v1",
+        "obligationId": "produce-one-canonical-message",
+        "projectionProfileId": "javascript-semantic-execution-body.v1",
+        "responsibilityId": "executes-message-projection",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "message-command.v1",
+        "obligationId": "emit-the-message-once",
+        "projectionProfileId": "javascript-command-body.v1",
+        "responsibilityId": "entry-point-for-message-command",
+        "responsibilityType": "command-entry"
+      },
+      {
+        "artifactId": "message-verification.v1",
+        "obligationId": "prove-the-message-conforms",
+        "projectionProfileId": "javascript-verification-body.v1",
+        "responsibilityId": "evaluates-message-proof",
+        "responsibilityType": "proof-evaluation"
+      }
+    ],
+    "scenarios": [
+      {
+        "featureId": "project-governed-messages",
+        "purpose": "A declared message value is projected into canonical output.",
+        "scenarioId": "project-a-declared-message"
+      },
+      {
+        "featureId": "project-governed-messages",
+        "purpose": "The projected message is emitted through the declared command port.",
+        "scenarioId": "run-the-message-command"
+      },
+      {
+        "featureId": "project-governed-messages",
+        "purpose": "The projected message is proved against its declared expectation.",
+        "scenarioId": "verify-the-projected-message"
+      }
+    ]
+  },
+  "projectionLedger": {
+    "relativePath": ".governance/projections/governed-message-artifact-family.ledger.json"
+  },
+  "receipt": {
+    "relativePath": ".governance/receipts/governed-message-artifact-family.receipt.json"
+  },
+  "runtimeAuthorities": [
+    {
+      "invocation": "JSON.parse",
+      "purpose": "Parses admitted UTF-8 JSON input.",
+      "runtimeAuthorityId": "parse-json-runtime.v1",
+      "usedByArtifacts": [
+        "message-command.v1",
+        "message-verification.v1"
+      ]
+    },
+    {
+      "invocation": "executeSemanticProjection",
+      "purpose": "Executes contract-declared validation, DTO projection, failure, and result serialization semantics.",
+      "runtimeAuthorityId": "semantic-projection-runtime.v1",
+      "usedByArtifacts": [
+        "message-projector.v1"
+      ]
+    },
+    {
+      "invocation": "new URL",
+      "purpose": "Resolves the declared message-contract location.",
+      "runtimeAuthorityId": "url-construction-runtime.v1",
+      "usedByArtifacts": [
+        "message-command.v1",
+        "message-verification.v1"
+      ]
+    }
+  ],
+  "subject": {
+    "authority": {
+      "closedLoop": [
+        "schema",
+        "contract",
+        "artifacts",
+        "conformance",
+        "trust"
+      ]
+    },
+    "purpose": "Prove deterministic governance across a heterogeneous artifact family.",
+    "subjectId": "governed-message-artifact-family.v1",
+    "subjectType": "artifact-family"
+  },
+  "workspace": {
+    "artifactRoot": "governed-message-artifact-family",
+    "governedScope": {
+      "governedDirectories": [],
+      "inventoryMode": "exclusive-subtree",
+      "outsideScopePosture": "outside-authority",
+      "requiredDisposition": "ARTIFACT_SCOPE_CLOSED",
+      "scopeType": "exclusive-artifact-subtree.v1"
+    },
+    "pathExceptions": [],
+    "workspaceRoot": "."
+  }
+}

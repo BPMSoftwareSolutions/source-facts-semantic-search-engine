@@ -1,0 +1,269 @@
+{
+  "$schema": "governed-artifact-contract.schema.json",
+  "contract": {
+    "contractType": "governed-artifact-contract.v1",
+    "contractId": "serves-query-console-authority",
+    "status": "admitted",
+    "contractVersion": "1.0.0"
+  },
+  "interpretationBase": {
+    "engine": {
+      "identity": "governed-artifact-engine",
+      "digest": "sha256:2fc2f89e1ec5402d34ff86655f554b3e8add78a4bc6f6ba07086a86e8e927ad3"
+    },
+    "schema": {
+      "identity": "governed-artifact-contract.schema.json",
+      "digest": "sha256:d95db56bc6838127bcb72da6532cd1c3b2552bfca864dc276ba134ed3f96c8a4"
+    },
+    "conformanceProfile": {
+      "identity": "closed-world-artifact-conformance.v8",
+      "digest": "sha256:4a4dd139e045c1435e406d178a6535f1a790bca254f1c7ca2886e38ca01debdb"
+    },
+    "projectorRegistry": {
+      "identity": "governed-artifact-projector-registry.v1",
+      "digest": "sha256:f6623e179f8ec44b57b0ded2b845afecd28944ca2f87cce642a2eeaebe41ab10"
+    },
+    "verifierRegistry": {
+      "identity": "governed-artifact-verifier-registry.v1",
+      "digest": "sha256:1243e31ec2fe9443fd355ab8ce4361d8046816b2924445dbf5c28337706b117b"
+    },
+    "migrationRegistry": {
+      "identity": "governed-artifact-migration-registry.v1",
+      "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "subject": {
+    "subjectType": "javascript-http-server",
+    "subjectId": "serves-query-console-server",
+    "purpose": "Query console HTTP server for source-facts semantic search engine",
+    "authority": "src/console/serves-query-console.js"
+  },
+  "workspace": {
+    "workspaceId": "source-facts-semantic-search-engine",
+    "workspaceRoot": "src/console",
+    "languageId": "javascript"
+  },
+  "projectionLedger": {
+    "projectionId": "serves-query-console-projection.v1",
+    "projectionDate": "2026-08-02T22:00:00.000Z",
+    "projections": [
+      {
+        "projectionType": "authority-declaration-projection",
+        "sourceAuthority": "contracts/serves-query-console.authority.json",
+        "projectedArtifactId": "serves-query-console-impl.v1",
+        "conformanceRatio": 1.0
+      }
+    ]
+  },
+  "dependencies": [
+    {
+      "identity": "node:fs/promises",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "identity": "node:http",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "identity": "node:path",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "identity": "query.js",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "identity": "route-dispatch-adapter.mjs",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "identity": "loopback-bind-adapter.mjs",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "identity": "csp-policy-adapter.mjs",
+      "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ],
+  "effects": [
+    {
+      "effectId": "http-server-binding-loopback",
+      "effectKind": "runtime-behavior",
+      "description": "HTTP server binds to loopback (127.0.0.1) only"
+    },
+    {
+      "effectId": "security-headers-emission",
+      "effectKind": "runtime-behavior",
+      "description": "All responses include CSP and security headers"
+    },
+    {
+      "effectId": "query-console-serving",
+      "effectKind": "runtime-behavior",
+      "description": "Serves query console UI and handles semantic queries"
+    }
+  ],
+  "runtimeAuthorities": [
+    {
+      "runtimeAuthorityId": "known-pathname-allow-map",
+      "authorityKind": "data-authority",
+      "sourceLocation": "src/console/serves-query-console.js:13",
+      "mechanic": "object-construction"
+    },
+    {
+      "runtimeAuthorityId": "hostname-validation-loopback",
+      "authorityKind": "validation-authority",
+      "sourceLocation": "src/console/serves-query-console.js:42-46",
+      "mechanic": "exception-handling"
+    },
+    {
+      "runtimeAuthorityId": "index-required-validation",
+      "authorityKind": "parameter-authority",
+      "sourceLocation": "src/console/serves-query-console.js:48",
+      "mechanic": "fallback"
+    },
+    {
+      "runtimeAuthorityId": "asset-path-validation",
+      "authorityKind": "parameter-authority",
+      "sourceLocation": "src/console/serves-query-console.js:49-50",
+      "mechanic": "fallback"
+    },
+    {
+      "runtimeAuthorityId": "headers-sent-state-mutation",
+      "authorityKind": "state-authority",
+      "sourceLocation": "src/console/serves-query-console.js:59-61",
+      "mechanic": "state-mutation"
+    },
+    {
+      "runtimeAuthorityId": "error-response-serialization",
+      "authorityKind": "format-authority",
+      "sourceLocation": "src/console/serves-query-console.js:61",
+      "mechanic": "serialization"
+    },
+    {
+      "runtimeAuthorityId": "error-disposition-check",
+      "authorityKind": "routing-authority",
+      "sourceLocation": "src/console/serves-query-console.js:45",
+      "mechanic": "branch"
+    },
+    {
+      "runtimeAuthorityId": "file-lines-iteration",
+      "authorityKind": "iteration-authority",
+      "sourceLocation": "src/console/serves-query-console.js:192-194",
+      "mechanic": "iteration"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifactId": "serves-query-console-impl.v1",
+      "artifactKind": "javascript-module",
+      "mediaType": "text/javascript",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "sourceFile": "src/console/serves-query-console.js",
+            "purpose": "HTTP server for query console UI and source queries",
+            "mechanics": 8,
+            "authorityBound": 8,
+            "conformanceRatio": 1.0
+          }
+        },
+        "authorityId": "serves-query-console-authority-set.v1",
+        "projectorId": "provenance-sealed-source-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "expectedByteLength": 10024,
+        "verifierIds": ["content-digest-verifier.v1"]
+      },
+      "purpose": "Query console HTTP server with authority-bound semantics",
+      "relationships": [
+        {
+          "artifactId": "serves-console-authority-set.v1",
+          "relationshipType": "governed-by"
+        }
+      ],
+      "relativePath": "src/console/serves-query-console.js"
+    },
+    {
+      "artifactId": "serves-console-authority-set.v1",
+      "artifactKind": "semantic-authority",
+      "mediaType": "application/json",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "schemaVersion": "authority-declaration.v1",
+            "totalMechanics": 8,
+            "authorityBound": 8,
+            "conformanceRatio": 1.0
+          }
+        },
+        "authorityId": "serves-console-authority-root.v1",
+        "projectorId": "canonical-json-value-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "expectedByteLength": 5000,
+        "verifierIds": ["content-digest-verifier.v1"]
+      },
+      "purpose": "Semantic authority declarations for 8 execution mechanics",
+      "relationships": [],
+      "relativePath": "contracts/serves-query-console.authority.json"
+    }
+  ],
+  "exclusions": [
+    "node_modules/",
+    "test/",
+    ".git/"
+  ],
+  "conformance": {
+    "conformanceId": "serves-console-conformance.v1",
+    "conformanceProfile": "closed-world-artifact-conformance.v8",
+    "conformanceRatio": 1.0,
+    "admissionGateName": "semantic-authority-gate",
+    "gateStatus": "READY",
+    "mechanicsAuthorized": 8,
+    "unresolvedDecisions": 0
+  },
+  "receipt": {
+    "receiptId": "serves-console-conformance-receipt.v1",
+    "receiptDate": "2026-08-02T22:00:00.000Z",
+    "receiptStatus": "AUTHORITY_BOUND",
+    "conformanceCertificate": "ISSUED",
+    "trustGate": "NOT_A_TRUST_GATE",
+    "trustDisposition": "CONFORMANCE_VERIFIED",
+    "findings": []
+  },
+  "claims": [
+    {
+      "claimId": "serves-console-complete-authority.claim",
+      "claimPolicy": "SEMANTIC_AUTHORITY_COMPLETE",
+      "claimDescription": "All 8 mechanics have authoritative semantic declarations with 0 pending decisions",
+      "claimEvaluation": "SATISFIED"
+    },
+    {
+      "claimId": "serves-console-deterministic-codegen.claim",
+      "claimPolicy": "DETERMINISTIC_CODE_GENERATION_ENABLED",
+      "claimDescription": "Authority coverage is sufficient to deterministically generate implementation",
+      "claimEvaluation": "SATISFIED"
+    }
+  ],
+  "lineage": {
+    "lineageId": "serves-console-lineage.v1",
+    "originDate": "2026-08-02T21:50:00.000Z",
+    "authoringDate": "2026-08-02T22:00:00.000Z",
+    "authority": "source-facts-semantic-search-engine",
+    "versionString": "1.0.0",
+    "parentLineageId": null,
+    "parentCardinality": "exactly-one"
+  },
+  "designAuthority": {
+    "designAuthorityId": "source-facts-engine-design.v1",
+    "designAuthorityName": "Source Facts Semantic Search Engine",
+    "designDate": "2026-08-02T21:50:00.000Z",
+    "designMethod": "automated-authority-projection-from-semantic-index",
+    "designDescription": "Authority derived from semantic analysis of 8 executable mechanics. Each mechanic analyzed, decisions resolved, authority bound.",
+    "designDisposition": "accepted"
+  }
+}

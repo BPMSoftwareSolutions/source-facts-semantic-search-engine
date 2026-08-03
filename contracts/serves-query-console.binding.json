@@ -1,0 +1,157 @@
+{
+  "schemaVersion": "authority-binding.v1",
+  "sourceFile": "src/console/serves-query-console.js",
+  "bindingTimestamp": "2026-08-02T21:50:00.000Z",
+  "bindingStatus": "COMPLETE",
+  "bindingSummary": {
+    "totalCandidates": 8,
+    "authorityBound": 8,
+    "pendingResolution": 0,
+    "coverageRatio": 1.0
+  },
+  "bindings": [
+    {
+      "candidateId": "projection-mapping-candidate-line-13",
+      "sourceLocation": "src/console/serves-query-console.js:13",
+      "mechanic": "object-construction",
+      "candidateType": "projection-mapping-candidate.v1",
+      "authorityMechanicId": "known-pathname-allow-map",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "contractId": "knownPathnameAllow",
+        "fields": ["/", "/index.html", "/api/index-info", "/api/query", "/api/snippet"],
+        "semanticCompleteness": "AUTHORITATIVE",
+        "allFieldsMapped": true,
+        "fieldOmissionPolicy": "Routes not in this map receive 404 (intentional)"
+      },
+      "status": "AUTHORITY_BOUND"
+    },
+    {
+      "candidateId": "failure-observation-candidate-line-42",
+      "sourceLocation": "src/console/serves-query-console.js:42-46",
+      "mechanic": "exception-handling",
+      "candidateType": "failure-observation-candidate.v1",
+      "authorityMechanicId": "hostname-validation-loopback",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "errorType": "Error",
+        "caughtDisposition": "HOSTNAME_NOT_ADMITTED",
+        "isCanonicalFailure": true,
+        "errorMessage": "The query console server may bind only to 127.0.0.1.",
+        "whyNotRecoverable": "Loopback binding is non-negotiable for security"
+      },
+      "status": "AUTHORITY_BOUND"
+    },
+    {
+      "candidateId": "fallback-policy-candidate-line-48",
+      "sourceLocation": "src/console/serves-query-console.js:48",
+      "mechanic": "fallback",
+      "candidateType": "fallback-policy-candidate.v1",
+      "authorityMechanicId": "index-required-validation",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "fallbackDetection": "index === null || typeof index !== 'object'",
+        "isOptional": false,
+        "hasRecovery": false,
+        "errorMessage": "A loaded source-fact-index.v1 is required.",
+        "blameAssignment": "Caller must provide valid index"
+      },
+      "status": "AUTHORITY_BOUND"
+    },
+    {
+      "candidateId": "fallback-policy-candidate-line-49",
+      "sourceLocation": "src/console/serves-query-console.js:49-50",
+      "mechanic": "fallback",
+      "candidateType": "fallback-policy-candidate.v1",
+      "authorityMechanicId": "asset-path-validation",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "fallbackDetection": "typeof consoleAssetPath !== 'string' || consoleAssetPath.trim().length === 0",
+        "isOptional": false,
+        "hasRecovery": false,
+        "errorMessage": "consoleAssetPath is required.",
+        "blameAssignment": "Caller must provide valid asset path"
+      },
+      "status": "AUTHORITY_BOUND"
+    },
+    {
+      "candidateId": "state-transition-candidate-line-59-61",
+      "sourceLocation": "src/console/serves-query-console.js:59-61",
+      "mechanic": "state-mutation",
+      "candidateType": "state-transition-authority-candidate.v1",
+      "authorityMechanicId": "headers-sent-state-mutation",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "stateMutated": "response.headersSent",
+        "guardCondition": "!response.headersSent",
+        "effect": "Security headers written to response",
+        "isIdempotent": false,
+        "whyGuardNeeded": "Headers can only be written once"
+      },
+      "status": "AUTHORITY_BOUND"
+    },
+    {
+      "candidateId": "serialization-profile-candidate-line-61",
+      "sourceLocation": "src/console/serves-query-console.js:61",
+      "mechanic": "serialization",
+      "candidateType": "serialization-profile-candidate.v1",
+      "authorityMechanicId": "error-response-serialization",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "format": "JSON",
+        "encoding": "UTF-8",
+        "canonical": "{ error: string }",
+        "isDeterministic": true,
+        "canonicalizationStrategy": "standard JSON.stringify with no special handling"
+      },
+      "status": "AUTHORITY_BOUND"
+    },
+    {
+      "candidateId": "decision-authority-candidate-line-45",
+      "sourceLocation": "src/console/serves-query-console.js:45",
+      "mechanic": "branch",
+      "candidateType": "decision-authority-candidate.v1",
+      "authorityMechanicId": "error-disposition-check",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "condition": "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
+        "trueBranch": "throw error (re-throw)",
+        "falseBranch": "continue to line 46",
+        "predicates": ["error?.disposition"],
+        "isComplete": true
+      },
+      "status": "AUTHORITY_BOUND"
+    },
+    {
+      "candidateId": "iteration-authority-candidate-line-192",
+      "sourceLocation": "src/console/serves-query-console.js:192-194",
+      "mechanic": "iteration",
+      "candidateType": "iteration-authority-candidate.v1",
+      "authorityMechanicId": "file-lines-iteration",
+      "authorityFile": "contracts/serves-query-console.authority.json",
+      "bindingDecisions": {
+        "collection": "allLines (string array)",
+        "iterationVar": "lineNumber",
+        "start": "firstLine",
+        "end": "lastLine",
+        "step": "1",
+        "ordering": "ascending",
+        "isOrderSignificant": true
+      },
+      "status": "AUTHORITY_BOUND"
+    }
+  ],
+  "coverage": {
+    "totalMechanics": 8,
+    "authorityBound": 8,
+    "coverageRatio": 1.0,
+    "admissionGate": "READY",
+    "readyForProduction": true
+  },
+  "nextSteps": [
+    "Code generation: Use authority declarations to generate deterministic implementations",
+    "Testing: Verify generated code matches authority specifications",
+    "Deployment: Replace original implementation with authority-bound version",
+    "Monitoring: Track conformance ratio during runtime"
+  ]
+}

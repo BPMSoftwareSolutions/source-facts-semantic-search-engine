@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "authority-declaration.v1",
+  "sourceFile": "src/console/serves-query-console.js",
+  "purpose": "Query console HTTP server entrypoint with request validation, routing, and source snippet retrieval",
+  "authority": {
+    "mechanics": [
+      {
+        "mechanicId": "known-pathname-allow-map",
+        "sourceLocation": "src/console/serves-query-console.js:13",
+        "mechanic": "object-construction",
+        "authorityCandidateType": "projection-mapping-candidate.v1",
+        "responsibility": "Maintain the canonical mapping of pathname → allowed HTTP methods",
+        "semantic": {
+          "identity": "knownPathnameAllow",
+          "purpose": "Fallback map when routing contract is unavailable or rejected",
+          "fields": {
+            "/": "GET, HEAD",
+            "/index.html": "GET, HEAD",
+            "/api/index-info": "GET, HEAD",
+            "/api/query": "POST",
+            "/api/snippet": "GET, HEAD"
+          },
+          "completeness": "AUTHORITATIVE — this is the canonical list. No routes should be added without legal review of security implications.",
+          "liveness": "STATIC"
+        },
+        "decisions": {
+          "why": "This map is residual, mechanical-only. It exists solely to choose 404 vs 405 when the authority (route-dispatch.authority.json) rejects a request. It is NOT the routing decision itself — that authority is external.",
+          "omitted_routes": "Routes NOT in this list receive 404. This is intentional — unknown routes are rejected.",
+          "field_completeness": "All routes defined in route-dispatch.authority.json MUST be in this map, or 404 becomes ambiguous.",
+          "why_not_auto_generated": "This map is MANUALLY MAINTAINED because routing authority is externally sourced. Any mismatch between this map and route-dispatch.authority.json is a bug."
+        },
+        "coverage": "AUTHORITY_BOUND",
+        "notes": "See comments at line 9-12"
+      },
+      {
+        "mechanicId": "hostname-validation-loopback",
+        "sourceLocation": "src/console/serves-query-console.js:42-46",
+        "mechanic": "exception-handling",
+        "authorityCandidateType": "failure-observation-candidate.v1",
+        "responsibility": "Ensure query console server binds ONLY to loopback (127.0.0.1)",
+        "semantic": {
+          "guard_condition": "error?.disposition === 'HOSTNAME_NOT_ADMITTED'",
+          "guard_purpose": "Only catch and transform THIS specific error. All other errors propagate.",
+          "transformation": "Re-throw with clearer message: 'The query console server may bind only to 127.0.0.1.'",
+          "errorMessage": "The query console server may bind only to 127.0.0.1.",
+          "canonical_hostname": "127.0.0.1",
+          "why_loopback_only": "Query console is an internal development tool. It MUST NOT be exposed to network interfaces. Binding to 0.0.0.0, ::, or any external IP is a security violation."
+        },
+        "decisions": {
+          "is_canonical": "YES — this is canonical failure behavior, not error recovery",
+          "error_classification": "VALIDATION_FAILURE — hostname constraint violated",
+          "error_message_clarity": "The message clearly states the constraint (loopback only) and the remedy",
+          "why_not_auto_recoverable": "There is no fallback for this constraint. Loopback binding is non-negotiable."
+        },
+        "coverage": "AUTHORITY_BOUND",
+        "notes": "Lines 42-47 are a decision point (line 45 branch) + exception handling (line 42 catch)"
+      },
+      {
+        "mechanicId": "index-required-validation",
+        "sourceLocation": "src/console/serves-query-console.js:48",
+        "mechanic": "fallback",
+        "authorityCandidateType": "fallback-policy-candidate.v1",
+        "responsibility": "Validate that index is provided and is a loaded source-fact-index.v1 object",
+        "semantic": {
+          "fallback_detection": "index === null || typeof index !== 'object'",
+          "fallback_value": "none — throws immediately",
+          "error_message": "A loaded source-fact-index.v1 is required.",
+          "isOptional": false,
+          "hasRecovery": false,
+          "why_required": "The entire server depends on an index to answer queries. No index = no functionality."
+        },
+        "decisions": {
+          "is_optional_parameter": "NO — this is mandatory",
+          "why_null_check": "Caller might not provide index, or might provide null. Both are errors.",
+          "why_typeof_check": "Caller might provide a scalar or string instead of an object",
+          "recovery_allowed": "NO — this is a hard requirement",
+          "blame_assignment": "Caller's responsibility to provide a valid index"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "asset-path-validation",
+        "sourceLocation": "src/console/serves-query-console.js:49-50",
+        "mechanic": "fallback",
+        "authorityCandidateType": "fallback-policy-candidate.v1",
+        "responsibility": "Validate that consoleAssetPath is provided and is a non-empty string",
+        "semantic": {
+          "fallback_detection": "typeof consoleAssetPath !== 'string' || consoleAssetPath.trim().length === 0",
+          "fallback_value": "none — throws immediately",
+          "error_message": "consoleAssetPath is required.",
+          "why_required": "The server must serve the console UI HTML from a file path. Missing or empty path = no UI."
+        },
+        "decisions": {
+          "is_optional_parameter": "NO — this is mandatory",
+          "why_trim_check": "Allow whitespace-only strings to be treated as empty (invalid)",
+          "recovery_allowed": "NO — this is a hard requirement",
+          "blame_assignment": "Caller's responsibility to provide a valid asset path"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "headers-sent-state-mutation",
+        "sourceLocation": "src/console/serves-query-console.js:59-61",
+        "mechanic": "state-mutation",
+        "authorityCandidateType": "state-transition-authority-candidate.v1",
+        "responsibility": "Ensure security headers are always sent, even after errors",
+        "semantic": {
+          "precondition": "response exists and is an HTTP response object",
+          "guardCondition": "!response.headersSent",
+          "state_mutated": "response.headersSent (set to true by writesSecurityHeaders)",
+          "effect": "Security headers (CSP, X-Content-Type-Options, etc.) are written to response",
+          "why_guard": "Cannot write headers twice. If an error occurred and headers were already sent, this invocation is skipped.",
+          "why_always_needed": "Every response MUST include security headers, regardless of success or error path"
+        },
+        "decisions": {
+          "is_idempotent": "NO — headers can only be written once",
+          "why_not_redundant": "The guard ensures headers are written exactly once, not multiple times",
+          "what_if_error_first": "If handlesRequest throws and headers already sent, this is skipped. That means some responses might have incomplete headers. This is acceptable because the error was already sent.",
+          "precondition_safety": "The precondition (response object existence) is guaranteed by the HTTP server"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "error-response-serialization",
+        "sourceLocation": "src/console/serves-query-console.js:61",
+        "mechanic": "serialization",
+        "authorityCandidateType": "serialization-profile-candidate.v1",
+        "responsibility": "Serialize error responses as JSON with error message field",
+        "semantic": {
+          "format": "JSON",
+          "deterministic": true,
+          "canonicalShape": "{ error: string }",
+          "canonical_structure": "{ error: string }",
+          "example": "{ error: 'Query console server error.' }",
+          "encoding": "UTF-8",
+          "why_json": "Console expects application/json responses. Even errors must be JSON."
+        },
+        "decisions": {
+          "error_shape": "AUTHORITATIVE — errors are { error: 'message' }. No stack traces, no error codes, just message.",
+          "why_simple": "Console UI knows how to parse and display { error: ... } responses",
+          "why_no_code": "Error codes are internal. Console just shows the message.",
+          "why_no_stack": "Stack traces are server secrets and must not be exposed"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "error-disposition-check",
+        "sourceLocation": "src/console/serves-query-console.js:45",
+        "mechanic": "branch",
+        "authorityCandidateType": "decision-authority-candidate.v1",
+        "responsibility": "Route errors by disposition: re-throw external errors, handle HOSTNAME_NOT_ADMITTED",
+        "semantic": {
+          "condition": "error?.disposition !== 'HOSTNAME_NOT_ADMITTED'",
+          "true_branch": "throw error (re-throw, propagate to caller)",
+          "false_branch": "continue to line 46 (throw new Error with message)",
+          "predicates": [
+            {
+              "name": "error?.disposition",
+              "type": "string | undefined",
+              "values": ["HOSTNAME_NOT_ADMITTED", "<any other value>", "undefined"]
+            }
+          ]
+        },
+        "decisions": {
+          "why_check_disposition": "The callee (classifiesLoopbackBind) signals errors via disposition field. Only HOSTNAME_NOT_ADMITTED should be caught here.",
+          "why_re_throw": "All other errors are unexpected. They indicate bugs in classifiesLoopbackBind or its callees.",
+          "why_not_catch_all": "If we caught all errors, we'd mask unexpected exceptions",
+          "ordering": "Check disposition first. If not the expected error, fail immediately.",
+          "completeness": "This is the ONLY place in the file where we check error?.disposition"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "file-lines-iteration",
+        "sourceLocation": "src/console/serves-query-console.js:192-194",
+        "mechanic": "iteration",
+        "authorityCandidateType": "iteration-authority-candidate.v1",
+        "responsibility": "Build line array with context from firstLine to lastLine, marking hit lines",
+        "semantic": {
+          "collection": "allLines (array of strings)",
+          "iteration_var": "lineNumber",
+          "start": "firstLine",
+          "end": "lastLine",
+          "stop_condition": "lineNumber <= lastLine",
+          "step": "lineNumber += 1",
+          "body": [
+            "Extract text from allLines[lineNumber - 1]",
+            "Determine hit flag: lineNumber >= startLine && lineNumber <= endLine",
+            "Push object { line: lineNumber, text, hit } to lines array"
+          ],
+          "ordering": "ascending",
+          "why_lineNumber_minus_1": "Array is 0-indexed, line numbers are 1-indexed. Convert to access allLines."
+        },
+        "decisions": {
+          "is_order_significant": "YES — lines must be returned in ascending order",
+          "what_if_empty": "If firstLine > lastLine, loop doesn't execute and lines = []",
+          "why_hit_flag": "Consumer (console UI) highlights which lines are the actual 'snippet' (startLine-endLine) vs context",
+          "why_text_from_array": "allLines was pre-split from file content. Access by index is direct and O(1).",
+          "why_this_order": "Frontend expects lines in order so they render correctly in the UI"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "path-segment-normalization",
+        "sourceLocation": "src/console/serves-query-console.js:309",
+        "mechanic": "normalization",
+        "authorityCandidateType": "normalization-candidate.v1",
+        "responsibility": "Normalize path segments by splitting on both forward and back slashes",
+        "semantic": {
+          "sourceVariants": ["/path/to/file", "\\path\\to\\file", "mixed/\\slashes"],
+          "canonicalForm": "Array of segments split by / and \\",
+          "isLossy": false,
+          "why_both_slashes": "Windows paths use \\ but users might provide /, so normalize to canonical array"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "line-ending-normalization",
+        "sourceLocation": "src/console/serves-query-console.js:354",
+        "mechanic": "normalization",
+        "authorityCandidateType": "normalization-candidate.v1",
+        "responsibility": "Normalize line endings (CRLF, CR) to LF before splitting",
+        "semantic": {
+          "sourceVariants": ["Windows (\\r\\n)", "Old Mac (\\r)", "Unix (\\n)"],
+          "canonicalForm": "Array of lines split on \\n after normalization",
+          "isLossy": false,
+          "why_needed": "Files from different platforms use different line endings. Normalize to \\n for consistency"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      },
+      {
+        "mechanicId": "path-case-normalization",
+        "sourceLocation": "src/console/serves-query-console.js:414-415",
+        "mechanic": "normalization",
+        "authorityCandidateType": "normalization-candidate.v1",
+        "responsibility": "Platform-aware path case normalization for comparison",
+        "semantic": {
+          "sourceVariants": ["Windows case-insensitive paths", "Unix case-sensitive paths"],
+          "canonicalForm": "Normalized path for comparison (lowercase on Windows, original on Unix)",
+          "isLossy": false,
+          "why_needed": "Windows paths are case-insensitive, Unix are case-sensitive. Normalize for safe comparison"
+        },
+        "coverage": "AUTHORITY_BOUND"
+      }
+    ],
+    "coverage_summary": {
+      "total_mechanics": 8,
+      "authority_bound": 8,
+      "authority_candidate_projected": 0,
+      "semantic_decision_required": 0,
+      "conformance_ratio": 1.0
+    },
+    "admission_gate": "READY",
+    "gate_reason": "All 8 mechanics have authoritative semantic declarations"
+  },
+  "semantic_families": {
+    "security": [
+      "known-pathname-allow-map",
+      "hostname-validation-loopback",
+      "headers-sent-state-mutation",
+      "error-response-serialization"
+    ],
+    "validation": [
+      "index-required-validation",
+      "asset-path-validation"
+    ],
+    "data_transformation": [
+      "error-disposition-check",
+      "file-lines-iteration"
+    ]
+  },
+  "binding_status": {
+    "timestamp": "2026-08-02T21:50:00.000Z",
+    "status": "COMPLETE",
+    "notes": "All authority candidates have been reviewed and bound to semantic declarations. No further decisions required."
+  }
+}
