@@ -63,14 +63,31 @@ function formatsFileDrillDown(report) {
   return lines;
 }
 
+const wiringDispositionLabels = Object.freeze({
+  DIRECT_DATA_AND_RUNTIME: "Direct data and runtime",
+  RUNTIME_ONLY: "Direct runtime only",
+  DATA_ONLY: "Direct data only",
+  TRANSITIVE_DATA_AND_RUNTIME: "Transitive data and runtime",
+  TRANSITIVE_RUNTIME_ONLY: "Transitive runtime only",
+  TRANSITIVE_DATA_ONLY: "Transitive data only",
+  NOT_DETERMINED_BEYOND_MAX_DEPTH: "Not determined (beyond max depth)",
+  NONE: "None determined",
+});
+
 /**
  * Answers "does this file already have data-driven capabilities wired in,"
  * independent of whether that wiring adds up to formal governance yet.
- * Direct (one-hop) import evidence only -- see resolves-data-driven-wiring.js.
+ * Direct = the file's own imports. Transitive = reached through one or more
+ * local ("./" / "../") import hops from a local helper file. See
+ * resolves-data-driven-wiring.js for the traversal rules (cycle-safe,
+ * depth-capped, non-local specifiers never followed as hops).
  */
 function formatsDataDrivenWiring(report) {
-  const wired = report.dataDrivenWiring.filter((entry) => entry.wiringDisposition !== "NONE");
   const totalFiles = report.dataDrivenWiring.length;
+  const byDisposition = new Map();
+  for (const entry of report.dataDrivenWiring) {
+    byDisposition.set(entry.wiringDisposition, (byDisposition.get(entry.wiringDisposition) ?? 0) + 1);
+  }
 
   const lines = [
     "## Data-Driven Wiring",
@@ -78,22 +95,32 @@ function formatsDataDrivenWiring(report) {
     "A different question again: not \"is this occurrence governed\" or \"does an",
     "authority document claim this file,\" but \"does this file's own source code",
     "already import a JSON contract/authority artifact and/or invoke a semantic",
-    "execution runtime.\" Detected directly from the scanner's import (`dependency`)",
-    "relationships -- one hop only, not followed transitively through local helpers.",
+    "execution runtime\" -- directly, or transitively through a local helper file.",
+    "Detected from the scanner's import (`dependency`) relationships.",
     "",
-    `${formatsCount(wired.length)} of ${formatsCount(totalFiles)} file(s) with observed mechanics have some direct wiring toward the contract/semantic layer.`,
+    "| Wiring posture | Files | Share |",
+    "|---|---:|---:|",
+    ...Object.keys(wiringDispositionLabels).map((disposition) => {
+      const count = byDisposition.get(disposition) ?? 0;
+      return `| ${wiringDispositionLabels[disposition]} | ${formatsCount(count)} | ${formatsPercent(count, totalFiles)} |`;
+    }),
     "",
   ];
 
-  if (wired.length === 0) {
-    lines.push("No file with observed mechanics directly imports a JSON contract or a semantic execution runtime.");
+  const notable = report.dataDrivenWiring.filter((entry) => entry.wiringDisposition !== "NONE");
+  if (notable.length === 0) {
+    lines.push("No file with observed mechanics has any determined wiring toward the contract/semantic layer.");
   } else {
-    lines.push("| File | Wiring | Imports contract data | Invokes semantic runtime |");
-    lines.push("|---|---|---|---|");
-    for (const entry of wired) {
-      const contractImports = entry.importsContractData.length > 0 ? entry.importsContractData.map((value) => `\`${value}\``).join(", ") : "—";
-      const runtimeImports = entry.invokesSemanticRuntime.length > 0 ? entry.invokesSemanticRuntime.map((value) => `\`${value}\``).join(", ") : "—";
-      lines.push(`| \`${entry.modulePath}\` | ${entry.wiringDisposition} | ${contractImports} | ${runtimeImports} |`);
+    lines.push("| File | Wiring | Direct evidence | Transitive evidence | Hops | Hop path |");
+    lines.push("|---|---|---|---|---:|---|");
+    for (const entry of notable) {
+      const directEvidence = [...entry.importsContractData, ...entry.invokesSemanticRuntime];
+      const transitiveEvidence = [...entry.transitiveContractPaths, ...entry.transitiveRuntimePaths];
+      const directCell = directEvidence.length > 0 ? directEvidence.map((value) => `\`${value}\``).join(", ") : "—";
+      const transitiveCell = transitiveEvidence.length > 0 ? transitiveEvidence.map((value) => `\`${value}\``).join(", ") : "—";
+      const hopCell = entry.hopCount ?? (entry.wiringDisposition === "NOT_DETERMINED_BEYOND_MAX_DEPTH" ? "capped" : "—");
+      const hopPathCell = entry.hopPath !== null ? entry.hopPath.map((value) => `\`${value}\``).join(" → ") : "—";
+      lines.push(`| \`${entry.modulePath}\` | ${entry.wiringDisposition} | ${directCell} | ${transitiveCell} | ${hopCell} | ${hopPathCell} |`);
     }
   }
   lines.push("");
@@ -282,9 +309,10 @@ export function formatsSelfGovernanceReportSummary(report) {
 
   const wired = dataDrivenWiring.filter((entry) => entry.wiringDisposition !== "NONE");
   lines.push("");
-  lines.push(`Data-driven wiring: ${wired.length} of ${dataDrivenWiring.length} file(s) with observed mechanics directly import a contract and/or semantic runtime`);
+  lines.push(`Data-driven wiring: ${wired.length} of ${dataDrivenWiring.length} file(s) with observed mechanics have determined wiring (direct or transitive)`);
   for (const entry of wired) {
-    lines.push(`  ${entry.modulePath} [${entry.wiringDisposition}]`);
+    const hopSuffix = entry.hopPath !== null ? ` via ${entry.hopPath.slice(1).join(" -> ")}` : "";
+    lines.push(`  ${entry.modulePath} [${entry.wiringDisposition}]${hopSuffix}`);
   }
 
   const dangling = findsDanglingAuthoritySources(report);

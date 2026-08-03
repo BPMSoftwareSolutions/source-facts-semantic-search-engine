@@ -149,14 +149,36 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["modulePath", "importsContractData", "invokesSemanticRuntime", "wiringDisposition"],
+        "required": [
+          "modulePath",
+          "importsContractData",
+          "invokesSemanticRuntime",
+          "transitiveContractPaths",
+          "transitiveRuntimePaths",
+          "hopCount",
+          "hopPath",
+          "wiringDisposition"
+        ],
         "additionalProperties": false,
         "properties": {
           "modulePath": { "type": "string", "minLength": 1 },
           "importsContractData": { "type": "array", "items": { "type": "string", "minLength": 1 } },
           "invokesSemanticRuntime": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "transitiveContractPaths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "transitiveRuntimePaths": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "hopCount": { "type": ["integer", "null"], "minimum": 1 },
+          "hopPath": { "type": ["array", "null"], "items": { "type": "string", "minLength": 1 } },
           "wiringDisposition": {
-            "enum": ["DIRECT_DATA_AND_RUNTIME", "RUNTIME_ONLY", "DATA_ONLY", "NONE"]
+            "enum": [
+              "DIRECT_DATA_AND_RUNTIME",
+              "RUNTIME_ONLY",
+              "DATA_ONLY",
+              "TRANSITIVE_DATA_AND_RUNTIME",
+              "TRANSITIVE_RUNTIME_ONLY",
+              "TRANSITIVE_DATA_ONLY",
+              "NOT_DETERMINED_BEYOND_MAX_DEPTH",
+              "NONE"
+            ]
           }
         }
       }

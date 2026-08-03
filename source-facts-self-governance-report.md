@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-03T19:03:15.873Z |
+| **Generated** | 2026-08-03T19:18:24.923Z |
 | **Repository** | src |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Scan ID** | e2c71214dedee71e031e016b2843f66e20942de32b1410637f3486f8072dfe10 |
+| **Scan ID** | 820dbd7b2c55714c73e36394131bceae83b6f122897b74c39557050cd127798e |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
 ## Executive Summary
@@ -18,9 +18,9 @@ to it yet, so nothing here blocks a build.
 
 | Metric | Count | Share of observed |
 |---|---:|---:|
-| Execution mechanics observed | 3,488 | 100.0% |
+| Execution mechanics observed | 3,533 | 100.0% |
 | Governed by semantic authority | 0 | 0.0% |
-| Unknown classification | 3,488 | 100.0% |
+| Unknown classification | 3,533 | 100.0% |
 | Authorized temporary backlog | 0 | 0.0% |
 | Unauthorized executable meaning | 0 | 0.0% |
 | Mechanical adapter operation | 0 | 0.0% |
@@ -34,16 +34,16 @@ authority *file* claiming that mechanic's file exists at all, even incompletely.
 
 | Mechanic | Authority family | Observed | Files | Governed | Home exists | Home incomplete | Home missing | Coverage |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| object-construction | projection-mapping | 1,266 | 58 | 0 | 0 | 0 | 1,266 | 0.0% |
-| fallback | missing-value-policy | 707 | 53 | 0 | 0 | 0 | 707 | 0.0% |
-| branch | decision | 685 | 53 | 0 | 0 | 0 | 685 | 0.0% |
-| state-mutation | state-transition | 214 | 33 | 0 | 0 | 0 | 214 | 0.0% |
-| iteration | iteration | 170 | 41 | 0 | 0 | 0 | 170 | 0.0% |
+| object-construction | projection-mapping | 1,277 | 58 | 0 | 0 | 0 | 1,277 | 0.0% |
+| fallback | missing-value-policy | 713 | 53 | 0 | 0 | 0 | 713 | 0.0% |
+| branch | decision | 699 | 53 | 0 | 0 | 0 | 699 | 0.0% |
+| state-mutation | state-transition | 221 | 34 | 0 | 0 | 0 | 221 | 0.0% |
+| iteration | iteration | 176 | 41 | 0 | 0 | 0 | 176 | 0.0% |
 | validation | validation-policy | 103 | 18 | 0 | 0 | 0 | 103 | 0.0% |
 | throw | failure-disposition | 92 | 33 | 0 | 0 | 0 | 92 | 0.0% |
 | serialization | serialization-profile | 85 | 19 | 0 | 0 | 0 | 85 | 0.0% |
 | exception-handling | failure-policy | 84 | 19 | 0 | 0 | 0 | 84 | 0.0% |
-| normalization | translation | 81 | 15 | 0 | 0 | 0 | 81 | 0.0% |
+| normalization | translation | 82 | 16 | 0 | 0 | 0 | 82 | 0.0% |
 | retry | continuation-policy | 1 | 1 | 0 | 0 | 0 | 1 | 0.0% |
 
 ## File Drill-Down
@@ -97,7 +97,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/projects-governed-console-contract.js` | 15 | 0 | AUTHORITY_HOME_MISSING | buildsConsoleGovernedContract |
 | `src/gallery/plans-surface-previews.js` | 13 | 0 | AUTHORITY_HOME_MISSING | plansOneItem |
 
-*28 more file(s) for `state-mutation` omitted; see `fileBreakdown` in the JSON report.*
+*29 more file(s) for `state-mutation` omitted; see `fileBreakdown` in the JSON report.*
 
 ### iteration (iteration authority family)
 
@@ -105,7 +105,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 |---|---:|---:|---|---|
 | `src/web/html-projector.js` | 26 | 0 | AUTHORITY_HOME_MISSING | idRefsForAttributes, isWithinClaimedRange, parsesAttributes |
 | `src/project.js` | 17 | 0 | AUTHORITY_HOME_MISSING | buildsDeclarationRows, loadsScanner, projectSourceFactsWorkspace |
-| `src/governance/formats-self-governance-report-summary.js` | 14 | 0 | AUTHORITY_HOME_MISSING | formatsDataDrivenWiring, formatsFileDrillDown, formatsSelfGovernanceReportMarkdown |
+| `src/governance/formats-self-governance-report-summary.js` | 15 | 0 | AUTHORITY_HOME_MISSING | formatsDataDrivenWiring, formatsFileDrillDown, formatsSelfGovernanceReportMarkdown |
 | `src/web/relationship-resolver.js` | 10 | 0 | AUTHORITY_HOME_MISSING | buildsResolutionContext, existsSyncAnyExtension, extractsJsReferences |
 | `src/projects-authority-candidates.js` | 8 | 0 | AUTHORITY_HOME_MISSING | buildAuthorityMechanicDraft, buildsNormalizedSourceCodeMap, deduplicateMechanics |
 
@@ -169,7 +169,7 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 | `src/gallery/projects-gallery.js` | 7 | 0 | AUTHORITY_HOME_MISSING | buildsGalleryProjectionReceipt, canonicalizesJson, plansGalleryProjection |
 | `src/composition/runs-sign-in-north-star.js` | 4 | 0 | AUTHORITY_HOME_MISSING | appliesSelectionOverrides, buildsSignInAuthorityChoices |
 
-*10 more file(s) for `normalization` omitted; see `fileBreakdown` in the JSON report.*
+*11 more file(s) for `normalization` omitted; see `fileBreakdown` in the JSON report.*
 
 ### retry (continuation-policy authority family)
 
@@ -182,16 +182,33 @@ mechanic/file pair is in `fileBreakdown` in the JSON report.
 A different question again: not "is this occurrence governed" or "does an
 authority document claim this file," but "does this file's own source code
 already import a JSON contract/authority artifact and/or invoke a semantic
-execution runtime." Detected directly from the scanner's import (`dependency`)
-relationships -- one hop only, not followed transitively through local helpers.
+execution runtime" -- directly, or transitively through a local helper file.
+Detected from the scanner's import (`dependency`) relationships.
 
-3 of 50 file(s) with observed mechanics have some direct wiring toward the contract/semantic layer.
+| Wiring posture | Files | Share |
+|---|---:|---:|
+| Direct data and runtime | 1 | 1.7% |
+| Direct runtime only | 2 | 3.3% |
+| Direct data only | 0 | 0.0% |
+| Transitive data and runtime | 4 | 6.7% |
+| Transitive runtime only | 2 | 3.3% |
+| Transitive data only | 0 | 0.0% |
+| Not determined (beyond max depth) | 2 | 3.3% |
+| None determined | 49 | 81.7% |
 
-| File | Wiring | Imports contract data | Invokes semantic runtime |
-|---|---|---|---|
-| `src/console/console-validation-adapter.runtime.mjs` | DIRECT_DATA_AND_RUNTIME | `./contracts/console-validation.bundle.json` | `../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs` |
-| `src/projects-governed-console-contract.js` | RUNTIME_ONLY | — | `../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs` |
-| `src/web/classification-overlay.js` | RUNTIME_ONLY | — | `@deterministic-solutions/semantic-kernel` |
+| File | Wiring | Direct evidence | Transitive evidence | Hops | Hop path |
+|---|---|---|---|---:|---|
+| `src/cli.js` | TRANSITIVE_RUNTIME_ONLY | — | `../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs`, `@deterministic-solutions/semantic-kernel` | 1 | `src/cli.js` → `src/projects-governed-console-contract.js` |
+| `src/composition/runs-sign-in-north-star.js` | NOT_DETERMINED_BEYOND_MAX_DEPTH | — | — | capped | — |
+| `src/composition/writes-sign-in-composition.js` | NOT_DETERMINED_BEYOND_MAX_DEPTH | — | — | capped | — |
+| `src/console/console-authority-runtime.mjs` | TRANSITIVE_DATA_AND_RUNTIME | — | `./contracts/console-validation.bundle.json`, `../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs` | 2 | `src/console/console-authority-runtime.mjs` → `src/console/console-validation-adapter.mjs` → `src/console/console-validation-adapter.runtime.mjs` |
+| `src/console/console-validation-adapter.runtime.mjs` | DIRECT_DATA_AND_RUNTIME | `./contracts/console-validation.bundle.json`, `../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs` | — | — | — |
+| `src/console/governed-message-artifact-family/bin/run-message.mjs` | TRANSITIVE_DATA_AND_RUNTIME | — | `../contracts/message.schema.json`, `../contracts/project-message.authority.json`, `contract-driven-artifact-governance-engine` | 1 | `src/console/governed-message-artifact-family/bin/run-message.mjs` → `src/console/governed-message-artifact-family/src/project-message.mjs` |
+| `src/console/governed-message-artifact-family/verification/verifies-message.mjs` | TRANSITIVE_DATA_AND_RUNTIME | — | `../contracts/message.schema.json`, `../contracts/project-message.authority.json`, `contract-driven-artifact-governance-engine` | 1 | `src/console/governed-message-artifact-family/verification/verifies-message.mjs` → `src/console/governed-message-artifact-family/src/project-message.mjs` |
+| `src/console/serves-query-console.runtime.impl.mjs` | TRANSITIVE_DATA_AND_RUNTIME | — | `./contracts/console-validation.bundle.json`, `../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs` | 3 | `src/console/serves-query-console.runtime.impl.mjs` → `src/console/console-authority-runtime.mjs` → `src/console/console-validation-adapter.mjs` → `src/console/console-validation-adapter.runtime.mjs` |
+| `src/projects-governed-console-contract.js` | RUNTIME_ONLY | `../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs` | — | — | — |
+| `src/web/classification-overlay.js` | RUNTIME_ONLY | `@deterministic-solutions/semantic-kernel` | — | — | — |
+| `src/web/project-web-surfaces.js` | TRANSITIVE_RUNTIME_ONLY | — | `@deterministic-solutions/semantic-kernel` | 1 | `src/web/project-web-surfaces.js` → `src/web/classification-overlay.js` |
 
 ## Authority Sources
 

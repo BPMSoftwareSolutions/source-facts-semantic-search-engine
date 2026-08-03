@@ -228,31 +228,47 @@ test("projectsSelfGovernanceReport treats non-authority-declaration.v1 documents
 });
 
 function buildsDependencyIndex() {
-  const sourceReferences = [
-    { referenceId: "ref-import-1", modulePath: "src/wired.mjs", startLine: 1, endLine: 1, startColumn: 1, endColumn: 1 },
-    { referenceId: "ref-import-2", modulePath: "src/wired.mjs", startLine: 2, endLine: 2, startColumn: 1, endColumn: 1 },
-    { referenceId: "ref-import-3", modulePath: "src/one-hop-away.mjs", startLine: 1, endLine: 1, startColumn: 1, endColumn: 1 },
-  ];
-  const relationships = [
-    {
-      relationshipId: "rel-1",
-      relationshipKind: "dependency",
-      sourceReferenceId: "ref-import-1",
-      toSymbolCandidate: "./contracts/wired.authority.json",
-    },
-    {
-      relationshipId: "rel-2",
-      relationshipKind: "dependency",
-      sourceReferenceId: "ref-import-2",
-      toSymbolCandidate: "../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs",
-    },
-    {
-      relationshipId: "rel-3",
-      relationshipKind: "dependency",
-      sourceReferenceId: "ref-import-3",
-      toSymbolCandidate: "./wired.mjs",
-    },
-  ];
+  const sourceReferences = [];
+  const relationships = [];
+  let refCounter = 0;
+
+  function addsDependency(modulePath, specifier) {
+    refCounter += 1;
+    const referenceId = `ref-${refCounter}`;
+    sourceReferences.push({ referenceId, modulePath, startLine: 1, endLine: 1, startColumn: 1, endColumn: 1 });
+    relationships.push({ relationshipId: `rel-${refCounter}`, relationshipKind: "dependency", sourceReferenceId: referenceId, toSymbolCandidate: specifier });
+  }
+
+  // Direct evidence: imports both a JSON contract and the semantic runtime.
+  addsDependency("src/wired.mjs", "./contracts/wired.authority.json");
+  addsDependency("src/wired.mjs", "../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs");
+
+  // Transitive positive: only imports wired.mjs locally, no direct evidence of its own.
+  addsDependency("src/one-hop-away.mjs", "./wired.mjs");
+
+  // Bare (non-relative) specifier that happens to equal a real file's path if it
+  // were (wrongly) treated as local -- must never be followed as a graph edge.
+  addsDependency("src/bare-importer.mjs", "wired.mjs");
+
+  // Cycle: neither side has any evidence anywhere in the loop.
+  addsDependency("src/cycle-a.mjs", "./cycle-b.mjs");
+  addsDependency("src/cycle-b.mjs", "./cycle-a.mjs");
+
+  // Dead-end chain: terminates within one hop with nothing found -- a confident NONE.
+  // dead-end-helper.mjs is registered via its own (non-local, non-evidence) import so
+  // it counts as a *known, resolved* file with zero further local edges -- a genuine
+  // dead end, not an unresolvable specifier that would dead-end for the wrong reason.
+  addsDependency("src/dead-end.mjs", "./dead-end-helper.mjs");
+  addsDependency("src/dead-end-helper.mjs", "node:path");
+
+  // Chain exactly as long as the default max hop depth (4), with no evidence
+  // anywhere -- the search should stop at the cap, not claim a confident NONE.
+  addsDependency("src/chain-l0.mjs", "./chain-l1.mjs");
+  addsDependency("src/chain-l1.mjs", "./chain-l2.mjs");
+  addsDependency("src/chain-l2.mjs", "./chain-l3.mjs");
+  addsDependency("src/chain-l3.mjs", "./chain-l4.mjs");
+  addsDependency("src/chain-l4.mjs", "node:path");
+
   return {
     indexType: "source-fact-index.v1",
     indexId: "sha256:test",
@@ -268,29 +284,66 @@ function buildsDependencyIndex() {
   };
 }
 
-test("resolvesDataDrivenWiring detects direct JSON-contract and semantic-runtime imports, one hop only", () => {
+test("resolvesDataDrivenWiring detects direct JSON-contract and semantic-runtime imports", () => {
   const index = buildsDependencyIndex();
-
   const wired = resolvesDataDrivenWiring(index, "", ["src/wired.mjs"]).find((entry) => entry.modulePath === "src/wired.mjs");
   assert.deepEqual(wired.importsContractData, ["./contracts/wired.authority.json"]);
   assert.deepEqual(wired.invokesSemanticRuntime, ["../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs"]);
   assert.equal(wired.wiringDisposition, "DIRECT_DATA_AND_RUNTIME");
+  assert.equal(wired.hopCount, null);
+  assert.equal(wired.hopPath, null);
+});
 
-  // one-hop-away.mjs only imports wired.mjs (a local file), not the contract or
-  // runtime directly -- the design deliberately does not follow that transitively.
+test("resolvesDataDrivenWiring follows one local hop to find transitive evidence", () => {
+  const index = buildsDependencyIndex();
   const oneHopAway = resolvesDataDrivenWiring(index, "", ["src/one-hop-away.mjs"]).find((entry) => entry.modulePath === "src/one-hop-away.mjs");
-  assert.equal(oneHopAway.wiringDisposition, "NONE");
+  assert.equal(oneHopAway.wiringDisposition, "TRANSITIVE_DATA_AND_RUNTIME");
+  assert.deepEqual(oneHopAway.transitiveContractPaths, ["./contracts/wired.authority.json"]);
+  assert.deepEqual(oneHopAway.transitiveRuntimePaths, ["../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs"]);
+  assert.equal(oneHopAway.hopCount, 1);
+  assert.deepEqual(oneHopAway.hopPath, ["src/one-hop-away.mjs", "src/wired.mjs"]);
+});
+
+test("resolvesDataDrivenWiring never follows a bare (non-relative) specifier as a local hop", () => {
+  const index = buildsDependencyIndex();
+  const bareImporter = resolvesDataDrivenWiring(index, "", ["src/bare-importer.mjs"]).find((entry) => entry.modulePath === "src/bare-importer.mjs");
+  assert.equal(bareImporter.wiringDisposition, "NONE");
+});
+
+test("resolvesDataDrivenWiring terminates safely on an import cycle", () => {
+  const index = buildsDependencyIndex();
+  const cycleA = resolvesDataDrivenWiring(index, "", ["src/cycle-a.mjs"]).find((entry) => entry.modulePath === "src/cycle-a.mjs");
+  assert.equal(cycleA.wiringDisposition, "NONE");
+});
+
+test("resolvesDataDrivenWiring reports a confident NONE when the local chain terminates within depth", () => {
+  const index = buildsDependencyIndex();
+  const deadEnd = resolvesDataDrivenWiring(index, "", ["src/dead-end.mjs"]).find((entry) => entry.modulePath === "src/dead-end.mjs");
+  assert.equal(deadEnd.wiringDisposition, "NONE");
+});
+
+test("resolvesDataDrivenWiring reports NOT_DETERMINED_BEYOND_MAX_DEPTH instead of a false NONE at the depth cap", () => {
+  const index = buildsDependencyIndex();
+  const chainStart = resolvesDataDrivenWiring(index, "", ["src/chain-l0.mjs"], { maxHopDepth: 4 }).find((entry) => entry.modulePath === "src/chain-l0.mjs");
+  assert.equal(chainStart.wiringDisposition, "NOT_DETERMINED_BEYOND_MAX_DEPTH");
+
+  // A shallower search that reaches the same unresolved evidence sooner behaves the same way.
+  const shallowSearch = resolvesDataDrivenWiring(index, "", ["src/chain-l0.mjs"], { maxHopDepth: 2 }).find((entry) => entry.modulePath === "src/chain-l0.mjs");
+  assert.equal(shallowSearch.wiringDisposition, "NOT_DETERMINED_BEYOND_MAX_DEPTH");
 });
 
 test("projectsSelfGovernanceReport exposes dataDrivenWiring scoped to files with observed mechanics", async () => {
   const index = { ...buildsDependencyIndex(), bodyMechanics: [
-    { mechanicId: "bm-1", mechanic: "branch", modulePath: "src/wired.mjs", sourceReferenceId: "ref-import-1", fromSymbolId: null },
+    { mechanicId: "bm-1", mechanic: "branch", modulePath: "src/wired.mjs", sourceReferenceId: "ref-1", fromSymbolId: null },
+    { mechanicId: "bm-2", mechanic: "branch", modulePath: "src/one-hop-away.mjs", sourceReferenceId: "ref-3", fromSymbolId: null },
   ] };
   const report = await projectsSelfGovernanceReport({ index, repositoryId: "wiring-test", authorityDocuments: [] });
   await validatesSelfGovernanceReport(report);
 
   const wiredEntry = report.dataDrivenWiring.find((entry) => entry.modulePath === "src/wired.mjs");
   assert.equal(wiredEntry.wiringDisposition, "DIRECT_DATA_AND_RUNTIME");
-  // one-hop-away.mjs has no observed mechanics, so it's outside this report's scope entirely.
-  assert.equal(report.dataDrivenWiring.some((entry) => entry.modulePath === "src/one-hop-away.mjs"), false);
+  const oneHopEntry = report.dataDrivenWiring.find((entry) => entry.modulePath === "src/one-hop-away.mjs");
+  assert.equal(oneHopEntry.wiringDisposition, "TRANSITIVE_DATA_AND_RUNTIME");
+  // cycle-a.mjs has no observed mechanics, so it's outside this report's scope entirely.
+  assert.equal(report.dataDrivenWiring.some((entry) => entry.modulePath === "src/cycle-a.mjs"), false);
 });
