@@ -18,6 +18,8 @@ import { admitsKnowHow } from "../src/governance/admits-know-how.js";
 import { projectsAuthorityRemediationCandidate } from "../src/governance/projects-authority-remediation-candidate.js";
 import { discoversKnowHowRegistry } from "../src/governance/discovers-know-how-registry.js";
 import { summarizesKnowHowRegistry } from "../src/governance/summarizes-know-how-registry.js";
+import { invokesLiveModelInference, ModelInvocationError } from "../src/governance/invokes-live-model-inference.js";
+import { proposesSemanticOverlap } from "../src/governance/proposes-semantic-overlap.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -989,6 +991,135 @@ test("projectsSelfGovernanceReport exposes knowHowRegistry, purely descriptive a
   const reportWithRegistry = await projectsSelfGovernanceReport({ index, repositoryId: "self-governance-test", authorityDocuments: [], knowHowRegistry });
   await validatesSelfGovernanceReport(reportWithRegistry);
   assert.equal(reportWithRegistry.knowHowRegistry.admittedKnowHowCount, 1);
+});
+
+function buildsFakeSpawnFunction({ stdout = "", stderr = "", error = undefined } = {}) {
+  const calls = [];
+  const spawnFunction = (command, args, options) => {
+    calls.push({ command, args, options });
+    return { stdout, stderr, error, status: 0 };
+  };
+  spawnFunction.calls = calls;
+  return spawnFunction;
+}
+
+test("invokesLiveModelInference writes the request to a temp file and spawns the connector CLI with the expected argv shape", async () => {
+  const canned = { requestId: "r1", disposition: "MODEL_RESPONSE_OBTAINED", result: { format: "json", structuredValue: { proposals: [] } } };
+  const spawnFunction = buildsFakeSpawnFunction({ stdout: JSON.stringify(canned) });
+
+  const response = await invokesLiveModelInference(
+    { requestId: "r1", executionPolicy: { timeoutMilliseconds: 1000 } },
+    { connectorRepoRoot: "C:/fake/connector", providerAuthorityPath: "C:/fake/connector/config/provider-authority.json", spawnFunction },
+  );
+
+  assert.deepEqual(response, canned);
+  assert.equal(spawnFunction.calls.length, 1);
+  const call = spawnFunction.calls[0];
+  assert.equal(call.args[0], "--import");
+  assert.equal(call.args[1], "tsx");
+  assert.ok(call.args[2].includes("llm-connector.ts"));
+  assert.equal(call.args[3], "obtain");
+  assert.equal(call.args[4], "--request");
+  assert.ok(call.args[5].endsWith("request.json"));
+  assert.equal(call.args[6], "--provider-authority");
+  assert.equal(call.args[7], "C:/fake/connector/config/provider-authority.json");
+  assert.equal(call.options.cwd, "C:/fake/connector");
+});
+
+test("invokesLiveModelInference throws ModelInvocationError when spawning fails", async () => {
+  const spawnFunction = buildsFakeSpawnFunction({ error: new Error("ENOENT") });
+  await assert.rejects(() => invokesLiveModelInference({ requestId: "r1" }, { spawnFunction }), ModelInvocationError);
+});
+
+test("invokesLiveModelInference throws ModelInvocationError when the connector produces no stdout", async () => {
+  const spawnFunction = buildsFakeSpawnFunction({ stdout: "" });
+  await assert.rejects(() => invokesLiveModelInference({ requestId: "r1" }, { spawnFunction }), ModelInvocationError);
+});
+
+test("invokesLiveModelInference throws ModelInvocationError when stdout is not valid JSON", async () => {
+  const spawnFunction = buildsFakeSpawnFunction({ stdout: "not json" });
+  await assert.rejects(() => invokesLiveModelInference({ requestId: "r1" }, { spawnFunction }), ModelInvocationError);
+});
+
+function buildsCannedModelResponse(proposals) {
+  return {
+    requestId: "req-1",
+    invocationId: "inv-1",
+    disposition: "MODEL_RESPONSE_OBTAINED",
+    resolvedAuthority: { providerAuthorityId: "primary-cognitive-provider", providerKind: "gemini", modelAlias: "instruction-capable-model", resolvedModel: "gemini-flash-latest" },
+    result: { format: "json", structuredValue: { proposals } },
+    usage: { inputTokens: 10, outputTokens: 5, totalTokens: 15 },
+    proof: { requestHash: "sha256:abc", responseHash: "sha256:def", attemptCount: 1, startedAt: "2026-01-01T00:00:00.000Z", completedAt: "2026-01-01T00:00:01.000Z", durationMilliseconds: 1000 },
+  };
+}
+
+test("proposesSemanticOverlap builds a request citing every historical mechanic and evidence file, and shapes the model response into an unreviewed batch", async () => {
+  const proposals = [{ authorityMechanicId: "m1", overlapDisposition: "PROPOSED_EXACT_OVERLAP", confidence: 1, currentEvidenceLocation: "x()", authorityOnlyMeaning: [], bodyOnlyMeaning: [], conflicts: [], recommendedAction: "REBASE_AND_BIND", rationale: "matches" }];
+  let capturedRequest;
+  const invoke = async (modelRequest) => {
+    capturedRequest = modelRequest;
+    return buildsCannedModelResponse(proposals);
+  };
+
+  const historicalAuthorityDocument = {
+    sourceFile: "src/old.mjs",
+    authority: { mechanics: [{ mechanicId: "m1", mechanic: "branch", sourceLocation: "src/old.mjs:10", responsibility: "does a thing", semantic: { note: "x" } }] },
+  };
+
+  const batch = await proposesSemanticOverlap({
+    historicalAuthorityFile: "contracts/old.authority.json",
+    historicalAuthorityDocument,
+    resolvedSuccessorFile: "src/new.mjs",
+    successionEvidence: "2-hop chain",
+    evidenceFiles: [{ path: "src/new.mjs", content: "export function x() {}" }],
+    invoke,
+  });
+
+  assert.equal(batch.documentKind, "semantic-overlap-proposal-batch.v1");
+  assert.equal(batch.lifecycle, "INFERRED_NOT_ADMITTED");
+  assert.equal(batch.subject.historicalAuthorityFile, "contracts/old.authority.json");
+  assert.equal(batch.subject.historicalDeclaredSourceFile, "src/old.mjs");
+  assert.equal(batch.subject.resolvedSuccessorFile, "src/new.mjs");
+  assert.equal(batch.subject.successionEvidence, "2-hop chain");
+  assert.equal(batch.inference.resolvedModel, "gemini-flash-latest");
+  assert.equal(batch.inference.requestHash, "sha256:abc");
+  assert.deepEqual(batch.proposals, proposals);
+  // Never pre-reviewed -- a human must fill these in before admission can act on the batch.
+  assert.deepEqual(batch.reviewFindings, []);
+  assert.deepEqual(batch.reviewOutcomes, []);
+  assert.deepEqual(batch.knowHowExtracted, []);
+  assert.deepEqual(batch.candidateAuthorities, []);
+
+  assert.equal(capturedRequest.responsePolicy.format, "json");
+  assert.ok(capturedRequest.interaction.messages[1].content.includes("m1"));
+  assert.ok(capturedRequest.interaction.messages[1].content.includes("export function x()"));
+});
+
+test("proposesSemanticOverlap refuses to invoke the model when the historical document declares no mechanics", async () => {
+  await assert.rejects(
+    () => proposesSemanticOverlap({
+      historicalAuthorityFile: "contracts/empty.json",
+      historicalAuthorityDocument: {},
+      resolvedSuccessorFile: "src/new.mjs",
+      evidenceFiles: [{ path: "src/new.mjs", content: "x" }],
+      invoke: async () => { throw new Error("should not be called"); },
+    }),
+    /declares no mechanics/,
+  );
+});
+
+test("proposesSemanticOverlap throws when the model invocation does not succeed", async () => {
+  const historicalAuthorityDocument = { authority: { mechanics: [{ mechanicId: "m1", mechanic: "branch", sourceLocation: "x:1" }] } };
+  await assert.rejects(
+    () => proposesSemanticOverlap({
+      historicalAuthorityFile: "contracts/x.json",
+      historicalAuthorityDocument,
+      resolvedSuccessorFile: "src/new.mjs",
+      evidenceFiles: [{ path: "src/new.mjs", content: "x" }],
+      invoke: async () => ({ disposition: "PROVIDER_UNAVAILABLE", findings: [{ code: "X", detail: "overloaded" }] }),
+    }),
+    /disposition=PROVIDER_UNAVAILABLE/,
+  );
 });
 
 test("discoversSemanticOverlapProposalBatches finds only documentKind semantic-overlap-proposal-batch.v1 files, recursively, ignoring unrelated JSON", async () => {

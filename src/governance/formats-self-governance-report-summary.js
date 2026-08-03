@@ -741,7 +741,8 @@ export function formatsSelfGovernanceReportSummary(report) {
     lines.push(
       `    inference quality: ${quality.reviewOutcomeCounts.APPROVED_UNCHANGED} unchanged, `
       + `${quality.reviewOutcomeCounts.APPROVED_WITH_ADDITIONAL_FINDING} approved+finding, `
-      + `${quality.reviewOutcomeCounts.AMENDED} amended, ${quality.reviewOutcomeCounts.REJECTED} rejected -- `
+      + `${quality.reviewOutcomeCounts.AMENDED} amended, ${quality.reviewOutcomeCounts.REJECTED} rejected`
+      + `${quality.unrecordedOutcomes > 0 ? `, ${quality.unrecordedOutcomes} UNREVIEWED` : ""} -- `
       + `confidence ${quality.modelConfidenceAverage?.toFixed(2) ?? "n/a"} -> ${quality.reviewedConfidenceAverage?.toFixed(2) ?? "n/a"}, `
       + `${quality.knowHowExtracted.length} know-how item(s), ${quality.candidateAuthorities.length} candidate authority(ies)`,
     );

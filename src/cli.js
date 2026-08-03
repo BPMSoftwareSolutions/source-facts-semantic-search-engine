@@ -36,6 +36,7 @@ import { projectsConsoleGovernedContract } from "./projects-governed-console-con
 import { discoversAuthorityDocumentsAcrossRoots } from "./governance/discovers-authority-documents.js";
 import { discoversSemanticOverlapProposalBatches } from "./governance/discovers-semantic-overlap-proposals.js";
 import { discoversKnowHowRegistry } from "./governance/discovers-know-how-registry.js";
+import { proposesSemanticOverlap } from "./governance/proposes-semantic-overlap.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
@@ -73,6 +74,8 @@ if (command === "project") {
   await runProjectConsoleContract(args.slice(1));
 } else if (command === "govern") {
   await runGovern(args.slice(1));
+} else if (command === "propose-semantic-overlap") {
+  await runProposeSemanticOverlap(args.slice(1));
 } else if (command === "web") {
   await runWeb(args.slice(1));
 } else if (command === "console") {
@@ -320,6 +323,60 @@ async function runGovern(rawArgs) {
   if (flags.summary === true) {
     process.stdout.write(formatsSelfGovernanceReportSummary(report));
   }
+}
+
+/**
+ * The live-inference half of the loop govern's semanticOverlapProposals
+ * section only ever reads from disk. Produces a real
+ * semantic-overlap-proposal-batch.v1 file under reviews/ via an actual model
+ * call (proposesSemanticOverlap / invokes-live-model-inference.js spawning
+ * the sibling generic-llm-connector) -- not a hand-run script. The written
+ * batch is always INFERRED_NOT_ADMITTED with empty review fields; a human
+ * edits the file to add reviewFindings/reviewOutcomes/knowHowExtracted/
+ * candidateAuthorities before scripts/admit-know-how-from-review.mjs can act
+ * on it.
+ */
+async function runProposeSemanticOverlap(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+
+  if (typeof flags.historicalAuthorityFile !== "string" || typeof flags.successorFile !== "string") {
+    process.stderr.write("propose-semantic-overlap requires --historical-authority-file <path> and --successor-file <path>\n");
+    process.exitCode = 1;
+    return;
+  }
+
+  const historicalAuthorityPath = path.resolve(repositoryRoot, flags.historicalAuthorityFile);
+  const successorPath = path.resolve(repositoryRoot, flags.successorFile);
+  const relatedPaths = typeof flags.relatedFiles === "string"
+    ? flags.relatedFiles.split(",").map((entry) => path.resolve(repositoryRoot, entry.trim())).filter((entry) => entry.length > 0)
+    : [];
+
+  const historicalAuthorityDocument = await readsJsonFile(historicalAuthorityPath);
+
+  const evidenceFiles = [];
+  for (const evidencePath of [successorPath, ...relatedPaths]) {
+    evidenceFiles.push({
+      path: path.relative(repositoryRoot, evidencePath).replaceAll("\\", "/"),
+      content: await fs.readFile(evidencePath, "utf8"),
+    });
+  }
+
+  const batch = await proposesSemanticOverlap({
+    historicalAuthorityFile: path.relative(repositoryRoot, historicalAuthorityPath).replaceAll("\\", "/"),
+    historicalAuthorityDocument,
+    resolvedSuccessorFile: path.relative(repositoryRoot, successorPath).replaceAll("\\", "/"),
+    successionEvidence: flags.successionEvidence ?? null,
+    evidenceFiles,
+  });
+
+  const defaultOutputName = `${path.basename(historicalAuthorityPath).replace(/\.json$/i, "")}.semantic-overlap-proposals.json`;
+  const outputPath = path.resolve(repositoryRoot, flags.output ?? path.join("reviews", defaultOutputName));
+  await fs.mkdir(path.dirname(outputPath), { recursive: true });
+  await writesJsonFile(outputPath, batch, { pretty: true });
+
+  process.stdout.write(`${outputPath}\n`);
+  process.stdout.write(`${batch.proposals.length} proposal(s) obtained from ${batch.inference.resolvedModel} (${batch.inference.usage?.totalTokens ?? "?"} tokens, ${batch.inference.durationMilliseconds ?? "?"}ms).\n`);
+  process.stdout.write("Lifecycle: INFERRED_NOT_ADMITTED -- review this file (reviewFindings/reviewOutcomes/knowHowExtracted/candidateAuthorities) before running scripts/admit-know-how-from-review.mjs.\n");
 }
 
 /**
@@ -840,6 +897,10 @@ function parseArgs(rawArgs) {
         case "--database":
         case "--connection-env":
         case "--port":
+        case "--historical-authority-file":
+        case "--successor-file":
+        case "--related-files":
+        case "--succession-evidence":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
@@ -900,6 +961,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
   stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
