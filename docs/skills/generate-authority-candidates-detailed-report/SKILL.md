@@ -1,8 +1,8 @@
 # Generate Authority Candidates Detailed Report
 
-**Purpose:** Automate the creation of markdown reports that show real source code alongside projected authority candidates, enabling code-to-authority migration without manual reading.
+**Purpose:** Turn `project-authority` output into a markdown review report that shows observed source code alongside projected authority candidates.
 
-**Scope:** Takes an indexed file/workspace, projects authority candidates, deduplicates by source location, extracts real code snippets, and generates a formatted markdown report for team review.
+**Scope:** Consumes a `project-authority` JSON export, optionally merges multiple exports, reads source snippets from the reported workspace root, and renders a human-readable report. The markdown is presentation only; the projector JSON is the source of truth.
 
 **Time investment:** ~2 minutes per file (after index exists)
 
@@ -11,25 +11,26 @@
 ## Quick Start
 
 ```bash
-# 1. Index your file/workspace
+# 1. Index your workspace
 node src/cli.js project \
   --workspace "path/to/code" \
-  --output "output-index.json"
+  --output "output-index.json" \
+  --summary
 
 # 2. Project authority candidates
 node src/cli.js project-authority \
   --index "output-index.json" \
   --output "output-candidates.json" \
+  --module "src/console" \
+  --responsibility "serves-query-console" \
   --summary
 
-# 3. Deduplicate (PowerShell or Node)
-# [See Step 3 below]
+# 3. If you merge multiple candidate exports, dedupe them with the same key as the projector
 
-# 4. Generate detailed report
-node generate-report.js  # Uses deduped candidates + workspace path
+# 4. Render markdown from the projector output (template below)
 
 # 5. Review markdown report
-# Report includes real code snippets with → markers
+# Report includes real code snippets with markers
 ```
 
 ---
@@ -41,16 +42,13 @@ node generate-report.js  # Uses deduped candidates + workspace path
 ```bash
 node src/cli.js project \
   --workspace "c:\path\to\your\code" \
-  --output "your-index.json"
+  --output "your-index.json" \
+  --summary
 ```
 
 **Output:** JSON file with symbols, relationships, control flow, and body mechanics indexed.
 
-**Example from serves-query-console.js:**
-```
-Workspace: c:\lab\repos\source-facts-semantic-search-engine\src\console
-Output: console-index.json
-```
+**Example:** The workspace is whatever path you pass to `--workspace`. The report renderer should use the `workspaceRoot` stored in the projector output.
 
 **What gets indexed:**
 - Function declarations (entry points, handlers)
@@ -71,7 +69,15 @@ node src/cli.js project-authority \
   --summary
 ```
 
-**Output:** JSON file with authority candidate scaffolds (pre-shaped with semantic gaps flagged).
+**Output:** JSON object with authority candidate scaffolds and coverage metadata. The projector writes:
+- `sourceFile`
+- `sourceFiles`
+- `workspaceRoot`
+- `generatedAtUtc`
+- `observedMechanicsCount`
+- `candidates`
+- `authorityDraft`
+- `coverageSummary`
 
 **Example metrics:**
 ```
@@ -94,7 +100,13 @@ Gate status: NOT_READY
 
 ### Step 3: Deduplicate Candidates
 
-Some mechanics may be indexed multiple times (same location appearing in multiple queries). Remove duplicates by source location key.
+If you are working from a single `project-authority` run, skip this step. The projector already deduplicates mechanics before it builds candidates.
+
+Only dedupe if you are merging multiple JSON exports or stitching candidate files together. Match the projector key exactly:
+
+- `modulePath`
+- `sourceReferenceId` when present, otherwise `startLine`
+- `mechanic`
 
 **PowerShell approach (recommended for Windows):**
 
@@ -107,7 +119,11 @@ $seen = @{}
 $deduped = @()
 
 foreach ($cand in $data.candidates) {
-  $key = "$($cand.source.modulePath):$($cand.source.startLine):$($cand.source.mechanic)"
+  $locationKey = $cand.source.sourceReferenceId
+  if (-not $locationKey) {
+    $locationKey = $cand.source.startLine
+  }
+  $key = "$($cand.source.modulePath):$locationKey:$($cand.source.mechanic)"
   if (-not $seen[$key]) {
     $seen[$key] = $true
     $deduped += $cand
@@ -131,7 +147,8 @@ const seen = new Set();
 const deduped = [];
 
 data.candidates.forEach(cand => {
-  const key = `${cand.source.modulePath}:${cand.source.startLine}:${cand.source.mechanic}`;
+  const locationKey = cand.source?.sourceReferenceId ?? cand.source?.startLine ?? '';
+  const key = `${cand.source?.modulePath ?? ''}:${locationKey}:${cand.source?.mechanic ?? ''}`;
   if (!seen.has(key)) {
     seen.add(key);
     deduped.push(cand);
@@ -146,74 +163,90 @@ console.log(`Deduplicated: ${data.candidates.length} → ${deduped.length}`);
 
 ### Step 4: Generate Detailed Report with Real Source Code
 
-Create a Node.js script that:
-1. Reads deduped candidates JSON
-2. Groups by authority type (10 types)
-3. For each type, reads real source code from disk
-4. Extracts code snippet with context lines and line numbers
-5. Marks target line with `→` marker
-6. Formats markdown with observed code + projected JSON + decisions
+Create a local Node.js script that:
+1. Reads the projector JSON
+2. Groups candidates by `authorityCandidateType` dynamically
+3. Uses `workspaceRoot` from the projector output to read source code
+4. Falls back to `candidate.source.sourceSnippet` if the file cannot be read
+5. Renders `authorityDraft.authority.mechanics` next to the candidate when available
+6. Writes markdown for review
 
-**Template script (generates `output-detailed-report.md`):**
+**Template script:**
 
 ```javascript
 const fs = require('fs');
 const path = require('path');
 
-// Configuration
-const baseWorkspacePath = 'C:\\lab\\repos\\source-facts-semantic-search-engine\\src\\console\\';
-const inputCandidates = 'console-candidates-deduped.json';
-const outputMarkdown = 'console-candidates-detailed-report.md';
+const inputCandidates = 'output-candidates.json';
+const outputMarkdown = 'output-candidates-detailed-report.md';
 const contextLines = 5;
 
-// Read candidates
 const data = JSON.parse(fs.readFileSync(inputCandidates, 'utf8'));
+const candidates = Array.isArray(data.candidates) ? data.candidates : [];
+const workspaceRoot = typeof data.workspaceRoot === 'string' && data.workspaceRoot.length > 0
+  ? data.workspaceRoot
+  : process.cwd();
+const authorityDraft = data.authorityDraft ?? null;
+const draftMechanics = Array.isArray(authorityDraft?.authority?.mechanics)
+  ? authorityDraft.authority.mechanics
+  : [];
+const draftByCandidateId = new Map(draftMechanics.map((entry) => [entry.mechanicId, entry]));
 
-// Helper: Extract code snippet
-function getCodeSnippet(modulePath, lineNumber) {
+function getCodeSnippet(source) {
   try {
-    const fullPath = path.join(baseWorkspacePath, modulePath);
-    if (!fs.existsSync(fullPath)) return null;
+    const modulePath = source?.modulePath;
+    const lineNumber = source?.startLine;
+    if (typeof modulePath !== 'string' || modulePath.length === 0 || !Number.isInteger(lineNumber)) {
+      return source?.sourceSnippet ?? null;
+    }
 
-    const content = fs.readFileSync(fullPath, 'utf8');
+    const fullPath = path.resolve(workspaceRoot, modulePath);
+    if (!fs.existsSync(fullPath)) return source?.sourceSnippet ?? null;
+
+    const content = fs.readFileSync(fullPath, 'utf8').replaceAll('\r\n', '\n').replaceAll('\r', '\n');
     const lines = content.split('\n');
 
     const start = Math.max(0, lineNumber - 1 - contextLines);
     const end = Math.min(lines.length, lineNumber + contextLines);
 
-    let snippet = '';
+    const rendered = [];
     for (let i = start; i < end; i++) {
       const isTarget = (i + 1) === lineNumber;
-      const marker = isTarget ? '→ ' : '  ';
+      const marker = isTarget ? '-> ' : '   ';
       const lineNum = String(i + 1).padStart(4);
-      snippet += marker + lineNum + ': ' + lines[i] + '\n';
+      rendered.push(`${marker}${lineNum}: ${lines[i]}`);
     }
-    return snippet;
-  } catch (e) {
-    return null;
+    return rendered.join('\n');
+  } catch {
+    return source?.sourceSnippet ?? null;
   }
 }
 
-// Group by type
-const grouped = {};
-data.candidates.forEach(cand => {
-  const type = cand.authorityCandidateType;
-  if (!grouped[type]) grouped[type] = [];
-  grouped[type].push(cand);
-});
+const grouped = new Map();
+for (const candidate of candidates) {
+  const type = candidate.authorityCandidateType ?? 'unknown';
+  if (!grouped.has(type)) {
+    grouped.set(type, []);
+  }
+  grouped.get(type).push(candidate);
+}
+
+const orderedTypes = [...grouped.keys()].sort();
 
 // Generate markdown
 let markdown = `# Authority Candidate Projections
 
-**Generated:** ${data.generatedAtUtc}
-**Total Candidates:** ${data.candidates.length}
-**Coverage:** ${(data.coverageSummary.authorityConformanceRatio * 100).toFixed(1)}%
+**Generated:** ${data.generatedAtUtc ?? new Date().toISOString()}
+**Workspace root:** ${workspaceRoot}
+**Source files:** ${(Array.isArray(data.sourceFiles) ? data.sourceFiles : []).join(', ') || '(none)'}
+**Total candidates:** ${candidates.length}
+**Coverage:** ${(((data.coverageSummary?.authorityConformanceRatio) ?? 0) * 100).toFixed(1)}%
 
 ---
 
 ## Overview
 
-Automatically projected ${data.candidates.length} authority candidate scaffolds from source mechanics.
+This report is presentation only. The projector JSON remains the source of truth.
 
 ---
 
