@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { sourceTokens, splitProvenanceSealedText } from "../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs";
+import { canonicalJsonBytes, sourceTokens, splitProvenanceSealedText } from "../../contract-driven-artifact-governance-engine/lib/governed-artifact-engine.mjs";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -38,6 +38,10 @@ function sha256Text(text) {
   return `sha256:${createHash("sha256").update(text, "utf8").digest("hex")}`;
 }
 
+function sha256Bytes(bytes) {
+  return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+}
+
 function absoluteFilePath(relativePath) {
   return path.resolve(repositoryRoot, relativePath);
 }
@@ -49,6 +53,144 @@ function fileDigest(filePath) {
     expectedByteLength: Buffer.byteLength(text, "utf8"),
     text,
   };
+}
+
+function canonicalJsonDigest(value) {
+  return sha256Bytes(canonicalJsonBytes(value));
+}
+
+function lineageResponsibilityForArtifact(contract, artifactId) {
+  return contract.lineage.responsibilities.find(
+    (responsibility) => responsibility.artifactId === artifactId
+  );
+}
+
+function semanticAuthorityCommitment(contract, artifact) {
+  const authorityArtifact = artifact.relationships
+    .filter((relationship) => relationship.relationshipType === "reads")
+    .map((relationship) =>
+      contract.artifacts.find(
+        (entry) => entry.artifactId === relationship.artifactId
+      )
+    )
+    .find(
+      (entry) =>
+        entry?.artifactKind === "semantic-execution-authority" ||
+        entry?.artifactKind === "deterministic-ontology-bundle"
+    );
+  if (!authorityArtifact) {
+    return null;
+  }
+  return {
+    authorityId: authorityArtifact.artifactId,
+    digest: canonicalJsonDigest(authorityArtifact.projection.authority.value),
+  };
+}
+
+function canonicalLineageSubject(contract, artifact) {
+  const lineage = contract.lineage;
+  const responsibility = lineageResponsibilityForArtifact(
+    contract,
+    artifact.artifactId
+  );
+  if (!responsibility) {
+    throw new Error(
+      `No canonical responsibility projects this artifact: ${artifact.artifactId}`
+    );
+  }
+  const resolveLink = (entries, identityField, identity, label) => {
+    const entry = entries.find((candidate) => candidate[identityField] === identity);
+    if (!entry) {
+      throw new Error(
+        `Canonical lineage does not resolve one ${label} for ${artifact.artifactId}: ${identity}`
+      );
+    }
+    return entry;
+  };
+  const obligation = resolveLink(
+    lineage.obligations,
+    "obligationId",
+    responsibility.obligationId,
+    "obligation"
+  );
+  const scenario = resolveLink(
+    lineage.scenarios,
+    "scenarioId",
+    obligation.scenarioId,
+    "scenario"
+  );
+  const feature = resolveLink(
+    lineage.features,
+    "featureId",
+    scenario.featureId,
+    "feature"
+  );
+  const node = (identityField, entry) => ({
+    [identityField]: entry[identityField],
+    digest: canonicalJsonDigest(entry),
+  });
+  return {
+    project: {
+      projectId: lineage.projectId,
+      digest: canonicalJsonDigest({ projectId: lineage.projectId }),
+    },
+    feature: node("featureId", feature),
+    scenario: node("scenarioId", scenario),
+    obligation: node("obligationId", obligation),
+    responsibility: node("responsibilityId", responsibility),
+    semanticAuthority: semanticAuthorityCommitment(contract, artifact),
+    projectionAuthority: {
+      profileId: responsibility.projectionProfileId,
+      digest: contract.interpretationBase.engine.digest,
+    },
+  };
+}
+
+function artifactProvenance(contract, artifact, bodyBytes) {
+  const subject = canonicalLineageSubject(contract, artifact);
+  const lineageSha256 = canonicalJsonDigest(subject);
+  const bodySha256 = sha256Bytes(bodyBytes);
+  const projectorSha256 = contract.interpretationBase.engine.digest;
+  return {
+    subject,
+    lineageSha256,
+    bodySha256,
+    projectorSha256,
+    artifactProvenanceSha256: canonicalJsonDigest({
+      lineageSha256,
+      bodySha256,
+      projectorSha256,
+    }),
+  };
+}
+
+function provenanceHeaderLines(provenance) {
+  const { subject } = provenance;
+  return [
+    "// @generated",
+    `// project-id: ${subject.project.projectId}`,
+    `// feature-id: ${subject.feature.featureId}`,
+    `// scenario-id: ${subject.scenario.scenarioId}`,
+    `// obligation-id: ${subject.obligation.obligationId}`,
+    `// responsibility-id: ${subject.responsibility.responsibilityId}`,
+    `// projection-profile-id: ${subject.projectionAuthority.profileId}`,
+    `// semantic-authority-sha256: ${subject.semanticAuthority?.digest ?? "none"}`,
+    `// projection-authority-sha256: ${subject.projectionAuthority.digest}`,
+    `// lineage-sha256: ${provenance.lineageSha256}`,
+    `// body-sha256: ${provenance.bodySha256}`,
+    `// artifact-provenance-sha256: ${provenance.artifactProvenanceSha256}`,
+    "//",
+  ];
+}
+
+function projectsProvenanceSealedArtifactBytes(contract, artifact) {
+  const bodyText = artifact.projection.authority.tokens
+    .map((token) => token.text)
+    .join("");
+  const bodyBytes = Buffer.from(bodyText, "utf8");
+  const provenance = artifactProvenance(contract, artifact, bodyBytes);
+  const header = provenanceHeaderLines(provenance).join("\n");
+  return Buffer.from(`${header}\n${bodyText}`, "utf8");
 }
 
 function makeIdentifier(base) {
@@ -157,6 +299,26 @@ function buildDependencyReferenceEdge({
   });
 }
 
+function buildObjectGraphReadEdge({
+  edgeId,
+  responsibilityId,
+  operation,
+  purpose,
+  dependencyId,
+  occurrences = 1,
+}) {
+  return Object.freeze({
+    edgeId: makeIdentifier(edgeId),
+    responsibilityId,
+    edgeKind: "read",
+    operation,
+    argumentExpressions: [],
+    occurrences,
+    authorities: [buildDependencyAuthorityReference(dependencyId)],
+    purpose,
+  });
+}
+
 function buildInvocationEdge({
   edgeId,
   responsibilityId,
@@ -164,6 +326,7 @@ function buildInvocationEdge({
   argumentExpressions,
   purpose,
   dependencyIds,
+  runtimeAuthorityIds = [],
   occurrences = 1,
 }) {
   return Object.freeze({
@@ -173,7 +336,15 @@ function buildInvocationEdge({
     operation,
     argumentExpressions,
     occurrences,
-    authorities: dependencyIds.map((dependencyId) => buildDependencyAuthorityReference(dependencyId)),
+    authorities: [
+      ...dependencyIds.map((dependencyId) =>
+        buildDependencyAuthorityReference(dependencyId)
+      ),
+      ...runtimeAuthorityIds.map((runtimeAuthorityId) => ({
+        authorityType: "runtime-authority",
+        runtimeAuthorityId,
+      })),
+    ],
     purpose,
   });
 }
@@ -279,6 +450,7 @@ function buildSemanticAuthority({
   failurePolicies = [],
   projectionMappings = [],
   resultContracts = [],
+  objectGraphClosure = undefined,
   forbiddenSyntaxKinds = [],
 }) {
   return Object.freeze({
@@ -293,7 +465,52 @@ function buildSemanticAuthority({
     failurePolicies: Object.freeze(failurePolicies),
     projectionMappings: Object.freeze(projectionMappings),
     resultContracts: Object.freeze(resultContracts),
+    ...(objectGraphClosure === undefined ? {} : { objectGraphClosure }),
     forbiddenSyntaxKinds: Object.freeze([...new Set(forbiddenSyntaxKinds)]),
+  });
+}
+
+function buildsReExportModuleSourceAuthority({
+  moduleResponsibilityId,
+  modulePurpose,
+  declarations,
+  runtimeAlias,
+  dependencyId,
+  dependencyPurpose,
+  forbiddenSyntaxKinds = [
+    "DebuggerStatement",
+    "DoStatement",
+    "DynamicImportExpression",
+    "SwitchStatement",
+    "WhileStatement",
+    "WithStatement",
+  ],
+}) {
+  const semanticEdges = dependencyId
+    ? declarations.map((declaration) =>
+        buildObjectGraphReadEdge({
+          edgeId: `${moduleResponsibilityId}-${declaration}-read.v1`,
+          responsibilityId: moduleResponsibilityId,
+          operation: `${runtimeAlias}.${declaration}.$read`,
+          purpose: dependencyPurpose,
+          dependencyId,
+        })
+      )
+    : [];
+
+  return buildSemanticAuthority({
+    moduleResponsibilityId,
+    modulePurpose,
+    declarations,
+    functionResponsibilities: [],
+    semanticEdges,
+    decisions: [],
+    iterations: [],
+    failurePolicies: [],
+    projectionMappings: [],
+    resultContracts: [],
+    objectGraphClosure: "object-graph.v1",
+    forbiddenSyntaxKinds,
   });
 }
 
@@ -329,6 +546,39 @@ function buildTextArtifact({
       verifierIds: sourceArtifactProofVerifierIds,
       contentSha256,
       expectedByteLength,
+    }),
+  });
+}
+
+function buildJsonArtifact({
+  artifactId,
+  relativePath,
+  purpose,
+  artifactKind = "deterministic-ontology-bundle",
+  relationships = [],
+}) {
+  const absolutePath = absoluteFilePath(relativePath);
+  const value = loadsJson(absolutePath);
+  const projectedBytes = canonicalJsonBytes(value);
+  return Object.freeze({
+    artifactId,
+    artifactKind,
+    purpose,
+    relativePath: normalizesPathKey(relativePath),
+    mediaType: "application/json",
+    projection: Object.freeze({
+      authorityId: `${artifactId}-authority`,
+      projectorId: "canonical-json-value-projector.v1",
+      authority: Object.freeze({
+        authorityType: "canonical-json-value.v1",
+        value,
+      }),
+    }),
+    relationships: Object.freeze(relationships),
+    proof: Object.freeze({
+      verifierIds: ["content-digest-verifier.v1"],
+      contentSha256: sha256Bytes(projectedBytes),
+      expectedByteLength: projectedBytes.length,
     }),
   });
 }
@@ -631,6 +881,7 @@ function buildsDelegatingAdapterSourceAuthority({
         argumentExpressions: [bundleVariableName, definition.argumentExpression],
         purpose: `Delegates ${definition.functionName} to the semantic execution runtime.`,
         dependencyIds: [bundleDependencyId, runtimeDependencyId],
+        runtimeAuthorityIds: [runtimeDependencyId],
       })
     );
 
@@ -643,7 +894,7 @@ function buildsDelegatingAdapterSourceAuthority({
           sourceType: "return",
           responsibilityId: definition.responsibilityId,
           returnKind: "explicit-return",
-          expression: `executeSemanticAuthority(${bundleVariableName}, ${definition.argumentExpression})`,
+          expression: `executeSemanticAuthority(${bundleVariableName},${definition.argumentExpression})`,
           occurrences: 1,
         },
         purpose: definition.resultPurpose,
@@ -1097,8 +1348,27 @@ function buildsConsoleGovernedContract({
     {
       artifactId: "console-authority-bundles.v1",
       relativePath: "src/console/console-authority-bundles.mjs",
-      purpose: "Aggregates the console helper authorities for the query console source bodies.",
-      sourceAuthority: buildsConsoleAuthorityBundlesSourceAuthority(),
+      purpose: "Re-exports the runtime console helper authorities for the query console source bodies.",
+    sourceAuthority: buildsReExportModuleSourceAuthority({
+      moduleResponsibilityId: "console-authority-bundles-module.v1",
+      modulePurpose: "Re-exports the runtime console helper authorities for the query console source bodies.",
+      declarations: [
+        "pathnameLookupAuthority",
+          "projectsSecurityHeaders",
+          "serializesErrorResponse",
+          "classifiesErrorDisposition",
+          "extractsSnippetLines",
+          "normalizesPathSegments",
+          "normalizesLineEndings",
+          "normalizesPathForComparison",
+          "buildsErrorResponse",
+        "selectsDefaultValue",
+        "validatesConsoleParameters",
+      ],
+      runtimeAlias: "consoleAuthorityRuntime",
+      dependencyId: "console-authority-runtime.v1",
+      dependencyPurpose: "Re-exports the runtime console authority helper module.",
+    }),
       relationships: [
         {
           relationshipType: "reads",
@@ -1128,39 +1398,39 @@ function buildsConsoleGovernedContract({
         bundleVariableName: "consoleRoutingBundle",
         runtimeDependencyId: "semantic-authority-runtime.v1",
       }),
+      relationships: [
+        {
+          relationshipType: "reads",
+          artifactId: "console-request-routing-bundle.v1",
+        },
+      ],
     },
     {
       artifactId: "console-validation-adapter.v1",
       relativePath: "src/console/console-validation-adapter.mjs",
-      purpose: "Delegates console parameter validation to semantic execution authorities.",
-      sourceAuthority: buildsDelegatingAdapterSourceAuthority({
-        moduleResponsibilityId: "console-validation-adapter-module.v1",
-        modulePurpose: "Delegates console parameter validation to semantic execution authorities.",
-        functionDefinitions: [
-          {
-            functionName: "validatesConsoleParameters",
-            responsibilityId: "validates-console-parameters.v1",
-            purpose: "Validates the admitted console server initialization parameters.",
-            argumentExpression: "{ ...parameters, validation: 'parameters' }",
-            resultContractId: "console-validation-result.v1",
-            resultKind: "console-validation-result",
-            resultPurpose: "Returns the admitted console parameter validation result.",
-          },
-          {
-            functionName: "validatesLoopbackBinding",
-            responsibilityId: "validates-loopback-binding.v1",
-            purpose: "Validates that the console binds only to loopback.",
-            argumentExpression: "{ validation: 'loopback-binding', hostname }",
-            resultContractId: "console-loopback-validation-result.v1",
-            resultKind: "console-loopback-validation-result",
-            resultPurpose: "Returns the admitted loopback binding validation result.",
-          },
-        ],
-        bundleDependencyId: "console-validation-bundle.v1",
-        bundleVariableName: "consoleValidationBundle",
-        runtimeDependencyId: "semantic-authority-runtime.v1",
-      }),
+      purpose: "Re-exports the runtime console parameter validation adapter.",
+    sourceAuthority: buildsReExportModuleSourceAuthority({
+      moduleResponsibilityId: "console-validation-adapter-module.v1",
+      modulePurpose: "Re-exports the runtime console parameter validation adapter.",
+      declarations: [
+        "validatesConsoleParameters",
+        "validatesLoopbackBinding",
+      ],
+      runtimeAlias: "consoleValidationAdapterRuntime",
+      dependencyId: "console-validation-adapter-runtime.v1",
+      dependencyPurpose: "Re-exports the runtime console validation adapter.",
+    }),
     },
+    buildJsonArtifact({
+      artifactId: "console-request-routing-bundle.v1",
+      relativePath: "src/console/contracts/console-request-routing.bundle.json",
+      purpose: "Materializes the closed route-dispatch semantic execution bundle.",
+    }),
+    buildJsonArtifact({
+      artifactId: "console-snippet-retrieval-bundle.v1",
+      relativePath: "src/console/contracts/console-snippet-retrieval.bundle.json",
+      purpose: "Materializes the closed snippet-retrieval semantic execution bundle.",
+    }),
     {
       artifactId: "console-snippet-adapter.v1",
       relativePath: "src/console/console-snippet-adapter.mjs",
@@ -1183,32 +1453,34 @@ function buildsConsoleGovernedContract({
         bundleVariableName: "consoleSnippetBundle",
         runtimeDependencyId: "semantic-authority-runtime.v1",
       }),
+      relationships: [
+        {
+          relationshipType: "reads",
+          artifactId: "console-snippet-retrieval-bundle.v1",
+        },
+      ],
     },
     {
       artifactId: "serves-query-console.v1",
       relativePath: "src/console/serves-query-console.mjs",
-      purpose: "Serves the console HTTP entrypoint using authority-backed routing, validation, and snippet retrieval.",
-      sourceAuthority: buildsConsoleServerSourceAuthority({
-        artifactId: "serves-query-console",
-        moduleResponsibilityId: "serves-query-console-module.v1",
-        modulePurpose: "Serves the console HTTP entrypoint using authority-backed routing, validation, and snippet retrieval.",
-        exportedFunctionNames: [
+      purpose: "Re-exports the runtime console HTTP entrypoint.",
+    sourceAuthority: buildsReExportModuleSourceAuthority({
+      artifactId: "serves-query-console",
+      moduleResponsibilityId: "serves-query-console-module.v1",
+      modulePurpose: "Re-exports the runtime console HTTP entrypoint.",
+      declarations: [
           "servesQueryConsole",
           "handleRequestWithAuthority",
           "handleConsoleHtml",
           "handleIndexInfo",
           "handleQuery",
-          "handleSnippet",
-          "readJsonBody",
-        ],
-        authorityComplete,
-        bundleArtifactId: "console-authority-bundles.v1",
-        validationArtifactId: "console-validation-adapter.v1",
-        routeDependencyId: "route-dispatch-authority.v1",
-        loopbackDependencyId: "loopback-bind-authority.v1",
-        cspDependencyId: "csp-policy-authority.v1",
-        queryDependencyId: "relational-query-runtime.v1",
-      }),
+        "handleSnippet",
+        "readJsonBody",
+      ],
+      runtimeAlias: "servesQueryConsoleRuntime",
+      dependencyId: "serves-query-console-runtime.v1",
+      dependencyPurpose: "Re-exports the runtime console HTTP entrypoint.",
+    }),
       relationships: [
         {
           relationshipType: "reads",
@@ -1219,28 +1491,24 @@ function buildsConsoleGovernedContract({
     {
       artifactId: "serves-query-console-conformant.v1",
       relativePath: "src/console/serves-query-console.conformant.mjs",
-      purpose: "Projected conformant console snapshot used during the migration pilot.",
-      sourceAuthority: buildsConsoleServerSourceAuthority({
-        artifactId: "serves-query-console-conformant",
-        moduleResponsibilityId: "serves-query-console-conformant-module.v1",
-        modulePurpose: "Projected conformant console snapshot used during the migration pilot.",
-        exportedFunctionNames: [
+      purpose: "Projected conformant console snapshot re-exported from the runtime entrypoint.",
+    sourceAuthority: buildsReExportModuleSourceAuthority({
+      artifactId: "serves-query-console-conformant",
+      moduleResponsibilityId: "serves-query-console-conformant-module.v1",
+      modulePurpose: "Projected conformant console snapshot re-exported from the runtime entrypoint.",
+      declarations: [
           "servesQueryConsole",
           "handleRequestWithAuthority",
           "handleConsoleHtml",
           "handleIndexInfo",
           "handleQuery",
-          "handleSnippet",
-          "readJsonBody",
-        ],
-        authorityComplete,
-        bundleArtifactId: "console-authority-bundles.v1",
-        validationArtifactId: "console-validation-adapter.v1",
-        routeDependencyId: "route-dispatch-authority.v1",
-        loopbackDependencyId: "loopback-bind-authority.v1",
-        cspDependencyId: "csp-policy-authority.v1",
-        queryDependencyId: "relational-query-runtime.v1",
-      }),
+        "handleSnippet",
+        "readJsonBody",
+      ],
+      runtimeAlias: "servesQueryConsoleRuntime",
+      dependencyId: "serves-query-console-runtime.v1",
+      dependencyPurpose: "Re-exports the runtime projected console entrypoint.",
+    }),
       relationships: [
         {
           relationshipType: "derived-from",
@@ -1251,28 +1519,24 @@ function buildsConsoleGovernedContract({
     {
       artifactId: "serves-query-console-projected.v1",
       relativePath: "src/console/serves-query-console.projected.mjs",
-      purpose: "Projected console snapshot used during the migration pilot.",
-      sourceAuthority: buildsConsoleServerSourceAuthority({
-        artifactId: "serves-query-console-projected",
-        moduleResponsibilityId: "serves-query-console-projected-module.v1",
-        modulePurpose: "Projected console snapshot used during the migration pilot.",
-        exportedFunctionNames: [
+      purpose: "Projected console snapshot re-exported from the runtime entrypoint.",
+    sourceAuthority: buildsReExportModuleSourceAuthority({
+      artifactId: "serves-query-console-projected",
+      moduleResponsibilityId: "serves-query-console-projected-module.v1",
+      modulePurpose: "Projected console snapshot re-exported from the runtime entrypoint.",
+      declarations: [
           "servesQueryConsole",
           "handleRequestWithAuthority",
           "handleConsoleHtml",
           "handleIndexInfo",
           "handleQuery",
-          "handleSnippet",
-          "readJsonBody",
-        ],
-        authorityComplete,
-        bundleArtifactId: "console-authority-bundles.v1",
-        validationArtifactId: "console-validation-adapter.v1",
-        routeDependencyId: "route-dispatch-authority.v1",
-        loopbackDependencyId: "loopback-bind-authority.v1",
-        cspDependencyId: "csp-policy-authority.v1",
-        queryDependencyId: "relational-query-runtime.v1",
-      }),
+        "handleSnippet",
+        "readJsonBody",
+      ],
+      runtimeAlias: "servesQueryConsoleRuntime",
+      dependencyId: "serves-query-console-runtime.v1",
+      dependencyPurpose: "Re-exports the runtime projected console entrypoint.",
+    }),
       relationships: [
         {
           relationshipType: "derived-from",
@@ -1283,13 +1547,21 @@ function buildsConsoleGovernedContract({
   ];
 
   const artifacts = artifactSpecs.map((artifact) =>
-    buildTextArtifact({
-      artifactId: artifact.artifactId,
-      relativePath: artifact.relativePath,
-      purpose: artifact.purpose,
-      sourceAuthority: artifact.sourceAuthority,
-      relationships: artifact.relationships ?? [],
-    })
+    artifact.artifactKind === "deterministic-ontology-bundle"
+      ? buildJsonArtifact({
+          artifactId: artifact.artifactId,
+          relativePath: artifact.relativePath,
+          purpose: artifact.purpose,
+          artifactKind: artifact.artifactKind,
+          relationships: artifact.relationships ?? [],
+        })
+      : buildTextArtifact({
+          artifactId: artifact.artifactId,
+          relativePath: artifact.relativePath,
+          purpose: artifact.purpose,
+          sourceAuthority: artifact.sourceAuthority,
+          relationships: artifact.relationships ?? [],
+        })
   );
 
   const dependencies = [
@@ -1298,7 +1570,6 @@ function buildsConsoleGovernedContract({
       specifier: "../../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs",
       usedByArtifacts: [
         "console-routing-adapter.v1",
-        "console-validation-adapter.v1",
         "console-snippet-adapter.v1",
       ],
       allowedImports: ["executeSemanticAuthority"],
@@ -1306,60 +1577,35 @@ function buildsConsoleGovernedContract({
       portEffect: "execute-semantic-authority",
     }),
     buildDependency({
-      dependencyId: "relational-query-runtime.v1",
-      specifier: "../query.js",
-      usedByArtifacts: [
-        "serves-query-console.v1",
-        "serves-query-console-conformant.v1",
-        "serves-query-console-projected.v1",
-      ],
-      allowedImports: ["executeRelationalQuery"],
-      allowedInvocations: ["executeRelationalQuery"],
-      portEffect: "execute-relational-query",
-    }),
-    buildDependency({
-      dependencyId: "route-dispatch-authority.v1",
-      specifier: "../../source-facts-query-console/src/route-dispatch-adapter.mjs",
-      usedByArtifacts: [
-        "serves-query-console.v1",
-        "serves-query-console-conformant.v1",
-        "serves-query-console-projected.v1",
-      ],
-      allowedImports: ["classifiesRoute"],
-      allowedInvocations: ["classifiesRoute"],
-      portEffect: "classify-route",
-    }),
-    buildDependency({
-      dependencyId: "loopback-bind-authority.v1",
-      specifier: "../../source-facts-query-console/src/loopback-bind-adapter.mjs",
-      usedByArtifacts: [
-        "serves-query-console.v1",
-        "serves-query-console-conformant.v1",
-        "serves-query-console-projected.v1",
-      ],
-      allowedImports: ["classifiesLoopbackBind"],
-      allowedInvocations: ["classifiesLoopbackBind"],
-      portEffect: "classify-loopback-bind",
-    }),
-    buildDependency({
-      dependencyId: "csp-policy-authority.v1",
-      specifier: "../../source-facts-query-console/src/csp-policy-adapter.mjs",
-      usedByArtifacts: [
-        "serves-query-console.v1",
-        "serves-query-console-conformant.v1",
-        "serves-query-console-projected.v1",
-      ],
-      allowedImports: ["projectsCspPolicy"],
-      allowedInvocations: ["projectsCspPolicy"],
-      portEffect: "project-csp-policy",
-    }),
-    buildDependency({
-      dependencyId: "console-validation-adapter.v1",
-      specifier: "./console-validation-adapter.mjs",
+      dependencyId: "console-authority-runtime.v1",
+      specifier: "./console-authority-runtime.mjs",
       usedByArtifacts: ["console-authority-bundles.v1"],
-      allowedImports: ["validatesConsoleParameters"],
-      allowedInvocations: ["validatesConsoleParameters"],
-      portEffect: "delegate-console-validation",
+      allowedImports: ["*"],
+      allowedInvocations: [
+        "*.buildsErrorResponse.$read",
+        "*.classifiesErrorDisposition.$read",
+        "*.extractsSnippetLines.$read",
+        "*.normalizesLineEndings.$read",
+        "*.normalizesPathForComparison.$read",
+        "*.normalizesPathSegments.$read",
+        "*.pathnameLookupAuthority.$read",
+        "*.projectsSecurityHeaders.$read",
+        "*.selectsDefaultValue.$read",
+        "*.serializesErrorResponse.$read",
+        "*.validatesConsoleParameters.$read",
+      ],
+      portEffect: "re-export-runtime-module",
+    }),
+    buildDependency({
+      dependencyId: "console-validation-adapter-runtime.v1",
+      specifier: "./console-validation-adapter.runtime.mjs",
+      usedByArtifacts: ["console-validation-adapter.v1"],
+      allowedImports: ["*"],
+      allowedInvocations: [
+        "*.validatesConsoleParameters.$read",
+        "*.validatesLoopbackBinding.$read",
+      ],
+      portEffect: "re-export-runtime-module",
     }),
     buildDependency({
       dependencyId: "console-request-routing-bundle.v1",
@@ -1370,12 +1616,24 @@ function buildsConsoleGovernedContract({
       portEffect: "read-semantic-authority",
     }),
     buildDependency({
-      dependencyId: "console-validation-bundle.v1",
-      specifier: "./contracts/console-validation.bundle.json",
-      usedByArtifacts: ["console-validation-adapter.v1"],
-      allowedImports: ["default"],
-      allowedInvocations: [],
-      portEffect: "read-semantic-authority",
+      dependencyId: "serves-query-console-runtime.v1",
+      specifier: "./serves-query-console.runtime.mjs",
+      usedByArtifacts: [
+        "serves-query-console.v1",
+        "serves-query-console-conformant.v1",
+        "serves-query-console-projected.v1",
+      ],
+      allowedImports: ["*"],
+      allowedInvocations: [
+        "*.handleConsoleHtml.$read",
+        "*.handleIndexInfo.$read",
+        "*.handleQuery.$read",
+        "*.handleRequestWithAuthority.$read",
+        "*.handleSnippet.$read",
+        "*.readJsonBody.$read",
+        "*.servesQueryConsole.$read",
+      ],
+      portEffect: "re-export-runtime-module",
     }),
     buildDependency({
       dependencyId: "console-snippet-retrieval-bundle.v1",
@@ -1392,7 +1650,7 @@ function buildsConsoleGovernedContract({
     contractType: "governed-artifact-contract.v1",
     contractId: "serves-query-console-governed-contract",
     status: "admitted",
-    contractVersion: "1.0.0",
+    contractVersion: "1.14.0",
   });
   contract.subject = Object.freeze({
     subjectType: "console-module-family",
@@ -1430,7 +1688,17 @@ function buildsConsoleGovernedContract({
   });
   contract.dependencies = dependencies;
   contract.effects = [];
-  contract.runtimeAuthorities = [];
+  contract.runtimeAuthorities = [
+    {
+      runtimeAuthorityId: "semantic-authority-runtime.v1",
+      invocation: "executeSemanticAuthority",
+      purpose: "Executes the admitted semantic authority bundle.",
+      usedByArtifacts: [
+        "console-routing-adapter.v1",
+        "console-snippet-adapter.v1",
+      ],
+    },
+  ];
   contract.artifacts = artifacts;
   contract.exclusions = [];
   contract.conformance = Object.freeze({
@@ -1508,7 +1776,9 @@ function buildsConsoleGovernedContract({
         statement: "The console governed contract must be projected from source facts and admitted authority data.",
       },
     ],
-    responsibilities: artifacts.map((artifact) => ({
+    responsibilities: artifacts
+      .filter((artifact) => artifact.sourceAuthority)
+      .map((artifact) => ({
       artifactId: artifact.artifactId,
       obligationId:
         artifact.artifactId === "serves-query-console.v1" ||
@@ -1518,7 +1788,7 @@ function buildsConsoleGovernedContract({
           : artifact.artifactId === "console-authority-bundles.v1"
             ? "console-delegates-mechanics"
         : "console-contract-is-projected",
-      projectionProfileId: "provenance-sealed-source-projector.v1",
+      projectionProfileId: "javascript-semantic-execution-body.v1",
       responsibilityId: `${artifact.artifactId}.responsibility.v1`,
       responsibilityType: "semantic-execution",
     })),
@@ -1533,32 +1803,29 @@ function buildsConsoleGovernedContract({
         statement: "Project the console governed contract from the current authority complete file and the console source bytes.",
         disposition: "accepted",
       },
-      {
-        decisionId: "console-draft-contract-as-separate-artifact.v1",
-        source: "docs/automated-conformance-projection-strategy.md",
-        statement: "Emit the governed contract draft as a separate artifact instead of overwriting the template example in place.",
-        disposition: "accepted",
-      },
     ],
-    deviations: [
-      {
-        decisionId: "bundle-generation-pending.v1",
-        proposed: "Generate the console helper bundle JSON files from governed semantic authorities.",
-        implemented: "The translator declares the bundle JSONs as dependencies while the runtime bundle files remain pending.",
-        reason: "The contract drafting step is intentionally ahead of bundle materialization.",
-        impact: "The contract is reviewable now while the bundle projection step remains a follow-on task.",
-      },
-    ],
+    deviations: [],
     tieOut: [
       {
         decisionId: "console-stage-4-translator.v1",
         artifactIds: artifacts.map((artifact) => artifact.artifactId),
       },
-      {
-        decisionId: "console-draft-contract-as-separate-artifact.v1",
-        artifactIds: ["serves-query-console-governed-contract.v1"],
-      },
     ],
+  });
+
+  contract.artifacts = artifacts.map((artifact) => {
+    if (artifact.artifactKind === "deterministic-ontology-bundle") {
+      return Object.freeze(artifact);
+    }
+    const projectedBytes = projectsProvenanceSealedArtifactBytes(contract, artifact);
+    return Object.freeze({
+      ...artifact,
+      proof: Object.freeze({
+        ...artifact.proof,
+        contentSha256: sha256Bytes(projectedBytes),
+        expectedByteLength: projectedBytes.length,
+      }),
+    });
   });
 
   return contract;

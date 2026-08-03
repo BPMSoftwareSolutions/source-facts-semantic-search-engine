@@ -525,6 +525,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'projection-mapping-candidate.v1',
       projectionMappingId: this.generateCandidateId(`project-${symbolName}-result`),
+      candidateId: this.generateCandidateId(`project-${symbolName}-result`),
       responsibility: {
         responsibilityId: symbolName
       },
@@ -574,6 +575,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'serialization-profile-candidate.v1',
       serializationProfileId: this.generateCandidateId(`serialize-${symbolName}`),
+      candidateId: this.generateCandidateId(`serialize-${symbolName}`),
       source: {
         modulePath: mechanic.modulePath,
         sourceReferenceId: sourceRef?.referenceId ?? mechanic.sourceReferenceId ?? null,
@@ -629,6 +631,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'validation-policy-candidate.v1',
       validationPolicyId: this.generateCandidateId(`validate-${symbolName}`),
+      candidateId: this.generateCandidateId(`validate-${symbolName}`),
       source: {
         modulePath: mechanic.modulePath,
         sourceReferenceId: sourceRef?.referenceId ?? mechanic.sourceReferenceId ?? null,
@@ -677,6 +680,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'iteration-authority-candidate.v1',
       iterationId: this.generateCandidateId(`iterate-${symbolName}`),
+      candidateId: this.generateCandidateId(`iterate-${symbolName}`),
       source: {
         modulePath: mechanic.modulePath,
         sourceReferenceId: sourceRef?.referenceId ?? mechanic.sourceReferenceId ?? null,
@@ -724,6 +728,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'state-transition-authority-candidate.v1',
       stateTransitionId: this.generateCandidateId(`transition-${symbolName}`),
+      candidateId: this.generateCandidateId(`transition-${symbolName}`),
       source: {
         modulePath: mechanic.modulePath,
         sourceReferenceId: sourceRef?.referenceId ?? mechanic.sourceReferenceId ?? null,
@@ -780,6 +785,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'failure-observation-candidate.v1',
       failureObservationId: this.generateCandidateId(`observe-failure-${symbolName}`),
+      candidateId: this.generateCandidateId(`observe-failure-${symbolName}`),
       source: {
         modulePath: mechanic.modulePath,
         sourceReferenceId: sourceRef?.referenceId ?? mechanic.sourceReferenceId ?? null,
@@ -826,6 +832,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'fallback-policy-candidate.v1',
       fallbackPolicyId: this.generateCandidateId(`fallback-${symbolName}`),
+      candidateId: this.generateCandidateId(`fallback-${symbolName}`),
       source: {
         modulePath: mechanic.modulePath,
         sourceReferenceId: sourceRef?.referenceId ?? mechanic.sourceReferenceId ?? null,
@@ -872,6 +879,7 @@ export class AuthorityCandidateProjector {
     return {
       authorityCandidateType: 'normalization-authority-candidate.v1',
       normalizationId: this.generateCandidateId(`normalize-${symbolName}`),
+      candidateId: this.generateCandidateId(`normalize-${symbolName}`),
       source: {
         modulePath: mechanic.modulePath,
         sourceReferenceId: sourceRef?.referenceId ?? mechanic.sourceReferenceId ?? null,

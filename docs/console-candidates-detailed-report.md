@@ -1,12 +1,12 @@
 # Authority Candidate Detailed Report: serves-query-console
 
-**Generated:** 2026-08-03T13:22:19.844Z
-**Candidate sources:** `console-authority-bundles.mjs`, `console-validation-adapter.mjs`, `serves-query-console.conformant.mjs`, `serves-query-console.mjs`, `serves-query-console.projected.mjs`
+**Generated:** 2026-08-03T13:40:22.450Z
+**Candidate sources:** `.governance/projections/governed-message-artifact-family.ledger.json`, `console-authority-bundles.mjs`, `console-validation-adapter.mjs`, `serves-query-console.conformant.mjs`, `serves-query-console.mjs`, `serves-query-console.projected.mjs`
 **Workspace:** `C:\lab\repos\source-facts-semantic-search-engine\src\console`
-**Violations detected:** 493
-**Candidates projected:** 493
-**Bindings mapped to known authority:** 477
-**Bindings still requiring authority:** 16
+**Violations detected:** 505
+**Candidates projected:** 505
+**Bindings mapped to known authority:** 485
+**Bindings still requiring authority:** 20
 **Engine findings:** 41
 
 ## Executive Summary
@@ -17,22 +17,23 @@ The query tool now classifies real mechanic families instead of `unknown`, which
 
 | Candidate Type | Mechanics Observed | Data Transition Needed |
 | --- | --- | --- |
-| `decision-authority-candidate.v1` | 48 | Decision tables, predicate data, and AST-backed branch conditions |
-| `failure-disposition-authority-candidate.v1` | 12 | Error ontology, failure-policy data, and canonical rejection semantics |
-| `projection-mapping-candidate.v1` | 130 | AST object-shape data, field mapping declarations, and schema projections |
-| `iteration-authority-candidate.v1` | 1 | Iteration policy, collection order data, and explicit continuation/termination rules |
-| `state-transition-authority-candidate.v1` | 73 | Effect data, state-transition declarations, and proof requirements |
-| `serialization-profile-candidate.v1` | 90 | Canonical byte rules, encoding policy, and stable serialization profiles |
-| `validation-policy-candidate.v1` | 4 | Validation schema data and explicit failure-policy declarations |
-| `failure-observation-candidate.v1` | 30 | Catch semantics, error-classification data, and observation policy |
-| `fallback-policy-candidate.v1` | 74 | Missing-value policy, default-value data, and canonical fallback rules |
+| `decision-authority-candidate.v1` | 49 | Decision tables, predicate data, and AST-backed branch conditions |
+| `failure-disposition-authority-candidate.v1` | 13 | Error ontology, failure-policy data, and canonical rejection semantics |
+| `projection-mapping-candidate.v1` | 131 | AST object-shape data, field mapping declarations, and schema projections |
+| `iteration-authority-candidate.v1` | 2 | Iteration policy, collection order data, and explicit continuation/termination rules |
+| `state-transition-authority-candidate.v1` | 74 | Effect data, state-transition declarations, and proof requirements |
+| `serialization-profile-candidate.v1` | 91 | Canonical byte rules, encoding policy, and stable serialization profiles |
+| `validation-policy-candidate.v1` | 5 | Validation schema data and explicit failure-policy declarations |
+| `failure-observation-candidate.v1` | 31 | Catch semantics, error-classification data, and observation policy |
+| `fallback-policy-candidate.v1` | 75 | Missing-value policy, default-value data, and canonical fallback rules |
+| `normalization-authority-candidate.v1` | 1 | Translation ontology, canonical forms, and lossiness policy |
 
 ## Candidate Families
 
 ### Branch → Decision Authority Candidate
 
-**Count:** 48
-**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 49
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** Decision tables, predicate data, and AST-backed branch conditions
 **Representative source:** `serves-query-console.conformant.mjs:68`
 
@@ -143,8 +144,8 @@ These mechanics still need condition semantics, outcome semantics, and no-match 
 
 ### Throw → Failure Disposition Candidate
 
-**Count:** 12
-**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 13
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** Error ontology, failure-policy data, and canonical rejection semantics
 **Representative source:** `serves-query-console.conformant.mjs:68`
 
@@ -223,8 +224,8 @@ These mechanics need the error identity, precondition, and fallback-vs-canonical
 
 ### Object Construction → Projection Mapping Candidate
 
-**Count:** 130
-**Unique source files:** console-authority-bundles.mjs, console-validation-adapter.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 131
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, console-authority-bundles.mjs, console-validation-adapter.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** AST object-shape data, field mapping declarations, and schema projections
 **Representative source:** `console-authority-bundles.mjs:30`
 
@@ -248,6 +249,7 @@ These mechanics need the error identity, precondition, and fallback-vs-canonical
 {
   "authorityCandidateType": "projection-mapping-candidate.v1",
   "projectionMappingId": "project-pathname-lookup-authority-result",
+  "candidateId": "project-pathname-lookup-authority-result",
   "responsibility": {
     "responsibilityId": "pathnameLookupAuthority"
   },
@@ -313,8 +315,8 @@ These mechanics are still constructing output objects in code; the field-by-fiel
 
 ### Iteration → Iteration Authority Candidate
 
-**Count:** 1
-**Unique source files:** console-authority-bundles.mjs
+**Count:** 2
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, console-authority-bundles.mjs
 **Data transition:** Iteration policy, collection order data, and explicit continuation/termination rules
 **Representative source:** `console-authority-bundles.mjs:122`
 
@@ -338,6 +340,7 @@ These mechanics are still constructing output objects in code; the field-by-fiel
 {
   "authorityCandidateType": "iteration-authority-candidate.v1",
   "iterationId": "iterate-extracts-snippet-lines",
+  "candidateId": "iterate-extracts-snippet-lines",
   "source": {
     "modulePath": "console-authority-bundles.mjs",
     "sourceReferenceId": "console-authority-bundles.mjs:4289:232",
@@ -386,8 +389,8 @@ This mechanic should be a data-driven iteration contract instead of a hard-coded
 
 ### State Mutation → State Transition Candidate
 
-**Count:** 73
-**Unique source files:** console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 74
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** Effect data, state-transition declarations, and proof requirements
 **Representative source:** `console-authority-bundles.mjs:122`
 
@@ -411,6 +414,7 @@ This mechanic should be a data-driven iteration contract instead of a hard-coded
 {
   "authorityCandidateType": "state-transition-authority-candidate.v1",
   "stateTransitionId": "transition-extracts-snippet-lines",
+  "candidateId": "transition-extracts-snippet-lines",
   "source": {
     "modulePath": "console-authority-bundles.mjs",
     "sourceReferenceId": "console-authority-bundles.mjs:4346:15",
@@ -473,8 +477,8 @@ These mechanics still mutate state directly and need effect declarations that ca
 
 ### Serialization → Serialization Profile Candidate
 
-**Count:** 90
-**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 91
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** Canonical byte rules, encoding policy, and stable serialization profiles
 **Representative source:** `serves-query-console.conformant.mjs:92`
 
@@ -498,6 +502,7 @@ These mechanics still mutate state directly and need effect declarations that ca
 {
   "authorityCandidateType": "serialization-profile-candidate.v1",
   "serializationProfileId": "serialize-serves-query-console",
+  "candidateId": "serialize-serves-query-console",
   "source": {
     "modulePath": "serves-query-console.conformant.mjs",
     "sourceReferenceId": "serves-query-console.conformant.mjs:3892:71",
@@ -559,8 +564,8 @@ These mechanics should be described as serialization data so byte-for-byte outpu
 
 ### Validation → Validation Policy Candidate
 
-**Count:** 4
-**Unique source files:** console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 5
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** Validation schema data and explicit failure-policy declarations
 **Representative source:** `console-authority-bundles.mjs:189`
 
@@ -582,6 +587,7 @@ These mechanics should be described as serialization data so byte-for-byte outpu
 {
   "authorityCandidateType": "validation-policy-candidate.v1",
   "validationPolicyId": "validate-validates-console-parameters",
+  "candidateId": "validate-validates-console-parameters",
   "source": {
     "modulePath": "console-authority-bundles.mjs",
     "sourceReferenceId": "console-authority-bundles.mjs:6347:49",
@@ -632,8 +638,8 @@ These mechanics still encode validation decisions in code and should move into p
 
 ### Exception Handling → Failure Observation Candidate
 
-**Count:** 30
-**Unique source files:** serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 31
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** Catch semantics, error-classification data, and observation policy
 **Representative source:** `serves-query-console.conformant.mjs:65`
 
@@ -657,6 +663,7 @@ These mechanics still encode validation decisions in code and should move into p
 {
   "authorityCandidateType": "failure-observation-candidate.v1",
   "failureObservationId": "observe-failure-serves-query-console",
+  "candidateId": "observe-failure-serves-query-console",
   "source": {
     "modulePath": "serves-query-console.conformant.mjs",
     "sourceReferenceId": "serves-query-console.conformant.mjs:2822:223",
@@ -707,8 +714,8 @@ These mechanics should describe which failures are observed and which are rethro
 
 ### Fallback → Fallback Policy Candidate
 
-**Count:** 74
-**Unique source files:** console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
+**Count:** 75
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json, console-authority-bundles.mjs, serves-query-console.conformant.mjs, serves-query-console.mjs, serves-query-console.projected.mjs
 **Data transition:** Missing-value policy, default-value data, and canonical fallback rules
 **Representative source:** `console-authority-bundles.mjs:37`
 
@@ -732,6 +739,7 @@ These mechanics should describe which failures are observed and which are rethro
 {
   "authorityCandidateType": "fallback-policy-candidate.v1",
   "fallbackPolicyId": "fallback-pathname-lookup-authority",
+  "candidateId": "fallback-pathname-lookup-authority",
   "source": {
     "modulePath": "console-authority-bundles.mjs",
     "sourceReferenceId": "console-authority-bundles.mjs:1460:40",
@@ -782,9 +790,98 @@ These mechanics should describe which failures are observed and which are rethro
 **Why this still needs data:**
 These mechanics still embed default selection behavior in code and should become explicit fallback data.
 
+### Normalization → Normalization Candidate
+
+**Count:** 1
+**Unique source files:** .governance/projections/governed-message-artifact-family.ledger.json
+**Data transition:** Translation ontology, canonical forms, and lossiness policy
+**Representative source:** `.governance/projections/governed-message-artifact-family.ledger.json:389`
+
+**Observed code:**
+
+```text
+   385:           "exception-handling",
+   386:           "throw",
+   387:           "object-construction",
+   388:           "serialization",
+-> 389:           "normalization",
+   390:           "validation",
+   391:           "fallback",
+   392:           "retry",
+   393:           "state-mutation",
+```
+
+**Projected candidate:**
+
+```json
+{
+  "authorityCandidateType": "normalization-authority-candidate.v1",
+  "normalizationId": "normalize-.governance/projections/governed-message-artifact-",
+  "candidateId": "normalize-.governance/projections/governed-message-artifact-",
+  "source": {
+    "modulePath": ".governance/projections/governed-message-artifact-family.ledger.json",
+    "sourceReferenceId": ".governance/projections/governed-message-artifact-family.ledger.json:13094:15",
+    "enclosingSymbol": ".governance/projections/governed-message-artifact-family.ledger.json",
+    "mechanic": "normalization",
+    "startLine": 389,
+    "endLine": 389,
+    "sourceSnippet": "          \"normalization\","
+  },
+  "sourceVariants": {
+    "description": "What forms can input take?",
+    "variants": [
+      "<variant1>",
+      "<variant2>"
+    ],
+    "requiredHumanResolution": [
+      "identify all source variants"
+    ]
+  },
+  "canonicalTarget": {
+    "description": "What is the single canonical form?",
+    "form": "<canonical-representation>",
+    "requiredHumanResolution": [
+      "confirm canonical form"
+    ]
+  },
+  "lossiness": {
+    "isLossy": false,
+    "description": "Does transformation lose information?",
+    "requiredHumanResolution": [
+      "confirm lossiness"
+    ]
+  },
+  "classification": {
+    "applied": "<classification>",
+    "requiredHumanResolution": [
+      "confirm classification applied"
+    ]
+  },
+  "requiredHumanResolution": [
+    "identify all source variants",
+    "confirm canonical target",
+    "confirm lossiness",
+    "confirm classification"
+  ],
+  "status": "AUTHORITY_CANDIDATE_PROJECTED",
+  "coverageDisposition": "SEMANTIC_DECISION_REQUIRED"
+}
+```
+
+**Unresolved prompts:**
+- confirm canonical form
+- confirm canonical target
+- confirm classification
+- confirm classification applied
+- confirm lossiness
+- identify all source variants
+
+**Why this still needs data:**
+These mechanics need their source variants and canonical target to be declared as transformation data.
+
 ## Unresolved Binding Audit
 
-The following mechanics still need authority binding after projection (16 unresolved mappings):
+The following mechanics still need authority binding after projection (20 unresolved mappings):
 
 | Violation | Mechanic | Source Location | Why it is unresolved |
 | --- | --- | --- | --- |
@@ -804,15 +901,19 @@ The following mechanics still need authority binding after projection (16 unreso
 | `validation-violation-345` | `validation` | `serves-query-console.projected.mjs:47` | No authority mechanic was matched for validation |
 | `throw-violation-358` | `throw` | `serves-query-console.projected.mjs:92` | No authority mechanic was matched for throw |
 | `throw-violation-381` | `throw` | `serves-query-console.projected.mjs:140` | No authority mechanic was matched for throw |
+| `throw-violation-497` | `throw` | `.governance/projections/governed-message-artifact-family.ledger.json:386` | No authority mechanic was matched for throw |
+| `validation-violation-501` | `validation` | `.governance/projections/governed-message-artifact-family.ledger.json:390` | No authority mechanic was matched for validation |
+| `retry-violation-503` | `retry` | `.governance/projections/governed-message-artifact-family.ledger.json:392` | No authority mechanic was matched for retry |
+| `meaning-hidden-in-text-violation-505` | `meaning-hidden-in-text` | `.governance/projections/governed-message-artifact-family.ledger.json:394` | No authority mechanic was matched for meaning-hidden-in-text |
 
 ## Engine Audit
 
 | Artifact | Findings | Audit note |
 | --- | --- | --- |
 | `console-authority-bundles.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:5cc66ee3c54f818c1374752e10ddb1f0d5401d5bae372f863a1b8b17a307ab12, observed sha256:4d57ab91d3c4ee4f04a05ff3d41971ea374ba8218461feb5bfb021aa4ae30ed5. |
-| `console-routing-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:5c4dfb669b60eb17e78cc9e7510e4d92f6268bc9211aa846f315050947209a66, observed sha256:ddcd9000b6d448e678765573c8c4e15fed0308038f61797e3f456fb56680baa3. |
-| `console-snippet-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:6c200cc369fe40279d6c0d23360a157d79ab1f6e259808c689dcc6672b687625, observed sha256:64ae105a1a19ceb562e3d97fbdf60e6ca78738a04d5d7b737386d33d575c1f50. |
-| `console-validation-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:9838d8bd71c8cc49282b2c61d538f133716d99fdd560bfae3e621ea21d4a92d2, observed sha256:4705cdf94fdc5caa43561328d31531576eea6784d18940fcdd3023b0ef6d905b. |
+| `console-routing-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:6bbd94bbaa2769d4c6c3b309673d2b1a182922982e7dff3eea8e737baf9c7f0c, observed sha256:fb4fcc1b19139ea67d2ab47a9480123fdc0e4f1fe0a991eaaaeea629b5bc2ef8. |
+| `console-snippet-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:0822c7734edcaa941c44ae47bcb6cc15130a673c793b352d1760d3e837440592, observed sha256:e54c39e3372353b26bf83c2dd82ab6b6784a4baf296977a5954d156afeed743b. |
+| `console-validation-adapter.v1` | `semantic-body-responsibility-cardinality`, `semantic-execution-boundary-unresolved`, `source-authority-declaration-mismatch`, `declared-content-digest-mismatch` | Content digest mismatch: expected sha256:6baebab67aee792c5c0aa92c2e3088ed7ec56cc5ef58ea838eb0c697d56ade13, observed sha256:ea203ad1fe1a7895edcd6fc4f0a9caaab7b5bf9a7534322b07260216eab7be0e. |
 | `serves-query-console-conformant.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch`, `semantic-edge-authority-unresolved` | Content digest mismatch: expected sha256:d240eab49e9b87da69495c9bd3e64b401c32ae71b5fa766ae8a107cc7b215c83, observed sha256:f76f955d1246f4510ba948f51f9fb0f16fb444908d2f43a49ed215b81bd5b43e. |
 | `serves-query-console-projected.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch`, `semantic-edge-authority-unresolved` | Content digest mismatch: expected sha256:94481a642dd3cf5d29a69376008ccdcbf1424ce8cfb3ffa1d6240a4d5601cd59, observed sha256:55dcdcd3eeaf8d93545ca098d6082fe14adfc70f814175a3c30c401618db0fb5. |
 | `serves-query-console.v1` | `source-authority-declaration-mismatch`, `declared-content-digest-mismatch`, `semantic-edge-authority-unresolved` | Content digest mismatch: expected sha256:643f8253d9b946554b258f02828215ca2980964df8b4b8181f649cd17bfdd3a7, observed sha256:7e58bea1f0cff62c98d386ec872704a736b003a2dec07ac10a797f54379c6d71. |
@@ -822,9 +923,9 @@ The following mechanics still need authority binding after projection (16 unreso
 | Artifact | Expected | Observed |
 | --- | --- | --- |
 | `console-authority-bundles.v1` | `sha256:5cc66ee3c54f818c1374752e10ddb1f0d5401d5bae372f863a1b8b17a307ab12` | `sha256:4d57ab91d3c4ee4f04a05ff3d41971ea374ba8218461feb5bfb021aa4ae30ed5` |
-| `console-routing-adapter.v1` | `sha256:5c4dfb669b60eb17e78cc9e7510e4d92f6268bc9211aa846f315050947209a66` | `sha256:ddcd9000b6d448e678765573c8c4e15fed0308038f61797e3f456fb56680baa3` |
-| `console-snippet-adapter.v1` | `sha256:6c200cc369fe40279d6c0d23360a157d79ab1f6e259808c689dcc6672b687625` | `sha256:64ae105a1a19ceb562e3d97fbdf60e6ca78738a04d5d7b737386d33d575c1f50` |
-| `console-validation-adapter.v1` | `sha256:9838d8bd71c8cc49282b2c61d538f133716d99fdd560bfae3e621ea21d4a92d2` | `sha256:4705cdf94fdc5caa43561328d31531576eea6784d18940fcdd3023b0ef6d905b` |
+| `console-routing-adapter.v1` | `sha256:6bbd94bbaa2769d4c6c3b309673d2b1a182922982e7dff3eea8e737baf9c7f0c` | `sha256:fb4fcc1b19139ea67d2ab47a9480123fdc0e4f1fe0a991eaaaeea629b5bc2ef8` |
+| `console-snippet-adapter.v1` | `sha256:0822c7734edcaa941c44ae47bcb6cc15130a673c793b352d1760d3e837440592` | `sha256:e54c39e3372353b26bf83c2dd82ab6b6784a4baf296977a5954d156afeed743b` |
+| `console-validation-adapter.v1` | `sha256:6baebab67aee792c5c0aa92c2e3088ed7ec56cc5ef58ea838eb0c697d56ade13` | `sha256:ea203ad1fe1a7895edcd6fc4f0a9caaab7b5bf9a7534322b07260216eab7be0e` |
 | `serves-query-console-conformant.v1` | `sha256:d240eab49e9b87da69495c9bd3e64b401c32ae71b5fa766ae8a107cc7b215c83` | `sha256:f76f955d1246f4510ba948f51f9fb0f16fb444908d2f43a49ed215b81bd5b43e` |
 | `serves-query-console-projected.v1` | `sha256:94481a642dd3cf5d29a69376008ccdcbf1424ce8cfb3ffa1d6240a4d5601cd59` | `sha256:55dcdcd3eeaf8d93545ca098d6082fe14adfc70f814175a3c30c401618db0fb5` |
 | `serves-query-console.v1` | `sha256:643f8253d9b946554b258f02828215ca2980964df8b4b8181f649cd17bfdd3a7` | `sha256:7e58bea1f0cff62c98d386ec872704a736b003a2dec07ac10a797f54379c6d71` |

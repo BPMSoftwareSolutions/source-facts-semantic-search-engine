@@ -48,6 +48,7 @@ const consoleViolationModulePaths = Object.freeze([
   "serves-query-console.conformant.mjs",
   "serves-query-console.mjs",
   "serves-query-console.projected.mjs",
+  "serves-query-console.runtime.mjs",
 ]);
 const consoleViolationMechanics = Object.freeze(Object.keys(new AuthorityProjectorFromViolations().authorityFamilyMap));
 
@@ -171,7 +172,40 @@ async function runProjectAuthorityViolations(rawArgs) {
   if (receipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
     throw new Error(`Violation query failed: ${JSON.stringify(receipt, null, 2)}`);
   }
-  const violations = receipt.result.value.rows;
+  const bodyViolations = receipt.result.value.rows;
+
+  const governanceReceipt = await executeRelationalQuery(
+    index,
+    [
+      "SELECT gr.mechanic AS mechanic,",
+      "       gr.profilePath AS modulePath,",
+      "       gr.sourceReferenceId AS sourceReferenceId,",
+      "       sr.startLine AS startLine,",
+      "       sr.endLine AS endLine,",
+      "       NULL AS fromSymbolId,",
+      "       NULL AS symbolName,",
+      "       gr.executionPortEffect AS codePattern,",
+      "       gr.semanticAuthorityLocation AS reason",
+      "FROM governanceRules gr",
+      "JOIN sourceReferences sr ON gr.sourceReferenceId = sr.referenceId",
+      `WHERE gr.mechanic IN (${consoleViolationMechanics.map(quoteSqlLiteral).join(", ")})`,
+    ].join(" "),
+  );
+  if (governanceReceipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
+    throw new Error(`Governance rule query failed: ${JSON.stringify(governanceReceipt, null, 2)}`);
+  }
+
+  const governanceViolations = governanceReceipt.result.value.rows.filter((row) => {
+    if (typeof row.modulePath !== "string" || row.modulePath.length === 0) {
+      return false;
+    }
+    if (modulePaths.includes(row.modulePath)) {
+      return true;
+    }
+    return row.modulePath.includes("governed-message-artifact-family") || row.modulePath.includes("serves-query-console");
+  });
+
+  const violations = [...bodyViolations, ...governanceViolations];
 
   const result = await projectAuthorityCandidatesFromViolations(
     codeFile,

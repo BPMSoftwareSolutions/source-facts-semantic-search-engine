@@ -13,6 +13,7 @@ const targetModulePaths = new Set([
   "serves-query-console.conformant.mjs",
   "serves-query-console.mjs",
   "serves-query-console.projected.mjs",
+  "serves-query-console.runtime.mjs",
 ]);
 
 const forbiddenMechanics = new Set([
@@ -116,15 +117,14 @@ function buildRedSignalReport(violations) {
 
 test("query tool flags forbidden console mechanics with line-accurate red signals", async () => {
   const index = await buildsConsoleIndex();
-  const rows = await queriesBodyMechanics(index);
+  const bodyRows = await queriesBodyMechanics(index);
 
   const violations = [];
 
-  for (const row of rows) {
+  for (const row of bodyRows) {
     if (!targetModulePaths.has(row.modulePath)) {
       continue;
     }
-
     if (forbiddenMechanics.has(row.mechanic)) {
       violations.push(row);
     }

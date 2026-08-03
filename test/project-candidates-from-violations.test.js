@@ -33,12 +33,7 @@ const forbiddenMechanics = new Set([
   "meaning-hidden-in-text",
 ]);
 
-async function buildsViolationsFromQuery() {
-  const index = await projectSourceFactsWorkspace({
-    workspaceRoot: consoleWorkspaceRoot,
-    workspaceId: "console-authority-candidates",
-  });
-
+async function buildsViolationsFromQuery(index) {
   const receipt = await executeRelationalQuery(
     index,
     [
@@ -62,8 +57,39 @@ async function buildsViolationsFromQuery() {
   return receipt.result.value.rows;
 }
 
+async function buildsGovernanceViolationsFromQuery(index) {
+  const receipt = await executeRelationalQuery(
+    index,
+    [
+      "SELECT gr.mechanic AS mechanic,",
+      "       gr.profilePath AS modulePath,",
+      "       gr.sourceReferenceId AS sourceReferenceId,",
+      "       gr.ruleId AS governanceRuleId,",
+      "       gr.executionPortEffect AS codePattern,",
+      "       gr.semanticAuthorityLocation AS reason,",
+      "       sr.startLine AS startLine,",
+      "       sr.endLine AS endLine,",
+      "       NULL AS fromSymbolId,",
+      "       NULL AS symbolName",
+      "FROM governanceRules gr",
+      "JOIN sourceReferences sr ON gr.sourceReferenceId = sr.referenceId",
+    ].join(" "),
+  );
+
+  assert.equal(receipt.disposition, "RELATIONAL_QUERY_EXECUTED");
+  return receipt.result.value.rows;
+}
+
 test("authority candidates are projected from query-detected violations", async () => {
-  const violations = await buildsViolationsFromQuery();
+  const index = await projectSourceFactsWorkspace({
+    workspaceRoot: consoleWorkspaceRoot,
+    workspaceId: "console-authority-candidates",
+  });
+
+  const violations = [
+    ...(await buildsViolationsFromQuery(index)),
+    ...(await buildsGovernanceViolationsFromQuery(index)),
+  ];
   assert.ok(violations.length > 0, "query scan should find violations to project");
 
   const outputDirectory = mkdtempSync(path.join(os.tmpdir(), "source-facts-authority-"));
