@@ -2253,3 +2253,1319 @@ available projector − unresolved semantic decisions) evaluates to zero here sp
 *because* the subtraction term is 170 for 170. The tissue that's missing across this repo as a
 whole is overwhelmingly `REQUIRES_NEW_AUTHORITY` (3,500 of 3,658 non-exempt occurrences,
 95.7%) -- files with no candidate and no authority home at all, not files one review step away.
+
+#########################################################
+
+Yes. The shortest path to 100% conformance is **not**:
+
+```text
+Observe everything
+    ↓
+Create more reports
+    ↓
+Create more lifecycle states
+    ↓
+Create more governance machinery
+    ↓
+Eventually touch the bodies
+```
+
+That would trap you in process.
+
+The shortest path is:
+
+```text
+Observed execution mechanic
+        ↓
+Find matching authority meaning
+        ↓
+Prove semantic overlap
+        ↓
+Resolve the remaining semantic gap
+        ↓
+Bind body to authority
+        ↓
+Project replacement body
+        ↓
+Prove equivalent behavior
+        ↓
+Remove duplicated body meaning
+```
+
+The report exists to keep feeding that conveyor.
+
+Right now, it shows the repository has **3,658 observed mechanics**, **158 current occurrences with reachable draft authority but unresolved human meaning**, and **3,500 occurrences with no authority candidate yet**. It also shows 255 reachable semantic elements and 44 orphaned ones. 
+
+# The complete zero-to-100% pipeline
+
+```text
+PHASE 1 — Observe
+PHASE 2 — Understand authority
+PHASE 3 — Match meaning
+PHASE 4 — Resolve gaps
+PHASE 5 — Bind
+PHASE 6 — Project
+PHASE 7 — Prove equivalence
+PHASE 8 — Replace
+PHASE 9 — Close coverage
+PHASE 10 — Prevent regression
+```
+
+The important thing is that every phase must move inventory closer to replacement. If a phase does not help connect authority to an executable body, it should not become a major operational layer.
+
+---
+
+# Phase 1 — Observe the executable body
+
+SourceFacts already does this.
+
+```text
+Executable body
+    ↓
+Functions
+Responsibilities
+Source locations
+Branches
+Fallbacks
+Object construction
+Iteration
+Validation
+Serialization
+Failure handling
+State mutation
+```
+
+The output is not yet meaning. It is **mechanical testimony**.
+
+Example:
+
+```json
+{
+  "file": "src/console/serves-query-console.runtime.impl.mjs",
+  "responsibility": "handleIndexInfo",
+  "mechanic": "object-construction",
+  "sourceLocation": {},
+  "observedShape": {}
+}
+```
+
+## Goal
+
+Answer:
+
+```text
+What mechanics currently embody behavior?
+```
+
+## Completion condition
+
+Every executable mechanic is inventoried and tied to:
+
+* file;
+* responsibility;
+* source span;
+* mechanic type;
+* related imports and calls.
+
+You largely have this already.
+
+---
+
+# Phase 2 — Understand the authority inventory
+
+This is the critical phase you are emphasizing.
+
+Do not merely ask:
+
+```text
+Does a JSON authority file exist?
+```
+
+Ask:
+
+```text
+What meaning does this authority declare?
+```
+
+For every authority document, extract semantic facts such as:
+
+```text
+Concepts
+Relations
+Properties
+Facts
+Decisions
+Classifications
+Transformations
+Projection mappings
+Obligations
+Failure dispositions
+Iteration policies
+Result contracts
+Serialization profiles
+Runtime bindings
+```
+
+The authority must be indexed semantically, just like source is indexed mechanically.
+
+```text
+JSON authority
+    ↓
+Authority facts
+    ↓
+Meaning graph
+```
+
+For example:
+
+```json
+{
+  "authorityId": "serve-query-console",
+  "meaningFacts": [
+    {
+      "kind": "decision",
+      "subject": "request-route",
+      "inputs": ["pathname", "method"],
+      "outcomes": ["QUERY", "INDEX_INFO", "NOT_FOUND"]
+    },
+    {
+      "kind": "projection",
+      "subject": "index-information-result",
+      "fields": ["indexType", "indexId", "files", "symbols"]
+    }
+  ]
+}
+```
+
+## Goal
+
+Answer:
+
+```text
+What meaning already exists in authority?
+```
+
+## Completion condition
+
+Every reachable authority element is represented as queryable semantic facts rather than opaque JSON volume.
+
+This is the next major capability—not another report formatter.
+
+---
+
+# Phase 3 — Match body meaning to authority meaning
+
+This is the central healing step.
+
+```text
+Observed body mechanic
+        +
+Authority semantic facts
+        ↓
+Meaning-overlap analysis
+```
+
+For each body mechanic, determine whether authority already declares the same subject.
+
+## Example: branch
+
+Body:
+
+```javascript
+if (routeId === "query") {
+  return handleQuery(...);
+}
+```
+
+Authority:
+
+```json
+{
+  "decisionId": "resolve-console-route",
+  "inputs": ["routeId"],
+  "cases": [
+    {
+      "when": "query",
+      "outcome": "HANDLE_QUERY"
+    }
+  ]
+}
+```
+
+Overlap:
+
+```text
+Body meaning:
+route selection
+
+Authority meaning:
+route selection
+
+Result:
+SEMANTIC_OVERLAP_CONFIRMED
+```
+
+## Example: object construction
+
+Body:
+
+```javascript
+return {
+  indexType: index.indexType,
+  fileCount: index.files.length
+};
+```
+
+Authority:
+
+```json
+{
+  "projectionId": "project-index-information",
+  "fields": {
+    "indexType": "$.index.indexType",
+    "fileCount": "$.index.files.length"
+  }
+}
+```
+
+Overlap:
+
+```text
+Body meaning:
+result projection
+
+Authority meaning:
+result projection
+
+Result:
+SEMANTIC_OVERLAP_CONFIRMED
+```
+
+## The overlap dispositions
+
+```text
+EXACT_SEMANTIC_OVERLAP
+
+PARTIAL_SEMANTIC_OVERLAP
+
+AUTHORITY_MORE_COMPLETE_THAN_BODY
+
+BODY_MORE_COMPLETE_THAN_AUTHORITY
+
+SEMANTIC_CONFLICT
+
+NO_AUTHORITY_MATCH
+
+AMBIGUOUS_AUTHORITY_MATCH
+```
+
+This is where the report becomes truly useful.
+
+---
+
+# Phase 4 — Cross-validate truth
+
+This phase prevents either side from lying.
+
+There are four possible states.
+
+## 1. Authority and body agree
+
+```text
+Authority meaning = body meaning
+```
+
+Action:
+
+```text
+READY_FOR_BINDING
+```
+
+## 2. Authority contains more meaning than the body
+
+```text
+Authority declares:
+A, B, C
+
+Body implements:
+A, B
+```
+
+Possible interpretation:
+
+* body is incomplete;
+* body is stale;
+* unused authority exists;
+* authority was intended for a successor body.
+
+Action:
+
+```text
+BODY_INCOMPLETE_OR_AUTHORITY_UNSEATED
+```
+
+## 3. Body contains more meaning than authority
+
+```text
+Body implements:
+A, B, C
+
+Authority declares:
+A, B
+```
+
+Action:
+
+```text
+AUTHORITY_GAP
+```
+
+This is where new semantic authoring is required.
+
+## 4. Authority and body disagree
+
+```text
+Authority says:
+missing value → reject
+
+Body says:
+missing value → default
+```
+
+Action:
+
+```text
+SEMANTIC_CONFLICT_REQUIRES_DECISION
+```
+
+This is a real human-governance issue.
+
+## The truth matrix
+
+| Authority        | Body                                 | Result                              |
+| ---------------- | ------------------------------------ | ----------------------------------- |
+| Has meaning      | Same meaning                         | Bind and replace                    |
+| Has more meaning | Body incomplete or authority dormant | Resolve intended truth              |
+| Has less meaning | Authority incomplete                 | Extend authority                    |
+| Conflicts        | Different meaning                    | Human decision                      |
+| No authority     | Body-only meaning                    | Author new authority                |
+| No body          | Authority-only meaning               | Candidate future or stale authority |
+
+---
+
+# Phase 5 — Resolve the semantic gap
+
+Only after overlap analysis should the system ask for human decisions.
+
+Not:
+
+```text
+Here are 158 mechanics. Please interpret them.
+```
+
+But:
+
+```text
+Here is the authority meaning.
+Here is the body meaning.
+Here is the exact overlap.
+Here is the exact unresolved difference.
+Choose the intended truth.
+```
+
+Example work item:
+
+```json
+{
+  "subject": "handleIndexInfo",
+  "mechanic": "fallback",
+  "authorityMeaning": {
+    "missingValueDisposition": "REJECT"
+  },
+  "bodyMeaning": {
+    "missingValueDisposition": "WRITE_NULL"
+  },
+  "overlap": "SEMANTIC_CONFLICT",
+  "decisionRequired": {
+    "question": "Which missing-value disposition is canonical?",
+    "allowedOutcomes": [
+      "REJECT",
+      "WRITE_NULL",
+      "DECLARE_VARIANT_POLICY"
+    ]
+  }
+}
+```
+
+That is much faster than asking a human to interpret raw source and raw JSON separately.
+
+---
+
+# Phase 6 — Complete or promote authority
+
+Once the semantic decision is resolved:
+
+```text
+Candidate authority
+    ↓
+Complete missing meaning
+    ↓
+Validate authority
+    ↓
+Admit authority
+```
+
+Possible operations:
+
+```text
+PROMOTE_EXISTING_AUTHORITY
+
+EXTEND_EXISTING_AUTHORITY
+
+AUTHOR_MISSING_AUTHORITY_FAMILY
+
+SUPERSEDE_CONFLICTING_AUTHORITY
+
+RETIRE_ORPHANED_AUTHORITY
+```
+
+For the current 158 console mechanics, the likely path is:
+
+```text
+reachable draft
+    ↓
+resolve semantic decisions
+    ↓
+complete authority
+    ↓
+promote
+```
+
+For the 3,500 mechanics with no authority:
+
+```text
+group occurrences
+    ↓
+find repeated semantic shapes
+    ↓
+project candidate packets
+    ↓
+resolve meaning
+    ↓
+author authority
+```
+
+Do not author 3,500 independent authority entries manually. Group them by responsibility, semantic shape, and result contract.
+
+---
+
+# Phase 7 — Generate the binding
+
+This is the connective tissue.
+
+```text
+Observed responsibility
+        ↓
+Admitted semantic authority
+        ↓
+Execution binding
+```
+
+The binding answers:
+
+```text
+Which body consumes which authority?
+
+Which semantic operation applies?
+
+Which runtime executes it?
+
+Which input context is passed?
+
+Which result contract comes back?
+```
+
+Example:
+
+```json
+{
+  "bindingId": "bind-handle-index-info",
+  "bodyId": "handleIndexInfo",
+  "authorityId": "project-index-information",
+  "runtimePortId": "semantic-authority-runtime.v1",
+  "inputBinding": "$.context",
+  "resultContractId": "index-information-result.v1"
+}
+```
+
+## Completion condition
+
+Exactly one current authority binds to exactly one intended responsibility.
+
+No ambiguity.
+
+---
+
+# Phase 8 — Project the replacement body
+
+Only now should the source body change.
+
+Before:
+
+```javascript
+function handleIndexInfo(index) {
+  if (!index) {
+    return null;
+  }
+
+  return JSON.stringify({
+    indexType: index.indexType,
+    files: index.files.length
+  });
+}
+```
+
+After:
+
+```javascript
+export function handleIndexInfo(context) {
+  return executeSemanticAuthority(
+    indexInformationAuthority,
+    context
+  );
+}
+```
+
+Or whatever your admitted collapsed-body profile is.
+
+The replacement removes:
+
+```text
+branch meaning
+fallback meaning
+projection meaning
+serialization meaning
+```
+
+because those now live in authority.
+
+## The rule
+
+```text
+Do not remove body meaning
+until authority meaning is complete and executable.
+```
+
+---
+
+# Phase 9 — Prove behavioral equivalence
+
+This is where swapping becomes safe.
+
+Run both paths against the same fixture corpus.
+
+```text
+Same fixture
+    │
+    ├── old body
+    │      ↓
+    │   result A
+    │
+    └── semantic authority
+           ↓
+        result B
+
+Compare canonical result
+```
+
+Then:
+
+```text
+Old body result
+    =
+Direct semantic execution result
+    =
+Projected replacement body result
+```
+
+Possible dispositions:
+
+```text
+SEMANTIC_EQUIVALENCE_PROVEN
+
+BODY_HAS_UNDECLARED_BEHAVIOR
+
+AUTHORITY_HAS_UNSEATED_BEHAVIOR
+
+RESULT_SHAPE_MISMATCH
+
+FAILURE_DISPOSITION_MISMATCH
+
+SIDE_EFFECT_MISMATCH
+```
+
+The body is replaceable only when equivalence is green or when a reviewed decision explicitly changes behavior.
+
+---
+
+# Phase 10 — Replace and retire duplicated meaning
+
+Once equivalence passes:
+
+```text
+Admit projected body
+        ↓
+Remove old implementation meaning
+        ↓
+Re-scan
+        ↓
+Observe mechanic count decrease
+        ↓
+Observe governed coverage increase
+```
+
+The desired result is:
+
+```text
+Before:
+16 branches
+47 object constructions
+26 fallbacks
+30 serializations
+
+After:
+collapsed semantic invocation body
+```
+
+The authority becomes the active source of meaning.
+
+The body becomes executable testimony.
+
+---
+
+# Phase 11 — Close the remaining inventory
+
+Repeat by remediation lane:
+
+```text
+Lane A:
+Existing authority + exact overlap
+    → bind immediately
+
+Lane B:
+Existing authority + partial overlap
+    → resolve gap, bind
+
+Lane C:
+Authority exists but conflicts
+    → human decision
+
+Lane D:
+No authority
+    → project candidate work packet
+
+Lane E:
+Authority orphaned
+    → migrate, supersede, or retire
+
+Lane F:
+Mechanical or kernel code
+    → classify as not applicable
+```
+
+This continues until:
+
+```text
+Every observed mechanic
+    =
+governed
+or
+explicitly exempt as kernel/adapter/mechanical
+```
+
+That is your real 100% denominator.
+
+---
+
+# What 100% conformance means
+
+It should not mean:
+
+```text
+No branches exist anywhere.
+```
+
+It means:
+
+```text
+Every executable mechanic has one truthful posture.
+```
+
+The denominator should resolve into:
+
+```text
+GOVERNED_BY_SEMANTIC_AUTHORITY
+
+MECHANICAL_ADAPTER_OPERATION
+
+KERNEL_PRIMITIVE
+
+GENERATED_PROJECTION_MECHANIC
+
+AUTHORIZED_BOOTSTRAP
+
+AUTHORIZED_TEMPORARY_BACKLOG
+```
+
+At final closure, ideally:
+
+```text
+Governed capability mechanics: 100%
+Unclassified mechanics: 0
+Orphaned authority: 0
+Semantic conflicts: 0
+Unbound admitted authority: 0
+Unresolved human decisions: 0
+Unauthorized body meaning: 0
+```
+
+---
+
+# The shortest-distance conveyor
+
+Here is the compressed version.
+
+```text
+1. Observe mechanic
+2. Resolve responsibility
+3. Query authority meaning
+4. Compare body meaning to authority meaning
+5. Resolve only the difference
+6. Admit completed authority
+7. Generate binding
+8. Project replacement body
+9. Prove equivalence
+10. Remove old body meaning
+11. Re-scan
+```
+
+That is the path.
+
+Everything else is supporting infrastructure.
+
+---
+
+# What should come next
+
+The next slice should not be a generic remediation workflow.
+
+It should be:
+
+# **Meaning-overlap analysis between executable mechanics and reachable authority**
+
+That is the hinge.
+
+Without it, you are guessing whether the existing JSON is useful.
+
+With it, the system can say:
+
+```text
+These 42 body mechanics already have equivalent meaning in authority.
+
+These 71 are partially represented.
+
+These 29 conflict.
+
+These 16 have no match.
+```
+
+Then the healing path becomes obvious.
+
+## The next three concrete capabilities
+
+### 1. Extract authority semantic facts
+
+```text
+JSON authority
+    ↓
+canonical authority-fact index
+```
+
+### 2. Match authority facts to body mechanics
+
+```text
+body mechanic
+    +
+responsibility
+    +
+source context
+    ↓
+candidate semantic matches
+```
+
+### 3. Project a meaning-gap work packet
+
+```text
+body meaning
+authority meaning
+overlap
+difference
+next action
+```
+
+After those three, you can safely build:
+
+```text
+authority completion
+binding generation
+body projection
+equivalence proof
+```
+
+---
+
+# The anti-process rule
+
+For every proposed capability, ask:
+
+```text
+Does this reduce the distance between
+a body mechanic and executable authority?
+```
+
+If no, it is probably secondary.
+
+The system should optimize for this equation:
+
+```text
+Healing velocity
+=
+meaning matches confirmed
++
+semantic gaps resolved
++
+bindings generated
++
+bodies replaced
+-
+human decisions still open
+-
+authority conflicts
+-
+orphaned authority
+```
+
+The report should evolve into a live view of that conveyor.
+
+Not just:
+
+```text
+How much debt exists?
+```
+
+But:
+
+```text
+How much meaning already overlaps?
+
+How much can be seated now?
+
+What exact meaning is missing?
+
+Which body can be replaced next?
+
+How close are we to eliminating duplicated executable meaning?
+```
+
+That is the shortest path to self-healing and 100% conformance.
+
+####################################################
+
+Yes — that is the correct next boundary.
+
+The deterministic layer has now done what it can honestly do:
+
+```text
+orphaned authority
+    ↓
+current successor resolved
+    ↓
+mechanic-type overlap measured
+    ↓
+review target identified
+```
+
+The report now shows that the 14-mechanic `authority.complete.json` subject resolves through a two-hop chain to `serves-query-console.runtime.impl.mjs`, with 10 of 14 mechanic types present, while explicitly stopping short of claiming semantic equivalence. 
+
+What comes next is not more deterministic classification alone.
+
+It is:
+
+# Agent-inferred semantic overlap with human admission
+
+```text
+Rich authority meaning
+        +
+Current executable evidence
+        ↓
+Agent inference
+        ↓
+Structured overlap proposal
+        ↓
+Human review
+        ↓
+Accepted semantic decision
+        ↓
+Authority completion / binding / retirement
+```
+
+The key is that the model can infer meaning, but it must not silently convert inference into admitted authority.
+
+## The three truth states
+
+You now need to keep these separate:
+
+```text
+OBSERVED
+    mechanically established by SourceFacts
+
+INFERRED
+    proposed by the agent from authority and source evidence
+
+ADMITTED
+    accepted by a human or governed admission policy
+```
+
+That gives you a clean epistemic chain:
+
+```text
+source fact
+    ↓
+semantic inference
+    ↓
+human-reviewed decision
+    ↓
+canonical authority
+```
+
+## What the agent should infer
+
+For each rich authority mechanic, the agent should receive:
+
+* the complete authority entry;
+* its resolved successor file;
+* the exact current source responsibility and span;
+* nearby source facts;
+* imports, calls, result fields, literals, and control mechanics;
+* related semantic bundles and contracts;
+* historical path and succession evidence.
+
+Then it should propose:
+
+```text
+Authority subject
+Body subject
+Meaning represented by authority
+Meaning represented by body
+Overlap
+Difference
+Confidence
+Recommended action
+Evidence
+```
+
+Example:
+
+```json
+{
+  "inferenceType": "semantic-overlap-proposal.v1",
+  "authorityMechanicId": "validate-loopback-hostname",
+  "currentSubject": {
+    "file": "src/console/serves-query-console.runtime.impl.mjs",
+    "responsibility": "handleRequestWithAuthority"
+  },
+  "authorityMeaning": {
+    "summary": "Accept only local loopback hostnames for the console listener.",
+    "source": "declared-authority"
+  },
+  "bodyMeaning": {
+    "summary": "Checks the request hostname against an admitted local-host set before serving the console.",
+    "source": "agent-inferred-from-source"
+  },
+  "overlapDisposition": "PROPOSED_EXACT_OVERLAP",
+  "confidence": 0.94,
+  "authorityOnlyMeaning": [],
+  "bodyOnlyMeaning": [],
+  "conflicts": [],
+  "recommendedAction": "REBASE_AND_BIND",
+  "evidenceReferences": []
+}
+```
+
+## The overlap vocabulary should indicate inference
+
+Do not emit:
+
+```text
+EXACT_SEMANTIC_OVERLAP
+```
+
+before review.
+
+Emit:
+
+```text
+PROPOSED_EXACT_OVERLAP
+PROPOSED_PARTIAL_OVERLAP
+PROPOSED_SEMANTIC_CONFLICT
+PROPOSED_NO_MATCH
+INSUFFICIENT_EVIDENCE
+```
+
+After human review:
+
+```text
+EXACT_SEMANTIC_OVERLAP_ADMITTED
+PARTIAL_SEMANTIC_OVERLAP_ADMITTED
+SEMANTIC_CONFLICT_CONFIRMED
+NO_MATCH_CONFIRMED
+```
+
+That prevents the report from confusing model interpretation with established truth.
+
+# The complete next vertical slice
+
+The next capability should be:
+
+# **Infer and review semantic overlap for reconciled authority**
+
+Not merely “run an LLM over some files.”
+
+It should complete this circuit:
+
+```text
+1. Select reconciled rich authority subjects
+2. Assemble bounded evidence packets
+3. Ask the agent to infer semantic meaning on both sides
+4. Require structured overlap proposals
+5. Validate proposal shape and evidence references
+6. Present proposals for human review
+7. Record approve / amend / reject decisions
+8. Project admitted remediation actions
+9. Update the governance report
+```
+
+## Required outputs
+
+### 1. Inference packet
+
+```json
+{
+  "packetType": "semantic-overlap-inference-request.v1",
+  "authoritySubject": {},
+  "currentBodySubject": {},
+  "successionEvidence": {},
+  "authorityEvidence": {},
+  "sourceEvidence": {},
+  "relatedContracts": [],
+  "requiredOutputSchema": "semantic-overlap-proposal.v1"
+}
+```
+
+### 2. Agent proposal
+
+```text
+What the authority means
+What the body appears to mean
+Where they overlap
+Where they differ
+What cannot be determined
+Which action is recommended
+```
+
+### 3. Review decision
+
+```json
+{
+  "reviewType": "semantic-overlap-review.v1",
+  "proposalId": "...",
+  "decision": "APPROVE_WITH_AMENDMENT",
+  "admittedOverlapDisposition": "PARTIAL_SEMANTIC_OVERLAP_ADMITTED",
+  "reviewerAmendments": {},
+  "requiredFollowUp": [
+    "AUTHOR_MISSING_FAILURE_POLICY"
+  ]
+}
+```
+
+### 4. Healing action
+
+```text
+REBASE_AND_BIND
+EXTEND_THEN_BIND
+SPLIT_AUTHORITY
+SUPERSEDE_CONFLICTING_AUTHORITY
+RETIRE_NO_MATCH_AUTHORITY
+AUTHOR_MISSING_BODY_MEANING
+```
+
+# Human review should operate on differences, not raw files
+
+The system should not ask the human:
+
+> Read this authority JSON and this 600-line source body and tell us what you think.
+
+It should ask:
+
+```text
+Authority claims:
+- reject non-loopback hostnames
+- apply security headers
+- prevent path escape
+
+Agent found in current body:
+- loopback validation present
+- security headers present
+- path normalization present
+- explicit containment guard not found
+
+Proposal:
+PARTIAL overlap
+
+Open question:
+Is path normalization intended to satisfy path containment,
+or is a distinct guard missing?
+```
+
+That is the shortest route to a useful decision.
+
+## Review dispositions
+
+```text
+APPROVE_INFERENCE
+APPROVE_WITH_AMENDMENT
+REJECT_INFERENCE
+REQUEST_MORE_EVIDENCE
+MARK_AUTHORITY_STALE
+MARK_BODY_NONCONFORMING
+SPLIT_SEMANTIC_SUBJECT
+```
+
+# This also applies to the 170 draft candidates
+
+The same inference capability can help with the reachable draft, but the posture differs.
+
+For the rich 14 mechanics:
+
+```text
+Authority meaning exists
+    +
+body exists
+    ↓
+infer overlap
+```
+
+For the 170 placeholder candidates:
+
+```text
+body exists
+    +
+mechanical scaffold exists
+    +
+authority meaning missing
+    ↓
+infer candidate meaning from body and surrounding authority
+```
+
+That output is not overlap analysis. It is:
+
+```text
+PROPOSED_AUTHORITY_MEANING
+```
+
+Human review then either admits, amends, or rejects it.
+
+So the agent inference capability should support two modes:
+
+| Mode                 | Input state                          | Output                     |
+| -------------------- | ------------------------------------ | -------------------------- |
+| Meaning overlap      | Rich authority + current body        | Proposed overlap           |
+| Authority completion | Placeholder authority + current body | Proposed authority meaning |
+
+# The healing conveyor after review
+
+Once a proposal is admitted:
+
+```text
+Human-reviewed meaning
+        ↓
+Update or migrate authority
+        ↓
+Validate authority
+        ↓
+Generate binding
+        ↓
+Project collapsed body
+        ↓
+Execute equivalence proof
+        ↓
+Replace old implementation
+        ↓
+Re-scan and update coverage
+```
+
+This is where inference becomes valuable without compromising determinism:
+
+```text
+Agent proposes meaning.
+
+Human admits meaning.
+
+Deterministic machinery executes admitted meaning.
+```
+
+## The next feature
+
+```gherkin
+Feature: Infer semantic overlap for reconciled authority
+
+  Background:
+    Given rich semantic authority has been reconciled to a current executable
+      successor
+    And the authority meaning and current source evidence are available as a
+      bounded inference packet
+
+  Scenario: Propose exact semantic overlap
+    Given the authority and body evidence appear to express the same obligation
+    When the agent infers their semantic relationship
+    Then it emits a PROPOSED_EXACT_OVERLAP disposition
+    And it cites the authority and source evidence supporting that proposal
+    And the proposal is not treated as admitted authority
+
+  Scenario: Propose partial semantic overlap
+    Given some authority meaning appears in the current body
+    And some declared meaning is absent or materially different
+    When semantic overlap is inferred
+    Then the proposal identifies the shared meaning and every observed gap
+    And its disposition is PROPOSED_PARTIAL_OVERLAP
+
+  Scenario: Require human review before admission
+    Given an agent-generated semantic-overlap proposal
+    When the proposal has not been reviewed
+    Then no authority is promoted, rebound, or replaced
+    And its lifecycle status remains INFERRED_NOT_ADMITTED
+
+  Scenario: Admit a reviewed overlap decision
+    Given a reviewer approves or amends the proposed overlap
+    When the review decision is recorded
+    Then the admitted semantic disposition is projected
+    And the exact remediation action becomes eligible for deterministic execution
+
+  Scenario: Preserve uncertainty
+    Given the available evidence does not support a reliable semantic conclusion
+    When the agent evaluates the inference packet
+    Then it returns INSUFFICIENT_EVIDENCE
+    And it identifies the additional evidence required
+```
+
+The implementation that just shipped created the correct launch point. It found the actual current home of previously invisible rich authority without pretending to understand the prose. The next step is to add **bounded agent cognition as a proposal layer**, followed by explicit human admission, and only then let the deterministic healing machinery move forward.

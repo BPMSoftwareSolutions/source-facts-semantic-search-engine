@@ -13,6 +13,7 @@
     "fileBreakdown",
     "dataDrivenWiring",
     "contractSemanticVolume",
+    "authoritySuccession",
     "automationReadiness",
     "occurrences",
     "disposition"
@@ -281,6 +282,57 @@
                 "semanticElementCount": { "type": "integer", "minimum": 0 }
               }
             }
+          }
+        }
+      }
+    },
+    "authoritySuccession": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "authorityFile",
+          "declaredSourceFile",
+          "anchorFile",
+          "succession",
+          "successorFile",
+          "hopCount",
+          "mechanicsDeclared",
+          "mechanicsPresentInSuccessor",
+          "recommendedAction"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "authorityFile": { "type": "string", "minLength": 1 },
+          "declaredSourceFile": { "type": "string", "minLength": 1 },
+          "anchorFile": { "type": ["string", "null"] },
+          "succession": {
+            "enum": [
+              "AUTHORITY_SOURCE_STILL_CURRENT",
+              "AUTHORITY_SOURCE_CURRENT_BUT_INCOMPLETE",
+              "AUTHORITY_SUCCESSOR_RESOLVED",
+              "AUTHORITY_SUCCESSOR_PARTIAL",
+              "AUTHORITY_SUCCESSOR_RESOLVED_NO_MECHANIC_OVERLAP",
+              "AUTHORITY_SUCCESSOR_AMBIGUOUS",
+              "AUTHORITY_SUCCESSOR_NOT_DETERMINED_BEYOND_MAX_DEPTH",
+              "AUTHORITY_HAS_NO_CURRENT_SUCCESSOR"
+            ]
+          },
+          "successorFile": { "type": ["string", "null"] },
+          "hopCount": { "type": ["integer", "null"], "minimum": 1 },
+          "mechanicsDeclared": { "type": "integer", "minimum": 1 },
+          "mechanicsPresentInSuccessor": { "type": "integer", "minimum": 0 },
+          "recommendedAction": {
+            "enum": [
+              "NONE_ALREADY_CURRENT",
+              "REVIEW_SOURCE_FOR_MISSING_MECHANIC_TYPES",
+              "REVIEW_AND_REBIND_TO_SUCCESSOR",
+              "REVIEW_PARTIAL_SUCCESSOR_AND_AUTHOR_GAPS",
+              "RECONCILE_MANUALLY_LOW_CONFIDENCE",
+              "RECONCILE_MANUALLY_AMBIGUOUS_SUCCESSOR",
+              "RECONCILE_MANUALLY_NO_SUCCESSOR",
+              "RECONCILE_MANUALLY_NO_ANCHOR"
+            ]
           }
         }
       }

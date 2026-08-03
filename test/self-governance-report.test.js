@@ -6,6 +6,7 @@ import { resolvesAuthorityFamily } from "../src/governance/mechanic-authority-fa
 import { resolvesDataDrivenWiring } from "../src/governance/resolves-data-driven-wiring.js";
 import { resolvesMechanicLocationReachability, measuresContractSemanticVolume } from "../src/governance/measures-contract-semantic-volume.js";
 import { extractsCandidateAuthorityMechanics, resolvesCandidateAuthorityMatch, classifiesAutomationReadiness } from "../src/governance/classifies-automation-readiness.js";
+import { resolvesAuthoritySuccession } from "../src/governance/resolves-authority-succession.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -576,4 +577,208 @@ test("projectsSelfGovernanceReport classifies automation readiness per occurrenc
   assert.equal(report.automationReadiness.byDisposition.ALREADY_GOVERNED, 1);
   assert.equal(report.automationReadiness.byDisposition.REQUIRES_HUMAN_SEMANTIC_DECISION, 1);
   assert.equal(report.automationReadiness.byDisposition.REQUIRES_NEW_AUTHORITY, 1);
+});
+
+test("detectsAuthorityDocumentKind falls back to authority-declaration-unmarked.v1 for a document with a mechanics-array shape but no marker field", () => {
+  const unmarked = { sourceFile: "x.mjs", authority: { mechanics: [{ mechanicId: "m1", mechanic: "branch", sourceLocation: "x.mjs:1" }] } };
+  assert.equal(detectsAuthorityDocumentKind(unmarked), "authority-declaration-unmarked.v1");
+
+  // An empty or malformed mechanics array must not be treated as evidence of this shape.
+  assert.equal(detectsAuthorityDocumentKind({ authority: { mechanics: [] } }), null);
+  assert.equal(detectsAuthorityDocumentKind({ mechanics: [{ mechanicId: "m1" }] }), null);
+});
+
+function buildsMinimalSuccessionIndex({ sourceReferences = [], relationships = [], bodyMechanics = [] }) {
+  return {
+    indexType: "source-fact-index.v1",
+    indexId: "sha256:test",
+    manifest: { scanId: "scan-1", scanRequest: { workspaceId: "succession-test", workspaceRoot: "C:/fake/src" } },
+    workspace: { workspaceId: "succession-test" },
+    symbols: [],
+    relationships,
+    dataflows: [],
+    sourceReferences,
+    documents: [],
+    governanceRules: [],
+    bodyMechanics,
+  };
+}
+
+function addsDependencyRef(sourceReferences, relationships, modulePath, specifier, refIdPrefix) {
+  const referenceId = `${refIdPrefix}-dep`;
+  sourceReferences.push({ referenceId, modulePath, startLine: 1, endLine: 1, startColumn: 1, endColumn: 1 });
+  relationships.push({ relationshipId: `${refIdPrefix}-rel`, relationshipKind: "dependency", sourceReferenceId: referenceId, toSymbolCandidate: specifier });
+}
+
+function addsMechanicRef(sourceReferences, bodyMechanics, modulePath, mechanic, line, refIdPrefix) {
+  const referenceId = `${refIdPrefix}-ref`;
+  sourceReferences.push({ referenceId, modulePath, startLine: line, endLine: line, startColumn: 1, endColumn: 1 });
+  bodyMechanics.push({ mechanicId: `${refIdPrefix}-bm`, mechanic, modulePath, sourceReferenceId: referenceId, fromSymbolId: null });
+}
+
+function buildsAuthoritySuccessionDocument(sourceFile, mechanics) {
+  return {
+    document: { sourceFile, authority: { mechanics } },
+    filePath: "contracts/x.authority.json",
+  };
+}
+
+test("resolvesAuthoritySuccession follows a re-export shim to a successor file that carries every declared mechanic type", () => {
+  const sourceReferences = [];
+  const relationships = [];
+  addsDependencyRef(sourceReferences, relationships, "src/shim.mjs", "./impl.mjs", "shim");
+  const index = buildsMinimalSuccessionIndex({ sourceReferences, relationships });
+  const knownModulePaths = new Set(["src/shim.mjs", "src/impl.mjs"]);
+  const occurrences = [
+    { mechanic: "branch", modulePath: "src/impl.mjs" },
+    { mechanic: "fallback", modulePath: "src/impl.mjs" },
+  ];
+  const authorityDocuments = [buildsAuthoritySuccessionDocument("shim.mjs", [
+    { mechanicId: "m1", mechanic: "branch", sourceLocation: "shim.mjs:10", coverage: "AUTHORITY_BOUND" },
+    { mechanicId: "m2", mechanic: "fallback", sourceLocation: "shim.mjs:20", coverage: "AUTHORITY_BOUND" },
+  ])];
+
+  const [result] = resolvesAuthoritySuccession({ authorityDocuments, occurrences, index, workspaceRelativePrefix: "", knownModulePaths });
+  assert.equal(result.succession, "AUTHORITY_SUCCESSOR_RESOLVED");
+  assert.equal(result.successorFile, "src/impl.mjs");
+  assert.equal(result.hopCount, 1);
+  assert.equal(result.mechanicsPresentInSuccessor, 2);
+  assert.equal(result.recommendedAction, "REVIEW_AND_REBIND_TO_SUCCESSOR");
+});
+
+test("resolvesAuthoritySuccession treats a source file that already carries every declared mechanic type as already current", () => {
+  const index = buildsMinimalSuccessionIndex({});
+  const knownModulePaths = new Set(["src/file.mjs"]);
+  const occurrences = [
+    { mechanic: "branch", modulePath: "src/file.mjs" },
+    { mechanic: "fallback", modulePath: "src/file.mjs" },
+  ];
+  const authorityDocuments = [buildsAuthoritySuccessionDocument("file.mjs", [
+    { mechanicId: "m1", mechanic: "branch", sourceLocation: "file.mjs:10", coverage: "AUTHORITY_BOUND" },
+    { mechanicId: "m2", mechanic: "fallback", sourceLocation: "file.mjs:20", coverage: "AUTHORITY_BOUND" },
+  ])];
+
+  const [result] = resolvesAuthoritySuccession({ authorityDocuments, occurrences, index, workspaceRelativePrefix: "", knownModulePaths });
+  assert.equal(result.succession, "AUTHORITY_SOURCE_STILL_CURRENT");
+  assert.equal(result.successorFile, null);
+  assert.equal(result.recommendedAction, "NONE_ALREADY_CURRENT");
+});
+
+test("resolvesAuthoritySuccession treats a source file with any of its own mechanics as still current -- incomplete, not a shim needing a successor search", () => {
+  // The anchor has its own "branch" mechanic (so it is not a re-export shim), but
+  // the document also declares a "retry" mechanic never observed there. A naive
+  // "must cover every declared type" trigger would wrongly go hunting a
+  // successor from a substantial file that plainly isn't a passthrough.
+  const sourceReferences = [];
+  const relationships = [];
+  addsDependencyRef(sourceReferences, relationships, "src/file.mjs", "./unrelated.mjs", "file");
+  const knownModulePaths = new Set(["src/file.mjs", "src/unrelated.mjs"]);
+  const index = buildsMinimalSuccessionIndex({ sourceReferences, relationships });
+  const occurrences = [
+    { mechanic: "branch", modulePath: "src/file.mjs" },
+    { mechanic: "retry", modulePath: "src/unrelated.mjs" },
+  ];
+  const authorityDocuments = [buildsAuthoritySuccessionDocument("file.mjs", [
+    { mechanicId: "m1", mechanic: "branch", sourceLocation: "file.mjs:10", coverage: "AUTHORITY_BOUND" },
+    { mechanicId: "m2", mechanic: "retry", sourceLocation: "file.mjs:20", coverage: "AUTHORITY_BOUND" },
+  ])];
+
+  const [result] = resolvesAuthoritySuccession({ authorityDocuments, occurrences, index, workspaceRelativePrefix: "", knownModulePaths });
+  assert.equal(result.succession, "AUTHORITY_SOURCE_CURRENT_BUT_INCOMPLETE");
+  assert.equal(result.successorFile, null, "must not search further hops away from a file that already has its own mechanics");
+  assert.equal(result.mechanicsPresentInSuccessor, 1);
+  assert.equal(result.recommendedAction, "REVIEW_SOURCE_FOR_MISSING_MECHANIC_TYPES");
+});
+
+test("resolvesAuthoritySuccession reports no current successor when the declared sourceFile does not exist and there is no anchor to search from", () => {
+  const index = buildsMinimalSuccessionIndex({});
+  const knownModulePaths = new Set(["src/unrelated.mjs"]);
+  const authorityDocuments = [buildsAuthoritySuccessionDocument("gone.mjs", [
+    { mechanicId: "m1", mechanic: "branch", sourceLocation: "gone.mjs:10", coverage: "AUTHORITY_BOUND" },
+  ])];
+
+  const [result] = resolvesAuthoritySuccession({ authorityDocuments, occurrences: [], index, workspaceRelativePrefix: "", knownModulePaths });
+  assert.equal(result.succession, "AUTHORITY_HAS_NO_CURRENT_SUCCESSOR");
+  assert.equal(result.anchorFile, null);
+  assert.equal(result.recommendedAction, "RECONCILE_MANUALLY_NO_ANCHOR");
+});
+
+test("resolvesAuthoritySuccession reports ambiguous when the shim's chain forks to two files that both carry mechanics", () => {
+  const sourceReferences = [];
+  const relationships = [];
+  addsDependencyRef(sourceReferences, relationships, "src/shim.mjs", "./impl-a.mjs", "shim-a");
+  addsDependencyRef(sourceReferences, relationships, "src/shim.mjs", "./impl-b.mjs", "shim-b");
+  const index = buildsMinimalSuccessionIndex({ sourceReferences, relationships });
+  const knownModulePaths = new Set(["src/shim.mjs", "src/impl-a.mjs", "src/impl-b.mjs"]);
+  const occurrences = [
+    { mechanic: "branch", modulePath: "src/impl-a.mjs" },
+    { mechanic: "branch", modulePath: "src/impl-b.mjs" },
+  ];
+  const authorityDocuments = [buildsAuthoritySuccessionDocument("shim.mjs", [
+    { mechanicId: "m1", mechanic: "branch", sourceLocation: "shim.mjs:10", coverage: "AUTHORITY_BOUND" },
+  ])];
+
+  const [result] = resolvesAuthoritySuccession({ authorityDocuments, occurrences, index, workspaceRelativePrefix: "", knownModulePaths });
+  assert.equal(result.succession, "AUTHORITY_SUCCESSOR_AMBIGUOUS");
+  assert.equal(result.successorFile, null);
+  assert.equal(result.recommendedAction, "RECONCILE_MANUALLY_AMBIGUOUS_SUCCESSOR");
+});
+
+test("resolvesAuthoritySuccession reports partial overlap when the resolved successor only carries some declared mechanic types", () => {
+  const sourceReferences = [];
+  const relationships = [];
+  addsDependencyRef(sourceReferences, relationships, "src/shim.mjs", "./impl.mjs", "shim");
+  const bodyMechanics = [];
+  addsMechanicRef(sourceReferences, bodyMechanics, "src/impl.mjs", "branch", 5, "impl-branch");
+  const index = buildsMinimalSuccessionIndex({ sourceReferences, relationships, bodyMechanics });
+  const knownModulePaths = new Set(["src/shim.mjs", "src/impl.mjs"]);
+  const occurrences = [{ mechanic: "branch", modulePath: "src/impl.mjs" }];
+  const authorityDocuments = [buildsAuthoritySuccessionDocument("shim.mjs", [
+    { mechanicId: "m1", mechanic: "branch", sourceLocation: "shim.mjs:10", coverage: "AUTHORITY_BOUND" },
+    { mechanicId: "m2", mechanic: "fallback", sourceLocation: "shim.mjs:20", coverage: "AUTHORITY_BOUND" },
+  ])];
+
+  const [result] = resolvesAuthoritySuccession({ authorityDocuments, occurrences, index, workspaceRelativePrefix: "", knownModulePaths });
+  assert.equal(result.succession, "AUTHORITY_SUCCESSOR_PARTIAL");
+  assert.equal(result.successorFile, "src/impl.mjs");
+  assert.equal(result.mechanicsPresentInSuccessor, 1);
+  assert.equal(result.mechanicsDeclared, 2);
+  assert.equal(result.recommendedAction, "REVIEW_PARTIAL_SUCCESSOR_AND_AUTHOR_GAPS");
+});
+
+test("projectsSelfGovernanceReport exposes authoritySuccession, resolving a re-export shim's successor end to end", async () => {
+  const sourceReferences = [
+    { referenceId: "ref-shim-dep", modulePath: "shim.mjs", startLine: 1, endLine: 1, startColumn: 1, endColumn: 1 },
+    { referenceId: "ref-impl-branch", modulePath: "impl.mjs", startLine: 5, endLine: 5, startColumn: 1, endColumn: 1 },
+  ];
+  const relationships = [
+    { relationshipId: "rel-shim", relationshipKind: "dependency", sourceReferenceId: "ref-shim-dep", toSymbolCandidate: "./impl.mjs" },
+  ];
+  const bodyMechanics = [
+    { mechanicId: "bm-1", mechanic: "branch", modulePath: "impl.mjs", sourceReferenceId: "ref-impl-branch", fromSymbolId: null },
+  ];
+  const index = {
+    indexType: "source-fact-index.v1",
+    indexId: "sha256:test",
+    manifest: { scanId: "scan-1", scanRequest: { workspaceId: "succession-report-test", workspaceRoot: "C:/fake/src" } },
+    workspace: { workspaceId: "succession-report-test" },
+    symbols: [],
+    relationships,
+    dataflows: [],
+    sourceReferences,
+    documents: [],
+    governanceRules: [],
+    bodyMechanics,
+  };
+  // No schemaVersion/authorityType/etc -- only detectable via the mechanics-array structural fallback.
+  const unmarkedDocument = { sourceFile: "shim.mjs", authority: { mechanics: [{ mechanicId: "m1", mechanic: "branch", sourceLocation: "shim.mjs:10", coverage: "AUTHORITY_BOUND" }] } };
+  const authorityDocuments = [{ filePath: "contracts/shim.authority.complete.json", document: unmarkedDocument, documentKind: detectsAuthorityDocumentKind(unmarkedDocument) }];
+
+  const report = await projectsSelfGovernanceReport({ index, repositoryId: "succession-report-test", authorityDocuments, workspaceRelativePrefix: "" });
+  await validatesSelfGovernanceReport(report);
+
+  assert.equal(report.authoritySuccession.length, 1);
+  assert.equal(report.authoritySuccession[0].succession, "AUTHORITY_SUCCESSOR_RESOLVED");
+  assert.equal(report.authoritySuccession[0].successorFile, "impl.mjs");
+  assert.equal(report.authoritySuccession[0].recommendedAction, "REVIEW_AND_REBIND_TO_SUCCESSOR");
 });

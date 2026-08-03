@@ -307,6 +307,69 @@ function formatsAutomationReadiness(report) {
   return lines;
 }
 
+const authoritySuccessionLabels = Object.freeze({
+  AUTHORITY_SOURCE_STILL_CURRENT: "Source still current (no succession needed)",
+  AUTHORITY_SOURCE_CURRENT_BUT_INCOMPLETE: "Source still current, but missing some declared mechanic types",
+  AUTHORITY_SUCCESSOR_RESOLVED: "Successor resolved (all mechanic types present)",
+  AUTHORITY_SUCCESSOR_PARTIAL: "Successor resolved (partial mechanic-type overlap)",
+  AUTHORITY_SUCCESSOR_RESOLVED_NO_MECHANIC_OVERLAP: "Successor resolved (no mechanic-type overlap -- low confidence)",
+  AUTHORITY_SUCCESSOR_AMBIGUOUS: "Successor ambiguous (chain forks)",
+  AUTHORITY_SUCCESSOR_NOT_DETERMINED_BEYOND_MAX_DEPTH: "Successor not determined (beyond max hop depth)",
+  AUTHORITY_HAS_NO_CURRENT_SUCCESSOR: "No current successor found",
+});
+
+/**
+ * A fifth question, at the document level rather than the occurrence level:
+ * when a declared sourceFile exists but no longer carries its declared
+ * mechanic types (a re-export shim left behind by a runtime split), is
+ * there a current file downstream in the local import graph that plausibly
+ * inherited that meaning? See resolvesAuthoritySuccession for why this
+ * claims only mechanic-TYPE presence, never a semantic verdict.
+ */
+function formatsAuthoritySuccession(report) {
+  const entries = report.authoritySuccession;
+  const lines = [
+    "## Authority Succession",
+    "",
+    "A fifth question, at the document level: when a declared `sourceFile`",
+    "exists but no longer carries its declared mechanic types -- a re-export",
+    "shim left behind by a runtime split, e.g. `serves-query-console.mjs` ->",
+    "`.runtime.mjs` -> `.runtime.impl.mjs` -- is there a current file",
+    "downstream in the local import graph that plausibly inherited that",
+    "meaning? This claims only mechanic-TYPE presence in a resolved",
+    "successor, never a semantic verdict on whether the declared meaning",
+    "itself still holds -- that remains a human review decision.",
+    "",
+  ];
+
+  if (entries.length === 0) {
+    lines.push("No discovered authority document declares both a `sourceFile` and a mechanics array.");
+    lines.push("");
+    return lines;
+  }
+
+  lines.push("| Authority file | Declared source | Succession | Successor file | Hops | Mechanics present |");
+  lines.push("|---|---|---|---|---:|---:|");
+  for (const entry of entries) {
+    const successorCell = entry.successorFile !== null ? `\`${entry.successorFile}\`` : "—";
+    const hopCell = entry.hopCount ?? "—";
+    lines.push(`| \`${entry.authorityFile}\` | \`${entry.declaredSourceFile}\` | ${authoritySuccessionLabels[entry.succession]} | ${successorCell} | ${hopCell} | ${entry.mechanicsPresentInSuccessor}/${entry.mechanicsDeclared} |`);
+  }
+  lines.push("");
+
+  const needsAttention = entries.filter((entry) => entry.recommendedAction !== "NONE_ALREADY_CURRENT");
+  if (needsAttention.length > 0) {
+    lines.push("Recommended next action:");
+    lines.push("");
+    for (const entry of needsAttention) {
+      lines.push(`- \`${entry.authorityFile}\`: **${entry.recommendedAction}**`);
+    }
+    lines.push("");
+  }
+
+  return lines;
+}
+
 export function formatsSelfGovernanceReportMarkdown(report) {
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
@@ -369,6 +432,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     ...formatsFileDrillDown(report),
     ...formatsDataDrivenWiring(report),
     ...formatsContractSemanticVolume(report),
+    ...formatsAuthoritySuccession(report),
     ...formatsAutomationReadiness(report),
     "## Authority Sources",
     "",
@@ -450,7 +514,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, automationReadiness, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, automationReadiness, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -504,6 +568,13 @@ export function formatsSelfGovernanceReportSummary(report) {
   }, { total: 0, reachable: 0, orphaned: 0 });
   lines.push("");
   lines.push(`Contract semantic volume: ${semanticTotals.total} element(s) declared across ${contractSemanticVolume.length} document(s) -- ${semanticTotals.reachable} reachable, ${semanticTotals.orphaned} orphaned`);
+
+  const needsSuccessionAttention = authoritySuccession.filter((entry) => entry.recommendedAction !== "NONE_ALREADY_CURRENT");
+  lines.push("");
+  lines.push(`Authority succession: ${authoritySuccession.length} document(s) checked, ${needsSuccessionAttention.length} need attention`);
+  for (const entry of needsSuccessionAttention) {
+    lines.push(`  ${entry.authorityFile} [${entry.succession}] -> ${entry.successorFile ?? "(none)"} :: ${entry.recommendedAction}`);
+  }
 
   lines.push("");
   lines.push("Automation readiness:");
