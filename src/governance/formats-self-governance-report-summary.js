@@ -63,6 +63,44 @@ function formatsFileDrillDown(report) {
   return lines;
 }
 
+/**
+ * Answers "does this file already have data-driven capabilities wired in,"
+ * independent of whether that wiring adds up to formal governance yet.
+ * Direct (one-hop) import evidence only -- see resolves-data-driven-wiring.js.
+ */
+function formatsDataDrivenWiring(report) {
+  const wired = report.dataDrivenWiring.filter((entry) => entry.wiringDisposition !== "NONE");
+  const totalFiles = report.dataDrivenWiring.length;
+
+  const lines = [
+    "## Data-Driven Wiring",
+    "",
+    "A different question again: not \"is this occurrence governed\" or \"does an",
+    "authority document claim this file,\" but \"does this file's own source code",
+    "already import a JSON contract/authority artifact and/or invoke a semantic",
+    "execution runtime.\" Detected directly from the scanner's import (`dependency`)",
+    "relationships -- one hop only, not followed transitively through local helpers.",
+    "",
+    `${formatsCount(wired.length)} of ${formatsCount(totalFiles)} file(s) with observed mechanics have some direct wiring toward the contract/semantic layer.`,
+    "",
+  ];
+
+  if (wired.length === 0) {
+    lines.push("No file with observed mechanics directly imports a JSON contract or a semantic execution runtime.");
+  } else {
+    lines.push("| File | Wiring | Imports contract data | Invokes semantic runtime |");
+    lines.push("|---|---|---|---|");
+    for (const entry of wired) {
+      const contractImports = entry.importsContractData.length > 0 ? entry.importsContractData.map((value) => `\`${value}\``).join(", ") : "—";
+      const runtimeImports = entry.invokesSemanticRuntime.length > 0 ? entry.invokesSemanticRuntime.map((value) => `\`${value}\``).join(", ") : "—";
+      lines.push(`| \`${entry.modulePath}\` | ${entry.wiringDisposition} | ${contractImports} | ${runtimeImports} |`);
+    }
+  }
+  lines.push("");
+
+  return lines;
+}
+
 export function formatsSelfGovernanceReportMarkdown(report) {
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
@@ -123,6 +161,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     "mechanic/file pair is in `fileBreakdown` in the JSON report.",
     "",
     ...formatsFileDrillDown(report),
+    ...formatsDataDrivenWiring(report),
     "## Authority Sources",
     "",
   ];
@@ -203,7 +242,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -239,6 +278,13 @@ export function formatsSelfGovernanceReportSummary(report) {
   lines.push(`Other authority-shaped documents found (unverified schemas): ${otherAuthorityDocuments.length}`);
   for (const other of otherAuthorityDocuments) {
     lines.push(`  ${other.authorityFile} (${other.documentKind}) -> ${other.claimedFiles.length > 0 ? other.claimedFiles.join(", ") : "(no claimed files determinable)"}`);
+  }
+
+  const wired = dataDrivenWiring.filter((entry) => entry.wiringDisposition !== "NONE");
+  lines.push("");
+  lines.push(`Data-driven wiring: ${wired.length} of ${dataDrivenWiring.length} file(s) with observed mechanics directly import a contract and/or semantic runtime`);
+  for (const entry of wired) {
+    lines.push(`  ${entry.modulePath} [${entry.wiringDisposition}]`);
   }
 
   const dangling = findsDanglingAuthoritySources(report);

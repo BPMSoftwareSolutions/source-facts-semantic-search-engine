@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { classifiesMechanicOccurrence, extractsDeclaredAuthorityMechanics } from "../src/governance/classifies-execution-mechanics.js";
 import { detectsAuthorityDocumentKind, authorityDeclarationKind } from "../src/governance/detects-authority-document-kind.js";
 import { resolvesAuthorityFamily } from "../src/governance/mechanic-authority-families.js";
+import { resolvesDataDrivenWiring } from "../src/governance/resolves-data-driven-wiring.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -224,4 +225,72 @@ test("projectsSelfGovernanceReport treats non-authority-declaration.v1 documents
   assert.equal(report.otherAuthorityDocuments.length, 1);
   assert.equal(report.otherAuthorityDocuments[0].documentKind, "governed-artifact-contract");
   assert.deepEqual(report.otherAuthorityDocuments[0].claimedFiles, ["src/other.js"]);
+});
+
+function buildsDependencyIndex() {
+  const sourceReferences = [
+    { referenceId: "ref-import-1", modulePath: "src/wired.mjs", startLine: 1, endLine: 1, startColumn: 1, endColumn: 1 },
+    { referenceId: "ref-import-2", modulePath: "src/wired.mjs", startLine: 2, endLine: 2, startColumn: 1, endColumn: 1 },
+    { referenceId: "ref-import-3", modulePath: "src/one-hop-away.mjs", startLine: 1, endLine: 1, startColumn: 1, endColumn: 1 },
+  ];
+  const relationships = [
+    {
+      relationshipId: "rel-1",
+      relationshipKind: "dependency",
+      sourceReferenceId: "ref-import-1",
+      toSymbolCandidate: "./contracts/wired.authority.json",
+    },
+    {
+      relationshipId: "rel-2",
+      relationshipKind: "dependency",
+      sourceReferenceId: "ref-import-2",
+      toSymbolCandidate: "../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs",
+    },
+    {
+      relationshipId: "rel-3",
+      relationshipKind: "dependency",
+      sourceReferenceId: "ref-import-3",
+      toSymbolCandidate: "./wired.mjs",
+    },
+  ];
+  return {
+    indexType: "source-fact-index.v1",
+    indexId: "sha256:test",
+    manifest: { scanId: "scan-1", scanRequest: { workspaceId: "wiring-test", workspaceRoot: "C:/fake/src" } },
+    workspace: { workspaceId: "wiring-test" },
+    symbols: [],
+    relationships,
+    dataflows: [],
+    sourceReferences,
+    documents: [],
+    governanceRules: [],
+    bodyMechanics: [],
+  };
+}
+
+test("resolvesDataDrivenWiring detects direct JSON-contract and semantic-runtime imports, one hop only", () => {
+  const index = buildsDependencyIndex();
+
+  const wired = resolvesDataDrivenWiring(index, "", ["src/wired.mjs"]).find((entry) => entry.modulePath === "src/wired.mjs");
+  assert.deepEqual(wired.importsContractData, ["./contracts/wired.authority.json"]);
+  assert.deepEqual(wired.invokesSemanticRuntime, ["../../contract-driven-artifact-governance-engine/lib/semantic-execution-runtime.mjs"]);
+  assert.equal(wired.wiringDisposition, "DIRECT_DATA_AND_RUNTIME");
+
+  // one-hop-away.mjs only imports wired.mjs (a local file), not the contract or
+  // runtime directly -- the design deliberately does not follow that transitively.
+  const oneHopAway = resolvesDataDrivenWiring(index, "", ["src/one-hop-away.mjs"]).find((entry) => entry.modulePath === "src/one-hop-away.mjs");
+  assert.equal(oneHopAway.wiringDisposition, "NONE");
+});
+
+test("projectsSelfGovernanceReport exposes dataDrivenWiring scoped to files with observed mechanics", async () => {
+  const index = { ...buildsDependencyIndex(), bodyMechanics: [
+    { mechanicId: "bm-1", mechanic: "branch", modulePath: "src/wired.mjs", sourceReferenceId: "ref-import-1", fromSymbolId: null },
+  ] };
+  const report = await projectsSelfGovernanceReport({ index, repositoryId: "wiring-test", authorityDocuments: [] });
+  await validatesSelfGovernanceReport(report);
+
+  const wiredEntry = report.dataDrivenWiring.find((entry) => entry.modulePath === "src/wired.mjs");
+  assert.equal(wiredEntry.wiringDisposition, "DIRECT_DATA_AND_RUNTIME");
+  // one-hop-away.mjs has no observed mechanics, so it's outside this report's scope entirely.
+  assert.equal(report.dataDrivenWiring.some((entry) => entry.modulePath === "src/one-hop-away.mjs"), false);
 });
