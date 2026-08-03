@@ -3,10 +3,10 @@
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-03T17:54:56.444Z |
+| **Generated** | 2026-08-03T18:14:12.903Z |
 | **Repository** | src |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Scan ID** | 3adc831a26dcaa05f27b234dd0bf76b2766358d5601822782b062a2545727a88 |
+| **Scan ID** | 5ac1fbb86ad644223cdfbe6756af1d1f8689dcf5bb0c6d38aca40d556bd2ed93 |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
 ## Executive Summary
@@ -18,9 +18,9 @@ to it yet, so nothing here blocks a build.
 
 | Metric | Count | Share of observed |
 |---|---:|---:|
-| Execution mechanics observed | 3,372 | 100.0% |
+| Execution mechanics observed | 3,383 | 100.0% |
 | Governed by semantic authority | 0 | 0.0% |
-| Unknown classification | 3,372 | 100.0% |
+| Unknown classification | 3,383 | 100.0% |
 | Authorized temporary backlog | 0 | 0.0% |
 | Unauthorized executable meaning | 0 | 0.0% |
 | Mechanical adapter operation | 0 | 0.0% |
@@ -30,14 +30,14 @@ to it yet, so nothing here blocks a build.
 
 | Mechanic | Observed | Governed | Coverage |
 |---|---:|---:|---:|
-| object-construction | 1,234 | 0 | 0.0% |
-| fallback | 677 | 0 | 0.0% |
-| branch | 653 | 0 | 0.0% |
+| object-construction | 1,236 | 0 | 0.0% |
+| fallback | 689 | 0 | 0.0% |
+| branch | 652 | 0 | 0.0% |
 | state-mutation | 211 | 0 | 0.0% |
 | iteration | 156 | 0 | 0.0% |
 | validation | 103 | 0 | 0.0% |
-| throw | 93 | 0 | 0.0% |
-| serialization | 86 | 0 | 0.0% |
+| throw | 92 | 0 | 0.0% |
+| serialization | 85 | 0 | 0.0% |
 | exception-handling | 84 | 0 | 0.0% |
 | normalization | 74 | 0 | 0.0% |
 | retry | 1 | 0 | 0.0% |

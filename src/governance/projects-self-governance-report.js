@@ -1,26 +1,36 @@
-import { executeRelationalQuery } from "../query.js";
 import { classifiesMechanicOccurrence, extractsDeclaredAuthorityMechanics, knownPostures } from "./classifies-execution-mechanics.js";
 
-async function queriesBodyMechanics(index) {
-  const receipt = await executeRelationalQuery(
-    index,
-    [
-      "SELECT bm.mechanic AS mechanic,",
-      "       bm.modulePath AS modulePath,",
-      "       bm.sourceReferenceId AS sourceReferenceId,",
-      "       sr.startLine AS startLine,",
-      "       sr.endLine AS endLine,",
-      "       sym.name AS symbolName",
-      "FROM bodyMechanics bm",
-      "JOIN sourceReferences sr ON bm.sourceReferenceId = sr.referenceId",
-      "LEFT JOIN symbols sym ON bm.fromSymbolId = sym.symbolId",
-      "ORDER BY bm.modulePath, sr.startLine, sr.endLine, bm.mechanic",
-    ].join(" "),
-  );
-  if (receipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
-    throw new Error(`bodyMechanics query failed while projecting the self-governance report: ${JSON.stringify(receipt, null, 2)}`);
-  }
-  return receipt.result.value.rows;
+function compareOccurrences(left, right) {
+  return left.modulePath.localeCompare(right.modulePath)
+    || (left.startLine ?? 0) - (right.startLine ?? 0)
+    || (left.endLine ?? 0) - (right.endLine ?? 0)
+    || left.mechanic.localeCompare(right.mechanic);
+}
+
+/**
+ * A SQL JOIN through the SEJ relational engine over the full bodyMechanics x
+ * sourceReferences tables measured at 270-320 seconds for this workspace's
+ * ~66k source references -- an unindexed nested-loop join. Every field this
+ * report needs is already held in memory, so resolve it with plain Map
+ * lookups instead; the equivalent join runs in under 20ms.
+ */
+function resolvesBodyMechanicOccurrences(index) {
+  const sourceReferenceById = new Map(index.sourceReferences.map((reference) => [reference.referenceId, reference]));
+  const symbolById = new Map(index.symbols.map((symbol) => [symbol.symbolId, symbol]));
+
+  const occurrences = index.bodyMechanics.map((mechanic) => {
+    const sourceReference = sourceReferenceById.get(mechanic.sourceReferenceId) ?? null;
+    const symbol = mechanic.fromSymbolId ? symbolById.get(mechanic.fromSymbolId) ?? null : null;
+    return {
+      mechanic: mechanic.mechanic,
+      modulePath: mechanic.modulePath,
+      startLine: sourceReference?.startLine ?? null,
+      endLine: sourceReference?.endLine ?? null,
+      symbolName: symbol?.name ?? null,
+    };
+  });
+
+  return occurrences.sort(compareOccurrences);
 }
 
 /**
@@ -30,7 +40,7 @@ async function queriesBodyMechanics(index) {
  * registry, and no build gate exist yet -- disposition stays observational.
  */
 export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [] }) {
-  const occurrences = await queriesBodyMechanics(index);
+  const occurrences = resolvesBodyMechanicOccurrences(index);
   const declaredAuthorityMechanics = authorityDocuments.flatMap(
     ({ document, filePath }) => extractsDeclaredAuthorityMechanics(document, filePath),
   );

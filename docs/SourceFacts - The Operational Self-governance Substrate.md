@@ -715,3 +715,419 @@ Can this release truthfully advance?
 That is no longer a search engine sitting beside the engineering process.
 
 It is the repository’s **self-reflection, transformation, and delivery intelligence plane**. The same source-fact query and projection model can then feed the agent interception control plane, substituting governed knowledge retrieval and semantic authority authoring for raw shell operations and handwritten escape hatches. 
+
+##################################################################
+
+Yes — and I’d treat that as part of the **first vertical slice**, because operationalizing the scanner means the scanner itself has to become fast, observable, and resumable.
+
+The current run processed **3,372 executable mechanics**, but all 3,372 landed as `UNKNOWN_CLASSIFICATION`, and the one authority file did not resolve to its observed source path. That means the scan is doing substantial work before producing a report that still has unresolved classification and path-binding issues. 
+
+## The better execution shape
+
+```text
+Discover source inventory
+        ↓
+Partition files into deterministic batches
+        ↓
+Dispatch batches to bounded worker processes
+        ↓
+Each worker:
+    parse files
+    extract facts
+    classify mechanics
+    resolve local authority bindings
+    emit batch receipt
+        ↓
+Coordinator merges completed batch results
+        ↓
+Update canonical report state
+        ↓
+Reproject Markdown progress report
+        ↓
+Finalize global conformance report
+```
+
+The key is to separate three responsibilities:
+
+```text
+Workers
+    produce facts
+
+Coordinator
+    aggregates facts
+
+Report projector
+    renders current state
+```
+
+The workers should never edit the Markdown file directly.
+
+---
+
+# Use processes for parsing, async for orchestration
+
+For Node, I would combine:
+
+* **Worker processes or worker threads** for CPU-heavy parsing and classification.
+* **Async orchestration** for file discovery, queue management, receipt collection, and report writes.
+* A **bounded concurrency limit**, rather than starting one worker per file.
+
+```text
+Coordinator process
+├── inventory producer
+├── batch scheduler
+├── worker pool
+├── result aggregator
+├── checkpoint writer
+└── report projector
+```
+
+The scanner probably has two different bottlenecks:
+
+```text
+I/O-bound
+├── discovering files
+├── reading source
+└── reading authority files
+
+CPU-bound
+├── parsing ASTs
+├── extracting mechanics
+├── hashing source spans
+└── classifying facts
+```
+
+Async helps the first group.
+
+Parallel workers help the second.
+
+Merely wrapping the current sequential scan in `Promise.all()` could overwhelm memory and the filesystem without improving the CPU-bound work very much.
+
+---
+
+# Deterministic batching
+
+Do not let concurrency change the meaning or ordering of the result.
+
+Start with a stable inventory:
+
+```text
+1. Normalize relative paths
+2. Sort paths lexicographically
+3. Assign stable file ordinals
+4. Partition into deterministic batches
+5. Assign each batch a content-derived identity
+```
+
+Example:
+
+```json
+{
+  "batchId": "scan-batch-0007",
+  "startOrdinal": 300,
+  "endOrdinal": 349,
+  "fileCount": 50,
+  "inventoryDigest": "sha256:..."
+}
+```
+
+Then the final result is merged by:
+
+```text
+file ordinal
+    ↓
+source location
+    ↓
+mechanic ordinal
+```
+
+—not by worker completion order.
+
+That preserves reproducibility:
+
+```text
+Same revision
++ same scanner version
++ same batch policy
+= same canonical report
+```
+
+Even though batches complete nondeterministically.
+
+---
+
+# Incremental report projection
+
+Your Markdown idea is strong, but the Markdown should remain a **projection of canonical scan state**, not the mutable source of scan state.
+
+```text
+Batch receipt
+      ↓
+Canonical scan-state JSON
+      ↓
+Markdown projector
+      ↓
+source-facts-self-governance-report.md
+```
+
+Use two durable artifacts:
+
+```text
+reports/
+├── source-facts-self-governance-report.v1.json
+└── source-facts-self-governance-report.md
+```
+
+During execution, the JSON might contain:
+
+```json
+{
+  "scanId": "...",
+  "status": "SCANNING",
+  "inventory": {
+    "filesDiscovered": 684,
+    "filesCompleted": 250,
+    "batchesTotal": 14,
+    "batchesCompleted": 5
+  },
+  "mechanics": {
+    "observedSoFar": 1288,
+    "classifiedSoFar": 942,
+    "unknownSoFar": 346
+  },
+  "workers": {
+    "configured": 6,
+    "active": 6,
+    "completed": 0,
+    "failed": 0
+  }
+}
+```
+
+The Markdown can then show live progress:
+
+```markdown
+## Scan Progress
+
+| Metric | Current |
+|---|---:|
+| Files completed | 250 / 684 |
+| Batches completed | 5 / 14 |
+| Mechanics observed | 1,288 |
+| Mechanics classified | 942 |
+| Unknown classifications | 346 |
+| Elapsed | 00:01:42 |
+```
+
+---
+
+# Atomic report updates
+
+Do not repeatedly append arbitrary Markdown fragments.
+
+Every completed batch should trigger:
+
+```text
+Read in-memory canonical aggregate
+        ↓
+Apply batch receipt exactly once
+        ↓
+Write report.json.tmp
+        ↓
+fsync / close
+        ↓
+rename to report.json
+        ↓
+Project complete Markdown
+        ↓
+write report.md.tmp
+        ↓
+rename to report.md
+```
+
+That prevents:
+
+* half-written reports,
+* interleaved worker output,
+* duplicate batch application,
+* corrupted Markdown after interruption,
+* final totals that disagree with partial sections.
+
+The report can be updated after every batch, or throttled to something like:
+
+```text
+every completed batch
+or
+every 500 milliseconds
+whichever is less frequent
+```
+
+That avoids turning report rendering into the new bottleneck.
+
+---
+
+# Every worker should emit a batch receipt
+
+```json
+{
+  "receiptType": "source-facts-scan-batch-receipt.v1",
+  "scanId": "...",
+  "batchId": "scan-batch-0007",
+  "workerId": "worker-03",
+  "status": "BATCH_COMPLETED",
+  "files": {
+    "admitted": 50,
+    "completed": 50,
+    "failed": 0
+  },
+  "mechanics": {
+    "observed": 231,
+    "classified": 189,
+    "unknown": 42
+  },
+  "authorityBindings": {
+    "resolved": 11,
+    "unresolved": 0
+  },
+  "durationMilliseconds": 1842,
+  "resultDigest": "sha256:..."
+}
+```
+
+The coordinator can reject:
+
+```text
+duplicate batch receipt
+wrong scan identity
+wrong inventory digest
+unexpected files
+missing file results
+result digest mismatch
+```
+
+That makes parallel execution governed rather than merely fast.
+
+---
+
+# Resumability
+
+Once batches are independent, the scan should resume rather than restart.
+
+```text
+Scan interrupted
+      ↓
+Load checkpoint
+      ↓
+Verify revision and scanner identity
+      ↓
+Identify completed batch receipts
+      ↓
+Schedule only incomplete batches
+```
+
+Checkpoint identity should bind:
+
+```text
+repository revision
+source inventory digest
+scanner version
+taxonomy version
+authority-registry digest
+batching policy
+```
+
+A changed input invalidates the checkpoint rather than silently combining incompatible results.
+
+---
+
+# Resolve authority paths before scanning bodies
+
+The current report identifies a dangling authority declaration for:
+
+```text
+contracts/serves-query-console.authority.json
+    ↓
+src/console/serves-query-console.js
+```
+
+with 11 declared mechanics and zero resolved observations. 
+
+That should be caught in a cheap preflight phase:
+
+```text
+Load authority declarations
+        ↓
+Resolve every declared source path against inventory
+        ↓
+Classify:
+    RESOLVED
+    SOURCE_NOT_FOUND
+    SOURCE_AMBIGUOUS
+    SOURCE_EXCLUDED
+        ↓
+Only dispatch resolvable authorities into workers
+```
+
+That prevents workers from repeatedly attempting to bind an authority whose declared target no longer exists.
+
+It also allows the live report to say immediately:
+
+```text
+Preflight finding:
+DANGLING_AUTHORITY_SOURCE
+
+Scan continues observationally,
+but the authority cannot contribute coverage.
+```
+
+---
+
+# Suggested first implementation boundary
+
+I would rename the slice slightly:
+
+> **Parallel reflexive self-governance scan with incremental reporting**
+
+Its acceptance flow:
+
+```gherkin
+Feature: Scan SourceFacts reflexively in parallel
+
+  Scenario: Aggregate deterministic results from completed scan batches
+    Given a stable sorted source inventory divided into deterministic batches
+    When admitted worker processes scan the batches concurrently
+    Then completed batch receipts are merged into one canonical scan state
+    And the projected report reflects the latest completed batches
+
+  Scenario: Resume an interrupted self-governance scan
+    Given current batch receipts for the same scan identity
+    When the scan is resumed
+    Then only incomplete batches are scheduled
+    And the final report equals an uninterrupted scan
+
+  Scenario: Preserve canonical ordering across concurrent execution
+    Given batches complete in different physical orders
+    When the final report is projected
+    Then its canonical facts and digest are identical
+
+  Scenario: Reject a dangling authority source during preflight
+    Given an authority refers to a source path absent from the inventory
+    When authority bindings are resolved
+    Then the authority is classified as DANGLING_AUTHORITY_SOURCE
+    And no governed mechanic coverage is claimed for it
+```
+
+## Practical rollout order
+
+```text
+1. Measure current phase timings.
+2. Split inventory, parsing, classification, binding, and rendering.
+3. Add deterministic batch contracts.
+4. Introduce a bounded worker pool.
+5. Add batch receipts and canonical aggregation.
+6. Add atomic incremental report projection.
+7. Add checkpoint and resume.
+8. Tune batch size and worker count from observed timings.
+```
+
+That gives you more than a faster scanner. It gives you a **parallel, deterministic, observable scan conveyor** whose own progress is continuously projected into the self-governance report.
