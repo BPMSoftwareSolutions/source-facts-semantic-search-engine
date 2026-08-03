@@ -2228,3 +2228,28 @@ And for the current console authority draft, the report is already telling you s
 > There are 170 reachable mechanic candidates that likely do not need to be rediscovered. They need to be reviewed, promoted, bound, and seated into the executable path.
 
 That is exactly the kind of inventory movement the system should automate.
+
+# Implementation note (2026-08-03)
+
+The observational slice of this proposal is now implemented: `classifiesAutomationReadiness`
+(`src/governance/classifies-automation-readiness.js`) scores every ungoverned occurrence,
+`projectsSelfGovernanceReport` carries `automationDisposition` / `missingTissue` /
+`candidateAuthorityFile` per occurrence plus a top-level `automationReadiness.byDisposition`
+rollup, and the markdown/summary formatters render an "Automation Readiness" section. What
+was **not** built is the pipeline tail (`PROMOTE_AND_BIND`, binding generation, the
+`source-facts govern project --remediation ...` CLI) -- no projector or binding-generation
+machinery exists yet to execute those actions, and fabricating the classification for actions
+this codebase can't perform would be worse than not offering them.
+
+Running it against this repo's own 170-candidate `serves-query-console.authority.draft.json`
+corrects the "low-hanging fruit" read above: **0** occurrences land in `AUTOMATABLE_AFTER_REVIEW`
+and **158** land in `REQUIRES_HUMAN_SEMANTIC_DECISION`. Every one of those 170 draft mechanics
+carries `coverage: "AUTHORITY_CANDIDATE_PROJECTED"` *and* a nested
+`decisions.coverageDisposition: "SEMANTIC_DECISION_REQUIRED"` -- the draft itself already
+declares, mechanic by mechanic, that a human judgment call is still open. Reachability was
+never the missing piece for this draft; every one of its candidates already says so itself.
+"Automation Opportunity" as defined above (reachable + known family + resolvable target +
+available projector − unresolved semantic decisions) evaluates to zero here specifically
+*because* the subtraction term is 170 for 170. The tissue that's missing across this repo as a
+whole is overwhelmingly `REQUIRES_NEW_AUTHORITY` (3,500 of 3,658 non-exempt occurrences,
+95.7%) -- files with no candidate and no authority home at all, not files one review step away.

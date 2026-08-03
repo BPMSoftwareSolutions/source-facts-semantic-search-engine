@@ -225,6 +225,88 @@ function formatsContractSemanticVolume(report) {
   return lines;
 }
 
+const automationDispositionLabels = Object.freeze({
+  ALREADY_GOVERNED: "Already governed",
+  AUTOMATABLE_AFTER_REVIEW: "Automatable after review",
+  REQUIRES_HUMAN_SEMANTIC_DECISION: "Requires human semantic decision",
+  AUTOMATABLE_AFTER_AUTHORITY_COMPLETION: "Automatable after authority completion",
+  REQUIRES_NEW_AUTHORITY: "Requires new authority",
+  NOT_CURRENTLY_PROJECTABLE: "Not currently projectable",
+  NOT_APPLICABLE: "Not applicable (mechanical/kernel/backlog)",
+});
+
+const maxAutomationCandidateGroupsShown = 10;
+
+/**
+ * A fourth question, narrower than coverage, home status, or wiring: for
+ * every occurrence that isn't yet GOVERNED_BY_SEMANTIC_AUTHORITY, can
+ * connecting it to authority be automated without new authoring, and if not,
+ * exactly what connective tissue is missing? A reachable not-yet-admitted
+ * candidate is necessary but not sufficient -- see classifiesAutomationReadiness
+ * for why REQUIRES_HUMAN_SEMANTIC_DECISION and AUTOMATABLE_AFTER_REVIEW are
+ * both "candidate found" outcomes with different implications.
+ */
+function formatsAutomationReadiness(report) {
+  const observed = report.executionMechanics.observed;
+  const byDisposition = report.automationReadiness.byDisposition;
+
+  const lines = [
+    "## Automation Readiness",
+    "",
+    "A fourth question, narrower than coverage or wiring: for every occurrence",
+    "that isn't yet `GOVERNED_BY_SEMANTIC_AUTHORITY`, can connecting it to",
+    "authority be automated without new authoring, and if not, exactly what is",
+    "missing? Reachable candidate evidence is necessary but not sufficient -- a",
+    "candidate can carry its own `coverageDisposition` (this repo's drafts only",
+    "use `SEMANTIC_DECISION_REQUIRED` today) declaring that a human judgment",
+    "call is still open even though the mechanical scaffolding (type, location,",
+    "semantic shape) is already complete.",
+    "",
+    "| Automation posture | Occurrences | Share |",
+    "|---|---:|---:|",
+    ...Object.keys(automationDispositionLabels).map((disposition) => {
+      const count = byDisposition[disposition] ?? 0;
+      return `| ${automationDispositionLabels[disposition]} | ${formatsCount(count)} | ${formatsPercent(count, observed)} |`;
+    }),
+    "",
+  ];
+
+  const candidateBacked = report.occurrences.filter((occurrence) => occurrence.candidateAuthorityFile !== null);
+  if (candidateBacked.length === 0) {
+    lines.push("No ungoverned occurrence currently resolves to a reachable, not-yet-admitted candidate mechanic.");
+    lines.push("");
+    return lines;
+  }
+
+  const byFileMechanic = new Map();
+  for (const occurrence of candidateBacked) {
+    const key = `${occurrence.mechanic} ${occurrence.modulePath} ${occurrence.automationDisposition} ${occurrence.candidateAuthorityFile}`;
+    const entry = byFileMechanic.get(key) ?? {
+      mechanic: occurrence.mechanic,
+      modulePath: occurrence.modulePath,
+      automationDisposition: occurrence.automationDisposition,
+      candidateAuthorityFile: occurrence.candidateAuthorityFile,
+      count: 0,
+    };
+    entry.count += 1;
+    byFileMechanic.set(key, entry);
+  }
+
+  const grouped = [...byFileMechanic.values()].sort((left, right) => right.count - left.count || left.modulePath.localeCompare(right.modulePath));
+  lines.push("| Mechanic | File | Automation posture | Candidate authority | Occurrences |");
+  lines.push("|---|---|---|---|---:|");
+  for (const entry of grouped.slice(0, maxAutomationCandidateGroupsShown)) {
+    lines.push(`| ${entry.mechanic} | \`${entry.modulePath}\` | ${automationDispositionLabels[entry.automationDisposition]} | \`${entry.candidateAuthorityFile}\` | ${entry.count} |`);
+  }
+  if (grouped.length > maxAutomationCandidateGroupsShown) {
+    lines.push("");
+    lines.push(`*${grouped.length - maxAutomationCandidateGroupsShown} more file/mechanic group(s) omitted; see \`occurrences\` in the JSON report.*`);
+  }
+  lines.push("");
+
+  return lines;
+}
+
 export function formatsSelfGovernanceReportMarkdown(report) {
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
@@ -287,6 +369,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
     ...formatsFileDrillDown(report),
     ...formatsDataDrivenWiring(report),
     ...formatsContractSemanticVolume(report),
+    ...formatsAutomationReadiness(report),
     "## Authority Sources",
     "",
   ];
@@ -367,7 +450,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
-  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, repository, disposition, generatedAtUtc } = report;
+  const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, automationReadiness, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
     `Generated: ${generatedAtUtc}`,
@@ -421,6 +504,12 @@ export function formatsSelfGovernanceReportSummary(report) {
   }, { total: 0, reachable: 0, orphaned: 0 });
   lines.push("");
   lines.push(`Contract semantic volume: ${semanticTotals.total} element(s) declared across ${contractSemanticVolume.length} document(s) -- ${semanticTotals.reachable} reachable, ${semanticTotals.orphaned} orphaned`);
+
+  lines.push("");
+  lines.push("Automation readiness:");
+  for (const [disposition_, count] of Object.entries(automationReadiness.byDisposition)) {
+    lines.push(`  ${disposition_}: ${count} (${formatsPercent(count, executionMechanics.observed)})`);
+  }
 
   const dangling = findsDanglingAuthoritySources(report);
   if (dangling.length > 0) {

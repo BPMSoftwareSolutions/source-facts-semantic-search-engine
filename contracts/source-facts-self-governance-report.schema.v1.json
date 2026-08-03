@@ -13,6 +13,7 @@
     "fileBreakdown",
     "dataDrivenWiring",
     "contractSemanticVolume",
+    "automationReadiness",
     "occurrences",
     "disposition"
   ],
@@ -34,6 +35,28 @@
         "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE",
         "AUTHORITY_HOME_MISSING",
         "AUTHORITY_HOME_AMBIGUOUS"
+      ]
+    },
+    "automationDisposition": {
+      "enum": [
+        "ALREADY_GOVERNED",
+        "NOT_APPLICABLE",
+        "AUTOMATABLE_AFTER_REVIEW",
+        "REQUIRES_HUMAN_SEMANTIC_DECISION",
+        "AUTOMATABLE_AFTER_AUTHORITY_COMPLETION",
+        "REQUIRES_NEW_AUTHORITY",
+        "NOT_CURRENTLY_PROJECTABLE"
+      ]
+    },
+    "missingTissue": {
+      "enum": [
+        "AUTHORITY_DOCUMENT_MISSING",
+        "AUTHORITY_FAMILY_MISSING",
+        "AUTHORITY_ENTRY_MISSING",
+        "AUTHORITY_HOME_AMBIGUOUS",
+        "RESPONSIBILITY_BINDING_MISSING",
+        "EXECUTION_BINDING_MISSING",
+        "EQUIVALENCE_PROOF_MISSING"
       ]
     }
   },
@@ -262,6 +285,35 @@
         }
       }
     },
+    "automationReadiness": {
+      "type": "object",
+      "required": ["byDisposition"],
+      "additionalProperties": false,
+      "properties": {
+        "byDisposition": {
+          "type": "object",
+          "required": [
+            "ALREADY_GOVERNED",
+            "NOT_APPLICABLE",
+            "AUTOMATABLE_AFTER_REVIEW",
+            "REQUIRES_HUMAN_SEMANTIC_DECISION",
+            "AUTOMATABLE_AFTER_AUTHORITY_COMPLETION",
+            "REQUIRES_NEW_AUTHORITY",
+            "NOT_CURRENTLY_PROJECTABLE"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "ALREADY_GOVERNED": { "type": "integer", "minimum": 0 },
+            "NOT_APPLICABLE": { "type": "integer", "minimum": 0 },
+            "AUTOMATABLE_AFTER_REVIEW": { "type": "integer", "minimum": 0 },
+            "REQUIRES_HUMAN_SEMANTIC_DECISION": { "type": "integer", "minimum": 0 },
+            "AUTOMATABLE_AFTER_AUTHORITY_COMPLETION": { "type": "integer", "minimum": 0 },
+            "REQUIRES_NEW_AUTHORITY": { "type": "integer", "minimum": 0 },
+            "NOT_CURRENTLY_PROJECTABLE": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
     "fileBreakdown": {
       "type": "array",
       "items": {
@@ -297,7 +349,12 @@
           "authorityFamily",
           "authorityHomeStatus",
           "authorityHomeFile",
-          "authorityHomeVerified"
+          "authorityHomeVerified",
+          "automationDisposition",
+          "missingTissue",
+          "candidateAuthorityFile",
+          "candidateMechanicId",
+          "candidateCoverageDisposition"
         ],
         "additionalProperties": false,
         "properties": {
@@ -312,7 +369,12 @@
           "authorityFamily": { "type": "string", "minLength": 1 },
           "authorityHomeStatus": { "$ref": "#/$defs/authorityHomeStatus" },
           "authorityHomeFile": { "type": ["string", "null"] },
-          "authorityHomeVerified": { "type": "boolean" }
+          "authorityHomeVerified": { "type": "boolean" },
+          "automationDisposition": { "$ref": "#/$defs/automationDisposition" },
+          "missingTissue": { "type": "array", "items": { "$ref": "#/$defs/missingTissue" } },
+          "candidateAuthorityFile": { "type": ["string", "null"] },
+          "candidateMechanicId": { "type": ["string", "null"] },
+          "candidateCoverageDisposition": { "type": ["string", "null"] }
         }
       }
     },

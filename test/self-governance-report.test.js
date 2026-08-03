@@ -5,6 +5,7 @@ import { detectsAuthorityDocumentKind, authorityDeclarationKind } from "../src/g
 import { resolvesAuthorityFamily } from "../src/governance/mechanic-authority-families.js";
 import { resolvesDataDrivenWiring } from "../src/governance/resolves-data-driven-wiring.js";
 import { resolvesMechanicLocationReachability, measuresContractSemanticVolume } from "../src/governance/measures-contract-semantic-volume.js";
+import { extractsCandidateAuthorityMechanics, resolvesCandidateAuthorityMatch, classifiesAutomationReadiness } from "../src/governance/classifies-automation-readiness.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 
@@ -461,4 +462,118 @@ test("projectsSelfGovernanceReport exposes contractSemanticVolume for every disc
   const draftMeasurement = report.contractSemanticVolume.find((entry) => entry.authorityFile === "contracts/example.draft.json");
   assert.equal(draftMeasurement.reachableSemanticElements, 1);
   assert.equal(draftMeasurement.orphanedSemanticElements, 0);
+});
+
+test("extractsCandidateAuthorityMechanics keeps only non-AUTHORITY_BOUND mechanics with a resolvable location, plus their coverageDisposition", () => {
+  const document = {
+    schemaVersion: "authority-declaration.draft.v1",
+    sourceFile: "widget.mjs",
+    authority: {
+      mechanics: [
+        { mechanicId: "bound", mechanic: "branch", sourceLocation: "src/widget.mjs:5", coverage: "AUTHORITY_BOUND" },
+        // Real drafts (e.g. serves-query-console.authority.draft.json) nest
+        // coverageDisposition under decisions, not at the mechanic's own top level.
+        { mechanicId: "candidate", mechanic: "fallback", sourceLocation: "widget.mjs:20-22", coverage: "AUTHORITY_CANDIDATE_PROJECTED", decisions: { coverageDisposition: "SEMANTIC_DECISION_REQUIRED" } },
+        { mechanicId: "flattened-candidate", mechanic: "validation", sourceLocation: "widget.mjs:30", coverage: "AUTHORITY_CANDIDATE_PROJECTED", coverageDisposition: "SEMANTIC_DECISION_REQUIRED" },
+        { mechanicId: "no-location", mechanic: "throw", coverage: "AUTHORITY_CANDIDATE_PROJECTED" },
+      ],
+    },
+  };
+  const candidates = extractsCandidateAuthorityMechanics(document, "contracts/widget.draft.json");
+  assert.equal(candidates.length, 2);
+  assert.equal(candidates[0].mechanicId, "candidate");
+  assert.equal(candidates[0].coverage, "AUTHORITY_CANDIDATE_PROJECTED");
+  assert.equal(candidates[0].coverageDisposition, "SEMANTIC_DECISION_REQUIRED");
+  assert.deepEqual(candidates[0].location, { modulePath: "widget.mjs", startLine: 20, endLine: 22 });
+  // A top-level coverageDisposition (no nested decisions object) still resolves as a fallback.
+  assert.equal(candidates[1].mechanicId, "flattened-candidate");
+  assert.equal(candidates[1].coverageDisposition, "SEMANTIC_DECISION_REQUIRED");
+});
+
+test("resolvesCandidateAuthorityMatch resolves a candidate declared without a path prefix by unique suffix, requiring both mechanic type and line overlap", () => {
+  const candidates = extractsCandidateAuthorityMechanics({
+    authority: {
+      mechanics: [
+        { mechanicId: "candidate", mechanic: "fallback", sourceLocation: "widget.mjs:20-22", coverage: "AUTHORITY_CANDIDATE_PROJECTED", decisions: { coverageDisposition: "SEMANTIC_DECISION_REQUIRED" } },
+      ],
+    },
+  }, "contracts/widget.draft.json");
+  const knownModulePaths = new Set(["src/console/widget.mjs"]);
+
+  const matched = resolvesCandidateAuthorityMatch({ mechanic: "fallback", modulePath: "src/console/widget.mjs", startLine: 21, endLine: 21 }, candidates, knownModulePaths);
+  assert.equal(matched.mechanicId, "candidate");
+
+  const wrongMechanic = resolvesCandidateAuthorityMatch({ mechanic: "throw", modulePath: "src/console/widget.mjs", startLine: 21, endLine: 21 }, candidates, knownModulePaths);
+  assert.equal(wrongMechanic, null);
+
+  const outsideLines = resolvesCandidateAuthorityMatch({ mechanic: "fallback", modulePath: "src/console/widget.mjs", startLine: 100, endLine: 100 }, candidates, knownModulePaths);
+  assert.equal(outsideLines, null);
+});
+
+test("classifiesAutomationReadiness tiers ungoverned occurrences by candidate reachability, coverageDisposition, and authority home status", () => {
+  assert.equal(classifiesAutomationReadiness({ posture: "GOVERNED_BY_SEMANTIC_AUTHORITY", authorityHomeStatus: "AUTHORITY_HOME_EXISTS", candidateMatch: null }).automationDisposition, "ALREADY_GOVERNED");
+  assert.equal(classifiesAutomationReadiness({ posture: "KERNEL_PRIMITIVE", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: null }).automationDisposition, "NOT_APPLICABLE");
+  assert.equal(classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_AMBIGUOUS", candidateMatch: null }).automationDisposition, "NOT_CURRENTLY_PROJECTABLE");
+
+  const semanticDecisionCandidate = { mechanicId: "c1", coverageDisposition: "SEMANTIC_DECISION_REQUIRED" };
+  const readyCandidate = { mechanicId: "c2", coverageDisposition: null };
+  assert.equal(
+    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: semanticDecisionCandidate }).automationDisposition,
+    "REQUIRES_HUMAN_SEMANTIC_DECISION",
+  );
+  assert.equal(
+    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: readyCandidate }).automationDisposition,
+    "AUTOMATABLE_AFTER_REVIEW",
+  );
+
+  assert.equal(
+    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE", candidateMatch: null }).automationDisposition,
+    "AUTOMATABLE_AFTER_AUTHORITY_COMPLETION",
+  );
+  assert.equal(
+    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: null }).automationDisposition,
+    "REQUIRES_NEW_AUTHORITY",
+  );
+});
+
+test("projectsSelfGovernanceReport classifies automation readiness per occurrence, finding a reachable draft candidate the exact-match authority home index misses", async () => {
+  const index = buildsSyntheticIndex();
+  const admittedAuthorityDocument = buildsAuthorityDocumentEntry("contracts/example.authority.json");
+  // Declares sourceFile without the "src/" prefix the admitted authority document
+  // uses -- resolvesAuthorityHomeStatus's exact-match home index will not claim
+  // src/example.js from this document at all, but the suffix-aware candidate
+  // matcher below still finds this candidate for the fallback occurrence.
+  const draftDocument = {
+    schemaVersion: "authority-declaration.draft.v1",
+    sourceFile: "example.js",
+    authority: {
+      mechanics: [
+        { mechanicId: "draft-fallback", mechanic: "fallback", sourceLocation: "example.js:40", coverage: "AUTHORITY_CANDIDATE_PROJECTED", decisions: { coverageDisposition: "SEMANTIC_DECISION_REQUIRED" } },
+      ],
+    },
+  };
+  const authorityDocuments = [
+    admittedAuthorityDocument,
+    { filePath: "contracts/example.draft.json", document: draftDocument, documentKind: detectsAuthorityDocumentKind(draftDocument) },
+  ];
+
+  const report = await projectsSelfGovernanceReport({ index, repositoryId: "self-governance-test", authorityDocuments });
+  await validatesSelfGovernanceReport(report);
+
+  const governedOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "branch");
+  assert.equal(governedOccurrence.automationDisposition, "ALREADY_GOVERNED");
+
+  const fallbackOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "fallback");
+  assert.equal(fallbackOccurrence.automationDisposition, "REQUIRES_HUMAN_SEMANTIC_DECISION");
+  assert.equal(fallbackOccurrence.candidateAuthorityFile, "contracts/example.draft.json");
+  assert.equal(fallbackOccurrence.candidateMechanicId, "draft-fallback");
+  assert.deepEqual(fallbackOccurrence.missingTissue, ["RESPONSIBILITY_BINDING_MISSING", "EXECUTION_BINDING_MISSING", "EQUIVALENCE_PROOF_MISSING"]);
+
+  const throwOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "throw");
+  assert.equal(throwOccurrence.automationDisposition, "REQUIRES_NEW_AUTHORITY");
+  assert.equal(throwOccurrence.candidateAuthorityFile, null);
+
+  assert.equal(report.automationReadiness.byDisposition.ALREADY_GOVERNED, 1);
+  assert.equal(report.automationReadiness.byDisposition.REQUIRES_HUMAN_SEMANTIC_DECISION, 1);
+  assert.equal(report.automationReadiness.byDisposition.REQUIRES_NEW_AUTHORITY, 1);
 });
