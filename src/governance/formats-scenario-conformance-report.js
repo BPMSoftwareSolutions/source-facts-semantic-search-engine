@@ -345,6 +345,7 @@ function formatsAuthorityAuthoringReadiness(report) {
 function formatsInterfaceGovernance(report) {
   const summary = queryRows(report, "cli.traceability-summary.v1")[0];
   const commands = queryRows(report, "cli.entry-points.v1");
+  const executionGraphs = queryRows(report, "cli.command-execution-graphs.v1");
   const unreachable = queryRows(report, "cli.unreachable-callables.v1");
   const queryId = "cli.traceability-summary.v1";
   const lines = [
@@ -379,6 +380,50 @@ function formatsInterfaceGovernance(report) {
     lines.push(`| \`${commandName}\` | \`${command.handlerName}\` | ${formatsFactLink(command.reachableCallableCount, "cli.entry-points.v1")} | ${features} | ${command.canonicalScenarioIds.length} | \`${command.governanceGapDisposition}\` | ${formatsQueryLink("cli.entry-points.v1")} |`);
   }
   lines.push("");
+  lines.push("## CLI Command Execution Graphs");
+  lines.push("");
+  lines.push("These are the actual statically resolved graph slices produced by the same call-graph engine used for CLI reachability classification. Consumer commands are graph roots, and the internal callables they use are shown inside each graph. Any independently observed internal exported root is labeled separately. Every callable includes a root-to-node path witness; every unresolved or ambiguous invocation remains explicit.");
+  lines.push("");
+  lines.push(`Query result: ${formatsReceiptSummary(report, "cli.command-execution-graphs.v1")}`);
+  lines.push("");
+  lines.push("| Interface | Exposure | Handler | Reachable callables | Max depth | Resolved edges | Ambiguous edges | Unresolved edges | Evidence |");
+  lines.push("|---|---|---|---:|---:|---:|---:|---:|---|");
+  for (const graph of executionGraphs) {
+    const interfaceName = graph.commandName === null ? `(internal) ${graph.handlerName}` : graph.commandName;
+    lines.push(`| \`${interfaceName}\` | \`${graph.interfaceExposure}\` | \`${graph.handlerName}\` | ${graph.summary.reachableCallableCount} | ${graph.summary.maxDepth} | ${graph.summary.resolvedInvocationEdgeCount} | ${graph.summary.ambiguousInvocationEdgeCount} | ${graph.summary.unresolvedInvocationEdgeCount} | ${formatsQueryLink("cli.command-execution-graphs.v1")} |`);
+  }
+  lines.push("");
+  for (const graph of executionGraphs) {
+    const interfaceName = graph.commandName === null ? `Internal root: ${graph.handlerName}` : `Command: ${graph.commandName}`;
+    lines.push(`### ${interfaceName}`);
+    lines.push("");
+    lines.push(`Handler: \`${graph.modulePath}#${graph.handlerName}\`; entry point: \`${graph.entryPointId}\`; kind: \`${graph.entryKind}\`.`);
+    lines.push("");
+    lines.push(`<details><summary>Inspect ${graph.nodes.length} callable node(s) and ${graph.edges.length} invocation edge(s)</summary>`);
+    lines.push("");
+    lines.push("#### Callable paths");
+    lines.push("");
+    lines.push("| Depth | Callable | File | Root-to-callable path witness |");
+    lines.push("|---:|---|---|---|");
+    for (const node of graph.nodes) {
+      const pathWitness = node.pathWitness.map((entry) => `\`${entry.symbolName}\``).join(" â†’ ");
+      lines.push(`| ${node.depth} | \`${node.symbolName}\` | \`${node.modulePath}\` | ${pathWitness} |`);
+    }
+    lines.push("");
+    lines.push("#### Invocation edges");
+    lines.push("");
+    lines.push("| Caller | Target | Resolution | Reason | Source | Relationship |");
+    lines.push("|---|---|---|---|---|---|");
+    for (const edge of graph.edges) {
+      const target = edge.toSymbolName ?? edge.toSymbolCandidate ?? "(missing candidate)";
+      const source = `${edge.modulePath}:${edge.sourceLine ?? "?"}:${edge.sourceColumn ?? "?"}`;
+      lines.push(`| \`${edge.fromSymbolName ?? "(module scope)"}\` | \`${target}\` | \`${edge.resolutionDisposition}\` | \`${edge.resolutionReason ?? "resolved"}\` | \`${source}\` | \`${edge.relationshipId}\` |`);
+    }
+    if (graph.edges.length === 0) lines.push("| (none) | (none) | `resolved` | leaf root | — | — |");
+    lines.push("");
+    lines.push("</details>");
+    lines.push("");
+  }
   lines.push("## Fat and Waste Inventory");
   lines.push("");
   lines.push("Only `NO_CLI_REACHABILITY` appears here. Test/proof, generated, runtime-sensitive, and explicitly reachable classes have already been subtracted.");

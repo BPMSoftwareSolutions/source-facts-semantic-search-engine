@@ -244,6 +244,7 @@ const catalog = Object.freeze([
 const baseQueryDrillDowns = Object.freeze({
   "cli.traceability-summary.v1": [
     { queryId: "cli.entry-points.v1", label: "Inspect CLI roots", parameterBindings: {} },
+    { queryId: "cli.command-execution-graphs.v1", label: "Inspect complete per-command execution graphs", parameterBindings: {} },
     { queryId: "cli.callable-inventory.v1", label: "Inspect classified runtime callables", parameterBindings: {} },
     { queryId: "cli.unreachable-callables.v1", label: "Inspect NO_CLI_REACHABILITY remainder", parameterBindings: {} },
   ],
@@ -462,6 +463,7 @@ export function reconcilesReportQueryLineage(report) {
   }
   const requiredCliQueries = [
     "cli.traceability-summary.v1", "cli.entry-points.v1", "cli.callable-inventory.v1",
+    "cli.command-execution-graphs.v1",
     "cli.entry-point-reachability.v1", "cli.shared-reachability.v1", "cli.runtime-resolution-debt.v1",
     "cli.reachable-source-facts.v1", "cli.unreachable-callables.v1", "cli.unreachable-source-facts.v1",
     "cli.symbol-originating-commands.v1", "cli.unreachable-removal-impact.v1",

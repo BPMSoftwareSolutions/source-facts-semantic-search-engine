@@ -128,6 +128,19 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(projection.unreachableCallables.every((row) => row.cliClosureClassification === "NO_CLI_REACHABILITY"));
   assert.ok(projection.unreachableSourceFacts.every((row) => row.cliClosureClassification === "NO_CLI_REACHABILITY"));
   assert.ok(projection.removalImpact.every((row) => ["REMOVE_CANDIDATE", "REVIEW_BEFORE_REMOVAL"].includes(row.removalDisposition)));
+
+  const report = await projectsSelfGovernanceReport({
+    index,
+    repositoryId: "cli-execution-graph-test",
+    workspaceRelativePrefix: "src",
+  });
+  const governGraph = rerunsRegisteredReportQuery(report, "cli.command-execution-graphs.v1", { commandName: "govern" });
+  assert.equal(governGraph.rowCount, 1);
+  assert.equal(governGraph.rows[0].handlerName, "runGovern");
+  assert.ok(governGraph.rows[0].nodes.length > 1);
+  assert.ok(governGraph.rows[0].nodes.every((node) => node.pathWitness[0].symbolName === "runGovern"));
+  assert.equal(governGraph.rows[0].edges.length, governGraph.rows[0].summary.invocationEdgeCount);
+  assert.ok(governGraph.rows[0].unresolvedOrAmbiguousEdges.every((edge) => edge.resolutionDisposition !== "resolved"));
 });
 
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {
@@ -358,6 +371,8 @@ test("self-governance Markdown exposes inline query identities, receipts, exact 
   assert.match(markdown, /Canonical feature declarations.*feature-coverage\.summary\.v1/);
   assert.match(markdown, /## CLI Traceability Summary/);
   assert.match(markdown, /## CLI Feature Coverage/);
+  assert.match(markdown, /## CLI Command Execution Graphs/);
+  assert.match(markdown, /cli\.command-execution-graphs\.v1/);
   assert.match(markdown, /## Fat and Waste Inventory/);
   assert.match(markdown, /cli\.unreachable-callables\.v1/);
   assert.match(markdown, /cli\.unreachable-removal-impact\.v1/);

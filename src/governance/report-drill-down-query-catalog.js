@@ -88,6 +88,74 @@ function buildsCallPathRows(context) {
     || left.depth - right.depth || left.entryPointId.localeCompare(right.entryPointId));
 }
 
+function buildsCommandExecutionGraphRows(context) {
+  const commandsByEntryPoint = new Map();
+  for (const command of context.interfaceGovernance.commands ?? []) {
+    const rows = commandsByEntryPoint.get(command.entryPointId) ?? [];
+    rows.push(command);
+    commandsByEntryPoint.set(command.entryPointId, rows);
+  }
+  const rows = [];
+  for (const root of context.callGraph.roots ?? []) {
+    const nodesById = new Map(root.nodes.map((node) => [node.symbolId, node]));
+    const nodes = root.nodes.map((node) => {
+      const pathWitness = [];
+      let current = node;
+      while (current) {
+        pathWitness.push({
+          symbolId: current.symbolId,
+          symbolName: current.name,
+          modulePath: repositoryPath(context, current.modulePath),
+        });
+        current = current.parentSymbolId ? nodesById.get(current.parentSymbolId) ?? null : null;
+      }
+      return {
+        symbolId: node.symbolId,
+        symbolName: node.name,
+        modulePath: repositoryPath(context, node.modulePath),
+        depth: node.depth,
+        parentSymbolId: node.parentSymbolId,
+        viaRelationshipId: node.viaRelationshipId,
+        pathWitness: pathWitness.reverse(),
+      };
+    });
+    const edges = root.edges.map((edge) => ({
+      relationshipId: edge.relationshipId,
+      sourceReferenceId: edge.sourceReferenceId,
+      modulePath: repositoryPath(context, edge.modulePath),
+      sourceLine: edge.sourceLine,
+      sourceColumn: edge.sourceColumn,
+      fromSymbolId: edge.fromSymbolId,
+      fromSymbolName: edge.fromSymbolName,
+      toSymbolCandidate: edge.toSymbolCandidate,
+      toSymbolId: edge.toSymbolId,
+      toSymbolName: edge.toSymbolName,
+      candidateSymbolIds: edge.toSymbolIds,
+      resolutionDisposition: edge.resolutionDisposition,
+      resolutionReason: edge.resolutionReason,
+    }));
+    const commandRows = commandsByEntryPoint.get(root.symbolId) ?? [{ commandName: null, handlerName: root.name }];
+    for (const command of commandRows) {
+      rows.push({
+        commandName: command.commandName,
+        interfaceExposure: command.commandName === null ? "INTERNAL_EXPORTED_ROOT" : "CONSUMER_CLI_COMMAND",
+        handlerName: root.name,
+        entryPointId: root.symbolId,
+        entryKind: root.entryKind,
+        modulePath: repositoryPath(context, root.modulePath),
+        declarationLine: root.entryLine,
+        summary: root.summary,
+        depthLayers: root.depthLayers,
+        nodes,
+        edges,
+        unresolvedOrAmbiguousEdges: edges.filter((edge) => edge.resolutionDisposition !== "resolved"),
+      });
+    }
+  }
+  return rows.sort((left, right) => String(left.commandName ?? "~internal").localeCompare(String(right.commandName ?? "~internal"))
+    || left.handlerName.localeCompare(right.handlerName));
+}
+
 function buildsInvocationRows(context) {
   const seen = new Set();
   const rows = [];
@@ -194,6 +262,7 @@ export function buildsReportQueryContext(view, index, canonicalFeatureQueryPlane
   context.occurrenceEvidence = buildsOccurrenceEvidence(context);
   context.callPathRows = buildsCallPathRows(context);
   context.invocationRows = buildsInvocationRows(context);
+  context.commandExecutionGraphRows = buildsCommandExecutionGraphRows(context);
   context.authoring = buildsAuthoringEvidenceContext(context);
   return context;
 }
@@ -213,6 +282,15 @@ export const reportDrillDownQueries = Object.freeze([
     parameters: [parameter("commandName"), parameter("entryPointId"), parameter("handlerName")], rows: (context) => context.interfaceGovernance.commands,
     drillDowns: [next("cli.entry-point-reachability.v1", "Inspect complete reachable graph slice", { entryPointId: ":entryPointId" })],
     rowDrillDowns: (row) => [next("cli.entry-point-reachability.v1", "Inspect complete reachable graph slice", { entryPointId: row.entryPointId })],
+  },
+  {
+    queryId: "cli.command-execution-graphs.v1", section: "CLI Execution Graphs", depth: 1,
+    queryText: "SELECT * FROM reportCliCommandExecutionGraphs WHERE (:commandName IS NULL OR commandName = :commandName) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY commandName, handlerName",
+    inputCollections: ["reportCliCommandExecutionGraphs"], expectedResultSchema: "one complete resolved execution graph per exposed CLI command or internal exported root",
+    parameters: [parameter("commandName"), parameter("entryPointId"), parameter("handlerName"), parameter("interfaceExposure")],
+    rows: (context) => context.commandExecutionGraphRows,
+    drillDowns: [next("cli.entry-point-reachability.v1", "Inspect flattened reachable callables", { entryPointId: ":entryPointId" }), next("cli.reachable-source-facts.v1", "Inspect mechanics reachable from the command", { entryPointId: ":entryPointId" })],
+    rowDrillDowns: (row) => [next("cli.entry-point-reachability.v1", "Inspect flattened reachable callables", { entryPointId: row.entryPointId }), next("cli.reachable-source-facts.v1", "Inspect reachable mechanics", { entryPointId: row.entryPointId })],
   },
   {
     queryId: "cli.callable-inventory.v1", section: "CLI Traceability", depth: 0,
