@@ -46,10 +46,10 @@ The current measured CLI-slice reachability is useful discovery evidence, but it
 
 ### Gaps that prevent an honest 100% claim
 
-| Gap | Consequence | Required response |
-|---|---|---|
-| Counts and percentages are embedded in narrative snapshots | Documentation drifts as the source and scan boundary change | Generate metrics and tables from a versioned traceability report |
-| The CLI map now measures the CLI slice, but broader entry-point families and reverse navigation are still incomplete | Deep reachability is reproducible for the CLI slice, but not yet for the whole repository | Materialize a complete forward and reverse execution graph and widen the entry-point taxonomy |
+| Gap | Consequence | Required response | Status |
+|---|---|---|---|
+| Counts and percentages are embedded in narrative snapshots | Documentation drifts as the source and scan boundary change | Generate metrics and tables from a versioned traceability report | ✅ [Closed](Round-1-Documentation-Generation.md) |
+| The CLI map now measures the CLI slice, but broader entry-point families and reverse navigation are still incomplete | Deep reachability is reproducible for the CLI slice, but not yet for the whole repository | Materialize a complete forward and reverse execution graph and widen the entry-point taxonomy | ✅ [Closed](Round-2-Bidirectional-Reachability.md) |
 | Surface names are not yet normalized into atomic interface behaviors | One command, route, or method can hide several distinct outcomes and obligations | Inventory input/action/outcome behavior slices before feature discovery |
 | Callbacks, dynamic dispatch, and module-scope execution are incompletely modeled | Reachable behavior can look dead or remain ambiguous | Add synthetic nodes, dispatch evidence, and runtime resolution |
 | The call graph does not by itself prove semantic flow | Invocation edges cannot show which input, authority, outcome, side effect, or failure closes a scenario | Build surface-to-outcome semantic data-flow slices alongside the call graph |
