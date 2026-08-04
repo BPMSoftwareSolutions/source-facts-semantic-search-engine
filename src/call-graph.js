@@ -28,6 +28,7 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
   }
 
   const outgoingByCallerId = new Map();
+  const incomingByCalleeId = new Map();
   const rootsBySymbolId = new Map();
   const reachableBySymbolId = new Map();
   const globalEdgesById = new Map();
@@ -51,6 +52,12 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
       globalEdgesById.set(edge.relationshipId, edge);
     }
 
+    if (edge.resolutionDisposition === "resolved" && edge.toSymbolId !== null) {
+      const calleeEdges = incomingByCalleeId.get(edge.toSymbolId) ?? [];
+      calleeEdges.push(edge);
+      incomingByCalleeId.set(edge.toSymbolId, calleeEdges);
+    }
+
     if (relationship.fromSymbolId === null && sourceModulePath === rootModulePath && rootNamePattern.test(edge.toSymbolCandidate ?? "")) {
       if (edge.resolutionDisposition !== "resolved") {
         throw new Error(`Unable to resolve CLI root candidate ${JSON.stringify(edge.toSymbolCandidate)} at ${edge.sourceReferenceId}: ${edge.resolutionDisposition} (${edge.resolutionReason ?? "unknown"})`);
@@ -72,13 +79,27 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
     }
   }
 
+  for (const symbol of runtimeSymbols) {
+    const alreadyRoot = rootsBySymbolId.has(symbol.symbolId);
+    if (symbol.isExported && !alreadyRoot) {
+      rootsBySymbolId.set(symbol.symbolId, {
+        ...symbol,
+        entryKind: "exported-function",
+        entryRelationshipId: null,
+        entrySourceReferenceId: symbol.sourceReferenceId,
+        entryLine: symbol.declarationLine,
+        entryColumn: symbol.declarationColumn,
+      });
+    }
+  }
+
   for (const edges of outgoingByCallerId.values()) {
     edges.sort(comparesEdges);
   }
 
   const roots = [...rootsBySymbolId.values()]
     .sort(comparesRoots)
-    .map((rootEntry) => buildsRootGraph(rootEntry, outgoingByCallerId, symbolById));
+    .map((rootEntry) => buildsRootGraph(rootEntry, outgoingByCallerId, incomingByCalleeId, symbolById));
 
   const rootNameById = new Map(roots.map((root) => [root.symbolId, root.name]));
   for (const root of roots) {
@@ -121,6 +142,9 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
   const unresolvedInvocationEdgeCount = invocationEdges.filter((edge) => edge.resolutionDisposition === "unresolved").length;
   const maxDepth = roots.reduce((largest, root) => Math.max(largest, root.summary.maxDepth), 0);
 
+  const commandRootCount = roots.filter((root) => root.entryKind === "cli-command").length;
+  const exportedFunctionRootCount = roots.filter((root) => root.entryKind === "exported-function").length;
+
   return {
     callGraphType: "cli-entry-point-call-graph.v1",
     indexId: index.indexId ?? null,
@@ -134,7 +158,9 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
     reachability,
     unreachableSymbols,
     summary: {
-      commandRootCount: roots.length,
+      commandRootCount,
+      exportedFunctionRootCount,
+      totalRootCount: roots.length,
       runtimeCallableCount: runtimeSymbols.length,
       reachableCallableCount: reachability.length,
       unreachableCallableCount: unreachableSymbols.length,
@@ -152,6 +178,8 @@ export function formatsCallGraphSummary(graph) {
   const lines = [
     `Call graph type: ${graph.callGraphType ?? "unknown"}`,
     `Command roots: ${summary.commandRootCount ?? 0}`,
+    `Exported function roots: ${summary.exportedFunctionRootCount ?? 0}`,
+    `Total entry points: ${summary.totalRootCount ?? 0}`,
     `Runtime callables: ${summary.runtimeCallableCount ?? 0}`,
     `Reachable callables: ${summary.reachableCallableCount ?? 0}`,
     `Unreachable callables: ${summary.unreachableCallableCount ?? 0}`,
@@ -164,7 +192,7 @@ export function formatsCallGraphSummary(graph) {
   return `${lines.join("\n")}\n`;
 }
 
-function buildsRootGraph(rootEntry, outgoingByCallerId, symbolById) {
+function buildsRootGraph(rootEntry, outgoingByCallerId, incomingByCalleeId, symbolById) {
   const rootSymbol = symbolById.get(rootEntry.symbolId);
   if (rootSymbol === undefined) {
     throw new Error(`Unable to build a call graph for missing root symbol ${rootEntry.symbolId}.`);
@@ -209,6 +237,12 @@ function buildsRootGraph(rootEntry, outgoingByCallerId, symbolById) {
   }
 
   const edges = [...edgesByRelationshipId.values()].sort(comparesEdges);
+  const incomingEdges = [];
+  for (const node of nodes) {
+    const nodeIncomingEdges = incomingByCalleeId.get(node.symbolId) ?? [];
+    incomingEdges.push(...nodeIncomingEdges);
+  }
+  incomingEdges.sort(comparesEdges);
   const resolvedInvocationEdgeCount = edges.filter((edge) => edge.resolutionDisposition === "resolved").length;
   const ambiguousInvocationEdgeCount = edges.filter((edge) => edge.resolutionDisposition === "ambiguous").length;
   const unresolvedInvocationEdgeCount = edges.filter((edge) => edge.resolutionDisposition === "unresolved").length;
@@ -219,6 +253,7 @@ function buildsRootGraph(rootEntry, outgoingByCallerId, symbolById) {
     ...rootEntry,
     nodes,
     edges,
+    incomingEdges,
     depthLayers: [...depthLayersByDepth.keys()].sort((left, right) => left - right).map((depth) => depthLayersByDepth.get(depth)),
     summary: {
       reachableCallableCount: nodes.length,
@@ -227,6 +262,7 @@ function buildsRootGraph(rootEntry, outgoingByCallerId, symbolById) {
       resolvedInvocationEdgeCount,
       ambiguousInvocationEdgeCount,
       unresolvedInvocationEdgeCount,
+      incomingEdgeCount: incomingEdges.length,
       maxDepth,
     },
   };
@@ -318,6 +354,7 @@ function summarizesSymbol(symbol) {
     sourceReferenceId: symbol.sourceReferenceId ?? null,
     declarationLine: symbol.declarationLine ?? null,
     declarationColumn: symbol.declarationColumn ?? null,
+    isExported: symbol.isExported ?? false,
   };
 }
 

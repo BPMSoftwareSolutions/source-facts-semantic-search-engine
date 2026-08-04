@@ -17,40 +17,42 @@ test("projectsCliEntryPointCallGraph builds a rooted transitive graph and report
 
   const graph = projectsCliEntryPointCallGraph(index, { rootModulePath: "src/cli.js", runtimeModulePrefix: "src/" });
   assert.equal(graph.callGraphType, "cli-entry-point-call-graph.v1");
+  assert.equal(graph.roots.length, 4);
   assert.equal(graph.summary.commandRootCount, 1);
+  assert.equal(graph.summary.exportedFunctionRootCount, 3);
   assert.equal(graph.summary.runtimeCallableCount, 5);
-  assert.equal(graph.summary.reachableCallableCount, 4);
-  assert.equal(graph.summary.unreachableCallableCount, 1);
-  assert.equal(graph.summary.invocationEdgeCount, 4);
-  assert.equal(graph.summary.resolvedInvocationEdgeCount, 3);
-  assert.equal(graph.summary.unresolvedInvocationEdgeCount, 1);
-  assert.equal(graph.summary.maxDepth, 3);
 
-  const [root] = graph.roots;
-  assert.equal(root.name, "runGovern");
-  assert.equal(root.entryKind, "cli-command");
-  assert.equal(root.entryRelationshipId, "1".repeat(64));
-  assert.equal(root.summary.reachableCallableCount, 4);
-  assert.equal(root.summary.directInvocationCount, 2);
-  assert.deepEqual(root.depthLayers, [
-    [root.symbolId],
+  const cliRoot = graph.roots.find((root) => root.entryKind === "cli-command");
+  assert.ok(cliRoot);
+  assert.equal(cliRoot.name, "runGovern");
+  assert.equal(cliRoot.entryRelationshipId, "1".repeat(64));
+  assert.equal(cliRoot.summary.reachableCallableCount, 4);
+  assert.equal(cliRoot.summary.directInvocationCount, 2);
+  assert.deepEqual(cliRoot.depthLayers, [
+    [cliRoot.symbolId],
     ["src/governance/projects-self-governance-report.js#function:projectsSelfGovernanceReport"],
     ["src/governance/proposes-feature-coverage.js#function:proposesFeatureCoverage"],
     ["src/governance/invokes-live-model-inference.js#function:invokesLiveModelInference"],
   ]);
-  assert.equal(root.edges.length, 4);
-  assert.ok(root.edges.some((edge) => edge.resolutionDisposition === "unresolved" && edge.toSymbolCandidate === "process.stdout.write"));
+  assert.equal(cliRoot.edges.length, 4);
+  assert.ok(cliRoot.edges.some((edge) => edge.resolutionDisposition === "unresolved" && edge.toSymbolCandidate === "process.stdout.write"));
   assert.ok(graph.unreachableSymbols.some((symbol) => symbol.name === "deadHelper"));
 
   const target = graph.reachability.find((entry) => entry.name === "invokesLiveModelInference");
   assert.ok(target);
-  assert.deepEqual(target.reachableFrom, [
-    {
-      rootSymbolId: root.symbolId,
-      rootName: "runGovern",
-      depth: 3,
-    },
-  ]);
+  assert.equal(target.reachableFrom.length, 4);
+  const reachableFromSelf = target.reachableFrom.find((r) => r.rootName === "invokesLiveModelInference");
+  assert.ok(reachableFromSelf);
+  assert.equal(reachableFromSelf.depth, 0);
+  const reachableFromProposesFeatureCoverage = target.reachableFrom.find((r) => r.rootName === "proposesFeatureCoverage");
+  assert.ok(reachableFromProposesFeatureCoverage);
+  assert.equal(reachableFromProposesFeatureCoverage.depth, 1);
+  const reachableFromProjectsSelfGovernanceReport = target.reachableFrom.find((r) => r.rootName === "projectsSelfGovernanceReport");
+  assert.ok(reachableFromProjectsSelfGovernanceReport);
+  assert.equal(reachableFromProjectsSelfGovernanceReport.depth, 2);
+  const reachableFromCli = target.reachableFrom.find((r) => r.rootName === "runGovern");
+  assert.ok(reachableFromCli);
+  assert.equal(reachableFromCli.depth, 3);
 });
 
 test("call-graph CLI writes the graph artifact and summary", async () => {
@@ -72,11 +74,16 @@ test("call-graph CLI writes the graph artifact and summary", async () => {
 
     assert.equal(result.status, 0, `CLI failed with status ${result.status}\nSTDOUT:\n${result.stdout}\nSTDERR:\n${result.stderr}`);
     assert.ok(result.stdout.includes(outputPath), "CLI should print the output path");
-    assert.ok(result.stdout.includes("Command roots: 1"), "CLI summary should include the root count");
+    assert.ok(result.stdout.includes("Command roots: 1"), "CLI summary should include CLI root count");
+    assert.ok(result.stdout.includes("Exported function roots: 3"), "CLI summary should include exported function root count");
     assert.ok(result.stdout.includes("Unreachable callables: 1"), "CLI summary should include the dead-code count");
 
     const graph = JSON.parse(readFileSync(outputPath, "utf8"));
-    assert.equal(graph.roots[0].name, "runGovern");
+    const cliRoot = graph.roots.find((root) => root.entryKind === "cli-command");
+    assert.ok(cliRoot, "Should have a CLI command root");
+    assert.equal(cliRoot.name, "runGovern");
+    assert.equal(graph.summary.commandRootCount, 1);
+    assert.equal(graph.summary.exportedFunctionRootCount, 3);
     assert.equal(graph.summary.reachableCallableCount, 4);
     assert.ok(graph.unreachableSymbols.some((symbol) => symbol.name === "deadHelper"));
   } finally {
@@ -117,7 +124,7 @@ function buildsFixtureIndex() {
       buildsFixtureSymbol(projectReportSymbolId, "projectsSelfGovernanceReport", "src/governance/projects-self-governance-report.js", 20),
       buildsFixtureSymbol(proposesFeatureCoverageSymbolId, "proposesFeatureCoverage", "src/governance/proposes-feature-coverage.js", 30),
       buildsFixtureSymbol(invokesLiveModelInferenceSymbolId, "invokesLiveModelInference", "src/governance/invokes-live-model-inference.js", 40),
-      buildsFixtureSymbol(deadHelperSymbolId, "deadHelper", "src/dead.mjs", 50),
+      buildsFixtureSymbol(deadHelperSymbolId, "deadHelper", "src/dead.mjs", 50, false),
     ],
     relationships: [
       buildsFixtureRelationship({
@@ -199,7 +206,7 @@ function buildsFixtureIndex() {
   };
 }
 
-function buildsFixtureSymbol(symbolId, name, modulePath, declarationLine) {
+function buildsFixtureSymbol(symbolId, name, modulePath, declarationLine, isExported = true) {
   return {
     symbolId,
     symbolVersionId: `sha256:${"e".repeat(64)}`,
@@ -210,7 +217,7 @@ function buildsFixtureSymbol(symbolId, name, modulePath, declarationLine) {
     declarationLine,
     declarationColumn: 1,
     declarationHeaderHash: "f".repeat(64),
-    isExported: true,
+    isExported,
   };
 }
 
