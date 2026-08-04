@@ -604,8 +604,8 @@ function formatsHealingDraftRegistry(report) {
   return lines;
 }
 
-export function formatsSelfGovernanceReportMarkdown(report) {
-  if (report.scenarioConformance !== undefined) return formatsScenarioConformanceReportMarkdown(report);
+export function formatsSelfGovernanceReportMarkdown(report, options = {}) {
+  if (report.scenarioConformance !== undefined) return formatsScenarioConformanceReportMarkdown(report, options);
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
   const danglingSources = findsDanglingAuthoritySources(report);

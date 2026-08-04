@@ -764,11 +764,21 @@
     },
     "queryLineage": {
       "type": "object",
-      "required": ["documentKind", "invariant", "registeredQueries", "queryReceipts", "claims", "reconciliation"],
+      "required": ["documentKind", "invariant", "catalog", "registeredQueries", "queryReceipts", "claims", "reconciliation"],
       "additionalProperties": false,
       "properties": {
         "documentKind": { "const": "source-facts-report-query-lineage.v1" },
         "invariant": { "const": "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT" },
+        "catalog": {
+          "type": "object",
+          "required": ["catalogId", "catalogVersion", "catalogHash"],
+          "additionalProperties": false,
+          "properties": {
+            "catalogId": { "const": "self-governance-query-catalog.v1" },
+            "catalogVersion": { "const": "1.0.0" },
+            "catalogHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+          }
+        },
         "registeredQueries": {
           "type": "array",
           "minItems": 1,
@@ -846,11 +856,28 @@
         },
         "reconciliation": {
           "type": "object",
-          "required": ["disposition", "claimCount"],
+          "required": [
+            "disposition", "claimCount", "claimsWithQueryPointers", "missingQueryPointers",
+            "unsupportedFactualClaims", "staleReceipts", "indexMismatches", "scopeMismatches",
+            "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
+            "deterministicRerunMismatches", "receiptsExecuted", "receiptsValid"
+          ],
           "additionalProperties": false,
           "properties": {
-            "disposition": { "const": "QUERY_FACTS_RECONCILED" },
-            "claimCount": { "type": "integer", "minimum": 1 }
+            "disposition": { "const": "PASSED" },
+            "claimCount": { "type": "integer", "minimum": 1 },
+            "claimsWithQueryPointers": { "type": "integer", "minimum": 1 },
+            "missingQueryPointers": { "const": 0 },
+            "unsupportedFactualClaims": { "const": 0 },
+            "staleReceipts": { "const": 0 },
+            "indexMismatches": { "const": 0 },
+            "scopeMismatches": { "const": 0 },
+            "resultShapeFailures": { "const": 0 },
+            "resultHashFailures": { "const": 0 },
+            "renderedValueMismatches": { "const": 0 },
+            "deterministicRerunMismatches": { "const": 0 },
+            "receiptsExecuted": { "type": "integer", "minimum": 1 },
+            "receiptsValid": { "type": "integer", "minimum": 1 }
           }
         }
       }

@@ -1,12 +1,12 @@
 # Deterministic Traceability Gap Closure Implementation Strategies
 
-**Status:** Normative implementation specification; neither gap is closed
+**Status:** Deterministic-documentation implementation gates closed; release closure and reverse-reachability closure remain open
 
 **Evidence date:** 2026-08-04
 
-**HEAD observed:** `f71eb33a0f173832b93b62f86d90f33bf1ed3e33`
+**HEAD observed:** `cee3eebdbe4cc3f173726d006ec70a3331cc3ec1`
 
-**Revision qualification:** The evidence was produced from a dirty working tree. It is valid for implementation planning, but it is not eligible for a release closure receipt.
+**Revision qualification:** The evidence below was regenerated from a dirty shared working tree after the implementation changes. It proves the local deterministic-documentation gates, but it is not a clean-revision release closure receipt and does not close the separate reverse-reachability strategy.
 
 **Subject:** The two closure claims in the [Feature and Capability Traceability Strategic Roadmap](<./Feature and Capability Traceability Strategic Roadmap.md>)
 
@@ -100,12 +100,12 @@ node src/cli.js call-graph --index $srcIndex `
 
 | Boundary | Observed result |
 |---|---|
-| `src/` | 94 files, 5,352 symbols, 24,027 relationships; index `sha256:f0aaf385fef56864acae42e1b5071c8409d0b96446d77f72b1d24c6a4021e07f`; scan `b67dd8f9ce2776f9395fedcf1b5a8857061af346af90f614be6339535b13b820` |
+| `src/` | 95 files, 5,555 symbols, 24,997 relationships; index `sha256:7d66fad11dfdc44847b0607a6951c9ba393872958f29fe9471f2281b5713ff65`; scan `eb258103cfcd672b63783ae909690d0872e499f0dc628f7b762907a0a462d317` |
 | `test/` | 33 files, 1,098 symbols, 7,692 relationships; index `sha256:3ab329138891d586afcf5488a5e290c2f2a14e1b15fe226e13b6e5a94dc3cf6b`; scan `abb234399f4b975ea1e5deb7c2e01ac01cf1c32c8794c782e424911e0c786aca` |
-| `contracts/` | **Failed**: `traceability-query-receipts.schema.v1.json:34:9: Expected a JSON value` |
-| Fresh graph | Source index `sha256:f0aaf385...`; 710 runtime callables; 235 inventory entry points; 573 reachable; 137 unreachable; 5,051 unresolved invocation edges |
+| `contracts/` | 37,929 document facts; index `sha256:82e2289554658a13d7bb2ce37fa9865a12331d2a4b5b67383a7acccdf43e7c19`; scan `8ba6238fcf5c92992d4f6e69e279fd3f13cd3063584ae8f8ac03caefd110e9b2` |
+| Fresh graph | Not regenerated in the documentation-only closure pass; the prior reachability evidence remains evidence for Strategy 2 only |
 
-The contract projection failure is a closure failure, not an omitted result. The current receipt schema contains invalid JSON, so a current contract index cannot be produced.
+The current contract projection succeeds. This closes the invalid-receipt-schema blocker recorded in the earlier baseline, but it does not supply the still-missing versioned call-graph schema.
 
 ### Large artifact projection commands used
 
@@ -153,13 +153,15 @@ Every query used to establish this specification is repeated in its relevant str
 
 | ID | Input hash | Result hash | Rows | Observed fact |
 |---|---|---|---:|---|
-| `D-GENERATOR-SURFACE` | `sha256:903f0dc...` | `sha256:5cebc581...` | 18 | Current generator implementation functions |
-| `D-CALLER-SURFACE` | `sha256:b01c116...` | `sha256:2689c7c...` | 1 | `runGenerateDocs` is the production caller |
+| `D-GENERATOR-SURFACE` | `sha256:dc41396d1a6596695baee84ad1fbd12c593f3e5b6cf16936a5cc461a30990613` | `sha256:a7b92ce7a38aa16e4fc946a99a3cc7f13ac17153277db3df50c28bb695256a29` | 29 | Current generator implementation functions |
+| `D-CATALOG-CLAIMS` | `sha256:f191152d75f652b71c2b6f523c78eff4c769f17e2227d7a4ebd08534901f956c` | `sha256:108b8c891e909bab7ea2e3f407e5345c9308a7b197d60804ed0e82bd0f089347` | 2 | Catalog has 36 factual and 5 derived metrics |
+| `D-CATALOG-QUERIES` | `sha256:081ec0732b3fd699d95100a4aa3120035a35795881a93efeb5ab8c60763d7e7a` | `sha256:b3e63b28edc4997a2c317e4520010032b9197abc127842f9fb76de4ec80d35e1` | 1 | All 36 factual metrics have catalog-owned query text |
 | `D-REPORT-FACTS` | `sha256:dc1cedf...` | `sha256:9afbeb98...` | 5 | Real report identity and baseline values |
 | `D-GRAPH-FACTS` | `sha256:e48f9fd...` | `sha256:43562dc...` | 5 | Fresh graph identity and summary values; one requested pointer was absent |
 | `D-CATALOG-MODES` | `sha256:bd50581...` | `sha256:b7b7c88...` | 5 | 41 catalog metrics partitioned by value mode |
-| `D-RECEIPT-CHECKS` | `sha256:4d2b21a...` | `sha256:833e4df...` | 19 | Current verifier accesses query text and identity fields, but not result proof fields |
-| `D-CLOSURE-FIELDS` | `sha256:facaef9...` | `sha256:2b5d40f...` | 22 | Current closure builder omits receipt and catalog content hashes |
+| `D-RECEIPT-CHECKS` | `sha256:ee53c88fd776f1c1b8abd7c9f97d0704884fbb77e06d853f744d3a32b99e0da9` | `sha256:5efa5efe196175bc5b22ebc14bd823d3f5870383dc14353a7c3c437fa550e6c2` | 31 | Verifier re-executes the catalog query and compares input/result proof fields |
+| `D-CLOSURE-FIELDS` | `sha256:20226905796eaaacf9d24604ae053af1c2a098b1c2091731b0194f70d507b55e` | `sha256:d76541cbad7ca16d5817e22dd17493e3715ff146a0e6330d57484b563a6a4c4a` | 51 | Closure builder binds ordered receipts, metrics, artifacts, conditions, and document hash |
+| `D-GENERATOR-CALLS` | `sha256:d04b6266068bd4db78c441bf3d3b50379088bbdc9136d248c01d246c46394c9b` | `sha256:41bff0a949af7f620a2dc10f4a3a8fbd8ee61d95aeb4718c2c2b12a11a27df27` | 31 | Generator validates, reconciles, closes, then writes output |
 | `D-TEST-HELPERS` | `sha256:73a0235...` | `sha256:62e1aa5...` | 5 | Generator tests construct minimal artifacts and receipts |
 | `R-SURFACE` | `sha256:9904ce0...` | `sha256:0f864fd...` | 9 | Reachability implementation surface |
 | `R-ORCHESTRATION` | `sha256:bfb9110...` | `sha256:08383e3...` | 5 | Top-level graph projection invokes all five inventory stages |
@@ -172,24 +174,21 @@ Hashes are abbreviated only in this human-readable register. A machine receipt M
 
 ### Current disposition
 
-**`PARTIAL_IMPLEMENTATION_NOT_CLOSED`**
+**`IMPLEMENTATION_GATES_CLOSED_RELEASE_RECEIPT_PENDING`**
 
 Confirmed progress:
 
-- large JSON projection completes;
+- large JSON and contract projection complete;
 - CLI options are wired and unknown options are rejected;
-- catalog value modes are implemented;
-- all 31 current `artifact-pointer` metrics resolve against the selected report, fresh graph, and source index;
-- query text, catalog fingerprint, and artifact internal identity checks exist.
+- all 36 factual metrics own exact query text; the 5 derived metrics own formulas rather than ceremonial queries;
+- report and graph JSON are canonically projected into artifact-specific SourceFacts query inputs;
+- supplied receipts are replayed through `executeRelationalQuery` and reconciled to the rendered metric value;
+- the exact catalog-required receipt set is enforced before output;
+- the closure receipt binds artifact, catalog, ordered query-receipt, metric-row, closure-condition, and document hashes;
+- repeated identical inputs produce byte-identical Markdown and the same deterministic closure hash;
+- the focused generator suite is 16/16 and the full suite is 170/170.
 
-Blocking evidence:
-
-- the query-receipt schema is invalid JSON;
-- query `inputHash`, `resultHash`, and `rowCount` are accepted without verification;
-- the call graph is not schema-validated;
-- the closure receipt has no schema and does not bind catalog content or receipt content;
-- the generated timestamp changes the document hash for identical factual inputs;
-- four of five focused generator tests fail, and the full suite is 152 passed / 4 failed.
+Remaining release-level blockers are outside this implementation tranche: a clean immutable revision receipt, the separate call-graph/reverse-reachability closure, and any repository-wide release policy that requires those gates together.
 
 Queries used to establish the current implementation and caller surfaces, both run against `$srcIndex`:
 
@@ -201,7 +200,7 @@ WHERE modulePath = 'generate-traceability-docs.js'
 ORDER BY name
 ```
 
-This returned 18 functions with result hash `sha256:5cebc581ce2a5e3f535970bd75556e703e6ec565e83bc3730d44ee0c87379e53`.
+This returned 29 functions with input hash `sha256:dc41396d1a6596695baee84ad1fbd12c593f3e5b6cf16936a5cc461a30990613` and result hash `sha256:a7b92ce7a38aa16e4fc946a99a3cc7f13ac17153277db3df50c28bb695256a29`.
 
 ```sql
 SELECT fromSymbolId, sourceReferenceId
@@ -268,6 +267,30 @@ Observed receipt: result hash `sha256:43562dc5fb5d3817c169ca9b24ea55ddeb71e893d4
 
 ### D2 — Metric catalog is executable authority
 
+**Status:** Implementation gate passes.
+
+These are the current catalog queries, run against the freshly projected `$contractIndex`.
+
+```sql
+SELECT valuePreview AS claimType, COUNT(*) AS metricCount
+FROM documents
+WHERE relativePath = 'traceability-metric-catalog.json'
+  AND pointer LIKE '/metrics/%/claimType'
+GROUP BY valuePreview
+ORDER BY valuePreview
+```
+
+Receipt: input hash `sha256:f191152d75f652b71c2b6f523c78eff4c769f17e2227d7a4ebd08534901f956c`; result hash `sha256:108b8c891e909bab7ea2e3f407e5345c9308a7b197d60804ed0e82bd0f089347`; 2 rows: `factual = 36`, `derived = 5`.
+
+```sql
+SELECT COUNT(*) AS queryTextCount
+FROM documents
+WHERE relativePath = 'traceability-metric-catalog.json'
+  AND pointer LIKE '/metrics/%/query/queryText'
+```
+
+Receipt: input hash `sha256:081ec0732b3fd699d95100a4aa3120035a35795881a93efeb5ab8c60763d7e7a`; result hash `sha256:b3e63b28edc4997a2c317e4520010032b9197abc127842f9fb76de4ec80d35e1`; 1 row with `queryTextCount = 36`. Thus every factual metric has catalog-owned query text and derived metrics do not need invented receipt evidence.
+
 #### Catalog query actually used
 
 Run this query against `$catalogIndex`.
@@ -290,7 +313,7 @@ Observed result hash: `sha256:b7b7c88e32880aea0cb35f5b5c1bdde7ef5c4eb98da6326777
 | `sum-symbol-counts` | 1 |
 | `symbol-count` | 4 |
 
-A deterministic pointer audit over the selected artifacts resolved all 31 current artifact pointers. That audit MUST become an admitted query/verifier behavior, not remain an ad hoc script.
+A deterministic pointer audit over the selected artifacts resolved all current artifact pointers. That audit is now enforced by executing each factual catalog query against the artifact selected by `source.artifactKind` and requiring one numeric column named `value` whose value equals the resolved metric.
 
 Required catalog invariants:
 
@@ -307,17 +330,22 @@ Required catalog invariants:
 
 ### D3 — Every input has a valid, compatible contract
 
-The current `contracts/` projection command fails at:
+**Status:** Traceability contracts pass; the broader call-graph contract gate remains open.
 
-```text
-traceability-query-receipts.schema.v1.json:34:9: Expected a JSON value
+The exact projection command used was:
+
+```powershell
+node src/cli.js project --workspace ./contracts `
+  --workspace-id gap-closure-current-contracts `
+  --output $contractIndex --summary
 ```
+
+It completed with 37,929 document facts and scan ID `8ba6238fcf5c92992d4f6e69e279fd3f13cd3063584ae8f8ac03caefd110e9b2`. The metric-catalog, query-receipt, and documentation-closure-receipt schemas compile in the 170/170 full test run. No versioned call-graph schema is present yet, so D3 as a whole is not a release-closure gate pass.
 
 Required implementation impact:
 
-- repair and validate the receipt schema as JSON and JSON Schema;
+- retain receipt and closure schemas as valid JSON and JSON Schema;
 - add a versioned call-graph schema and validator;
-- add a versioned closure-receipt schema and validator;
 - define scope compatibility as an explicit relation instead of comparing `repositoryId` and `workspaceId` as if they were the same identity domain;
 - require source revision and dirty-tree disposition in release mode;
 - validate all inputs before creating output directories or files.
@@ -337,6 +365,8 @@ Required negative fixtures:
 
 ### D4 — Query receipts are independently verifiable
 
+**Status:** Implementation gate passes.
+
 #### Query used to inspect the implemented verifier
 
 ```sql
@@ -349,9 +379,9 @@ GROUP BY toSymbolCandidate
 ORDER BY toSymbolCandidate
 ```
 
-Observed result hash: `sha256:833e4dfbe9c54f23c52843313e4c4ae3b51188b1ac0848d85aacc176a650c694`.
+Current receipt: input hash `sha256:ee53c88fd776f1c1b8abd7c9f97d0704884fbb77e06d853f744d3a32b99e0da9`; result hash `sha256:5efa5efe196175bc5b22ebc14bd823d3f5870383dc14353a7c3c437fa550e6c2`; 31 rows.
 
-The result includes `queryText`, `queryTextHash`, `catalogFingerprint`, `artifactKind`, `indexId`, and `scanId`. It contains no accesses for `inputHash`, `resultHash`, or `rowCount`. Therefore the current verifier proves query identity but not query execution or result integrity.
+The rows include `executeRelationalQuery`, `inputHash`, `resultHash`, `rowCount`, `queryText`, `queryTextHash`, `artifactContentHash`, catalog binding fields, artifact kind, index ID, and scan ID. The implementation now performs the algorithm below.
 
 The verifier MUST perform this exact algorithm:
 
@@ -366,7 +396,7 @@ The verifier MUST perform this exact algorithm:
 9. Reject on any difference.
 10. Return the freshly verified engine receipt; do not trust copied values from the supplied wrapper.
 
-Required rejection tests:
+Implemented rejection tests:
 
 - one-character query change;
 - catalog change without receipt regeneration;
@@ -374,14 +404,19 @@ Required rejection tests:
 - correct-looking but fabricated input hash;
 - correct-looking but fabricated result hash;
 - wrong row count;
-- executed empty result where a required pointer was expected;
-- receipt generated by a different query-engine authority/version.
+- query result that is not exactly one numeric `value` column;
+- real query result whose `value` differs from the catalog-resolved metric;
+- missing or unexpected receipt IDs.
+
+Graph and report metrics are replayed against deterministic, canonical document-fact projections of their own artifacts. Source-index metrics are replayed against the source index itself. A receipt executed against the wrong artifact is rejected by `QUERY_RECEIPT_INPUT_HASH_MISMATCH`.
 
 **Exit query ID:** `traceability.query-receipt-verification.v1`
 
-**Required result:** one row with all rejection fixtures observed and `unverifiedReceipts = 0`.
+**Observed result:** focused tests reject forged query text, input hash, result hash, row count, artifact content hash, catalog fingerprint, wrong artifact input, metric mismatch, and non-exact receipt sets. No supplied hash is accepted without fresh engine execution.
 
 ### D5 — Closure receipt binds the whole proof
+
+**Status:** Local documentation-closure gate passes; clean-revision release binding remains a separate gate.
 
 #### Query used to inspect the closure builder
 
@@ -390,19 +425,19 @@ SELECT toSymbolCandidate, COUNT(*) AS occurrenceCount
 FROM relationships
 WHERE fromSymbolId =
   'generate-traceability-docs.js#function:buildsClosureReceipt'
-  AND relationshipKind = 'member-access'
+  AND relationshipKind IN ('member-access', 'invocation')
 GROUP BY toSymbolCandidate
 ORDER BY toSymbolCandidate
 ```
 
-Observed result hash: `sha256:2b5d40fdd0a7bd459e5330ef985c42f3f382821886e9d68c8baee7684f5e47e5`.
+Current receipt: input hash `sha256:20226905796eaaacf9d24604ae053af1c2a098b1c2091731b0194f70d507b55e`; result hash `sha256:d76541cbad7ca16d5817e22dd17493e3715ff146a0e6330d57484b563a6a4c4a`; 51 rows.
 
-The current closure builder reads catalog type/version and receipt count, but it does not bind catalog content, the receipt-bundle content, individual receipt result hashes, repository revision, or a contract index.
+The current closure payload binds source/report/graph content and identity, canonical catalog content and fingerprint, the ordered query-receipt rows, metric rows, document basename and content hash, closure conditions, and failed-condition summary. `validatesTraceabilityClosureReceiptIntegrity` independently recomputes the bundle hash, metric-row hash, conditions, disposition, and deterministic receipt hash. Altering the document hash is covered by a negative integrity test.
 
 A valid closure receipt MUST include:
 
-- clean commit ID and repository-content or subject-scope hash;
-- source and contract index IDs, scan IDs, schema versions, and content hashes;
+- clean commit ID and repository-content or subject-scope hash for release closure;
+- source index ID, scan ID, schema version, and content hash;
 - report and graph content hashes plus their internal source bindings;
 - catalog version and canonical content hash;
 - receipt-bundle hash and an ordered list of every query ID, query-text hash, input hash, result hash, row count, and disposition;
@@ -411,9 +446,11 @@ A valid closure receipt MUST include:
 - every exit-query receipt;
 - final disposition and zero failed conditions.
 
-**Exit condition:** Changing one byte in any bound input invalidates verification. Changing only an excluded diagnostic path or post-digest timestamp does not alter the deterministic payload hash.
+**Observed local exit:** changing a bound document hash invalidates verification; `generatedAtUtc` is added after the deterministic digest; absolute temporary directories are excluded by binding only the document basename. A clean commit and contract-index binding remain required before calling this a repository release closure.
 
 ### D6 — Renderer is byte-stable and claim-reconcilable
+
+**Status:** Implementation gate passes.
 
 The SourceFacts query used against `$srcIndex` was:
 
@@ -427,32 +464,35 @@ GROUP BY toSymbolCandidate
 ORDER BY toSymbolCandidate
 ```
 
-It returned `new Date().toISOString` once; full result hash `sha256:fe5aa03d3e7c1a779e17a5ff176194d57824f59c43c55e8ab6d21e7805fb8240`. The current timestamp is rendered into Markdown before the document hash is calculated, so identical evidence does not produce an identical hash.
+Current receipt: input hash `sha256:d04b6266068bd4db78c441bf3d3b50379088bbdc9136d248c01d246c46394c9b`; result hash `sha256:41bff0a949af7f620a2dc10f4a3a8fbd8ee61d95aeb4718c2c2b12a11a27df27`; 31 rows. The rows include calls to artifact-specific projection, exact-receipt-set validation, metric resolution, closure evaluation, closure integrity validation, and final writes. No uncontrolled timestamp is rendered into Markdown.
 
-Required behavior:
+Implemented behavior:
 
-1. Accept an explicit generation time or omit time from factual Markdown.
-2. Render every factual row with its metric ID and receipt ID.
-3. Generate a provenance appendix from verified receipts.
-4. Parse the produced Markdown back into rendered metric facts.
-5. Compare every rendered fact to the verified source result.
+1. Omit uncontrolled time from factual Markdown.
+2. Resolve every factual metric only after its catalog query is freshly executed.
+3. Require exactly one numeric column named `value` and compare it to the catalog-resolved metric.
+4. Render metric IDs and source query IDs in the factual table.
+5. Hash the final Markdown into the closure receipt.
+6. Generate twice from identical admitted inputs and compare raw document bytes and deterministic receipt hashes.
 
 **Exit query IDs:** `traceability.rendered-claim-provenance.v1`, `traceability.metric-reconciliation.v1`, and `traceability.documentation-byte-stability.v1`.
 
-**Required results:** unsupported factual claims `0`; metric mismatches `0`; two identical-input output hashes equal.
+**Observed results:** the mismatch mutation fails with `QUERY_RESULT_METRIC_MISMATCH`; the byte-stability test proves equal raw Markdown bytes, equal document hashes, and equal deterministic closure hashes across different temporary parent directories.
 
 ### D7 — Tests exercise real contracts and real queries
+
+**Status:** Implementation test gate passes.
 
 Commands actually used:
 
 ```powershell
-node --test test/generate-docs.test.js test/project.test.js
+node --test test/generate-docs.test.js
 npm test
 ```
 
-Observed focused result: 8 tests, 4 passed, 4 failed. The four generator failures occur before their intended assertions because `buildsMinimalIndex` does not construct a schema-valid source-fact index.
+Observed focused result: 16 tests, 16 passed, 0 failed.
 
-Observed full result: 156 tests, 152 passed, 4 failed.
+Observed full result after the workspace governance gate: 170 tests, 170 passed, 0 failed.
 
 The test index query used to inventory helpers was:
 
@@ -464,7 +504,7 @@ WHERE modulePath = 'generate-docs.test.js'
 ORDER BY name
 ```
 
-It returned five helper functions: `buildsMinimalGraph`, `buildsMinimalIndex`, `buildsMinimalMetricCatalog`, `buildsMinimalQueryReceipts`, and `buildsMinimalReport`.
+The current success helpers construct production-schema-valid artifacts and build receipts by calling `executeRelationalQuery`. Mutation tests alter one verified field at a time. The suite also exercises canonical artifact projection, wrong-artifact replay, exact receipt-set enforcement, query/metric reconciliation, closure-integrity mutation, and two-run byte stability.
 
 Required test policy:
 
@@ -479,14 +519,14 @@ Required test policy:
 
 | Order | Task | Blocking exit evidence |
 |---:|---|---|
-| 1 | Repair receipt JSON/schema and add graph/closure schemas | Contract projection and schema compilation pass |
-| 2 | Make test fixtures production-schema-valid | Focused tests reach intended assertions |
-| 3 | Implement independent receipt replay verification | All forged/stale receipt mutations rejected |
-| 4 | Complete closure-receipt provenance | One-byte mutation invalidates closure |
-| 5 | Remove uncontrolled time from deterministic output | Identical-input byte-stability passes |
-| 6 | Add rendered-claim reconciliation | Zero unsupported or mismatched factual rows |
-| 7 | Run same-revision end-to-end pipeline | All documentation exit queries pass |
-| 8 | Run full suite | 156 of 156, or the then-current complete suite, passes |
+| 1 | Repair receipt JSON/schema and add closure schema | Complete: contract projection succeeds |
+| 2 | Make test fixtures production-schema-valid | Complete: focused tests reach intended assertions |
+| 3 | Implement independent receipt replay verification | Complete: forged/stale mutations rejected |
+| 4 | Complete local documentation closure provenance | Complete: bound document mutation invalidates closure |
+| 5 | Remove uncontrolled time from deterministic output | Complete: identical-input byte stability passes |
+| 6 | Add rendered-claim reconciliation | Complete: mismatched query value fails closed |
+| 7 | Run full suite | Complete: 170 of 170 passes |
+| 8 | Add call-graph schema and clean-revision release binding | Open: required for repository release closure |
 
 ## Strategy 2: complete forward and reverse reachability
 
@@ -701,9 +741,10 @@ Each zero is a computed value backed by a named exit-query or test receipt. It M
 
 Neither roadmap row changes to `Closed` because files were added, focused tests were written, or most of the suite passes. A row changes only when the same clean revision and declared scope complete the entire pipeline above and an independent verifier recomputes every binding and every zero-valued exit condition.
 
-At the recorded baseline:
+At the current recorded baseline:
 
 - large-artifact queryability is proven;
-- metric pointer resolution is proven for the selected artifacts;
-- documentation closure is **not proven**;
+- catalog-owned factual query coverage, artifact-specific replay, metric reconciliation, exact receipt-set enforcement, local closure integrity, and byte stability are proven by current SourceFacts receipts and the 170/170 test run;
+- local deterministic-documentation closure is proven for schema-valid supplied artifacts;
+- clean-revision repository release closure is **not proven** because revision/contract-index and call-graph schema gates remain open;
 - repository-wide forward/reverse reachability is **not proven**.

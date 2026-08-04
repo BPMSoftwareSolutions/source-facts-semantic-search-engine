@@ -73,6 +73,7 @@ export async function generatesTraceabilityDocs(
     }
     metricById.set(metric.metricId, metric);
   }
+  validatesExactQueryReceiptSet(metricCatalog, queryReceiptById);
   const resolved = new Map();
   const catalogBinding = {
     catalogType: metricCatalog.catalogType ?? null,
@@ -445,7 +446,7 @@ export function buildsArtifactQueryIndex(artifactKind, artifact) {
       .digest("hex");
     documents.push(Object.freeze({
       documentFactId,
-      documentFactVersionId: hashText(`${documentFactId}\0${JSON.stringify(value)}`),
+      documentFactVersionId: hashText(`${documentFactId}\0${JSON.stringify(canonicalizes(value))}`),
       relativePath: `${artifactKind}.json`,
       pointer,
       valueType,
@@ -464,6 +465,24 @@ export function buildsArtifactQueryIndex(artifactKind, artifact) {
     governanceRules: Object.freeze([]),
     bodyMechanics: Object.freeze([]),
   });
+}
+
+function validatesExactQueryReceiptSet(metricCatalog, queryReceiptById) {
+  const requiredQueryIds = metricCatalog.metrics
+    .filter((metric) => metric.claimType === "factual")
+    .map((metric) => metric.query?.queryId)
+    .filter((queryId) => typeof queryId === "string")
+    .sort();
+  const receivedQueryIds = [...queryReceiptById.keys()].sort();
+  if (JSON.stringify(requiredQueryIds) !== JSON.stringify(receivedQueryIds)) {
+    const required = new Set(requiredQueryIds);
+    const received = new Set(receivedQueryIds);
+    const missing = requiredQueryIds.filter((queryId) => received.has(queryId) === false);
+    const unexpected = receivedQueryIds.filter((queryId) => required.has(queryId) === false);
+    throw new Error(
+      `QUERY_RECEIPT_SET_MISMATCH: missing [${missing.join(", ")}]; unexpected [${unexpected.join(", ")}].`,
+    );
+  }
 }
 
 function visitsArtifactValues(value, pointer, visitor) {

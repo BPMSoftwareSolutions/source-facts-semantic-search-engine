@@ -44,6 +44,7 @@ import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from
 import { generatesConnectiveTissue } from "./governance/generates-connective-tissue.js";
 import { discoversHealingDrafts } from "./governance/discovers-healing-drafts.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
+import { projectsReportQueryReceiptArtifacts } from "./governance/projects-report-query-lineage.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
 
@@ -402,8 +403,13 @@ async function runGovern(rawArgs) {
 
   const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "source-facts-self-governance-report.json"));
   const summaryPath = outputPath.replace(/\.json$/i, ".md");
+  const receiptDirectoryName = `${path.basename(outputPath, path.extname(outputPath))}.receipts`;
+  const receiptDirectoryPath = path.join(path.dirname(outputPath), receiptDirectoryName);
   await writesJsonFile(outputPath, report, { pretty });
-  await fs.writeFile(summaryPath, formatsSelfGovernanceReportMarkdown(report), "utf8");
+  for (const artifact of projectsReportQueryReceiptArtifacts(report)) {
+    await writesJsonFile(path.join(receiptDirectoryPath, artifact.fileName), artifact.document, { pretty: true });
+  }
+  await fs.writeFile(summaryPath, formatsSelfGovernanceReportMarkdown(report, { receiptDirectory: receiptDirectoryName }), "utf8");
 
   process.stdout.write(`${outputPath}\n${summaryPath}\n`);
   if (flags.summary === true) {

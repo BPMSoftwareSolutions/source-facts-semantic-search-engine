@@ -513,7 +513,10 @@ test("generate-docs rejects missing query receipts", async () => {
     );
 
     assert.notEqual(result.status, 0);
-    assert.ok(result.stderr.includes("QUERY_RECEIPT_MISSING") || result.stdout.includes("QUERY_RECEIPT_MISSING"));
+    assert.ok(
+      result.stderr.includes("QUERY_RECEIPT_SET_MISMATCH")
+      || result.stdout.includes("QUERY_RECEIPT_SET_MISMATCH"),
+    );
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
@@ -912,6 +915,52 @@ test("generate-docs rejects an executed query whose value does not match its met
   }
 });
 
+test("generate-docs rejects query receipts that are not the exact catalog-required set", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    queryReceipts.queryReceipts.push({
+      ...queryReceipts.queryReceipts[0],
+      queryId: "traceability.query.unexpected",
+    });
+    const paths = writesMinimalTraceabilityInputs(tempDir, metricCatalog, queryReceipts);
+
+    await assert.rejects(
+      generatesTraceabilityDocs(
+        paths.reportPath,
+        paths.graphPath,
+        paths.indexPath,
+        paths.outputPath,
+        { metricCatalogPath: paths.metricCatalogPath, queryReceiptPath: paths.queryReceiptsPath },
+      ),
+      /QUERY_RECEIPT_SET_MISMATCH.*unexpected \[traceability\.query\.unexpected\]/,
+    );
+    assert.equal(fs.existsSync(paths.outputPath), false);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("artifact query projection is canonical across object key order", async () => {
+  const left = buildsArtifactQueryIndex("call-graph", {
+    indexId: FIXTURE_INDEX_ID,
+    summary: { reachableCallableCount: 6, runtimeCallableCount: 7 },
+  });
+  const right = buildsArtifactQueryIndex("call-graph", {
+    summary: { runtimeCallableCount: 7, reachableCallableCount: 6 },
+    indexId: FIXTURE_INDEX_ID,
+  });
+  const queryText = "SELECT value FROM documents WHERE pointer = '/summary/reachableCallableCount'";
+  const [leftReceipt, rightReceipt] = await Promise.all([
+    executeRelationalQuery(left, queryText),
+    executeRelationalQuery(right, queryText),
+  ]);
+
+  assert.equal(leftReceipt.inputHash, rightReceipt.inputHash);
+  assert.equal(leftReceipt.resultHash, rightReceipt.resultHash);
+});
+
 test("generate-docs writes closure receipt", async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
   try {
@@ -974,6 +1023,41 @@ test("generate-docs writes closure receipt", async () => {
     );
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("generate-docs is byte-stable and produces the same deterministic closure hash", async () => {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-stability-"));
+  try {
+    const firstDir = path.join(tempRoot, "first");
+    const secondDir = path.join(tempRoot, "second");
+    fs.mkdirSync(firstDir);
+    fs.mkdirSync(secondDir);
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const first = writesMinimalTraceabilityInputs(firstDir, metricCatalog, queryReceipts);
+    const second = writesMinimalTraceabilityInputs(secondDir, metricCatalog, queryReceipts);
+    const firstClosurePath = path.join(firstDir, "traceability-documentation-closure-receipt.json");
+    const secondClosurePath = path.join(secondDir, "traceability-documentation-closure-receipt.json");
+
+    await generatesTraceabilityDocs(first.reportPath, first.graphPath, first.indexPath, first.outputPath, {
+      metricCatalogPath: first.metricCatalogPath,
+      queryReceiptPath: first.queryReceiptsPath,
+      closureReceiptPath: firstClosurePath,
+    });
+    await generatesTraceabilityDocs(second.reportPath, second.graphPath, second.indexPath, second.outputPath, {
+      metricCatalogPath: second.metricCatalogPath,
+      queryReceiptPath: second.queryReceiptsPath,
+      closureReceiptPath: secondClosurePath,
+    });
+
+    assert.deepEqual(fs.readFileSync(first.outputPath), fs.readFileSync(second.outputPath));
+    const firstClosure = JSON.parse(fs.readFileSync(firstClosurePath, "utf8"));
+    const secondClosure = JSON.parse(fs.readFileSync(secondClosurePath, "utf8"));
+    assert.equal(firstClosure.document.hash, secondClosure.document.hash);
+    assert.equal(firstClosure.deterministicReceiptHash, secondClosure.deterministicReceiptHash);
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
   }
 });
 

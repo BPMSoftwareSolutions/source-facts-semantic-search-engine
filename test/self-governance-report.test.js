@@ -23,7 +23,7 @@ import { proposesSemanticOverlap } from "../src/governance/proposes-semantic-ove
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportMarkdown } from "../src/governance/formats-self-governance-report-summary.js";
-import { FactQueryLineageError, rerunsRegisteredReportQuery } from "../src/governance/projects-report-query-lineage.js";
+import { FactQueryLineageError, projectsReportQueryReceiptArtifacts, rerunsRegisteredReportQuery } from "../src/governance/projects-report-query-lineage.js";
 import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageProposals } from "../src/governance/discovers-feature-coverage-proposals.js";
 import { createsProposalFeatureFingerprint, validatesFeatureCoverageProposal } from "../src/governance/projects-feature-coverage.js";
 import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "../src/governance/proposes-feature-coverage.js";
@@ -194,6 +194,10 @@ test("projectsSelfGovernanceReport binds rendered facts to inspectable registere
   });
 
   assert.equal(report.queryLineage.invariant, "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT");
+  assert.equal(report.queryLineage.catalog.catalogId, "self-governance-query-catalog.v1");
+  assert.match(report.queryLineage.catalog.catalogHash, /^sha256:[0-9a-f]{64}$/);
+  assert.equal(report.queryLineage.reconciliation.disposition, "PASSED");
+  assert.equal(report.queryLineage.reconciliation.missingQueryPointers, 0);
   assert.ok(report.queryLineage.claims.length > 0);
   const receipt = report.queryLineage.queryReceipts.find((entry) => entry.queryId === "feature-coverage.summary.v1");
   assert.equal(receipt.index.indexId, report.index.indexId);
@@ -205,6 +209,12 @@ test("projectsSelfGovernanceReport binds rendered facts to inspectable registere
   const rerun = rerunsRegisteredReportQuery(report, "feature-coverage.summary.v1");
   assert.equal(rerun.resultHash, receipt.execution.resultHash);
   assert.deepEqual(rerun.rows, receipt.result.rows);
+
+  const artifact = projectsReportQueryReceiptArtifacts(report)
+    .find((entry) => entry.document.queryReceipt.queryId === "feature-coverage.summary.v1");
+  assert.equal(artifact.fileName, "feature-coverage-summary-v1.json");
+  assert.equal(artifact.document.registeredQuery.queryText, "SELECT * FROM reportFeatureCoverageSummary");
+  assert.deepEqual(artifact.document.queryReceipt.result.rows, receipt.result.rows);
 });
 
 test("query-lineage reconciliation fails closed when a receipt result is changed", async () => {
@@ -223,8 +233,12 @@ test("self-governance Markdown exposes inline query identities, receipts, exact 
   const markdown = formatsSelfGovernanceReportMarkdown(report);
 
   assert.match(markdown, /Canonical feature declarations.*feature-coverage\.summary\.v1/);
-  assert.match(markdown, /## Query Evidence Register/);
-  assert.match(markdown, /## Registered Queries/);
+  assert.match(markdown, /## Report Claim Reconciliation/);
+  assert.match(markdown, /## Query Evidence Appendix/);
+  assert.match(markdown, /### Query Evidence Register/);
+  assert.match(markdown, /### Registered Queries and Results/);
+  assert.match(markdown, /\[\d+\]\(#query-result-feature-coverage-summary-v1\)/);
+  assert.match(markdown, /<a id="query-result-feature-coverage-summary-v1"><\/a>/);
   assert.match(markdown, /SELECT \* FROM reportFeatureCoverageSummary/);
   assert.match(markdown, /Inspect 1 result row\(s\)/);
 });

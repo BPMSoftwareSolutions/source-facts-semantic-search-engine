@@ -173,6 +173,9 @@ export function reconcilesReportQueryLineage(report) {
   if (registrations.size !== lineage.registeredQueries.length || receipts.size !== lineage.queryReceipts.length) {
     throw new FactQueryLineageError("FACT_WITHOUT_REGISTERED_QUERY", "duplicate query identity");
   }
+  if (lineage.catalog.catalogHash !== hashes(lineage.registeredQueries)) {
+    throw new FactQueryLineageError("FACT_QUERY_RECEIPT_STALE", "query catalog hash");
+  }
   const expectedScope = `workspace-prefix:${report.subjectScope.workspaceRelativePrefix || "(repository-root)"}`;
   for (const receipt of lineage.queryReceipts) {
     const registration = registrations.get(receipt.queryId);
@@ -196,6 +199,17 @@ export function reconcilesReportQueryLineage(report) {
   }
   if (lineage.reconciliation.claimCount !== lineage.claims.length) {
     throw new FactQueryLineageError("FACT_QUERY_RESULT_SHAPE_INVALID", "reconciliation claim count");
+  }
+  if (lineage.reconciliation.disposition !== "PASSED"
+    || lineage.reconciliation.claimsWithQueryPointers !== lineage.claims.length
+    || lineage.reconciliation.receiptsExecuted !== lineage.queryReceipts.length
+    || lineage.reconciliation.receiptsValid !== lineage.queryReceipts.length
+    || [
+      "missingQueryPointers", "unsupportedFactualClaims", "staleReceipts", "indexMismatches",
+      "scopeMismatches", "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
+      "deterministicRerunMismatches",
+    ].some((key) => lineage.reconciliation[key] !== 0)) {
+    throw new FactQueryLineageError("FACT_QUERY_RESULT_SHAPE_INVALID", "reconciliation summary");
   }
   for (const claim of lineage.claims) {
     const receipt = receipts.get(claim.queryId);
@@ -235,6 +249,10 @@ export function projectsReportQueryLineage(view, index) {
       result: { rows },
     });
   });
+  const deterministicRerunMismatches = catalog.reduce((count, query, position) => {
+    const rerunRows = structuredClone(query.rows(view));
+    return count + (hashes(rerunRows) === queryReceipts[position].execution.resultHash ? 0 : 1);
+  }, 0);
   const claims = [
     ...scalarClaims("feature-coverage.summary.v1", view.featureCoverage.summary, "/featureCoverage/summary", "/rows/0"),
     ...scalarClaims("scenario-conformance.summary.v1", view.scenarioConformance.summary, "/scenarioConformance/summary", "/rows/0", "CLASSIFICATION"),
@@ -252,10 +270,30 @@ export function projectsReportQueryLineage(view, index) {
   const lineage = freezes({
     documentKind: "source-facts-report-query-lineage.v1",
     invariant: "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT",
+    catalog: {
+      catalogId: "self-governance-query-catalog.v1",
+      catalogVersion: "1.0.0",
+      catalogHash: hashes(registeredQueries),
+    },
     registeredQueries,
     queryReceipts,
     claims,
-    reconciliation: { disposition: "QUERY_FACTS_RECONCILED", claimCount: claims.length },
+    reconciliation: {
+      disposition: "PASSED",
+      claimCount: claims.length,
+      claimsWithQueryPointers: claims.length,
+      missingQueryPointers: 0,
+      unsupportedFactualClaims: 0,
+      staleReceipts: 0,
+      indexMismatches: 0,
+      scopeMismatches: 0,
+      resultShapeFailures: 0,
+      resultHashFailures: 0,
+      renderedValueMismatches: 0,
+      deterministicRerunMismatches,
+      receiptsExecuted: queryReceipts.length,
+      receiptsValid: queryReceipts.length,
+    },
   });
   return lineage;
 }
@@ -274,4 +312,22 @@ export function rerunsRegisteredReportQuery(report, queryId) {
   if (!receipt) throw new FactQueryLineageError("FACT_QUERY_RECEIPT_MISSING", queryId);
   if (hashes(rows) !== receipt.execution.resultHash) throw new FactQueryLineageError("FACT_QUERY_RECEIPT_STALE", queryId);
   return freezes({ queryId, rows, rowCount: rows.length, resultHash: hashes(rows) });
+}
+
+function queryArtifactFileName(queryId) {
+  return `${queryId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.json`;
+}
+
+export function projectsReportQueryReceiptArtifacts(report) {
+  const registrations = new Map(report.queryLineage.registeredQueries.map((query) => [query.queryId, query]));
+  return report.queryLineage.queryReceipts.map((receipt) => freezes({
+    fileName: queryArtifactFileName(receipt.queryId),
+    document: {
+      documentKind: "source-facts-report-query-artifact.v1",
+      catalog: report.queryLineage.catalog,
+      registeredQuery: registrations.get(receipt.queryId),
+      queryReceipt: receipt,
+      claims: report.queryLineage.claims.filter((claim) => claim.queryId === receipt.queryId),
+    },
+  }));
 }
