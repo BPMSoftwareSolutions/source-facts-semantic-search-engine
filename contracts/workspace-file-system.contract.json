@@ -10,7 +10,7 @@
     "workspaceRoot": "..",
     "scope": {
       "scopeType": "declared-workspace-paths.v1",
-      "governedDirectories": ["contracts", "docs", "scripts", "source-facts-query-console", "src", "test"],
+      "governedDirectories": ["artifacts", "contracts", "docs", "evidence", "scripts", "source-facts-query-console", "src", "test"],
       "outsideScopePosture": "outside-authority"
     },
     "unexpectedPaths": { "policy": "reject" }
@@ -26,6 +26,7 @@
 
     { "directoryId": "docs-directory", "relativePath": "docs", "required": true },
     { "directoryId": "docs-design-directory", "relativePath": "docs/design", "required": true },
+    { "directoryId": "docs-generated-directory", "relativePath": "docs/generated", "required": false },
     { "directoryId": "docs-skills-directory", "relativePath": "docs/skills", "required": true },
     { "directoryId": "docs-skills-generate-authority-candidates-detailed-report-directory", "relativePath": "docs/skills/generate-authority-candidates-detailed-report", "required": true },
     { "directoryId": "docs-skills-generate-test-scenarios-from-source-facts-directory", "relativePath": "docs/skills/generate-test-scenarios-from-source-facts", "required": true },
@@ -42,6 +43,7 @@
 
     { "directoryId": "src-directory", "relativePath": "src", "required": true },
     { "directoryId": "src-composition-directory", "relativePath": "src/composition", "required": true },
+    { "directoryId": "src-governance-directory", "relativePath": "src/governance", "required": false },
     { "directoryId": "src-console-directory", "relativePath": "src/console", "required": true },
     { "directoryId": "src-console-governance-directory", "relativePath": "src/console/.governance", "required": true },
     { "directoryId": "src-console-governance-projections-directory", "relativePath": "src/console/.governance/projections", "required": true },
@@ -59,9 +61,29 @@
     { "directoryId": "src-sqlserver-directory", "relativePath": "src/sqlserver", "required": true },
     { "directoryId": "src-web-directory", "relativePath": "src/web", "required": true },
 
-    { "directoryId": "test-directory", "relativePath": "test", "required": true }
+    { "directoryId": "test-directory", "relativePath": "test", "required": true },
+
+    { "directoryId": "artifacts-directory", "relativePath": "artifacts", "required": false },
+    { "directoryId": "artifacts-indexes-directory", "relativePath": "artifacts/indexes", "required": false },
+    { "directoryId": "artifacts-call-graphs-directory", "relativePath": "artifacts/call-graphs", "required": false },
+    { "directoryId": "artifacts-governance-directory", "relativePath": "artifacts/governance", "required": false },
+
+    { "directoryId": "evidence-directory", "relativePath": "evidence", "required": false },
+    { "directoryId": "evidence-know-how-directory", "relativePath": "evidence/know-how", "required": false },
+    { "directoryId": "evidence-know-how-authority-candidates-directory", "relativePath": "evidence/know-how/authority-remediation-candidates", "required": false },
+    { "directoryId": "evidence-healing-directory", "relativePath": "evidence/healing", "required": false },
+    { "directoryId": "evidence-reviews-directory", "relativePath": "evidence/reviews", "required": false },
+    { "directoryId": "evidence-reviews-live-evaluations-directory", "relativePath": "evidence/reviews/live-evaluations", "required": false },
+
+    { "directoryId": "scripts-proofs-directory", "relativePath": "scripts/proofs", "required": false }
   ],
   "artifactFamilies": [
+    { "familyId": "artifacts-index-files", "pathPattern": "artifacts/indexes/**/*", "artifactKind": "source-fact-index", "cardinality": { "min": 0 } },
+    { "familyId": "artifacts-call-graph-files", "pathPattern": "artifacts/call-graphs/**/*", "artifactKind": "call-graph", "cardinality": { "min": 0 } },
+    { "familyId": "artifacts-governance-files", "pathPattern": "artifacts/governance/**/*", "artifactKind": "governance-report", "cardinality": { "min": 0 } },
+    { "familyId": "evidence-know-how-files", "pathPattern": "evidence/know-how/**/*", "artifactKind": "know-how-artifact", "cardinality": { "min": 0 } },
+    { "familyId": "evidence-healing-files", "pathPattern": "evidence/healing/**/*", "artifactKind": "healing-artifact", "cardinality": { "min": 0 } },
+    { "familyId": "evidence-review-files", "pathPattern": "evidence/reviews/**/*", "artifactKind": "review-artifact", "cardinality": { "min": 0 } },
     { "familyId": "contracts-files", "pathPattern": "contracts/**/*", "artifactKind": "contract-artifact", "cardinality": { "min": 1 } },
     { "familyId": "docs-files", "pathPattern": "docs/**/*", "artifactKind": "documentation", "cardinality": { "min": 1 } },
     { "familyId": "scripts-files", "pathPattern": "scripts/**/*", "artifactKind": "script", "cardinality": { "min": 1 } },
