@@ -163,6 +163,20 @@
         }
       }
     },
+    "authoringContractMap": {
+      "type": "object",
+      "required": ["disposition", "engineVersion", "root", "entries", "projectors", "verifiers", "inputs"],
+      "additionalProperties": false,
+      "properties": {
+        "disposition": { "enum": ["AUTHORING_CONTRACT_MAP_BOUND", "AUTHORING_CONTRACT_MAP_UNAVAILABLE"] },
+        "engineVersion": { "type": ["string", "null"] },
+        "root": { "type": ["string", "null"] },
+        "entries": { "type": "array", "items": { "type": "object" } },
+        "projectors": { "type": "array", "items": { "type": "object" } },
+        "verifiers": { "type": "array", "items": { "type": "object" } },
+        "inputs": { "type": "array", "items": { "type": "object" } }
+      }
+    },
     "scenarioConformance": {
       "type": "object",
       "required": ["summary", "features", "lineageAuthorityFiles"],
@@ -788,12 +802,13 @@
     },
     "queryLineage": {
       "type": "object",
-      "required": ["documentKind", "invariant", "drillDownInvariant", "catalog", "registeredQueries", "queryReceipts", "claims", "reconciliation"],
+      "required": ["documentKind", "invariant", "drillDownInvariant", "authoringInvariant", "catalog", "registeredQueries", "queryReceipts", "claims", "authoringReconciliation", "reconciliation"],
       "additionalProperties": false,
       "properties": {
         "documentKind": { "const": "source-facts-report-query-lineage.v1" },
         "invariant": { "const": "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT" },
         "drillDownInvariant": { "const": "EVERY_RENDERED_FACT_HAS_PROVING_QUERY_AND_INSPECTABLE_DRILL_DOWN_PATH" },
+        "authoringInvariant": { "const": "EVERY_HEALING_CANDIDATE_HAS_RECEIPT_BOUND_AUTHORITY_AUTHORING_EVIDENCE_AND_EXPLICIT_READINESS" },
         "catalog": {
           "type": "object",
           "required": ["catalogId", "catalogVersion", "catalogHash"],
@@ -897,6 +912,42 @@
               "valuePointer": { "type": "string", "pattern": "^/" }
               ,"drillDowns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/drillDown" } }
             }
+          }
+        },
+        "authoringReconciliation": {
+          "type": "object",
+          "required": [
+            "disposition", "healingCandidates", "candidatesWithAuthoringEvidenceBundle",
+            "candidatesWithCompleteQueryProvenance", "candidatesWithUnresolvedRequiredEvidence",
+            "candidatesReadyForSemanticAuthorityAuthoring", "candidatesReadyForProjection",
+            "declaredResponsibilities", "declaredResponsibilityBundles", "declaredResponsibilitiesBlockedByInterface",
+            "declaredResponsibilitiesReadyForProjection", "declaredResponsibilitiesProjectableWithInterfaceEvidenceGap",
+            "missingAuthoringQueries", "incompleteEvidenceBundles", "missingSourceReferences",
+            "unresolvedCallPaths", "missingScenarioContexts", "authorityOverlapNotEvaluated",
+            "proofVectorMissing", "contractMapMissing"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "disposition": { "const": "PASSED" },
+            "healingCandidates": { "type": "integer", "minimum": 0 },
+            "candidatesWithAuthoringEvidenceBundle": { "type": "integer", "minimum": 0 },
+            "candidatesWithCompleteQueryProvenance": { "type": "integer", "minimum": 0 },
+            "candidatesWithUnresolvedRequiredEvidence": { "type": "integer", "minimum": 0 },
+            "candidatesReadyForSemanticAuthorityAuthoring": { "type": "integer", "minimum": 0 },
+            "candidatesReadyForProjection": { "type": "integer", "minimum": 0 },
+            "declaredResponsibilities": { "type": "integer", "minimum": 0 },
+            "declaredResponsibilityBundles": { "type": "integer", "minimum": 0 },
+            "declaredResponsibilitiesBlockedByInterface": { "type": "integer", "minimum": 0 },
+            "declaredResponsibilitiesReadyForProjection": { "type": "integer", "minimum": 0 },
+            "declaredResponsibilitiesProjectableWithInterfaceEvidenceGap": { "type": "integer", "minimum": 0 },
+            "missingAuthoringQueries": { "const": 0 },
+            "incompleteEvidenceBundles": { "const": 0 },
+            "missingSourceReferences": { "type": "integer", "minimum": 0 },
+            "unresolvedCallPaths": { "type": "integer", "minimum": 0 },
+            "missingScenarioContexts": { "type": "integer", "minimum": 0 },
+            "authorityOverlapNotEvaluated": { "type": "integer", "minimum": 0 },
+            "proofVectorMissing": { "type": "integer", "minimum": 0 },
+            "contractMapMissing": { "type": "integer", "minimum": 0 }
           }
         },
         "reconciliation": {

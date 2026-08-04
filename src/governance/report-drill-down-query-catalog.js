@@ -1,4 +1,5 @@
 import { projectsCliEntryPointCallGraph } from "../call-graph.js";
+import { authoringActionDrillDowns, authoringEvidenceQueries, buildsAuthoringEvidenceContext } from "./authoring-evidence-query-catalog.js";
 
 function uniqueSorted(values) {
   return [...new Set(values.filter((value) => value !== null && value !== undefined))].sort();
@@ -42,6 +43,8 @@ function buildsOccurrenceEvidence(context) {
       featureCoveragePosture: projected?.featureCoveragePosture ?? null,
       lineageDisposition: projected?.lineageDisposition ?? null,
       authorityHomeFile: projected?.authorityHomeFile ?? null,
+      authorityHomeStatus: projected?.authorityHomeStatus ?? null,
+      posture: projected?.posture ?? null,
       featureIds: projected?.featureIds ?? [],
       scenarioIds: projected?.scenarioIds ?? [],
       obligationIds: projected?.obligationIds ?? [],
@@ -191,6 +194,7 @@ export function buildsReportQueryContext(view, index) {
   context.occurrenceEvidence = buildsOccurrenceEvidence(context);
   context.callPathRows = buildsCallPathRows(context);
   context.invocationRows = buildsInvocationRows(context);
+  context.authoring = buildsAuthoringEvidenceContext(context);
   return context;
 }
 
@@ -229,7 +233,7 @@ export const reportDrillDownQueries = Object.freeze([
     queryText: "SELECT * FROM reportScenarioResponsibilities WHERE (:scenarioId IS NULL OR scenarioId = :scenarioId) AND (:responsibilityId IS NULL OR responsibilityId = :responsibilityId) ORDER BY scenarioId, obligationId, responsibilityId",
     inputCollections: ["reportScenarioResponsibilities"], expectedResultSchema: "scenario responsibility and obligation rows", parameters: [parameter("scenarioId"), parameter("responsibilityId"), parameter("featureId")], rows: scenarioResponsibilityRows,
     drillDowns: [next("scenario-conformance.scenario-call-paths.v1", "Inspect originating interfaces", { scenarioId: ":scenarioId" }), next("source-facts.occurrence-source-references.v1", "Inspect body source evidence", { modulePath: ":bodyFile" })],
-    rowDrillDowns: (row) => [next("scenario-conformance.scenario-call-paths.v1", "Inspect entry surfaces", { scenarioId: row.scenarioId }), next("source-facts.occurrence-source-references.v1", "Inspect source rows", { modulePath: row.bodyFile })],
+    rowDrillDowns: (row) => [next("scenario-conformance.scenario-call-paths.v1", "Inspect entry surfaces", { scenarioId: row.scenarioId }), next("source-facts.occurrence-source-references.v1", "Inspect source rows", { modulePath: row.bodyFile }), next("authoring.semantic-authority-evidence-bundle.v1", "Build authority-authoring evidence bundle", { responsibilityId: row.responsibilityId })],
   },
   {
     queryId: "scenario-conformance.scenario-call-paths.v1", section: "Scenario Call Paths", depth: 3,
@@ -292,7 +296,7 @@ export const reportDrillDownQueries = Object.freeze([
     inputCollections: ["reportOccurrenceEvidence"], expectedResultSchema: "exact unlined source occurrences", parameters: [parameter("mechanic"), parameter("modulePath"), parameter("responsibility"), parameter("symbolId")],
     rows: (context) => context.occurrenceEvidence.filter((item) => item.featureCoveragePosture === "FEATURE_COVERAGE_MISSING"),
     drillDowns: [next("source-facts.occurrence-source-references.v1", "Inspect physical source references", { occurrenceId: ":occurrenceId" })],
-    rowDrillDowns: (row) => [next("source-facts.occurrence-source-references.v1", "Inspect physical source reference", { occurrenceId: row.occurrenceId }), next("reachability.symbol-originating-entrypoints.v1", "Inspect originating interfaces", { symbolId: row.symbolId })],
+    rowDrillDowns: (row) => [next("source-facts.occurrence-source-references.v1", "Inspect physical source reference", { occurrenceId: row.occurrenceId }), next("reachability.symbol-originating-entrypoints.v1", "Inspect originating interfaces", { symbolId: row.symbolId }), next("authoring.semantic-authority-evidence-bundle.v1", "Build authority-authoring evidence bundle", { occurrenceId: row.occurrenceId })],
   },
   {
     queryId: "source-facts.occurrence-source-references.v1", section: "Physical Source Evidence", depth: 5,
@@ -329,7 +333,7 @@ export const reportDrillDownQueries = Object.freeze([
     queryText: "SELECT * FROM reportUnresolvedEvidenceClusters WHERE (:clusterId IS NULL OR clusterId = :clusterId)",
     inputCollections: ["reportUnresolvedEvidenceClusters"], expectedResultSchema: "responsibility evidence cluster rows", parameters: [parameter("clusterId")], rows: (context) => context.featureCoverage.uncoveredClusters,
     drillDowns: [next("reachability.symbol-originating-entrypoints.v1", "Inspect entry surfaces", { symbolName: ":responsibility" }), next("authority.authority-near-symbol.v1", "Inspect nearby authority", { symbolName: ":responsibility" })],
-    rowDrillDowns: (row) => [next("reachability.symbol-originating-entrypoints.v1", "Inspect entry surfaces", { symbolName: row.responsibility }), next("feature-coverage.unlined-occurrences.v1", "Inspect exact mechanics", { modulePath: row.modulePath, responsibility: row.responsibility }), next("authority.authority-near-symbol.v1", "Inspect authority", { modulePath: row.modulePath, symbolName: row.responsibility })],
+    rowDrillDowns: (row) => [next("reachability.symbol-originating-entrypoints.v1", "Inspect entry surfaces", { symbolName: row.responsibility }), next("feature-coverage.unlined-occurrences.v1", "Inspect exact mechanics", { modulePath: row.modulePath, responsibility: row.responsibility }), next("authority.authority-near-symbol.v1", "Inspect authority", { modulePath: row.modulePath, symbolName: row.responsibility }), next("authoring.semantic-authority-evidence-bundle.v1", "Build authority-authoring evidence bundle", { responsibilityId: row.responsibility })],
   },
   {
     queryId: "authority.documents.v1", section: "Authority Lineage", depth: 4,
@@ -388,11 +392,20 @@ export const reportDrillDownQueries = Object.freeze([
   },
   {
     queryId: "healing.source-fact-candidates.v1", section: "Change and Healing", depth: 6,
-    queryText: "SELECT occurrenceId, sourceReferenceId, modulePath, symbolId, mechanic, featureCoveragePosture, authorityHomeFile FROM reportOccurrenceEvidence WHERE (:sourceReferenceId IS NULL OR sourceReferenceId = :sourceReferenceId)",
+    queryText: "SELECT occurrenceId, sourceReferenceId, modulePath, symbolId, mechanic, featureCoveragePosture, authorityHomeFile FROM reportOccurrenceEvidence WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:sourceReferenceId IS NULL OR sourceReferenceId = :sourceReferenceId)",
     inputCollections: ["reportOccurrenceEvidence"], expectedResultSchema: "source facts with missing lineage and healing posture", parameters: [parameter("sourceReferenceId")],
-    rows: (context) => context.occurrenceEvidence.map((row) => ({ ...row, healingDisposition: row.featureCoveragePosture === "FEATURE_COVERAGE_MISSING" ? "CONNECTIVE_TISSUE_CANDIDATE" : "NO_HEALING_REQUIRED" })),
-    drillDowns: [], rowDrillDowns: () => [], terminal: true,
+    rows: (context) => context.occurrenceEvidence.filter((row) => row.featureCoveragePosture === "FEATURE_COVERAGE_MISSING")
+      .map((row) => ({ ...row, healingDisposition: "CONNECTIVE_TISSUE_CANDIDATE" })),
+    drillDowns: authoringActionDrillDowns,
+    rowDrillDowns: (row) => authoringActionDrillDowns.map((action) => ({
+      ...action,
+      parameterBindings: Object.fromEntries(Object.entries(action.parameterBindings)
+        .filter(([, value]) => value !== ":symbolId" || row.symbolId)
+        .map(([key, value]) => [key, value === ":occurrenceId" ? row.occurrenceId : value === ":symbolId" ? row.symbolId : value])),
+    })),
+    terminal: false,
   },
+  ...authoringEvidenceQueries,
 ]);
 
 export function decoratesDrillDownRows(query, rows) {
@@ -420,9 +433,14 @@ export function filtersRowsByParameters(rows, parameters = {}) {
     if (key === "structuralStatus") return row.structuralStatus === value;
     if (key === "sourceReferenceId") return row.sourceReferenceId === value;
     if (key === "artifactId") return row.itemId === value || row.authorityFile === value;
-    if (key === "featureId") return row.featureId === value || row.featureIds?.includes(value) || row.canonicalFeatureIds?.includes(value);
+    if (key === "featureId") return row.featureId === value || row.subject?.candidateFeatureId === value || row.featureIds?.includes(value) || row.canonicalFeatureIds?.includes(value);
+    if (key === "scenarioId") return row.scenarioId === value || row.subject?.candidateScenarioId === value || row.scenarioIds?.includes(value);
     if (key === "authorityFile") return row.authorityFile === value || row.authorityHomeFile === value;
-    const candidate = row[key];
+    const candidate = row[key]
+      ?? row.subject?.[key]
+      ?? (key === "featureId" ? row.subject?.candidateFeatureId : undefined)
+      ?? (key === "scenarioId" ? row.subject?.candidateScenarioId : undefined)
+      ?? (key === "entryPointId" ? row.subject?.interfaceSurfaceId : undefined);
     return Array.isArray(candidate) ? candidate.includes(value) : candidate === value;
   }));
 }

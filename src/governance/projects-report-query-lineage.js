@@ -173,6 +173,10 @@ const baseQueryDrillDowns = Object.freeze({
     { queryId: "subject-boundary.included-items.v1", label: "Inspect included items", parameterBindings: {} },
     { queryId: "subject-boundary.excluded-items.v1", label: "Inspect excluded items", parameterBindings: {} },
   ],
+  "authoring.reconciliation.v1": [
+    { queryId: "authoring.readiness.v1", label: "Inspect every authoring readiness disposition", parameterBindings: {} },
+    { queryId: "authoring.semantic-authority-evidence-bundle.v1", label: "Inspect authority-authoring evidence bundles", parameterBindings: {} },
+  ],
 });
 
 function drillDownsForQuery(query) {
@@ -289,6 +293,66 @@ export function reconcilesReportQueryLineage(report) {
       for (const drillDown of row.drillDowns ?? []) validatesDrillDown(drillDown, `${receipt.queryId}/rows/${position}`);
     }
   }
+  const requiredAuthoringQueries = [
+    "authoring.interface-execution-slice.v1", "authoring.responsibility-body-evidence.v1",
+    "authoring.decision-evidence.v1", "authoring.fallback-evidence.v1", "authoring.validation-evidence.v1",
+    "authoring.failure-policy-evidence.v1", "authoring.object-shape-evidence.v1",
+    "authoring.result-contract-evidence.v1", "authoring.serialization-evidence.v1",
+    "authoring.normalization-evidence.v1", "authoring.iteration-evidence.v1",
+    "authoring.state-transition-evidence.v1", "authoring.data-flow-slice.v1",
+    "authoring.authority-overlap.v1", "authoring.scenario-context.v1", "authoring.projection-target.v1",
+    "authoring.proof-vector-candidates.v1", "authoring.contract-map.v1",
+    "authoring.semantic-authority-evidence-bundle.v1", "authoring.readiness.v1", "authoring.reconciliation.v1",
+  ];
+  for (const queryId of requiredAuthoringQueries) {
+    if (!registrations.has(queryId) || !receipts.has(queryId)) throw new FactQueryLineageError("AUTHORING_QUERY_MISSING", queryId);
+  }
+  const healingRows = receipts.get("healing.source-fact-candidates.v1")?.result.rows ?? [];
+  const bundleRows = receipts.get("authoring.semantic-authority-evidence-bundle.v1")?.result.rows ?? [];
+  const sourceBundleRows = bundleRows.filter((row) => row.subjectKind === "SOURCE_OCCURRENCE");
+  const authoringRowIds = new Map(lineage.queryReceipts.map((receipt) => [receipt.queryId,
+    new Set(receipt.result.rows.map((row) => row.resultRowId).filter(Boolean))]));
+  if (sourceBundleRows.length !== healingRows.length || lineage.authoringReconciliation.incompleteEvidenceBundles !== 0) {
+    throw new FactQueryLineageError("AUTHORING_EVIDENCE_BUNDLE_INCOMPLETE", `${sourceBundleRows.length}/${healingRows.length}`);
+  }
+  for (const bundle of bundleRows) {
+    if (bundle.documentKind !== "semantic-authority-authoring-evidence-bundle.v1" || bundle.lifecycle !== "OBSERVED_EVIDENCE") {
+      throw new FactQueryLineageError("AUTHORING_EVIDENCE_BUNDLE_INCOMPLETE", bundle.occurrenceId);
+    }
+    for (const reference of bundle.queryReceipts) {
+      const rows = authoringRowIds.get(reference.queryId);
+      if (!rows || reference.resultRowIds.some((resultRowId) => !rows.has(resultRowId))) {
+        throw new FactQueryLineageError("AUTHORING_EVIDENCE_BUNDLE_INCOMPLETE", `${bundle.occurrenceId}:${reference.queryId}`);
+      }
+    }
+    const hasQueryBackedBodyEvidence = bundle.subjectKind === "DECLARED_RESPONSIBILITY"
+      && bundle.bodyContext?.rowCount > 0
+      && bundle.queryReceipts.some((reference) => reference.queryId === "authoring.responsibility-body-evidence.v1");
+    if (!bundle.subject.sourceReferenceId && !hasQueryBackedBodyEvidence
+      && !bundle.unresolvedEvidence.includes("AUTHORING_SOURCE_REFERENCE_MISSING")) {
+      throw new FactQueryLineageError("AUTHORING_SOURCE_REFERENCE_MISSING", bundle.occurrenceId);
+    }
+    if (bundle.authoringReadinessDisposition === "INSUFFICIENT_INTERFACE_EVIDENCE"
+      && (!bundle.readyForProjection || bundle.projectionReadinessDisposition !== "READY_FOR_PROJECTION_WITH_INTERFACE_EVIDENCE_GAP")) {
+      throw new FactQueryLineageError("AUTHORING_EVIDENCE_BUNDLE_INCOMPLETE", `${bundle.subjectKind}:${bundle.subjectKey}:interface-gap-not-projectable`);
+    }
+    if (bundle.interfaceContext.reachabilityDisposition !== "ORIGINATING_ENTRYPOINT_OBSERVED"
+      && !bundle.unresolvedEvidence.includes("AUTHORING_CALL_PATH_UNRESOLVED")) {
+      throw new FactQueryLineageError("AUTHORING_CALL_PATH_UNRESOLVED", bundle.occurrenceId);
+    }
+    if (bundle.scenarioContext?.scenarioAuthorityDisposition === "SCENARIO_AUTHORITY_MISSING"
+      && !bundle.unresolvedEvidence.includes("AUTHORING_SCENARIO_CONTEXT_MISSING")) {
+      throw new FactQueryLineageError("AUTHORING_SCENARIO_CONTEXT_MISSING", bundle.occurrenceId);
+    }
+    if (bundle.existingAuthorityContext.length === 0
+      && !bundle.unresolvedEvidence.includes("AUTHORING_AUTHORITY_OVERLAP_NOT_EVALUATED")) {
+      throw new FactQueryLineageError("AUTHORING_AUTHORITY_OVERLAP_NOT_EVALUATED", bundle.occurrenceId);
+    }
+    if (bundle.proofCandidates.rowCount === 0 && bundle.subject.symbolId
+      && !bundle.unresolvedEvidence.includes("AUTHORING_PROOF_VECTOR_MISSING")) {
+      throw new FactQueryLineageError("AUTHORING_PROOF_VECTOR_MISSING", bundle.occurrenceId);
+    }
+  }
   if (lineage.reconciliation.claimCount !== lineage.claims.length) {
     throw new FactQueryLineageError("FACT_QUERY_RESULT_SHAPE_INVALID", "reconciliation claim count");
   }
@@ -370,6 +434,8 @@ export function projectsReportQueryLineage(view, index) {
       : decoratesBaseRows(query.queryId, rawRows);
     return count + (hashes(rerunRows) === queryReceipts[position].execution.resultHash ? 0 : 1);
   }, 0);
+  const { drillDowns: _authoringDrillDowns, ...authoringReconciliation } = structuredClone(queryReceipts
+    .find((receipt) => receipt.queryId === "authoring.reconciliation.v1")?.result.rows[0]);
   const claims = [
     ...scalarClaims("feature-coverage.summary.v1", view.featureCoverage.summary, "/featureCoverage/summary", "/rows/0"),
     ...scalarClaims("scenario-conformance.summary.v1", view.scenarioConformance.summary, "/scenarioConformance/summary", "/rows/0", "CLASSIFICATION"),
@@ -379,6 +445,7 @@ export function projectsReportQueryLineage(view, index) {
     ...scalarClaims("scenario-conformance.drilldown.v1", view.scenarioConformance.features, "/scenarioConformance/features", "/rows", "CLASSIFICATION"),
     ...scalarClaims("unclassified-inventory.v1", view.unclassifiedInventory, "/unclassifiedInventory", "/rows/0"),
     ...scalarClaims("subject-boundary.evidence.v1", view.subjectScope, "/subjectScope", "/rows/0"),
+    ...scalarClaims("authoring.reconciliation.v1", authoringReconciliation, "/queryLineage/authoringReconciliation", "/rows/0", "CLASSIFICATION"),
   ];
   // Correct the catalog identity used by unclassified inventory claims.
   for (const claim of claims) {
@@ -390,6 +457,7 @@ export function projectsReportQueryLineage(view, index) {
     documentKind: "source-facts-report-query-lineage.v1",
     invariant: "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT",
     drillDownInvariant: "EVERY_RENDERED_FACT_HAS_PROVING_QUERY_AND_INSPECTABLE_DRILL_DOWN_PATH",
+    authoringInvariant: "EVERY_HEALING_CANDIDATE_HAS_RECEIPT_BOUND_AUTHORITY_AUTHORING_EVIDENCE_AND_EXPLICIT_READINESS",
     catalog: {
       catalogId: "self-governance-query-catalog.v1",
       catalogVersion: "1.0.0",
@@ -398,6 +466,7 @@ export function projectsReportQueryLineage(view, index) {
     registeredQueries,
     queryReceipts,
     claims,
+    authoringReconciliation,
     reconciliation: {
       disposition: "PASSED",
       claimCount: claims.length,

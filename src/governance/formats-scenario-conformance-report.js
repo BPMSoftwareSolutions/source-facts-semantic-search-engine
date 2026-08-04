@@ -300,6 +300,48 @@ function formatsClaimReconciliation(report) {
   ];
 }
 
+function formatsAuthorityAuthoringReadiness(report) {
+  const value = report.queryLineage.authoringReconciliation;
+  const queryId = "authoring.reconciliation.v1";
+  return [
+    "## Authority Authoring Readiness",
+    "",
+    "Claim type: `QUERYED_DETERMINISTIC_CLASSIFICATION`",
+    "",
+    `Reconciliation query: ${formatsQueryLink(queryId)}`,
+    "",
+    "| Check | Result | Proving query |",
+    "|---|---:|---|",
+    `| Healing candidates | ${formatsFactLink(value.healingCandidates, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Candidates with authoring evidence bundle | ${formatsFactLink(value.candidatesWithAuthoringEvidenceBundle, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Candidates with complete query provenance | ${formatsFactLink(value.candidatesWithCompleteQueryProvenance, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Candidates with unresolved required evidence | ${formatsFactLink(value.candidatesWithUnresolvedRequiredEvidence, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Candidates ready for semantic authority authoring | ${formatsFactLink(value.candidatesReadyForSemanticAuthorityAuthoring, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Candidates ready for projection | ${formatsFactLink(value.candidatesReadyForProjection, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Declared responsibilities with authoring bundles | ${formatsFactLink(value.declaredResponsibilityBundles, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Declared responsibilities awaiting interface evidence for authoring | ${formatsFactLink(value.declaredResponsibilitiesBlockedByInterface, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Declared responsibilities ready for projection | ${formatsFactLink(value.declaredResponsibilitiesReadyForProjection, queryId)} | ${formatsQueryLink(queryId)} |`,
+    `| Declared responsibilities projectable with interface evidence gap | ${formatsFactLink(value.declaredResponsibilitiesProjectableWithInterfaceEvidenceGap, queryId)} | ${formatsQueryLink(queryId)} |`,
+    "",
+    "### Authoring Actions",
+    "",
+    "| Action | Query |",
+    "|---|---|",
+    `| Build authority evidence bundle | ${formatsQueryLink("authoring.semantic-authority-evidence-bundle.v1")} |`,
+    `| Inspect inferred feature/scenario context | ${formatsQueryLink("authoring.scenario-context.v1")} |`,
+    `| Inspect decision policy | ${formatsQueryLink("authoring.decision-evidence.v1")} |`,
+    `| Inspect data shapes | ${formatsQueryLink("authoring.object-shape-evidence.v1")} |`,
+    `| Inspect failure behavior | ${formatsQueryLink("authoring.failure-policy-evidence.v1")} |`,
+    `| Inspect existing authority overlap | ${formatsQueryLink("authoring.authority-overlap.v1")} |`,
+    `| Inspect admitted contract maps | ${formatsQueryLink("authoring.contract-map.v1")} |`,
+    `| Build projection target | ${formatsQueryLink("authoring.projection-target.v1")} |`,
+    `| Build proof vectors | ${formatsQueryLink("authoring.proof-vector-candidates.v1")} |`,
+    "",
+    "Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REVIEWED_AUTHORITY_DRAFT` â†’ `ADMITTED_AUTHORITY` â†’ `PROJECTED_BODY` â†’ `EQUIVALENCE_PROVEN`.",
+    "",
+  ];
+}
+
 export function formatsScenarioConformanceReportMarkdown(report, { receiptDirectory = "source-facts-self-governance-report.receipts" } = {}) {
   const { repository, index, disposition, generatedAtUtc } = report;
   const summary = queryRows(report, "scenario-conformance.summary.v1")[0];
@@ -520,6 +562,7 @@ export function formatsScenarioConformanceReportMarkdown(report, { receiptDirect
   lines.push("");
   lines.push("Excluded evidence is not called orphaned: it belongs to a different subject and is not judged by this scan.");
   lines.push("");
+  lines.push(...formatsAuthorityAuthoringReadiness(report));
   lines.push(...formatsClaimReconciliation(report));
   lines.push(...formatsQueryEvidenceAppendix(report, receiptDirectory));
   lines.push("## Disposition");

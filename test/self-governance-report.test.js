@@ -27,6 +27,7 @@ import { FactQueryLineageError, projectsReportQueryReceiptArtifacts, rerunsRegis
 import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageProposals } from "../src/governance/discovers-feature-coverage-proposals.js";
 import { createsProposalFeatureFingerprint, validatesFeatureCoverageProposal } from "../src/governance/projects-feature-coverage.js";
 import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "../src/governance/proposes-feature-coverage.js";
+import { discoversAuthorityAuthoringContractMap } from "../src/governance/discovers-authority-authoring-contract-map.js";
 
 function buildsAuthorityDocument() {
   return {
@@ -235,6 +236,56 @@ test("projectsSelfGovernanceReport binds rendered facts to inspectable registere
   assert.deepEqual(artifact.document.queryReceipt.result.rows, receipt.result.rows);
 });
 
+test("authority authoring bundles bind every healing candidate to contract maps, source evidence, and explicit readiness", async () => {
+  const authoringContractMap = await discoversAuthorityAuthoringContractMap(
+    path.resolve(process.cwd(), "..", "contract-driven-artifact-governance-engine"),
+  );
+  assert.equal(authoringContractMap.disposition, "AUTHORING_CONTRACT_MAP_BOUND");
+  assert.equal(authoringContractMap.engineVersion, "0.21.0");
+  assert.ok(authoringContractMap.entries.some((row) => row.authorityFacet === "decision"));
+  assert.ok(authoringContractMap.entries.some((row) => row.authorityFacet === "projection-mapping"));
+
+  const report = await projectsSelfGovernanceReport({
+    index: buildsSyntheticIndex(),
+    repositoryId: "authoring-evidence-test",
+    authoringContractMap,
+  });
+  await validatesSelfGovernanceReport(report);
+
+  const reconciliation = report.queryLineage.authoringReconciliation;
+  assert.equal(reconciliation.disposition, "PASSED");
+  assert.equal(reconciliation.healingCandidates, report.featureCoverage.summary.mechanicsWithoutLineage);
+  assert.equal(reconciliation.candidatesWithAuthoringEvidenceBundle, reconciliation.healingCandidates);
+  assert.equal(reconciliation.candidatesWithCompleteQueryProvenance, reconciliation.healingCandidates);
+  assert.equal(reconciliation.incompleteEvidenceBundles, 0);
+  assert.equal(reconciliation.contractMapMissing, 0);
+
+  const bundleReceipt = report.queryLineage.queryReceipts
+    .find((receipt) => receipt.queryId === "authoring.semantic-authority-evidence-bundle.v1");
+  assert.equal(bundleReceipt.result.rows.filter((row) => row.subjectKind === "SOURCE_OCCURRENCE").length, reconciliation.healingCandidates);
+  assert.equal(bundleReceipt.result.rows.filter((row) => row.subjectKind === "DECLARED_RESPONSIBILITY").length, reconciliation.declaredResponsibilities);
+  const bundle = bundleReceipt.result.rows.find((row) => row.subjectKind === "SOURCE_OCCURRENCE");
+  assert.equal(bundle.documentKind, "semantic-authority-authoring-evidence-bundle.v1");
+  assert.equal(bundle.lifecycle, "OBSERVED_EVIDENCE");
+  assert.ok(bundle.contractMapContext.requiredAuthorityFacets.length > 0);
+  assert.ok(bundle.queryReceipts.some((receipt) => receipt.queryId === "authoring.contract-map.v1"));
+  assert.notEqual(bundle.subject.sourceReferenceId, null);
+  assert.notEqual(bundle.authoringReadinessDisposition, "READY_FOR_PROJECTION");
+  assert.equal(typeof bundle.projectionReadinessDisposition, "string");
+  assert.equal(bundle.readyForProjection, bundle.projectionReadinessDisposition.startsWith("READY_FOR_PROJECTION"));
+  assert.ok(bundleReceipt.result.rows
+    .filter((row) => row.authoringReadinessDisposition === "INSUFFICIENT_INTERFACE_EVIDENCE")
+    .every((row) => row.readyForProjection && row.projectionReadinessDisposition === "READY_FOR_PROJECTION_WITH_INTERFACE_EVIDENCE_GAP"));
+
+  const selected = rerunsRegisteredReportQuery(
+    report,
+    "authoring.semantic-authority-evidence-bundle.v1",
+    { occurrenceId: bundle.occurrenceId },
+  );
+  assert.equal(selected.rowCount, 1);
+  assert.equal(selected.rows[0].resultRowId, bundle.resultRowId);
+});
+
 test("query-lineage reconciliation fails closed when a receipt result is changed", async () => {
   const projected = await projectsSelfGovernanceReport({ index: buildsSyntheticIndex(), repositoryId: "self-governance-test" });
   const forged = structuredClone(projected);
@@ -255,6 +306,9 @@ test("self-governance Markdown exposes inline query identities, receipts, exact 
   assert.match(markdown, /## Query Evidence Appendix/);
   assert.match(markdown, /### Query Evidence Register/);
   assert.match(markdown, /### Drill-Down Query Register/);
+  assert.match(markdown, /## Authority Authoring Readiness/);
+  assert.match(markdown, /### Authoring Actions/);
+  assert.match(markdown, /authoring\.semantic-authority-evidence-bundle\.v1/);
   assert.match(markdown, /\| Dimension \| Count \| Proving query \| Drill down \|/);
   assert.match(markdown, /### Registered Queries and Results/);
   assert.match(markdown, /\[\d+\]\(#query-result-feature-coverage-summary-v1\)/);
@@ -1453,11 +1507,15 @@ test("projectsSelfGovernanceReport separates canonical, proposed, structural, an
   const canonical = buildsCanonicalLineageContract();
   const authorityDocuments = [buildsAuthorityDocumentEntry("contracts/example-capability.json", canonical)];
   const featureCoverageProposalBatches = [{ filePath: "reviews/handle-other.feature.json", document: buildsFeatureCoverageProposal() }];
+  const authoringContractMap = await discoversAuthorityAuthoringContractMap(
+    path.resolve(process.cwd(), "..", "contract-driven-artifact-governance-engine"),
+  );
   const report = await projectsSelfGovernanceReport({
     index,
     repositoryId: "feature-coverage-test",
     authorityDocuments,
     featureCoverageProposalBatches,
+    authoringContractMap,
   });
   await validatesSelfGovernanceReport(report);
 
@@ -1487,6 +1545,17 @@ test("projectsSelfGovernanceReport separates canonical, proposed, structural, an
   );
   assert.ok(scenarioPaths.rows.length > 0, "an unreachable responsibility must still return an explicit reachability row");
   assert.ok(scenarioPaths.rows.every((row) => row.scenarioId === report.scenarioConformance.features[0].scenarios[0].scenarioId));
+  const responsibilityId = report.scenarioConformance.features[0].scenarios[0].obligations[0].responsibilities[0].responsibilityId;
+  const authoringBundle = rerunsRegisteredReportQuery(
+    report,
+    "authoring.semantic-authority-evidence-bundle.v1",
+    { responsibilityId },
+  );
+  assert.equal(authoringBundle.rowCount, 1);
+  assert.equal(authoringBundle.rows[0].subjectKind, "DECLARED_RESPONSIBILITY");
+  assert.equal(authoringBundle.rows[0].authoringReadinessDisposition, "INSUFFICIENT_INTERFACE_EVIDENCE");
+  assert.equal(authoringBundle.rows[0].projectionReadinessDisposition, "READY_FOR_PROJECTION_WITH_INTERFACE_EVIDENCE_GAP");
+  assert.equal(authoringBundle.rows[0].readyForProjection, true);
 });
 
 test("canonical lineage quality findings expose projection mismatches and implementation variants", async () => {

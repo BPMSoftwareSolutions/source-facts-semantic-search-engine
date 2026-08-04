@@ -43,6 +43,7 @@ import { proposesSemanticOverlap } from "./governance/proposes-semantic-overlap.
 import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "./governance/proposes-feature-coverage.js";
 import { generatesConnectiveTissue } from "./governance/generates-connective-tissue.js";
 import { discoversHealingDrafts } from "./governance/discovers-healing-drafts.js";
+import { discoversAuthorityAuthoringContractMap } from "./governance/discovers-authority-authoring-contract-map.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
 import { projectsReportQueryReceiptArtifacts } from "./governance/projects-report-query-lineage.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
@@ -387,6 +388,9 @@ async function runGovern(rawArgs) {
 
   const healingDir = path.resolve(flags.healingDir ?? path.join(repositoryRoot, "healing"));
   const healingDraftBatches = await discoversHealingDrafts(healingDir, { relativeTo: repositoryRoot });
+  const authoringContractMapRoot = path.resolve(flags.contractMapRoot
+    ?? path.join(repositoryRoot, "..", "contract-driven-artifact-governance-engine"));
+  const authoringContractMap = await discoversAuthorityAuthoringContractMap(authoringContractMapRoot);
 
   const report = await projectsSelfGovernanceReport({
     index,
@@ -397,6 +401,7 @@ async function runGovern(rawArgs) {
     featureCoverageInferenceEvaluationBatches,
     knowHowRegistry,
     healingDraftBatches,
+    authoringContractMap,
     workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
   });
   await validatesSelfGovernanceReport(report);
@@ -1149,6 +1154,7 @@ function parseArgs(rawArgs) {
     "--metric-catalog",
     "--query-receipts",
     "--closure-receipt",
+    "--contract-map-root",
   ]);
   const booleanOptions = new Set(["--pretty", "--summary", "--prove", "--project", "--gate", "--write", "--write-receipt"]);
   for (let index = 0; index < rawArgs.length; index++) {
@@ -1227,7 +1233,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
-  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
   stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);
   stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --feature-authority-file <file> --feature-id <id> --scenario-id <id> --responsibility-id <id> --obligation-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);

@@ -100,7 +100,7 @@ function fileBreakdownKey(mechanic, modulePath) {
  * Still observational only -- no gap remediation records or projection
  * actions are produced yet.
  */
-export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], workspaceRelativePrefix = "" }) {
+export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, workspaceRelativePrefix = "" }) {
   const subject = scopesSelfGovernanceSubject({
     index,
     workspaceRelativePrefix,
@@ -291,6 +291,7 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
       ...subject.summary,
     }),
     subjectBoundaryItems: subject.scopeItems,
+    authoringContractMap: Object.freeze(authoringContractMap),
     scenarioConformance,
     featureCoverage,
     unclassifiedInventory: Object.freeze({
