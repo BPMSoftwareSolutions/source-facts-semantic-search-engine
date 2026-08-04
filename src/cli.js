@@ -45,7 +45,7 @@ import { generatesConnectiveTissue } from "./governance/generates-connective-tis
 import { discoversHealingDrafts } from "./governance/discovers-healing-drafts.js";
 import { discoversAuthorityAuthoringContractMap } from "./governance/discovers-authority-authoring-contract-map.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
-import { projectsReportQueryReceiptArtifacts } from "./governance/projects-report-query-lineage.js";
+import { projectsReportQueryReceiptArtifacts, rerunsRegisteredReportQuery } from "./governance/projects-report-query-lineage.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
 import { discoversCanonicalFeatureIntents } from "./governance/canonical-feature-intent.js";
@@ -108,6 +108,8 @@ if (command === "project") {
   await runProjectConsoleContract(args.slice(1));
 } else if (command === "govern") {
   await runGovern(args.slice(1));
+} else if (command === "report-query") {
+  await runReportQuery(args.slice(1));
 } else if (command === "propose-semantic-overlap") {
   await runProposeSemanticOverlap(args.slice(1));
 } else if (command === "propose-feature-coverage") {
@@ -427,6 +429,25 @@ async function runGovern(rawArgs) {
   if (flags.summary === true) {
     process.stdout.write(formatsSelfGovernanceReportSummary(report));
   }
+}
+
+async function runReportQuery(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.report !== "string") throw new Error("report-query requires --report <source-facts-self-governance-report.json>.");
+  if (typeof flags.featureId !== "string") throw new Error("report-query requires --feature-id <canonical-feature-id>.");
+  const queryId = flags.queryId ?? "trace.feature-complete-lineage.v1";
+  const report = await readsJsonFile(path.resolve(flags.report));
+  await validatesSelfGovernanceReport(report);
+  const result = rerunsRegisteredReportQuery(report, queryId, { featureId: flags.featureId });
+  if (result.rowCount !== 1) throw new Error(`${queryId} expected exactly one feature row for ${flags.featureId}; observed ${result.rowCount}.`);
+  const output = { documentKind: "source-facts-report-query-result.v1", ...result };
+  if (typeof flags.output === "string") {
+    const outputPath = path.resolve(flags.output);
+    await writesJsonFile(outputPath, output, { pretty: flags.pretty === true });
+    process.stdout.write(`${outputPath}\n`);
+    return;
+  }
+  process.stdout.write(`${JSON.stringify(output, null, flags.pretty === true ? 2 : 0)}\n`);
 }
 
 function parsesCommaSeparated(value) {
@@ -1103,6 +1124,7 @@ function parseArgs(rawArgs) {
     "--output",
     "--index",
     "--query",
+    "--query-id",
     "--policy",
     "--inventory",
     "--dir",
@@ -1241,6 +1263,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
   stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se report-query --report <file> [--query-id trace.feature-complete-lineage.v1] --feature-id <id> [--output <file>] [--pretty]\n`);
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
   stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);
   stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --feature-authority-file <file> --feature-id <id> --scenario-id <id> --responsibility-id <id> --obligation-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);
@@ -1262,6 +1285,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --project --summary\n`);
   stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --gate --summary\n`);
   stream.write(`  source-facts-se govern --workspace ./src --output ./source-facts-self-governance-report.json --summary\n`);
+  stream.write(`  source-facts-se report-query --report ./source-facts-self-governance-report.json --feature-id source-facts.cli-call-graph --pretty\n`);
   stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
   stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);

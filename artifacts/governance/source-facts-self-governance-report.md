@@ -5,14 +5,14 @@ CLI reachability, canonical feature access, and deterministic cleanup inventory
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-04T19:44:41.359Z |
+| **Generated** | 2026-08-04T19:48:25.768Z |
 | **Repository** | src |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Source index ID** | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| **Scan ID** | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| **Source index ID** | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| **Scan ID** | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | **Query catalog** | `self-governance-query-catalog.v1` |
-| **Query catalog hash** | `sha256:4e0136f340f4a93edb0fdf142cab309d65b1b7bdc4da26bc0f8404a91e7e2e48` |
-| **Query receipts** | 93 executed / 93 valid |
+| **Query catalog hash** | `sha256:f470288aefa24beb3d815d1827ff0371e5e673313d8dd9ee21f32e8ec2dc989c` |
+| **Query receipts** | 94 executed / 94 valid |
 | **Render reconciliation** | `PASSED` |
 | **Unsupported factual claims** | 0 |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
@@ -27,17 +27,17 @@ CLI authority posture: [`CLI_INTERFACE_AUTHORITY_MISSING`](#query-result-cli-tra
 
 | Metric | Count | Proving query |
 |---|---:|---|
-| Observed CLI command handlers | [15](#query-result-cli-traceability-summary-v1) | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
-| Distinct CLI execution slices | [15](#query-result-cli-traceability-summary-v1) | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
+| Observed CLI command handlers | [16](#query-result-cli-traceability-summary-v1) | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| Distinct CLI execution slices | [16](#query-result-cli-traceability-summary-v1) | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
 | Aliased CLI command tokens | [2](#query-result-cli-traceability-summary-v1) | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
 | Admitted CLI commands | [0](#query-result-cli-traceability-summary-v1) | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
-| Runtime callables | [824](#query-result-cli-traceability-summary-v1) | [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) |
-| CLI-reachable callables | [671](#query-result-cli-traceability-summary-v1) | [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) |
-| Shared CLI infrastructure | [131](#query-result-cli-traceability-summary-v1) | [`cli.shared-reachability.v1`](#query-result-cli-shared-reachability-v1) |
+| Runtime callables | [826](#query-result-cli-traceability-summary-v1) | [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) |
+| CLI-reachable callables | [675](#query-result-cli-traceability-summary-v1) | [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) |
+| Shared CLI infrastructure | [132](#query-result-cli-traceability-summary-v1) | [`cli.shared-reachability.v1`](#query-result-cli-shared-reachability-v1) |
 | Runtime-resolution-required | [8](#query-result-cli-traceability-summary-v1) | [`cli.runtime-resolution-debt.v1`](#query-result-cli-runtime-resolution-debt-v1) |
-| No CLI reachability | [145](#query-result-cli-traceability-summary-v1) | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) |
-| CLI-reachable mechanic occurrences | [5972](#query-result-cli-traceability-summary-v1) | [`cli.reachable-source-facts.v1`](#query-result-cli-reachable-source-facts-v1) |
-| Unreachable mechanic occurrences | [993](#query-result-cli-traceability-summary-v1) | [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) |
+| No CLI reachability | [143](#query-result-cli-traceability-summary-v1) | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) |
+| CLI-reachable mechanic occurrences | [6056](#query-result-cli-traceability-summary-v1) | [`cli.reachable-source-facts.v1`](#query-result-cli-reachable-source-facts-v1) |
+| Unreachable mechanic occurrences | [956](#query-result-cli-traceability-summary-v1) | [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) |
 
 ## CLI Feature Coverage
 
@@ -47,7 +47,7 @@ CLI authority posture: [`CLI_INTERFACE_AUTHORITY_MISSING`](#query-result-cli-tra
 | `console` | `runConsole` | [28](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `generate-connective-tissue` | `runGenerateConnectiveTissue` | [14](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `generate-docs` | `runGenerateDocs` | [52](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
-| `govern` | `runGovern` | [305](#query-result-cli-entry-points-v1) | `source-facts.cli-govern` | 1 | `CLI_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `govern` | `runGovern` | [306](#query-result-cli-entry-points-v1) | `source-facts.cli-govern` | 1 | `CLI_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `ingest` | `runIngest` | [78](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `load-sqlserver` | `runLoadSqlServer` | [25](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `project` | `runProject` | [61](#query-result-cli-entry-points-v1) | `source-facts.cli-project` | 1 | `CLI_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
@@ -58,21 +58,22 @@ CLI authority posture: [`CLI_INTERFACE_AUTHORITY_MISSING`](#query-result-cli-tra
 | `propose-feature-coverage` | `runProposeFeatureCoverage` | [32](#query-result-cli-entry-points-v1) | `source-facts.cli-propose-feature-coverage` | 2 | `CLI_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `propose-semantic-overlap` | `runProposeSemanticOverlap` | [15](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `query` | `runQuery` | [14](#query-result-cli-entry-points-v1) | `source-facts.cli-query` | 1 | `CLI_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `report-query` | `runReportQuery` | [22](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 | `web` | `runWeb` | [251](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
 
 ## CLI Command Execution Graphs
 
 These are the actual statically resolved graph slices produced by the same call-graph engine used for CLI reachability classification and canonical feature tracing. Consumer commands are graph roots, and the internal callables they use are shown inside each graph. Every callable includes a root-to-node path witness. Unresolved calls are separated into platform, standard-library, instance-member, higher-order, dynamic-import, ambiguous-internal, and unresolved-internal postures.
 
-Query result: [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) — 16 row(s), result `sha256:95eac4330a9a503cfd1c8ac91e3d818fab5283b3644a7f98eb13328fe67bce06`
+Query result: [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) — 17 row(s), result `sha256:83647b79bc91a6c5ef5f9f5e1ed307a52cb095faf84ffd7d116303394f5ae24d`
 
 | Interface | Aliases | Handler | Reachable callables | Max depth | Resolved edges | Raw unresolved | Actionable internal debt | Evidence |
 |---|---|---|---:|---:|---:|---:|---:|---|
 | `call-graph` | `call-graph` | `runCallGraph` | 41 | 4 | 84 | 299 | 0 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
-| `console` | `console` | `runConsole` | 28 | 9 | 37 | 275 | 16 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
+| `console` | `console` | `runConsole` | 28 | 9 | 37 | 277 | 16 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 | `generate-connective-tissue` | `generate-connective-tissue` | `runGenerateConnectiveTissue` | 14 | 3 | 26 | 235 | 25 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 | `generate-docs` | `generate-docs` | `runGenerateDocs` | 52 | 8 | 96 | 366 | 31 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
-| `govern` | `govern` | `runGovern` | 305 | 8 | 932 | 3090 | 85 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
+| `govern` | `govern` | `runGovern` | 306 | 8 | 934 | 3117 | 85 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 | `ingest` | `ingest` | `runIngest` | 78 | 6 | 159 | 374 | 25 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 | `load-sqlserver` | `load-sqlserver` | `runLoadSqlServer` | 25 | 4 | 38 | 107 | 14 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 | `project` | `project` | `runProject` | 61 | 6 | 128 | 308 | 11 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
@@ -83,7 +84,8 @@ Query result: [`cli.command-execution-graphs.v1`](#query-result-cli-command-exec
 | `propose-feature-coverage` | `propose-feature-coverage` | `runProposeFeatureCoverage` | 32 | 5 | 55 | 219 | 7 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 | `propose-semantic-overlap` | `propose-semantic-overlap` | `runProposeSemanticOverlap` | 15 | 3 | 25 | 103 | 2 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 | `query` | `query` | `runQuery` | 14 | 5 | 13 | 72 | 4 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
-| `web` | `web` | `runWeb` | 251 | 10 | 572 | 1756 | 99 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
+| `report-query` | `report-query` | `runReportQuery` | 22 | 4 | 42 | 144 | 4 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
+| `web` | `web` | `runWeb` | 251 | 10 | 572 | 1758 | 99 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) |
 
 ### Command: call-graph
 
@@ -469,32 +471,32 @@ Handler: `src/cli.js#runCallGraph`; entry point: `cli.js#function:runCallGraph`;
 | `normalizesModulePath` | `modulePath.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/call-graph.js:1071:43` | `f14086130e01fc4185bf704cbc89335e14a0818415bc29a0411242a421512f07` |
 | `normalizesModulePrefix` | `normalizesModulePath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/call-graph.js:1075:22` | `748b849e7df599cc04a8fc7fdfdbee093be40fe45e7accbd10fe445d9b009507` |
 | `normalizesModulePrefix` | `normalized.endsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/call-graph.js:1077:10` | `4a89d92f1b0c0ca316a86e3faa70d8617e178639c4048ad36ad9f46d6231d921` |
-| `runCallGraph` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:164:21` | `f4afe501c909b1e6f0ae0807afe0cffa046d7a47c480958410a808ae72bfdc03` |
-| `runCallGraph` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:165:21` | `adf1ea9ac4275f4e4c98d1b7617e88a26fce52975e9b1dc7ffedf7e3e53c1cf9` |
-| `runCallGraph` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:165:49` | `b146bb4bf9aeb4731dce7b20a3ff2e12c4d2858a40a726e9ec98ea72b09ddca7` |
-| `runCallGraph` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:165:59` | `50dc2071bcbc4832f0c17e2d92b1f43188528fe0998cc53b08304bd62defc198` |
-| `runCallGraph` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:166:22` | `6385bda844d195427e6600efc62223312603b736ce1bb5240a1aa66a2310819c` |
-| `runCallGraph` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:166:51` | `0de3e65cfa26c843845d378bd301c35701b0850aec15e9c7b16d398496008f66` |
-| `runCallGraph` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:166:61` | `d1f18f823e1a1c679eb25a696caab004e7cc4f80b8559055ea5d90caed38215c` |
-| `runCallGraph` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:171:23` | `80e922fe0b0bf600479689d2dd777d098b7a94297360e813cb81ed5faa431648` |
-| `runCallGraph` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:172:9` | `f869fa169820580702fd1e2cef01be4078f490788d1327c785a0f29b0f0adc71` |
-| `runCallGraph` | `projectsCliEntryPointCallGraph` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:174:21` | `3230296cee9fc4952bc9c767234dddfc6ba61023f5c4873233582afd7ece1b26` |
-| `runCallGraph` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:175:9` | `92c03b1ab2b647c9c989be1e1b78554014aca81a40d93c92e32d9a50398b09ad` |
-| `runCallGraph` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:177:3` | `c8aa0d7458918217aa985a0ee72bace9cfb79f085f29b5889b9624a668dc802a` |
-| `runCallGraph` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:179:5` | `2cbf96b3fd616e1d7d743d71431a071d187a6d37b803a973af9af2bdcdc48ea7` |
-| `runCallGraph` | `formatsCallGraphSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:179:26` | `fb8ec5b52b4f81dcfcd8a5ee8035716c1372d289f07c3efafd1c5c6645f22ca3` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runCallGraph` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:166:21` | `a44463451743eac5619c6ae625d06786f7ea79edc543ad3584174a35c5a11585` |
+| `runCallGraph` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:167:21` | `8bcdbbb9f84cdd1b35d17983e68622843e9ca0f4711655df6d923707b8fbf48b` |
+| `runCallGraph` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:167:49` | `cf8a60e7792080fe4cfa998c787886cfbf9eb973d9ddfef9989e6ba9ed2277a3` |
+| `runCallGraph` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:167:59` | `79ef7d16e7607340872cba08dc1a2bb8986415a7ac95dd47fdea605ec56c4dc8` |
+| `runCallGraph` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:168:22` | `2feb837dc1d87d3035be619de1a4becf3034f6e75a6a0003927b753ae496223d` |
+| `runCallGraph` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:168:51` | `778ed372f03063fb2eab4dd3795be11f68b35e0c42d8c1a3e2313ff3d680581a` |
+| `runCallGraph` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:168:61` | `8f5b7cf4e05947aa2a4021330ef9c7e7b3b19c2a86a80fbf741401055756ccfe` |
+| `runCallGraph` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:173:23` | `03aba70719eaa3ab6133530ac9b63a1f317d92cb422be58c58a1492329ff064b` |
+| `runCallGraph` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:174:9` | `85d965956849c29c271107832f7aeeff7be062c950506549acb6b14865dd4a56` |
+| `runCallGraph` | `projectsCliEntryPointCallGraph` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:176:21` | `e2af2e6c7303aed3e04f0c120adea3424f87cd3d2fa41698be1fdab07e8cc74c` |
+| `runCallGraph` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:177:9` | `3fdfc888b473cf0b586a1c27c2830a9260b546c1f83df927b651687bd71a6570` |
+| `runCallGraph` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:179:3` | `c963ff72f7c0ef912775175fa1a486c13072161cbdc0ec36b79f566b82d80a19` |
+| `runCallGraph` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:181:5` | `3488b0568b029eabe39168225d2860be52c036b570153f5ec2311b3dd6e1c023` |
+| `runCallGraph` | `formatsCallGraphSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:181:26` | `0ee2cc890eac1c1faa0527ddd673d549f64d651550023b5b792bb6d5bab2cdc7` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `readsJsonFile` | `stat` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:10:27` | `f3793c1c4bc07fa6810aa1f08dfc7c5891ca0ea2e95893f1cf86635bf848957f` |
 | `readsJsonFile` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:12:19` | `d4b0ce10918fb6311cf4c621e935738722cc5bafe2aa966cdd61c0d68e490395` |
 | `readsJsonFile` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:12:30` | `81b019d18cc537b085ed7274ee6d918f18a336d355ee8fb985be6db3f5a35e0b` |
@@ -574,7 +576,7 @@ Handler: `src/cli.js#runCallGraph`; entry point: `cli.js#function:runCallGraph`;
 
 Handler: `src/cli.js#runConsole`; entry point: `cli.js#function:runConsole`; kind: `cli-command`.
 
-<details><summary>Inspect 28 callable node(s) and 314 invocation edge(s)</summary>
+<details><summary>Inspect 28 callable node(s) and 316 invocation edge(s)</summary>
 
 #### Callable paths
 
@@ -613,84 +615,86 @@ Handler: `src/cli.js#runConsole`; entry point: `cli.js#function:runConsole`; kin
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runConsole` | `runConsoleServe` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:757:11` | `f866cfc950791bd1c41f2257bab27b6ea553c000492c4b10608787f309222b54` |
-| `runConsole` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:757:27` | `3ee1f3e533daaf51a963cc882ae6c6e85cf793c7b1a54a6fe4cb8e92210172d3` |
-| `runConsole` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:759:5` | `8f63e9e58b999f3c2c9563b328bb744c35772c3c431bb0baf2badbb9055e0b62` |
-| `runConsoleServe` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:765:21` | `825f22e118b75c88d61265d88e9905c160908fb169efe8f0c1f959e408e5b9c0` |
-| `runConsoleServe` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:766:21` | `1bae0ed66f1b267467c6c9f7080351ee86912349b5994eab2121388c29f00cf3` |
-| `runConsoleServe` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:766:49` | `e7b2106a10a56c03430ea671e6a8035160db56e2376058963208d1b6c9f7ae26` |
-| `runConsoleServe` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:766:59` | `6dc4bf5907bc4ced535a4d4717d0129203cffb12fa8b0dae6995b0730df3a107` |
-| `runConsoleServe` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:767:23` | `8ce6bb827942017b445ab736f7738d6b4e806e62a1641d31250456e1c5743a65` |
-| `runConsoleServe` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:769:7` | `7fcd78b88c62d6acc47055c101c0843780baabc9aed34f41733bb21836fd8af6` |
-| `runConsoleServe` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:771:28` | `2c768f7298db220e8f782742c5660c5268b0e6e5416b16a48c4f567e69c7db9e` |
-| `runConsoleServe` | `Number.parseInt` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:772:49` | `596c2218fff323eaa2e600ac2cca43e7c10ef86dae52bbabfd8ce0d2b16dad76` |
-| `runConsoleServe` | `import` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:773:40` | `698127d872bf54a867f9d938d706c485b5d02250ab2effd0844332008d908fc9` |
-| `runConsoleServe` | `servesQueryConsole` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:774:31` | `f72ea1dee0abeeb8ab60d21fc974115e506036782617ce118f32f6625e4ec5f8` |
-| `runConsoleServe` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:775:3` | `b3de90e3dcf82adc9c2f3b743aaaac83e218e55846b25e573477e8549aba7b72` |
-| `runConsoleServe` | `waitsForTerminationSignal` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:776:9` | `f6ebf15ea55e39a90e9cb2f7774c24927fdc0cbdd8a87a8f37423b047a577143` |
-| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:996:7` | `36d2454d9705f099ef8a23b4c21e4086515e6736c7e362a7fdb506ccb4274175` |
-| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:997:7` | `fbd7a09ed15d87940b9196de04fad7b2453cbbba5103a030d12a97007a21dcd4` |
-| `waitsForTerminationSignal` | `previewServer.close` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:999:15` | `a661aadaa35ca85fe021e26b351a2b8893339c20ea551c7cf80229e18057f947` |
-| `waitsForTerminationSignal` | `resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1000:9` | `629f2e97e98a7585672a694231ddbe512bae09b7e01d6d5da3c72fa64561107c` |
-| `waitsForTerminationSignal` | `reject` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:1002:9` | `61d3b2a6bb5f90f55a2bf7f373cf3cdb1c8b00fed1d34d3e8aaf23e5db3c6216` |
-| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1005:5` | `71495fc275d47cd11179ac3643edde86db8f593846d705164324b3d8b4bb2f32` |
-| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1006:5` | `3923544367120ef80a431e4018ca065db35f386f2bd33dd9324bc295918c52de` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1224:3` | `7891245da7db3395fc4b3b8e9c27332f27447f32648db31e11fa4e29651c2c06` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1225:3` | `be222b71975eb07a43267bbeeb8c52ab11e370fa64c04cf7c6cc4bb450cf69d4` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1226:3` | `662e5d3b255473f6f05f094503ca13fa26543591d0a8b30e23aff5392f135b3d` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1227:3` | `91d95fbd0fda01c9ae59250da896558a752fc446736042d8cd03a0ffaea709ca` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1228:3` | `6d751b67c571fcaa9e293a54b90c189df237aec2b811d1368bb96b7825ec02d6` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1229:3` | `01b3a8f6727c09000703184b5b8dcb8042045ca5fd758e8238d5aa9a36cd9756` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1230:3` | `95ea66ea159fa9630c9969dce6869bbdcd82d32d509fd30c2f05c3ab4ade521b` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1231:3` | `f60374b9a97c8ed7ae79a907e2eeec93cc02b94f47145a265161432d88c39436` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1232:3` | `231b44846cebec046786cdc63fe2a6475e735bd4f7d7cb6ac93e18e79b535dd0` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1233:3` | `261d1fe0077e56cd311af42ec077a33863b8357c053e5911a7a0f7e5655a3402` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1234:3` | `61dbf96dfb0c7558eb3132264e001e59508c39855e0bc2849f8d319604d9b17e` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1235:3` | `23a0e21617d7198d956aa6b78b7bf8c2e9fbb008150543a933f4eecbe04e84d0` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1236:3` | `b460a7330e11984e0a3f48fa16dca4a1ce3987bc13c8e58789209979415f1227` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1237:3` | `3e3f264d66ff6656b3f92f4b9bb94c953506270b92bf6faadf15c701ac0a91a2` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1238:3` | `98fdb9492d895bc770d081fda0dffef9d1b27605b5a3158f35193ccab3e0a980` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1239:3` | `0c9aa4936603e06b6d368923977021e6b08e1ae4bd7affc8cd4854b4b20f5a9c` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1240:3` | `55ad852097eeb845a067973e1ead042e479412dd3612fc9af0d431d2e6e80877` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1241:3` | `815fb4589e06461b30b44b63d0fb0ce9d50f616a3640d85f018f09b7c1491ec9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1242:3` | `0d891b4a09f30ac74d2ae57a4b613de75021daed021bd7056e4011b6a5d656ad` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1243:3` | `488c9b2064b41e3dad4d321f341448ddaaa39dd17a1d5b7235536cb5684b6600` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1244:3` | `a8336a737cf36cdc47f344b9fcfdbd4b9442283b3cff6208b63ad3b16f4cca1d` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1245:3` | `ec900f2dfb14389833aae75820a6fb951da8927fedf64af1348d05cccf9e38cb` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1246:3` | `a7ea1d2551388a68fd77f323a3191751d57dd2bc4a23ca8f8b5273e94df89e4d` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1247:3` | `76f83350fd0b3d57db378d5e97e22a19d1e19862a7629defef793d05ecc254df` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1248:3` | `0553310b4a9d57c30cbd6008c66f8413ff26f47aa76a711c30ebf49df0890b14` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1249:3` | `8fe545f3e3a9a4a5c61f618eb1b3db6a35348121d46ff184af63ab8557708ec8` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1250:3` | `a19bcb3a265a1acc7e70fc548a45d8889fa8ff53bb3585fc0c230095a0526da9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1251:3` | `4bdf4215d7d4ed8f189adfc04d695678309dce662989ae9f8c0a9efe150fc4e9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1252:3` | `79977abcb5034f5a682d90421a1a9dcdae284e19a4a0aff1d09f668620965af7` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1253:3` | `6eea3dbfcc5a4ab1568f05dc25205eb909778b67e0ad1247cd9bcc063e513883` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1254:3` | `4a4de0f279b84236f8635bc79987eb0c4cfaa627c6bca53fff2bc3ffd8df700b` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1255:3` | `0de6f5b2d2bba7592661eefc73d22604c52f65d6e095cdedbd16dd293f568ff9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1256:3` | `5e195de606dbb7b12c25c06afc7e8a1eb2c647dcca5bb4117bfaae403ea95fac` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1257:3` | `b2df431b220b251d8260a47c80e053ae20c4d3dbcdaca2e1a71d02fbc7b4a887` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1258:3` | `9b6872f61b1664f8fb85df69eb88bcdbf57da3e0555ce8951203a30dd08981a8` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1259:3` | `49f209ae570f940555db49e81d445976dc63a1159ee58f921fe55d7547b9c76f` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1260:3` | `52d9398bb2b32115d03d395dee69c7bba502b0c824f8c867fe76c06c40cf0f0f` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1261:3` | `d7607948ee7ed1ecd74916738509e1366c6c1bf3b79a781728ceed8a49aa997b` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1262:3` | `e27f2f4a815e2bd2e1bfea30af110420207ec02355fd81e1674c7d864f56be42` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1263:3` | `236098bbb117f2d6b93cee0fe8a8ad0e0ecaf1c0749aca8ad6986143ce7faa77` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1264:3` | `bef099599348290c7573830bcf02c8492c3df572c8ec834d8495544523942f40` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1265:3` | `c788edab04f2499c348538c0a8dc2b89612b6a25b12db27827d973574e725517` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1266:3` | `ab498c892c8c598daeed843b2f334022068a54ffb36310f3553e5d7259671150` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1267:3` | `0294d9c5f27107de179fa235e9bb98ab1755242c92dc1a9af5ee0f442b346cef` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runConsole` | `runConsoleServe` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:778:11` | `d1046029ac306219daf3f3970651ab89c354be1af2e689067607d4411022eac7` |
+| `runConsole` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:778:27` | `682a8ea18a03a8a8facb3e671fac75efa814d9652b4c6b200509dd8e8c184205` |
+| `runConsole` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:780:5` | `29461a0fff9e9df130063b95d6ff13f7fe2713b1396798932894173934900e75` |
+| `runConsoleServe` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:786:21` | `45595d662a22fb3f0b8f4aa6cf640c73f340505d7643e13534699c70951760a3` |
+| `runConsoleServe` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:787:21` | `6499a396eee1334dac6f592b1d9c0d9cd41290e0094471d447e041b321d11d15` |
+| `runConsoleServe` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:787:49` | `11555fdbbb5694ea9aef2a11d3700f698e5638e04295135b0e1fad45101baa88` |
+| `runConsoleServe` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:787:59` | `885af0ff6d65912c54750c1fe6966e0d8f3670b466d1693c02325c3055627130` |
+| `runConsoleServe` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:788:23` | `a7d616dfc5dd19b33ca53f1bc73d883c5e61c86e7d236cfa2c07a2bf3de3bb99` |
+| `runConsoleServe` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:790:7` | `23e5d2889140da7c200f8f640589a5be5d5df4782227d530f93f0ea906d7d7f3` |
+| `runConsoleServe` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:792:28` | `629b22dd982bbd7fe20fdffaf26504acb6264e8d063794882ece4b07064d761a` |
+| `runConsoleServe` | `Number.parseInt` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:793:49` | `db7363652990bc33c5d8fbc21ceb980fc8860ab93be7d78de84d196d56969d50` |
+| `runConsoleServe` | `import` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:794:40` | `749eb119f84d4bffafc28ed8b7997a427d5a0d8890e4f4c713818af2e4748474` |
+| `runConsoleServe` | `servesQueryConsole` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:795:31` | `afe1d93971b7072f4e30ccaebea0c13c41d115f9b2315b72b71c06f0e28762ac` |
+| `runConsoleServe` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:796:3` | `75b27ed5efb1e6379eea76b1a7063daaef1d94ec12c359bbda229a3afaefada7` |
+| `runConsoleServe` | `waitsForTerminationSignal` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:797:9` | `9c3633a9201bebc1a5bf5a6a2a8097364b3ccd3dde13aa4f58de767c66fa0dc4` |
+| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1017:7` | `90b4cbe0f97715cea210f43be9e9af4b578e981072a16bffa4d6897d0913a3e5` |
+| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1018:7` | `49e53d14efdfdd80f43049119f2403a8527f7f3978a24d86e9891922499c9768` |
+| `waitsForTerminationSignal` | `previewServer.close` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1020:15` | `768a5df57d4a917afa8c83486266d7436674d8bb06d6946758ecaf459f2618d8` |
+| `waitsForTerminationSignal` | `resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1021:9` | `8020dabe8d8a528216809d37014c58807e4f1d12f352d892caa2288996811a53` |
+| `waitsForTerminationSignal` | `reject` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:1023:9` | `ca4aa9edb3686f27cf0f163bfc33eb9e9f7e1aed4eb35a1f67e1f18dcbd5eba7` |
+| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1026:5` | `4d996af2c67a80aa14a218f1e9148ce306ce53bb7f97edb8f9f884c6e56070f4` |
+| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1027:5` | `562f615b4bcdadda39e767dbf6527610e013a0d4e2ded287f2a200c6e943b7eb` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1246:3` | `6a17585e0f5e36de82aa7da04f6156d4e3bd97df69851863acee669a470d7530` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1247:3` | `e54d2a337c1df0cc221c075314222f46322c5132b50757b98f05b3b744cdb84d` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1248:3` | `eed543a125e43a9aec913dc69037f55c7ffffd7434372f149650baee2e7f08cb` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1249:3` | `3e3f264d66ff6656b3f92f4b9bb94c953506270b92bf6faadf15c701ac0a91a2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1250:3` | `e3e8af54cb1d3fbcd4d96c4fcc97dd57c2c635f7ce4cacd11724704792b5e129` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1251:3` | `b7272155e4af7ecec84b55fbf95251c733725eb7cf5b988fe5a1fd458b2c976c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1252:3` | `7711843421782fc6eaf07b30755d401844549a37205625703cb1d1c3bbc0f429` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1253:3` | `c0bd262163729e6af075e5a4ba4125dbb9ce7c1b3b5c0e7fa62251ded02257ef` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1254:3` | `eb99c55a476441a7493e9c64c9ca3bbbd8379f0aa2f33b927b0a3eb4e517618c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1255:3` | `ee051c9dd4c3706cdf00f2b63959cd49ce03ea0d144d88c35df5b58e4b4bb6b0` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1256:3` | `23373309023955fc9d3a56f16e00719603853ec88eafbb8938814b16870ad3c4` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1257:3` | `7175c32711dda7759a35e91fb958f26a7e9d6e11227fe796512fc73a5f708ce1` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1258:3` | `8a37fbeb7b32a8f16a0bc4e1b65e86b60e0ccbb93898e01d4238bab47c69a2bf` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1259:3` | `af6878cecd255ed47e7b5f851b5b15f7f62b1a8621b39c5460517d7446f5665b` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1260:3` | `cb52a5e4f632fe3ba24590d5ebd69e56010bc1b3234ba237002f20b43db3efd5` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1261:3` | `527efa621eb6b3e565e68b1f24025ddc451695614260ff707c3fdea9f6c1d265` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1262:3` | `bc73b3cafa4ce8bf9bc8ad10ac433669a3c33f8c6914bea459894ff489bcd5b2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1263:3` | `a18dd06bf12133554bd865f1cffb8ff3fd66e0afd7a79708fac3dcd686291bd6` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1264:3` | `c6ada230510c29e033e773bd0aca79d2d8ab2f504bcbe549d13a695b31cb85d1` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1265:3` | `f5df59eeaee4c77be52c6589feee35815ca75d246c0e9c9d2e31723396b31403` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1266:3` | `dc00a48a88cb9888f1a47d79534186bffe6ab4330233c67e3427f5567c9441c4` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1267:3` | `40216cc4574bd6c002644f992ad101db86328fc832e56d95fd8de6671505a54c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1268:3` | `7dec4682a9071f1d0b2625b426e7108ea52d40e8207f6b6ead0d98b5cf761d7a` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1269:3` | `9ab171cd8e59be37d5fec609b091704000663ce6fd743e7a4ad2e2de1057cc79` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1270:3` | `b8a4ff97b0a280556bec665f44958ede63650116435782b2b645beb3431f1199` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1271:3` | `b566481e46c0462b41f3d4149f742c04a2e421e57c7b8863a1f729673218db3d` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1272:3` | `7b50b9c99338a7f62950743818124e4a6bd8dcd0548e8083fac7aff9cecb31bc` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1273:3` | `991a36a9418ecd28e025a52a02d9c093b6fb0fa2617fef7c354bf6406ea7c46f` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1274:3` | `d6d3424f87465dc2370fee23e4b6e68162b6c6e8703a942941b092e55e71c584` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1275:3` | `e636254d6ffe8ce74081c9b01f84f0be3b1c7526c53c55423c07b68e16a36591` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1276:3` | `7392972d79a293bab718e32fd3ccf48d0773766cfbbd5405da1d3a96556045b2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1277:3` | `e2a6c9476d0204b169f2030023456fc265aceab14d5382469f67b485e1b5f35e` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1278:3` | `fad9ff92063f6c59344b9a6cee3d1b6d31ed2ad15b12feb74417146570ea5fc8` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1279:3` | `420b5adc3cf459ba3826939da44289fd0489d1f66db2e4953313291f8749b062` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1280:3` | `f3be8d11d1c22710950853afc89c4f9b0b912f4dbe68c08aefa212305e88ec55` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1281:3` | `6ce27094c6dd43000d234817a3d65729a15f330a30919d9b470f1a72a84437d9` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1282:3` | `40ca33fbb56b242015a16e6c41bd83aef434897dd501c2779816eae54280eba2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1283:3` | `4bed4a78f92258ad9b64939c731bd2e59b2121338d11b17b6d4febf04d8bb5b8` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1284:3` | `f45208554a897822a619b19622886875af26fcd39660fb6324ae25adf1d7152c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1285:3` | `7f4c28d85376724bd998b3cdc9e07b1a92039c59f00a4e7b3412673dbbdb2951` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1286:3` | `427919c730617c879c81b739af0ccd448350cf22ce6b740faac86b407e9e915f` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1287:3` | `115137a3671e31931586f59f3cba0fcbaad34eb5bdbc1aab0400dc207cc7284a` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1288:3` | `73e85a154a65c6cc6c5da1b3770171e3664a4cc72b344899d83a86bd18cf5520` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1289:3` | `d1401358b9827c6125a17e45da9d8032eaa1c2e2d8ca5a0fda1e15a84fb6ca09` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1290:3` | `e553635fb7953de5f8965ce8ff3d977331361a061af70247860842357bf08621` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1291:3` | `3e8b78624b29e0fe1ab9fdf46a55c9d75345668a1b686b6b8f09010542c9e0af` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `pathnameLookupAuthority` | `knownPathnameAllow.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/console/console-authority-runtime.mjs:37:10` | `dd313932adb461e801f6823e70dd7964895d92ab10ae77f402dd8d2caa190a08` |
 | `classifiesErrorDisposition` | `fallbackDispositions.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/console/console-authority-runtime.mjs:101:21` | `0fb1693edeff572d648a7949a3c16da96ea72797e402f2b9f1ed18a8ab2993fd` |
 | `servesQueryConsole` | `classifiesLoopbackBind` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/console/serves-query-console.runtime.impl.mjs:40:11` | `5d9bd22d6793a7d336cda684d1ec46eb9a99dfde5feb4e2fb64622f4573e3895` |
@@ -966,53 +970,53 @@ Handler: `src/cli.js#runGenerateConnectiveTissue`; entry point: `cli.js#function
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `readsEvidenceFiles` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:439:26` | `1bec1071834bfe0153c3ab35fd5e92fa1f5cd072110d745c01112a84d34dbd40` |
-| `readsEvidenceFiles` | `evidence.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:440:5` | `bfe96d55557db4ea8df0fc257e09ec7d2e39499943a4392bda7eb9dc3d002206` |
-| `readsEvidenceFiles` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:441:13` | `96378e1852da407f9a905ab948c8b34fa9884a259c685cd7cf07c6a2e94c164d` |
-| `readsEvidenceFiles` | `path.relative(repositoryRoot, absolutePath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:441:13` | `91ea585c4ed3ed2cc58a7512729734dc32dc77d457a01cc814d7fa4916a9bda5` |
-| `readsEvidenceFiles` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:442:22` | `9198d986c7d1ea4cac46409e148ffbba23d99528adf2d1647889946a8b2cc51b` |
-| `runGenerateConnectiveTissue` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:584:21` | `2dbbba1442c5045e4545d8fac2905a71c57b29fd7d63d0077db4743937592cb1` |
-| `runGenerateConnectiveTissue` | `requiredLineageFlags.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:589:8` | `ea4fd87b72a0c918c8db33ddb4edaa7003a3f787f40f2510ff0d2bcdacc6a71e` |
-| `runGenerateConnectiveTissue` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:590:5` | `00ac0656860ce25dc6182c2334975117358ebd0c62e3ad72ccd40f8da4496394` |
-| `runGenerateConnectiveTissue` | `fileListFlag.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:597:23` | `917d60a8ee0c4cea60cc835b1f7149d7def46db7d8f3eb9c73fe174f06dcb9e0` |
-| `runGenerateConnectiveTissue` | `fileListFlag.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:597:23` | `4f594030cc869ebacc2ab5847a338c75cad2c8e20a0b2ae949080fa5dd70d560` |
-| `runGenerateConnectiveTissue` | `fileListFlag.split(",").map((entry) => entry.trim()).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:597:23` | `b1e8ce07791dab7929e0f0f4aa65f93bb68b3b0972d05e5eb9c948a85dda6863` |
-| `runGenerateConnectiveTissue` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:597:62` | `117e6c8001fcf035529a90641f2bda6df0f7f35f720e300f6b137209d3780e1c` |
-| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:601:28` | `f8b0d45339c28b651936e5ad97c12d29bbb51b0915fa8533f1230a1fdd2fb45a` |
-| `runGenerateConnectiveTissue` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:602:29` | `2b4be66a48183b85da7004e526d3de5bb77eaf382e36e4a0181c1e02612feb08` |
-| `runGenerateConnectiveTissue` | `files.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:603:7` | `fd51fc719a60b7008e769250b8b29dd24a1dbf09ac6db8cef443b81c2c0d2e50` |
-| `runGenerateConnectiveTissue` | `relativePath.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:603:26` | `85e4aaa5a230ed01624755db42e540e14890ed87c0673851257bd8b942340e26` |
-| `runGenerateConnectiveTissue` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:608:35` | `5a98e0e4e8529bcc09749b5485df117deeda0ea23bcd16b421ffce45d74322bb` |
-| `runGenerateConnectiveTissue` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:609:36` | `e8038b90c5f13cbca0e06832e2159758658ae648fb95bad6d4013c40188cc42e` |
-| `runGenerateConnectiveTissue` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:610:69` | `20044b51fd7bfd7ebbc5200c662e67eba1c83975ac68ffdd75e72315435d4331` |
-| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:610:83` | `6a68e53d8076673d72bcb68a9a3294cd7f14722ab6414a51a39f7dd10863b9f8` |
-| `runGenerateConnectiveTissue` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:611:34` | `88fd4c0a7a487ef1c0f7ebbb755eeb60082af84e99fe0bdc2ba333c483ed53a0` |
-| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:611:48` | `646f441c3fe43b04b2e8f670bbf5e75f5cc041896b1040be706aa2e1fae6ed7c` |
-| `runGenerateConnectiveTissue` | `generatesConnectiveTissue` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:613:23` | `d6ce25d062418b36fce6131cb258e3d39126f10cd034bf80194b8a1e189b75a5` |
-| `runGenerateConnectiveTissue` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:625:16` | `2f3fafaa257b3b47b0e47a6a27357159722c20a0f6157b3fa21064f446c7cf41` |
-| `runGenerateConnectiveTissue` | `flags.subjectId.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:628:32` | `f5be56943cc06c67509fb19948e63ee7bab3463a01344837605ee6d700ebdc7e` |
-| `runGenerateConnectiveTissue` | `flags.subjectId.replaceAll(/[^a-zA-Z0-9]+/g, "-").replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:628:32` | `309b738cd07b67ff78c851c77e005cf4174a1489d2730f1dbc6605602007c14e` |
-| `runGenerateConnectiveTissue` | `flags.subjectId.replaceAll(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:628:32` | `8f220de9651cf15e75297d3ed52ab33bc1fab5efc42b284ca8c9235b43c12f5a` |
-| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:629:22` | `eed97f2372095bb657366601c07bf6342e916ca2bd6841a44c64d001762dad8f` |
-| `runGenerateConnectiveTissue` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:629:67` | `7645975296ae0dc154a40e6f7cbfb04b2ecb6bb268b08f8043a5e3dc26a10f87` |
-| `runGenerateConnectiveTissue` | `fs.mkdir` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:630:9` | `d45efb8272e4cee636a5670badce764b13ef52bc9b0579cef332d99e8ab22187` |
-| `runGenerateConnectiveTissue` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:630:18` | `f148b5ae1661ea046752161b683c81b94df2a9d718b5d9180dc8d80ede5b3d0b` |
-| `runGenerateConnectiveTissue` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:631:9` | `c5e5cfa1caa807113438045240deab73f0b84c2efceabe089b1af965deab42fa` |
-| `runGenerateConnectiveTissue` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:633:3` | `09dd1d7e1fd260c6e7ee6d67dd35a1b84df1e50c9602ccd6fb671cec67a89b1d` |
-| `runGenerateConnectiveTissue` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:634:3` | `15c5a64366cb9326af906bcf25b5a2a92e1f51b2c97063df05ea52cf15266ee9` |
-| `runGenerateConnectiveTissue` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:635:3` | `6bf511bf04e1d105a4dccda693ccafef4127c29bcdb1f280803125844eff2398` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `readsEvidenceFiles` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:460:26` | `d1b393b4106f023b39f396b17309db7db9f4828493ac8c6632bfb843d18783ad` |
+| `readsEvidenceFiles` | `evidence.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:461:5` | `a0d464d2fd1c82134d28cf52646dd0f48cda69f4a223a3eb59c28f3b017450ec` |
+| `readsEvidenceFiles` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:462:13` | `f8ab72c4d8f9c4c629a1228468588d3997194392d28a92c4575893a2eb2fe8a9` |
+| `readsEvidenceFiles` | `path.relative(repositoryRoot, absolutePath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:462:13` | `adee8edc30096305c10bf13a5bbbeed30716e808a46d6cfcc498856b3213c175` |
+| `readsEvidenceFiles` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:463:22` | `ce35f5a8ef34cf73237ed7710f279c5693bab23a0bbbb4cb5112d5f4575b4403` |
+| `runGenerateConnectiveTissue` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:605:21` | `834393108bea7df600c379d5d9fdff2e887bcbf6bb936c2352ec668990b4c7e5` |
+| `runGenerateConnectiveTissue` | `requiredLineageFlags.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:610:8` | `c391bf3178aaf66b459823971cd5ae60fbe3e354f8f8a0f355af2979dfc00c77` |
+| `runGenerateConnectiveTissue` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:611:5` | `8811493d7bedb241797183470d35b6e00ea5000c9a065467ec8e15e41114e4b8` |
+| `runGenerateConnectiveTissue` | `fileListFlag.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:618:23` | `1c3d3f6f33c69040791f591c4eddd26b2218e195ea66c9b44a3404bd72a7cfc6` |
+| `runGenerateConnectiveTissue` | `fileListFlag.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:618:23` | `c8388e9d23bb546e22274afe61ffbbc38763e82d91c7019eacf4c1dd5752da9e` |
+| `runGenerateConnectiveTissue` | `fileListFlag.split(",").map((entry) => entry.trim()).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:618:23` | `f6dd92b54a375c5921a87bf72e7abf1395f018e35c9380834a7cc51993dbcf08` |
+| `runGenerateConnectiveTissue` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:618:62` | `358f6b563fb023e34f3850b3b55313d34924c2f3b5c91088f738167df4359490` |
+| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:622:28` | `fde513c128e44675e89ef39c67d72e2f8ce2b7aa02094f34d91e8c42ded1a4e7` |
+| `runGenerateConnectiveTissue` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:623:29` | `02d2e5a94c17a88ae28acbadeb2b05e731ff726811037e49666d53140124dd61` |
+| `runGenerateConnectiveTissue` | `files.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:624:7` | `e082421dd0b665e2d26093107063da8a5a270119ae1e692998eae2cf5e37d59a` |
+| `runGenerateConnectiveTissue` | `relativePath.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:624:26` | `ff9907cf3b46fd38d707865ea58479170b43178ad6c966def54b1672333edc63` |
+| `runGenerateConnectiveTissue` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:629:35` | `b6fe5a202fd336d3e9c96dc9e04821781c35e6f5e8bd41871e731ea3a16f6e32` |
+| `runGenerateConnectiveTissue` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:630:36` | `7ff1812712ef1207f1d2267f34bdd6eeb5fa337b66d3a1f30f1124c74306430b` |
+| `runGenerateConnectiveTissue` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:631:69` | `89ccba4f1744dc97bf9408a8ee8988eac0cf86e9dbfca912fcc88dab0257c6bf` |
+| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:631:83` | `b8562924eac055881ffa9fc4b9fd8b7d5192d69666899868a923331b22868144` |
+| `runGenerateConnectiveTissue` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:632:34` | `396225bce6908798a8bbbcf8f9a2b2a30bec428e90cde6cf899614acf03c8650` |
+| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:632:48` | `430b96bf15b23cae67439e55d8be503db1d3ff4f81d529b06389f9397e3ee993` |
+| `runGenerateConnectiveTissue` | `generatesConnectiveTissue` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:634:23` | `4ae2dd52da2278cd8060a58d3000489375bc09040cbf1022edcae8f6c3df1737` |
+| `runGenerateConnectiveTissue` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:646:16` | `2f08f9f32f3b629d72d0bbbd6b4b8f1845bc6c30c1d5b892fa67f245113628e8` |
+| `runGenerateConnectiveTissue` | `flags.subjectId.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:649:32` | `e1d797274616a4077b15ba1b608f69771f4490a6e26e25d21090eaf14789c27e` |
+| `runGenerateConnectiveTissue` | `flags.subjectId.replaceAll(/[^a-zA-Z0-9]+/g, "-").replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:649:32` | `7004a53c134a44729e2eeee7a7a7010a3bccf555f2fbb160acdd634d804e09c8` |
+| `runGenerateConnectiveTissue` | `flags.subjectId.replaceAll(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:649:32` | `262069abfa2cb2a8b766c393b127824d2efddf6855d36f0a234468a4f9b63bcf` |
+| `runGenerateConnectiveTissue` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:650:22` | `2e78a1705e4dffac951933d0d70ba3058b9bfe70aee118d505cf3c62f9318637` |
+| `runGenerateConnectiveTissue` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:650:67` | `07c28e676d85478c5872682ae3a5d4e385ca522ac4d7e018fa8cf819ff46a6c9` |
+| `runGenerateConnectiveTissue` | `fs.mkdir` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:651:9` | `a3480a2ef6ee4f6ae0af841c9c37dfa583c7ce31fde2f9a142c38ce9d949cb1e` |
+| `runGenerateConnectiveTissue` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:651:18` | `d745444f4d7b3ea65733c5dd19ed416fa69aa6380858817be9eb7044b8703bd2` |
+| `runGenerateConnectiveTissue` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:652:9` | `154b4d9ac55de114794c5d36791d3779504cce8e45865bc9665e8c48f2fe19f4` |
+| `runGenerateConnectiveTissue` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:654:3` | `c869512035b278675091fd51e909a17ed0b7d6d63cff3ec4dcfd5c030e4fd166` |
+| `runGenerateConnectiveTissue` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:655:3` | `e29894bd7d7bb1529e6a432c666d300bba462dc970672baaab354a62c1c2d9ee` |
+| `runGenerateConnectiveTissue` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:656:3` | `10da6a7adcf1c1521b6847c39f8a7c59058f6ebb03ea915c9b2dc91ccd815672` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `generatesConnectiveTissue` | `randomUUID` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/generates-connective-tissue.js:469:36` | `68162a5f0f01fc7a86bcd85e9e1544f63dc354f62a25e730a74fa5fe51cd4567` |
 | `generatesConnectiveTissue` | `(lineage.features ?? [])
     .some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/generates-connective-tissue.js:483:89` | `d9290856f223ff56494de560b05961019135e8e5245b15a83c262c19d0ddab52` |
@@ -1322,39 +1326,39 @@ Handler: `src/cli.js#runGenerateDocs`; entry point: `cli.js#function:runGenerate
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runGenerateDocs` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:184:21` | `8df710157b045c96dc172ebff41fb2716d613d1cb678e54480e0da2d140319a9` |
-| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:185:22` | `a416bf40d4f5dba75e4a062ea4943b4e2e7a10b025c44486db47049a144cb69b` |
-| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:185:51` | `0e53463146dd691808a3c61a597f3984477fcbd9bb7e8c470d890324fac7937d` |
-| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:185:61` | `e0c63a7a3898c05af63225ca2e7aed0bc55aaf1c2a103cec4dc8499f7a799721` |
-| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:186:21` | `700088dee680a9595fd05ef1615b3ada2de4d97295216bb2d424c4cf74845b50` |
-| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:186:49` | `6c445881949010b0911373b6ddde10f68d6f6edac733a1b8c91440b5ad18b38d` |
-| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:186:59` | `2679178c49f7db89e9ee09d0b5f0e49dd7343f8ee31f2e9b52ddeb1fb92b4265` |
-| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:187:21` | `90f59dd801c24cdb6aedbd804271a6a2239b8bbdaef888adac45d8eb908e9953` |
-| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:187:49` | `a2c4e0016b36eb3c88a14544472f257f650907c2322ed38192359c5761ea1b9b` |
-| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:187:59` | `4997195bc92a9582d005aa7554acf995c1eebd6d5cdcf46e7e15e9034c73de8a` |
-| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:188:22` | `9ef6290b7db1247fe0faf184b7fe1248e9dc546fa38752a2491cc5825c68efa4` |
-| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:188:51` | `a6558ebbdf3212658ec015923d6a0639c01e7cb39d1761154e517246ea0ea7a5` |
-| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:188:61` | `fc85be6a182522e0bd38b37ac089c0abf78d33790d04a78220fc33e09d19461f` |
-| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:189:29` | `fb553f5036e4d99b80008c639fcf0c1c8ebcce41a9484cc4145c826963d4294b` |
-| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:189:65` | `dd745c506d85c8f4c3e65ef71980fb55ce1e8014b7e1085fad1c1ec8e90b9fcd` |
-| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:189:75` | `daf93d112d9732c9a52a4be0090adce0dbe8f1bc6b80aaaeeeee4ede22839dc6` |
-| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:190:71` | `fdd8df17f2338bded3de25766686ff865c7b4dfe676fd533fca6a5430dbeced4` |
-| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:191:74` | `5be7f1e6a485c071ba31c37c82bc301c3140e21c3e5ba1ff66be046918721ed2` |
-| `runGenerateDocs` | `generatesTraceabilityDocs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:193:25` | `3772fb4cb675f48805c2991efc6cd0343361aa7d6da837bb5eab5165bf9d9973` |
-| `runGenerateDocs` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:200:3` | `8c46635826f77ebe6c458e3e1315395e10a23a9c5b0e34beec58e627e6f9db66` |
-| `runGenerateDocs` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:202:5` | `c74c887b65a8361de4397b312433891e78284ede088beba017cf63e14f6ace29` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runGenerateDocs` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:186:21` | `4e4ca24bf7532d60e3f8f6334336d8ea5c5fafdd1488b22ffc8f103c2202a20b` |
+| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:187:22` | `16b245d363f06566e2894c5354dd1b81c576fd02ddc38650edcb1a2b23a26454` |
+| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:187:51` | `f7a64a87bcf58f597224b2471fc673217be6af147082337cde9a1ca6c614a293` |
+| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:187:61` | `5b76301747e28e855905abe60d70129d1e38b974e803f4474ed411c86c7468e4` |
+| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:188:21` | `93d0534fbbe6c9223e0c375b04153743b640df90e15576e5b934d5c5eaad347f` |
+| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:188:49` | `f724a287013df378ea5c4fcaed3ccc90e5fff7971732cfcf11d352399b4c737c` |
+| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:188:59` | `69dfb3aa5e7a63d7c42c6f969c559a4e4d1fd936963f912e04cfb1988f566b47` |
+| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:189:21` | `c57c23edb34dcb1426113c18506f778635a6e63bc3f0d72c6a81442d845946c6` |
+| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:189:49` | `77fcab1b980a7614cae240c412db69a9759db2f5b112b15499cf6087bea6f618` |
+| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:189:59` | `6ec0205783d27a0a3e7557ae1597053191841bfa7a3127ed6fd9a4b706698f16` |
+| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:190:22` | `65848131071521afa8a4c50557208757327342aba8ce58a745252c5d0bbb9fc5` |
+| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:190:51` | `cd16272dc62fa95dc13f47f4adb7a47b55bd405ef12d9c756f61cd9059949bbb` |
+| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:190:61` | `676bac8097c25e7fc7661eaeb01eb4b0381d3ae88f32d5ba256bad9c2bc050c9` |
+| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:191:29` | `fd9a1609f4568e62d3f907fd8be52c1e9ccf89dc4f463edafa8206b38f15f4fa` |
+| `runGenerateDocs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:191:65` | `ed6cb97c306ee14876c7295c49bd69dd304d78a6525f82f64690c6bb8b856c5a` |
+| `runGenerateDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:191:75` | `47b69ab8d6c35eea35808491986ddcf8179c2a8bd23b39996d9e90c1171b854b` |
+| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:192:71` | `d1cdcd60a11aaae3ebed0d0d995c4668fcbfa5e17b2590fc5738549e346b2f04` |
+| `runGenerateDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:193:74` | `5c64d04f333e7fc0b74df06e1475e4d64343e2110535ec167a61dcfcefd934f3` |
+| `runGenerateDocs` | `generatesTraceabilityDocs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:195:25` | `51b10210b0c2ee18861ae5f94a4ccfb1c2948f19806c6f425805d8c4d57f0563` |
+| `runGenerateDocs` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:202:3` | `6be7556a05c72e1659a76a40952229dab8abb208f6dc1c85d1de84df2d9bed4a` |
+| `runGenerateDocs` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:204:5` | `16183de385edc7e2d3d042590717b864edc10ad1abc55aec42401c60400ab92b` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `generatesTraceabilityDocs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/generate-traceability-docs.js:32:25` | `e62bf8fe986ee307eef07685a875d5a3812f6de79e89b57069c8e1a0790bcb48` |
 | `generatesTraceabilityDocs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/generate-traceability-docs.js:32:38` | `4655cc31d47986901100f0a9d63e955391311a9de67b0748ac495a653ba6b124` |
 | `generatesTraceabilityDocs` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/generate-traceability-docs.js:37:18` | `5ccf94e5e4c3a59ecf11922faa7aee19b7854d9ca9b7eb8d5b03c71821a17551` |
@@ -1709,48 +1713,48 @@ Handler: `src/cli.js#runGenerateDocs`; entry point: `cli.js#function:runGenerate
 | `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:474:41` | `d703a7062378f3e8933a010a35f8828458790817af5fcad91c51f9098661026e` |
 | `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:484:10` | `5022cd3e4b6d5ca424843a1f310d88cf877e0dbb77c9147316127656e7fe3ca5` |
 | `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:484:41` | `e948f81c5214557a596976844feededd113696cb2ee9180265040b81c54d3043` |
-| `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:493:10` | `0269f43827d4d4a31b0520fddd6bccd24f56d6dee8f06f8a8d6fb42f6aecc233` |
-| `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:493:41` | `ba8dcf329a6778d87e5f96dfac68e22cf608d327827b78bcc084423172f8339e` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:495:22` | `6f5d3bfbc419fe9fa7c007f354dd5615127fdedca3a0ef912701e8e37742764d` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:496:24` | `cfa14899802b2bcc0726691dbd5872584a45afa92b112b35c22529736555a172` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:497:35` | `07b0932c3ba7aa981fcc376a141c9c0eac97f45132412b980fb45823eafa263c` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:498:31` | `607159195d86d1c6bebb425c8093387a8bbdf501a7672f2d6c3c33ee43910b2d` |
-| `reconcilesReportQueryLineage` | `unreachableCallableRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:502:8` | `bd7f8655939ca54033aafb0592327522996982e9847db3d75a24727d7f0973ea` |
-| `reconcilesReportQueryLineage` | `unreachableFactRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:503:8` | `742e4a653e888c8aadf928675f6a23b17316d7b36c76398c728dc904ad726af6` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:506:23` | `4c142d6f990248f096518e3eba733ef23ebd9b6d82609c22560ae778c12ad102` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:507:22` | `5089a411611d2f79ded1525701c7c537bcb79560cfd5ce75a0212a2d656670d8` |
-| `reconcilesReportQueryLineage` | `bundleRows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:508:28` | `c778dc05a893831f5c4c2b3add88f7b3123dfa3293885ccd3b01306f314781a2` |
-| `reconcilesReportQueryLineage` | `lineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:509:35` | `766305af2d012fcc09975da7e09bb7915b721daa68172daff7eca79d88f6a668` |
-| `reconcilesReportQueryLineage` | `receipt.result.rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:510:13` | `2d7f28274d2a0723a57edf320950823b91e56404314242c2f129b1be02a9398a` |
-| `reconcilesReportQueryLineage` | `receipt.result.rows.map((row) => row.resultRowId).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:510:13` | `b3f23ed52b2a9239e352b7b93eca626d95313260d5a9a842ff34361bb6a7700d` |
-| `reconcilesReportQueryLineage` | `authoringRowIds.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:519:20` | `a4047b4431e91a7f8e94ec26dbc64fbeb7bd2e272e5a866dcd63c3cf8bd2e220` |
-| `reconcilesReportQueryLineage` | `reference.resultRowIds.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:520:20` | `f39b8c733ae589e315af8a1466e60f134691329e22679ee9c1120f309e1d38df` |
-| `reconcilesReportQueryLineage` | `rows.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:520:66` | `82f8fc4399417bfec3ff561e4a065a1c863226908b8f1b701cee7fdbc9836cc6` |
-| `reconcilesReportQueryLineage` | `bundle.queryReceipts.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:526:10` | `f97bfa6d2ad6608575d8500011785758058f037c3392f0c9cb3138713649acdb` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:528:11` | `182122853698da9d8d9a0b0b3ae82b1a0dd37b116b6db7ffbb6fd0e2b133b023` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:536:11` | `2aa52c14209111eb93703d2826d6dd0789318ac19ae3118e79313ada5812790e` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:540:11` | `0a373d20783e2162f56344cef6ebb5aec4f654fe0d507d148fc67e61a6326f1f` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:544:11` | `e71f0d9436b44901e61591d62184304ca72c9e3636203c3aa514140ea313413e` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:548:11` | `5ab084165b6d4a45624f3ff242aa6f698743850f1ad6fcc420306ce5b8b0094f` |
+| `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:494:10` | `d527ba1da00ce84f04847dcaaf9894a98dbd740c663171d059d6c9a73b1df44b` |
+| `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:494:41` | `e66fd763428ee95418c483fd4030790e7751c46b7f3cbe49266d76927b4d21dc` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:496:22` | `401c136fce617e7c90f3c9324ce9ff7162c0c16b8409698582bbec88c22cbefa` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:497:24` | `c15519b6e897d2ff6e3777a70149fd2226b7f9339cbd5a37bf7a60cff6a3b8c4` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:498:35` | `d9faf22adf1aca9b1853aa4173364a0ae0b3bc27d6cb6625e0179c4098bf5ac7` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:499:31` | `60a7d7230f19c2bfd8913d8a4d62ab2f35edf32350c310d329f16b35dd4ba733` |
+| `reconcilesReportQueryLineage` | `unreachableCallableRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:503:8` | `2fc3b462a8ec820910fdc05e6240c31f345804a5c37bcd81e76f264aa6b287b6` |
+| `reconcilesReportQueryLineage` | `unreachableFactRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:504:8` | `458c3f295cb0a449bfb0713cc12305b09928fa8870fbe6779bd389f3f08eb38b` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:507:23` | `f50e6a09bfac9aff28997a6ae2bd1c6bc05929cb33d78a0aeec214a4a568b825` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:508:22` | `974f47bb9ac689118ab02817bad0695461ab7d79612e0d24748194216c56091d` |
+| `reconcilesReportQueryLineage` | `bundleRows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:509:28` | `ae69d7ac40ed4c3d6ccee33bb008a30a73d7eb7430eb610fc045a19189d97173` |
+| `reconcilesReportQueryLineage` | `lineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:510:35` | `8732d031922dc1dca2e302b942001ebdb7e6bb89fc1320dddc6845df12f9a2a5` |
+| `reconcilesReportQueryLineage` | `receipt.result.rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:511:13` | `9db09ae3792ec347bab3ebc02838a16bd02abe0d49433b27fbc663dc4954a896` |
+| `reconcilesReportQueryLineage` | `receipt.result.rows.map((row) => row.resultRowId).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:511:13` | `5c770aae6a3eb18e569b1621358b53d96a8fbf7787bb976265c1447c62de24e1` |
+| `reconcilesReportQueryLineage` | `authoringRowIds.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:520:20` | `8ceb557eb3a4383e556be68d7e759b6ae92bf5a573a715b608d22a12b27dc53b` |
+| `reconcilesReportQueryLineage` | `reference.resultRowIds.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:521:20` | `a9e007bc17b3be32ff00f79d85dd62fbe4e2812ccbf7bc5c75ef4d7e6316cf0f` |
+| `reconcilesReportQueryLineage` | `rows.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:521:66` | `9a127fa37073e5c8f6058631581310c5209051b6d97cc213750ee04fecc75bb8` |
+| `reconcilesReportQueryLineage` | `bundle.queryReceipts.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:527:10` | `2f00f4c44185751a2a8d9c2728bdf8c9fea1f2d1c7045a34f5ccffa6d71b1cd5` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:529:11` | `ad50309d056d6d79d98847d11d91d5918ad65cacfef773360d3cd47ce386742e` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:537:11` | `a74dcad002f864d830f10b08d633bd77db15f7b59883e87f063c7e8701fd494a` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:541:11` | `f5e0318c0992c7ec795ee8a7109be992f314d0dff3e1847d27e64a6df17ba0ba` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:545:11` | `a8288a24d6f865fefa1a7638a3854c2bdd3d46c102abcd7a625aa3d2cc86b152` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:549:11` | `a32cab9e66b00a7a35c97948b93b36800e180ca9f7b92342d214af0a032ba51d` |
 | `reconcilesReportQueryLineage` | `[
       "missingQueryPointers", "unsupportedFactualClaims", "staleReceipts", "indexMismatches",
       "scopeMismatches", "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
       "deterministicRerunMismatches", "claimsLackingDrillDownPath", "brokenDrillDownQueryReferences",
       "invalidDrillDownParameterBindings", "drillDownResultSchemaFailures",
-    ].some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:560:8` | `7c540cdb2d0a2bd42296507173e23efa0c7c3211a56d80e070c5a4a33cc97618` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:569:21` | `7dec068da834a56d6e909aa042983a4b74ead1048cc43633ebdada4689a509ac` |
-| `reconcilesReportQueryLineage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:571:10` | `2dd004751051bdea0524b3efbc17b0c6a4602fb2d090d21ee9722b7841af0d7e` |
-| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:574:47` | `3b4b277b7d550711be0ac0915fd95736a568bbdeaf9a471cf4ee08ce15a9fd85` |
-| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:575:22` | `c5bf33373d238c459bf2b905b87c88d00b5a23879ad32214cfc75bcb237de03c` |
-| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:576:21` | `e275963cb195a3d301304e561beb78ca8419a5fe1481e789848f6a6cc0a7d524` |
-| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:577:9` | `b7f81596767e4d8b7065dec42d06a3fd7a2dcbb80452556e1d0aa24afc82cfdd` |
-| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:577:24` | `50926f67088d619db11eb4f26d9a75128ef441d478eab021cf88920f4dd3cbda` |
-| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:577:53` | `e06a922ac1aa9acbf09746269adda3944ebdf01b4f697f70d9e0de001c4ddb58` |
-| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:577:68` | `ba9a57da969201c19809d1d5b693ef2bd7f5dfa855db3da67fa529567702c3e1` |
-| `validatesParameterBindings` | `(query.parameters ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:814:30` | `25ebbc8805d14cd0b01f747b44f76cec83315c20395765f6e93ca1234bef3c67` |
-| `validatesParameterBindings` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:815:31` | `b08d7254b83b47ab4395955fd9d503fbd64ac8261e42ede2b9d6d1a85de44e98` |
-| `validatesParameterBindings` | `parameters.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:816:24` | `cc4c09b6f44fb4412bbaa9580b244a777776122ca1d5e32ab7400cb4624b9eea` |
-| `validatesParameterBindings` | `value.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:818:38` | `b7a9af382a89c50af18c6fd02b87230e2b863e9757d25d3d1bd838afed9a1874` |
+    ].some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:561:8` | `5ce2e540380a837fd6be367753141083803613e096748b6740db54f1fdca5955` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:570:21` | `aa437f6c9bc24f088c27797ac706d49539c8e2255e082f4dcc737966e8508652` |
+| `reconcilesReportQueryLineage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:572:10` | `6587fbfd8456a4f665e2055637eea269e79f9f9a41eda2b12439d9fa6b15317a` |
+| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:575:47` | `20798f89e52fadec1abc08d30f1ced928a87b6464c95314f3164abee0f01e4d2` |
+| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:576:22` | `68ad4879f15ddd355e1b63c84afb2877a0a8d0d2e5dbf93dd01618ddeb784ac2` |
+| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:577:21` | `e8f04609b8c6d5c1043c3c251e1b052711b2b908457ea11ee52646d7652ac529` |
+| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:578:9` | `ed7163e406c8ee570afe775dafdc7e72495b1551c996d48ff2242ef85b4d00e4` |
+| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:578:24` | `5fbba1bd2d7ce60b3dc648fef30f7eb1df87078e6835c74ab42c9d28d7c1c5be` |
+| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:578:53` | `ce3dd3a2f2a87f9476518186fe2da672f956fa234a0e10659ddcaae595ae7318` |
+| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:578:68` | `86207f4a92eed2addc8320381139528c7da3dbd3c750ff5ce87fd2bd01719ec5` |
+| `validatesParameterBindings` | `(query.parameters ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:880:30` | `1a313ae2a6d069f59f328520e0368e978a60597f5e85137cd2e8d6de215f41dd` |
+| `validatesParameterBindings` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:881:31` | `9a1f669bcd609ed75edf255d67f8f6a7acd622e4229af76e5ccf66ca61e3ed03` |
+| `validatesParameterBindings` | `parameters.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:882:24` | `8d0b706d15bcba4d3c445896cdafdfb3ab33e9c1745e322248fe4c5b1b998be2` |
+| `validatesParameterBindings` | `value.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:884:38` | `40e019163651704cc9bfe534abf6c242054ec8300a39491dd0bd6de325a7d71a` |
 | `validatesSelfGovernanceReport` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:11:20` | `516ca7e3fd6db857da9947413d34c220e34ae42443f1c9e8d6e2506e400044bc` |
 | `validatesSelfGovernanceReport` | `readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:11:37` | `e76d52ff99678ffbb285cf9bc05b63b4160b97b90312f397253a74056bc74518` |
 | `validatesSelfGovernanceReport` | `new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true, validateFormats: false }).compile` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:12:16` | `070ee2b4d3ee91d3428c5c935d84900793662f0b262b8f4690d06abefd913636` |
@@ -1848,7 +1852,7 @@ Handler: `src/cli.js#runGenerateDocs`; entry point: `cli.js#function:runGenerate
 
 Handler: `src/cli.js#runGovern`; entry point: `cli.js#function:runGovern`; kind: `cli-command`.
 
-<details><summary>Inspect 305 callable node(s) and 4024 invocation edge(s)</summary>
+<details><summary>Inspect 306 callable node(s) and 4053 invocation edge(s)</summary>
 
 #### Callable paths
 
@@ -2100,6 +2104,7 @@ Handler: `src/cli.js#runGovern`; entry point: `cli.js#function:runGovern`; kind:
 | 4 | `buildsCallPathRows` | `src/governance/report-drill-down-query-catalog.js` | `runGovern` â†’ `projectsSelfGovernanceReport` â†’ `projectsReportQueryLineage` â†’ `buildsReportQueryContext` â†’ `buildsCallPathRows` |
 | 4 | `buildsCommandExecutionGraphRows` | `src/governance/report-drill-down-query-catalog.js` | `runGovern` â†’ `projectsSelfGovernanceReport` â†’ `projectsReportQueryLineage` â†’ `buildsReportQueryContext` â†’ `buildsCommandExecutionGraphRows` |
 | 4 | `buildsFeatureIntentProposalPackets` | `src/governance/report-drill-down-query-catalog.js` | `runGovern` â†’ `projectsSelfGovernanceReport` â†’ `projectsReportQueryLineage` â†’ `buildsReportQueryContext` â†’ `buildsFeatureIntentProposalPackets` |
+| 4 | `buildsCompleteFeatureLineageRows` | `src/governance/report-drill-down-query-catalog.js` | `runGovern` â†’ `projectsSelfGovernanceReport` â†’ `projectsReportQueryLineage` â†’ `buildsReportQueryContext` â†’ `buildsCompleteFeatureLineageRows` |
 | 4 | `buildsInvocationRows` | `src/governance/report-drill-down-query-catalog.js` | `runGovern` â†’ `projectsSelfGovernanceReport` â†’ `projectsReportQueryLineage` â†’ `buildsReportQueryContext` â†’ `buildsInvocationRows` |
 | 4 | `isLocalSpecifier` | `src/governance/resolves-authority-succession.js` | `runGovern` â†’ `projectsSelfGovernanceReport` â†’ `resolvesAuthoritySuccession` â†’ `buildsLocalEdgeGraph` â†’ `isLocalSpecifier` |
 | 4 | `resolvesLocalSpecifier` | `src/governance/resolves-authority-succession.js` | `runGovern` â†’ `projectsSelfGovernanceReport` â†’ `resolvesAuthoritySuccession` â†’ `findsSuccessorFile` â†’ `resolvesLocalSpecifier` |
@@ -2491,73 +2496,73 @@ Handler: `src/cli.js#runGovern`; entry point: `cli.js#function:runGovern`; kind:
 | `normalizesModulePath` | `modulePath.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/call-graph.js:1071:43` | `f14086130e01fc4185bf704cbc89335e14a0818415bc29a0411242a421512f07` |
 | `normalizesModulePrefix` | `normalizesModulePath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/call-graph.js:1075:22` | `748b849e7df599cc04a8fc7fdfdbee093be40fe45e7accbd10fe445d9b009507` |
 | `normalizesModulePrefix` | `normalized.endsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/call-graph.js:1077:10` | `4a89d92f1b0c0ca316a86e3faa70d8617e178639c4048ad36ad9f46d6231d921` |
-| `runGovern` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:363:21` | `89ae63ad94b784fe581a474456afe468165748087eec93891397077bc2a349ba` |
-| `runGovern` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:369:19` | `8e37c28159032c1f4be3829ffaff36eff73a23f1670810080304de0e8b538208` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:369:33` | `0d5014ea56b724dbc8666cf0603e2e9f3f4f6450bc073fb6ee076a90708749f1` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:372:21` | `715342322e89e9019ed7ef536c1ea477119e2b4a3c6660717080659e028b1b79` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:372:53` | `763d6e0d59f99d7cff5bf239561a6df758bb55c5aaae6e0d71f384f1d1631807` |
-| `runGovern` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:373:46` | `3695cc3eed8539b58779559b08a1e6e1fb190b76a10918940b8cb953ab3b9442` |
-| `runGovern` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:374:19` | `b85d7eff4756dcd5b7289942cc24388cfbe6117f0b02704a146d4d435f63801f` |
-| `runGovern` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:375:11` | `240b0ebd5f6094294000057c3769aade691ac03fc043a7e4e7b78d0ec0881801` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:378:24` | `29acf84f0586e9612c93f8eb7718c82a034e13845deb826241ee35b85868c40c` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:378:59` | `21845e45983fd1ee86889ce5d06a17b36df20f5c0cf4c75d57b153f95c8a56b8` |
-| `runGovern` | `discoversAuthorityDocumentsAcrossRoots` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:380:36` | `43ec504cf200497b8ae51a759eae9a16341faf0ef7d2b432a282c589b07bad9d` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:382:22` | `24dc463d6b503facf6a0b29fb65a151690cd65fc370a0b5354dc3ae639c071e5` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:382:55` | `e1428fc26bea4b744d405ea16b2f5802f741f22ae2f3a9d6acece8c25772987e` |
-| `runGovern` | `discoversSemanticOverlapProposalBatches` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:383:48` | `546ac78c6fb651ccfb161eac4c57f0fe4a66b56a7a50e585937b6082938afa42` |
-| `runGovern` | `discoversFeatureCoverageProposals` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:384:48` | `5a521d7f3062eae4c6ab213e989ab358c8b2e24d672fcbc27f6c06b31ee50c79` |
-| `runGovern` | `discoversFeatureCoverageInferenceEvaluations` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:385:59` | `4351c29113bc027edf783472fe6b04b625e8d13af9b1bdc7157aafe98ccb855f` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:387:22` | `f870562a484f87a4b336c24f5f0e85975f41d1afcbde431dd30d8760a9e22e30` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:387:55` | `2d8e7980b51d7cba29beaa7de0f46ae49bbed503f93f6664dc5683c6da2ec1e2` |
-| `runGovern` | `discoversKnowHowRegistry` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:388:33` | `df7ebfbecf437643b878c96fa2df443f35590726bcdd9ae8e5b61e3c477d2e60` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:390:22` | `e2d34d7b8cafa2dbbd58bbcfdbb66514fa598ac4f30877ab29e4d2dc09f9babc` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:390:55` | `4d030c5c72996a5fe64bbe45a0d70beb945d45ec9b89406212049b2b3e1fdb39` |
-| `runGovern` | `discoversHealingDrafts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:391:37` | `15d4d3c02c8c382bf0032947c92d8c8f43719767f445e294391778efa9ff90ad` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:392:36` | `c98c1e9b574f32d733aad23e796d7d878420f0cdb202c9fcb8501da784fb3bfa` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:393:8` | `b3fb93c53fe1185dba00ca4b71b368dcc42b38ed243aa91c2df7941e1c56aff1` |
-| `runGovern` | `discoversAuthorityAuthoringContractMap` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:394:38` | `175a30525fdb4909939e1e545c97764d0c73b5506ee7bd47a10da34c3ea9a79f` |
-| `runGovern` | `discoversCanonicalFeatureIntents` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:395:41` | `4322a77bf43087d08e002f6d2ed520c9e24645feb2cdb8a3272779e5d75822ce` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:395:74` | `7ef9c09233d86f5a5fbffa42a31486691bbe3e38fb49d5acc649e45d0d3be6cc` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:396:29` | `f59200199627ae9e6efcb9440c8947cf73c9cae501f649c40339017af611ca35` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:396:65` | `db31968a5260380bf9de380ce85c27c0500a9262513f4930d6f56ad767517c86` |
-| `runGovern` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:397:27` | `6e8d0576867517d90ddcf7750193343944931b96e3248ab78d668079bcc47f6c` |
-| `runGovern` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:398:9` | `e26f3689a0c9d659c9350a2cac2babd6211c507d173e2d9aba3955ff97c7b4ce` |
-| `runGovern` | `projectsSelfGovernanceReport` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:400:24` | `4ad077d850ad2c6b8e89d8585761fbce05657528ed363a635c4bf8f3612f2672` |
-| `runGovern` | `resolvesWorkspaceRelativePrefix` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:412:30` | `070b2ff6e63d8a7b0621910d18d9b9c418288282fd6fe7044de6500e39c15cfd` |
-| `runGovern` | `validatesSelfGovernanceReport` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:414:9` | `4978afc0c895ca8053e6f05005b2fbeabc7e43fc02d1fbe7ab7cfdd4a10848b2` |
-| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:416:22` | `bcf943c90290322bbcb7a42b5e5474dfa04ef103f9eaeea6ad0c8f5c4aeba347` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:416:51` | `514a8aa62e413dfd5647db6143535c3f96f717188ca3640a0192291f5b9bd434` |
-| `runGovern` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:416:61` | `904eb3d71db0e57fa314e6ba382165675129fdadfa033f915a159f32eed50c71` |
-| `runGovern` | `outputPath.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:417:23` | `a9479b02c6e50de7c4765f7c01ad6185067a964fa931faa2672fcdddb1433fe2` |
-| `runGovern` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:418:35` | `daad3d9e00363ff8ac51d9fee1cc6de21ae52764e816aaea28e836e757f8e43b` |
-| `runGovern` | `path.extname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:418:61` | `ed9050f07a7c596a9893d150be605a80defbf450de504849b1f974725b442044` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:419:32` | `e81694f45d368941c82766cee9848e7238489bbdb73a8cb7874adced95e65641` |
-| `runGovern` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:419:42` | `68a4a4ba432bcb30ea517257fc9c3c837bfc126df53c52259b07c8c6247941a2` |
-| `runGovern` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:420:9` | `6f820de153548f046a751662cc795c885c306a4ebd093ffb77efe1ecf9852574` |
-| `runGovern` | `projectsReportQueryReceiptArtifacts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:421:26` | `40020854d0d65233a9d43bbc04fd609d695aa124e0021fc7fa79ba580f10078a` |
-| `runGovern` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:422:11` | `5e639a93baf3f55e7478f3a2b93c08a13bbc6d2c33b7e88c2a9db28460128c97` |
-| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:422:26` | `52fb6cec2ea6d1dc453b30eb95be4e9beede46a53549f557ff1387cf108e4178` |
-| `runGovern` | `fs.writeFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:424:9` | `4b7e7ece759c45ebfa8085432c5dc86d5b21d347fffac971f489f7361f97eaa3` |
-| `runGovern` | `formatsSelfGovernanceReportMarkdown` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:424:35` | `5c29fb1722a48be97717a95b56185e5c6fd7b8439637a725bc55b386dbc6b5b0` |
-| `runGovern` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:426:3` | `63b73a0bff672c1ba967322a3222bcc02e38e856c5c4334774fe1640c2217120` |
-| `runGovern` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:428:5` | `515cc248c78013a6c350535aa9cb2a215cec08b2da6c76c64207ec87b6987fe2` |
-| `runGovern` | `formatsSelfGovernanceReportSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:428:26` | `d28c459a933288238dcb29b467c553aa7ebc751d083ffd83189058493355222e` |
-| `resolvesWorkspaceRelativePrefix` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:647:20` | `4e692662e6d914afbafdd679f41481a1868c67051ef23f36d4e6a5e6726790d4` |
-| `resolvesWorkspaceRelativePrefix` | `path.relative(repositoryRootPath, workspaceRootPath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:647:20` | `17d610ef69d122b56d6f41a7d0eb9c50f7c7724d49178bfd2c22c7d8d523eafc` |
-| `resolvesWorkspaceRelativePrefix` | `relative.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:648:32` | `3ccc09696cc6a6ee5fd4613136139615154231fe0bd1df1f348ff1d5fc88cbf6` |
-| `resolvesWorkspaceRelativePrefix` | `path.isAbsolute` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:648:61` | `01557b7a7aa670ae53874d8bb73e258cd67b755226ce25aac075e67d21f2f6f7` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runGovern` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:365:21` | `000f875eb28c9409eda6b14c536cbc9084dc4e3e42cad7cdfcee9efe93808427` |
+| `runGovern` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:371:19` | `2ee6301fbb859cec70e34f356f6d080d710f69950d8f25dc3d53ae49e0e3ddc4` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:371:33` | `975b816b859fe6e3c64dea959a4bd451f63df282e8a7ec91629c3e2ee0ba3a9d` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:374:21` | `cc66814be611e687cb7434a5941b93486af10aa3f4c3ec580acd5abb28565a1b` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:374:53` | `bd0c78505e9b55b48df33836841e75c4c1643bf0f1ff63e9339cfbdd6c3aaca3` |
+| `runGovern` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:375:46` | `9a8db003ad89efcdfe303d0a2af4fb2a2b8ed81380c622307e7e195462f51e04` |
+| `runGovern` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:376:19` | `f54fd4795126595c79f85b9928cd730d874dd4ab54bc36c0da7b33b48d7d055a` |
+| `runGovern` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:377:11` | `e59608fa7efec687a0f35b3c273bf7d65895e97afbb0fed7aed55541b7682f6b` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:380:24` | `d23403b36f4824fa5d1474055ed2fe419ebb5bbfde3842d8c0f6ddb892943f62` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:380:59` | `7540fc1ad950a2d4c7179d2448662b051b04550b406cc6a535fdfdeab3f1907e` |
+| `runGovern` | `discoversAuthorityDocumentsAcrossRoots` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:382:36` | `75b5568b9a958c847a505a0e9120208e2b3a3a3a53eab98886b063dc7aeb8022` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:384:22` | `bdcf5d8dd1099b7c22f7c1b3fde3021b6dabdbbbf0ce757c0065b85caec0c202` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:384:55` | `87be40f3eeb4dfc5ce023eba828ed4b2a9ca7d0280d1a1106a61c4d78ddf354f` |
+| `runGovern` | `discoversSemanticOverlapProposalBatches` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:385:48` | `a4833a11d200a6da75ec50ce67f978221974f14c22a0353f1b286b4be3d7fc27` |
+| `runGovern` | `discoversFeatureCoverageProposals` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:386:48` | `3722aeaf5267756394593594571fbf964bfc27171407175d9651c9bfec153014` |
+| `runGovern` | `discoversFeatureCoverageInferenceEvaluations` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:387:59` | `e3d30555959bc6f62d5a6d516749dcc088a6960b00070658ba2635a46a2ad2ab` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:389:22` | `1d79a970ec8120f85c9a644ebf10d38a77b627b82f0f6af66aa381d40711b0ba` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:389:55` | `284950e170c2ec820406dac01d324a1f4295fccc835aa8575904eb695cf4efbd` |
+| `runGovern` | `discoversKnowHowRegistry` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:390:33` | `4bbd46a6a2e1efad9d8a7e712b9b17e3d2dbfd47249b51fc33de08c762458067` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:392:22` | `439e6d53fc34d2878251f8407ee085c56f21cdf1ff6e0c802142e813d52d2516` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:392:55` | `d719a0648bf2daa610d196ff5a7febfab94b9daef6b35ca00d07d78afaaef76d` |
+| `runGovern` | `discoversHealingDrafts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:393:37` | `7b628a489c457a586660fa23a67a9b2359fb32673385b25bfc01ab6e75badefe` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:394:36` | `0e01776c21ab432ede9dbfa1c6d5a2cad42c7c941989d1d0066c78f02a070fdc` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:395:8` | `4bc6ac27183ca4d68fefd31a686b0cb0f87f829222040c914de299488995c78a` |
+| `runGovern` | `discoversAuthorityAuthoringContractMap` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:396:38` | `16d7d9a1f415026503955340b519cbd9a20f3fd6e53230e6cab9ce82e6f4766c` |
+| `runGovern` | `discoversCanonicalFeatureIntents` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:397:41` | `f16b58788ac47e50afd9bf093702b53aba7fcf396479ca39ce616d231d9db1cb` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:397:74` | `dcbb9bbe38250d79527da8c4c607f4a9d5c6aac8dd6f34a1a890ec261e8bd26e` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:398:29` | `79d449b0dea277c647b41b073ab510d0f82e6b25680d5b9a6977f5e6d7ae9665` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:398:65` | `38d66811a898714062ecaf6b64ed13c45216d7347240f8009fd91fccb5e341e8` |
+| `runGovern` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:399:27` | `325132f2877e5b22bc7ed568699e28188cfab363010ebf964eba40e33df00ae0` |
+| `runGovern` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:400:9` | `10c95bd7ece6838e6a2c6c11e93a1b5c6314eea99760e2173f6aa23304f4f41e` |
+| `runGovern` | `projectsSelfGovernanceReport` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:402:24` | `070666dcdb410568dbe7c15f35660b3ae9fdef99493d6ccc68d7649bb53d24db` |
+| `runGovern` | `resolvesWorkspaceRelativePrefix` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:414:30` | `05d61c7839437169ec95a46d94242396b2e9ea19472689133d39ca7db2868c87` |
+| `runGovern` | `validatesSelfGovernanceReport` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:416:9` | `89afb4ad8d225402330d53ecfd2a82928114e5556d326d534842cd37ce5d6ae6` |
+| `runGovern` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:418:22` | `494a59d857375b0b373f2dfc54ba1df5e7a048efb84c652a3b8889664ad15d2c` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:418:51` | `6d50f7b93bf05b0f46cbb2c8055a2ba78728309966d89f0a36ad454714b773a9` |
+| `runGovern` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:418:61` | `ec84a343df5697f1fd240ceb0af3819b962a4a134cda9f9c12f6b3fe319cb170` |
+| `runGovern` | `outputPath.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:419:23` | `fddea8d3103995ba22e65a922075d181df9cb26310684ffc24e5752cd951012b` |
+| `runGovern` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:420:35` | `ed3686fa3563df83d164cc2a0b70c3d657f539c8978efde04b04170030fb648d` |
+| `runGovern` | `path.extname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:420:61` | `26fb393408a7c6d728b91c14db51adc1515f84c1cbba1fc95613891670fca4f2` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:421:32` | `0c0b32ca60870ed16b018f568d315c449ee5ce6738a81d5ddb7870a01976331d` |
+| `runGovern` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:421:42` | `82926e4905a04bda8e3c0c946eccfe01af0034ba372c16c9b511782e56bf7f42` |
+| `runGovern` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:422:9` | `669d0b66d3eaaad9f2b0cd149890cc482e6cc11da69a402a8d7c6578db1105fe` |
+| `runGovern` | `projectsReportQueryReceiptArtifacts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:423:26` | `80fb0602e75a235c475663efb69eb2496f44d190065053511bbe50dd6f2494cc` |
+| `runGovern` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:424:11` | `82c677d8fb9b700b822625da9f1447fcc66a7f3cdb33db8fa7ae96ad97b80534` |
+| `runGovern` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:424:26` | `c2677862652e13ae0db44f5dba46abc03055f22b2ec7729118d5f450b8303225` |
+| `runGovern` | `fs.writeFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:426:9` | `352f447c26f754f4a5a69e06f8fb10b419da4a2cb6dfa2fb01791b029f368043` |
+| `runGovern` | `formatsSelfGovernanceReportMarkdown` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:426:35` | `cf2e1e1b7d5028fbd6ecf65f6804d56c409e7652d4bd25ce544bf12713ad7dae` |
+| `runGovern` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:428:3` | `621556eba92850663b9a8d556bfef17874377dd6e6960c1e7ee9fb19b766a9b3` |
+| `runGovern` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:430:5` | `23f285a1806eba496c98798d58119a1303a5c0e7926a8bcde787555edd6d18eb` |
+| `runGovern` | `formatsSelfGovernanceReportSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:430:26` | `7a4ce341a5c99e4a1e058d380bd8f8f0931e396d8306b072bed84542c47fc9ab` |
+| `resolvesWorkspaceRelativePrefix` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:668:20` | `3e51c6f2c58a3d5aaf6ced0b6cfbf4a2a378eb887d3bc2dd1777ca702f46fd1b` |
+| `resolvesWorkspaceRelativePrefix` | `path.relative(repositoryRootPath, workspaceRootPath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:668:20` | `100bafbb9974de4966b072e722f604f60248f13f8abc6f718b246af7f4b8f61d` |
+| `resolvesWorkspaceRelativePrefix` | `relative.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:669:32` | `dc2621fb0d1f4d00dc4dc6dbdfe9a19e814b22d76b9b28a899a63c60cecadfa3` |
+| `resolvesWorkspaceRelativePrefix` | `path.isAbsolute` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:669:61` | `63b272ebf7ef4ed2874aa179af51fc577186e56c7f1f3825272265971ec110c5` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `projectsDataflowFacts` | `ts.createSourceFile` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/dataflow-projector.js:10:22` | `0e9b1e9077beaf8dc98d07d2fffcfec48525023963c78444c56b2b0e6ca7cda0` |
 | `projectsDataflowFacts` | `scriptKindForPath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:10:98` | `8cc6338c528433d9b06801de05da16fe15be2cec0cf59c609125f6b9eaa70d3d` |
 | `projectsDataflowFacts` | `buildsLineStarts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:15:17` | `bde8a6fd278ff78cb4abce571bd6fa1ca9f2075d6b424b34bdc2ae5ebd1cc70e` |
@@ -5170,101 +5175,101 @@ Handler: `src/cli.js#runGovern`; entry point: `cli.js#function:runGovern`; kind:
 | `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:474:41` | `d703a7062378f3e8933a010a35f8828458790817af5fcad91c51f9098661026e` |
 | `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:484:10` | `5022cd3e4b6d5ca424843a1f310d88cf877e0dbb77c9147316127656e7fe3ca5` |
 | `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:484:41` | `e948f81c5214557a596976844feededd113696cb2ee9180265040b81c54d3043` |
-| `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:493:10` | `0269f43827d4d4a31b0520fddd6bccd24f56d6dee8f06f8a8d6fb42f6aecc233` |
-| `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:493:41` | `ba8dcf329a6778d87e5f96dfac68e22cf608d327827b78bcc084423172f8339e` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:495:22` | `6f5d3bfbc419fe9fa7c007f354dd5615127fdedca3a0ef912701e8e37742764d` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:496:24` | `cfa14899802b2bcc0726691dbd5872584a45afa92b112b35c22529736555a172` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:497:35` | `07b0932c3ba7aa981fcc376a141c9c0eac97f45132412b980fb45823eafa263c` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:498:31` | `607159195d86d1c6bebb425c8093387a8bbdf501a7672f2d6c3c33ee43910b2d` |
-| `reconcilesReportQueryLineage` | `unreachableCallableRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:502:8` | `bd7f8655939ca54033aafb0592327522996982e9847db3d75a24727d7f0973ea` |
-| `reconcilesReportQueryLineage` | `unreachableFactRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:503:8` | `742e4a653e888c8aadf928675f6a23b17316d7b36c76398c728dc904ad726af6` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:506:23` | `4c142d6f990248f096518e3eba733ef23ebd9b6d82609c22560ae778c12ad102` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:507:22` | `5089a411611d2f79ded1525701c7c537bcb79560cfd5ce75a0212a2d656670d8` |
-| `reconcilesReportQueryLineage` | `bundleRows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:508:28` | `c778dc05a893831f5c4c2b3add88f7b3123dfa3293885ccd3b01306f314781a2` |
-| `reconcilesReportQueryLineage` | `lineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:509:35` | `766305af2d012fcc09975da7e09bb7915b721daa68172daff7eca79d88f6a668` |
-| `reconcilesReportQueryLineage` | `receipt.result.rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:510:13` | `2d7f28274d2a0723a57edf320950823b91e56404314242c2f129b1be02a9398a` |
-| `reconcilesReportQueryLineage` | `receipt.result.rows.map((row) => row.resultRowId).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:510:13` | `b3f23ed52b2a9239e352b7b93eca626d95313260d5a9a842ff34361bb6a7700d` |
-| `reconcilesReportQueryLineage` | `authoringRowIds.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:519:20` | `a4047b4431e91a7f8e94ec26dbc64fbeb7bd2e272e5a866dcd63c3cf8bd2e220` |
-| `reconcilesReportQueryLineage` | `reference.resultRowIds.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:520:20` | `f39b8c733ae589e315af8a1466e60f134691329e22679ee9c1120f309e1d38df` |
-| `reconcilesReportQueryLineage` | `rows.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:520:66` | `82f8fc4399417bfec3ff561e4a065a1c863226908b8f1b701cee7fdbc9836cc6` |
-| `reconcilesReportQueryLineage` | `bundle.queryReceipts.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:526:10` | `f97bfa6d2ad6608575d8500011785758058f037c3392f0c9cb3138713649acdb` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:528:11` | `182122853698da9d8d9a0b0b3ae82b1a0dd37b116b6db7ffbb6fd0e2b133b023` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:536:11` | `2aa52c14209111eb93703d2826d6dd0789318ac19ae3118e79313ada5812790e` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:540:11` | `0a373d20783e2162f56344cef6ebb5aec4f654fe0d507d148fc67e61a6326f1f` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:544:11` | `e71f0d9436b44901e61591d62184304ca72c9e3636203c3aa514140ea313413e` |
-| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:548:11` | `5ab084165b6d4a45624f3ff242aa6f698743850f1ad6fcc420306ce5b8b0094f` |
+| `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:494:10` | `d527ba1da00ce84f04847dcaaf9894a98dbd740c663171d059d6c9a73b1df44b` |
+| `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:494:41` | `e66fd763428ee95418c483fd4030790e7751c46b7f3cbe49266d76927b4d21dc` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:496:22` | `401c136fce617e7c90f3c9324ce9ff7162c0c16b8409698582bbec88c22cbefa` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:497:24` | `c15519b6e897d2ff6e3777a70149fd2226b7f9339cbd5a37bf7a60cff6a3b8c4` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:498:35` | `d9faf22adf1aca9b1853aa4173364a0ae0b3bc27d6cb6625e0179c4098bf5ac7` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:499:31` | `60a7d7230f19c2bfd8913d8a4d62ab2f35edf32350c310d329f16b35dd4ba733` |
+| `reconcilesReportQueryLineage` | `unreachableCallableRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:503:8` | `2fc3b462a8ec820910fdc05e6240c31f345804a5c37bcd81e76f264aa6b287b6` |
+| `reconcilesReportQueryLineage` | `unreachableFactRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:504:8` | `458c3f295cb0a449bfb0713cc12305b09928fa8870fbe6779bd389f3f08eb38b` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:507:23` | `f50e6a09bfac9aff28997a6ae2bd1c6bc05929cb33d78a0aeec214a4a568b825` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:508:22` | `974f47bb9ac689118ab02817bad0695461ab7d79612e0d24748194216c56091d` |
+| `reconcilesReportQueryLineage` | `bundleRows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:509:28` | `ae69d7ac40ed4c3d6ccee33bb008a30a73d7eb7430eb610fc045a19189d97173` |
+| `reconcilesReportQueryLineage` | `lineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:510:35` | `8732d031922dc1dca2e302b942001ebdb7e6bb89fc1320dddc6845df12f9a2a5` |
+| `reconcilesReportQueryLineage` | `receipt.result.rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:511:13` | `9db09ae3792ec347bab3ebc02838a16bd02abe0d49433b27fbc663dc4954a896` |
+| `reconcilesReportQueryLineage` | `receipt.result.rows.map((row) => row.resultRowId).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:511:13` | `5c770aae6a3eb18e569b1621358b53d96a8fbf7787bb976265c1447c62de24e1` |
+| `reconcilesReportQueryLineage` | `authoringRowIds.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:520:20` | `8ceb557eb3a4383e556be68d7e759b6ae92bf5a573a715b608d22a12b27dc53b` |
+| `reconcilesReportQueryLineage` | `reference.resultRowIds.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:521:20` | `a9e007bc17b3be32ff00f79d85dd62fbe4e2812ccbf7bc5c75ef4d7e6316cf0f` |
+| `reconcilesReportQueryLineage` | `rows.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:521:66` | `9a127fa37073e5c8f6058631581310c5209051b6d97cc213750ee04fecc75bb8` |
+| `reconcilesReportQueryLineage` | `bundle.queryReceipts.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:527:10` | `2f00f4c44185751a2a8d9c2728bdf8c9fea1f2d1c7045a34f5ccffa6d71b1cd5` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:529:11` | `ad50309d056d6d79d98847d11d91d5918ad65cacfef773360d3cd47ce386742e` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:537:11` | `a74dcad002f864d830f10b08d633bd77db15f7b59883e87f063c7e8701fd494a` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:541:11` | `f5e0318c0992c7ec795ee8a7109be992f314d0dff3e1847d27e64a6df17ba0ba` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:545:11` | `a8288a24d6f865fefa1a7638a3854c2bdd3d46c102abcd7a625aa3d2cc86b152` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:549:11` | `a32cab9e66b00a7a35c97948b93b36800e180ca9f7b92342d214af0a032ba51d` |
 | `reconcilesReportQueryLineage` | `[
       "missingQueryPointers", "unsupportedFactualClaims", "staleReceipts", "indexMismatches",
       "scopeMismatches", "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
       "deterministicRerunMismatches", "claimsLackingDrillDownPath", "brokenDrillDownQueryReferences",
       "invalidDrillDownParameterBindings", "drillDownResultSchemaFailures",
-    ].some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:560:8` | `7c540cdb2d0a2bd42296507173e23efa0c7c3211a56d80e070c5a4a33cc97618` |
-| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:569:21` | `7dec068da834a56d6e909aa042983a4b74ead1048cc43633ebdada4689a509ac` |
-| `reconcilesReportQueryLineage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:571:10` | `2dd004751051bdea0524b3efbc17b0c6a4602fb2d090d21ee9722b7841af0d7e` |
-| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:574:47` | `3b4b277b7d550711be0ac0915fd95736a568bbdeaf9a471cf4ee08ce15a9fd85` |
-| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:575:22` | `c5bf33373d238c459bf2b905b87c88d00b5a23879ad32214cfc75bcb237de03c` |
-| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:576:21` | `e275963cb195a3d301304e561beb78ca8419a5fe1481e789848f6a6cc0a7d524` |
-| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:577:9` | `b7f81596767e4d8b7065dec42d06a3fd7a2dcbb80452556e1d0aa24afc82cfdd` |
-| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:577:24` | `50926f67088d619db11eb4f26d9a75128ef441d478eab021cf88920f4dd3cbda` |
-| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:577:53` | `e06a922ac1aa9acbf09746269adda3944ebdf01b4f697f70d9e0de001c4ddb58` |
-| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:577:68` | `ba9a57da969201c19809d1d5b693ef2bd7f5dfa855db3da67fa529567702c3e1` |
-| `projectsReportQueryLineage` | `buildsReportQueryContext` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:588:19` | `54d24fc82634fdc8bbad8145dcca256a4d1ed657ffce3a5d506d21fb361c4ee4` |
-| `projectsReportQueryLineage` | `catalog.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:589:29` | `9ad6f9aebab00c9694cb354daba16a4459cebd2023ee030689e3c6a913c3a4c7` |
-| `projectsReportQueryLineage` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:589:103` | `b5fbea402735fefe02fa532a30111740d3368c8de7ca154d15deef5ee5ca3371` |
-| `projectsReportQueryLineage` | `drillDownsForQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:599:17` | `3f4b369e059fe4bee0015d6a7b296232f8130b19a260f850316e33151475eb4a` |
-| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:603:16` | `affe5122d4a98c93d605644ecc487b65a0b0b956d402af8e1e9dca2fc2ebba3c` |
-| `projectsReportQueryLineage` | `catalog.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:605:25` | `273f7c9c2048fafc80add6901f4a9f374f5d0cbcce13f92dec5cb6ae00589c24` |
-| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:606:21` | `7e82f7efc3f07d5aa8a4d1654c9a3ff255fa1bfef41c535e03ac39407dcce139` |
-| `projectsReportQueryLineage` | `query.rows` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:606:37` | `de5f729439d9952280839597473c3337dcfeeb570f835dc795783b8254a2ce01` |
-| `projectsReportQueryLineage` | `decoratesDrillDownRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:608:9` | `b1267557cb22fb658bf46ba1b605c0af746cbf84e279b19f256c8b753cbda5f7` |
-| `projectsReportQueryLineage` | `decoratesBaseRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:609:9` | `1a166d6d0dded8bc09b3a05accb5702790acd77981f0442d81910c53f3d92c73` |
-| `projectsReportQueryLineage` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:610:12` | `ee0e858449ecbfcf1821a71d23e865c2d2e1edd5ccf5f116c2f606aa49487e17` |
-| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:614:18` | `92dbe1c7b9e593a8a97bd1690133e536090170c13dd822007d335c708a356535` |
-| `projectsReportQueryLineage` | `drillDownsForQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:617:19` | `450f86ed9fdc9f35526cfd22a7b9b6d74b1becfb3889507faa339d47dc9c97b8` |
-| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:621:21` | `85d386029f127dd4a2be1d849d7d7bfaeb8c66a1c2eb8c04be45c9cbe719fbe3` |
-| `projectsReportQueryLineage` | `catalog.reduce` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:626:40` | `e83e338d75059fc2dbfe7fb1dd7f1dc80cbcad82a3f62943bc2914b2ef7098c2` |
-| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:627:21` | `8fc20e4eb58686a196f1f59d9244529736e0741a0e6cbfa8b2d533eec73dd6b8` |
-| `projectsReportQueryLineage` | `query.rows` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:627:37` | `055625334daf28abc81dae10b13d0d007fd31b3b92fd2978049c90924d68a1c6` |
-| `projectsReportQueryLineage` | `decoratesDrillDownRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:629:9` | `83ea153f88cf46f77c0a7bd5318df7dd46c5a166c31b20af55f259551e911d47` |
-| `projectsReportQueryLineage` | `decoratesBaseRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:630:9` | `6d10e57855851b8c79ac758c2c9576da472a86c39428e25cc7f0fd90f2aa64f6` |
-| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:631:21` | `94a3d91e471b32d8dd8345076a9192022e6e3f106720cbb2c2a786737aad6405` |
-| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:633:76` | `e809f133bfeb0aa7420e3f6c00ee2f02aad5c1bde5bc06adbf525678d15a3f5d` |
+    ].some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:561:8` | `5ce2e540380a837fd6be367753141083803613e096748b6740db54f1fdca5955` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:570:21` | `aa437f6c9bc24f088c27797ac706d49539c8e2255e082f4dcc737966e8508652` |
+| `reconcilesReportQueryLineage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:572:10` | `6587fbfd8456a4f665e2055637eea269e79f9f9a41eda2b12439d9fa6b15317a` |
+| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:575:47` | `20798f89e52fadec1abc08d30f1ced928a87b6464c95314f3164abee0f01e4d2` |
+| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:576:22` | `68ad4879f15ddd355e1b63c84afb2877a0a8d0d2e5dbf93dd01618ddeb784ac2` |
+| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:577:21` | `e8f04609b8c6d5c1043c3c251e1b052711b2b908457ea11ee52646d7652ac529` |
+| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:578:9` | `ed7163e406c8ee570afe775dafdc7e72495b1551c996d48ff2242ef85b4d00e4` |
+| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:578:24` | `5fbba1bd2d7ce60b3dc648fef30f7eb1df87078e6835c74ab42c9d28d7c1c5be` |
+| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:578:53` | `ce3dd3a2f2a87f9476518186fe2da672f956fa234a0e10659ddcaae595ae7318` |
+| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:578:68` | `86207f4a92eed2addc8320381139528c7da3dbd3c750ff5ce87fd2bd01719ec5` |
+| `projectsReportQueryLineage` | `buildsReportQueryContext` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:589:19` | `18c64c254c9b4f5d3980d1c176e84c05013581a3780f344de3970d39f16f2925` |
+| `projectsReportQueryLineage` | `catalog.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:590:29` | `ebbc5d28550ec0befa6dd90e7331fb3b9fe9a9d674a0e4a3a6b3955baf212bcd` |
+| `projectsReportQueryLineage` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:590:103` | `8766ee1dd2ff9b8e40babea77d51a168d86cbad653bf556cb8a5fabf7ef33edd` |
+| `projectsReportQueryLineage` | `drillDownsForQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:600:17` | `a638e4e6b25d01016a2e3b9c947a5b9ac0a2030f31be1437b2da437f0c7b6aaa` |
+| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:604:16` | `25e7c7530f74b722a7b11e8260f945e36389c2d96a43acc3f50ca729a328b1d2` |
+| `projectsReportQueryLineage` | `catalog.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:606:25` | `e87ab9ffdb7cdc8d33a36e3af63ebb83dd8eb13a3427363901cba9407faa1e01` |
+| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:607:21` | `1add9586a15d6ce6ab5a57e4a2b414517601755f940df8c0a915a4e16e33eab8` |
+| `projectsReportQueryLineage` | `query.rows` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:607:37` | `ad72a016ee84b651ff1cf15fab2dca67370b345c8de20fdf328195895e18d330` |
+| `projectsReportQueryLineage` | `decoratesDrillDownRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:609:9` | `83864f5a79f45e28c79353ab82ecb7ccefb2489c03baae898cc8fdb0952f5465` |
+| `projectsReportQueryLineage` | `decoratesBaseRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:610:9` | `d73eec93069962cd5ef186f3f917470cd5197359cd800257ba891e41976b6173` |
+| `projectsReportQueryLineage` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:611:12` | `a5cabc9abd7e756f2bdcd65dc93ab764e5fe550527036f66e1975f830d7de3bf` |
+| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:615:18` | `c9d4af8b8e289c39181e7c4680920a7f011df8923ffc1b4ec2b1a5cc53a97c76` |
+| `projectsReportQueryLineage` | `drillDownsForQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:618:19` | `a6383c34498a472207d3a3e1b27252d8df9e8ea7b40a66b1a0538a87b7641e08` |
+| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:622:21` | `e47895902517f367a2f66016818ca24fb46daa7deae8c30660be49734ccb0335` |
+| `projectsReportQueryLineage` | `catalog.reduce` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:627:40` | `ffaa6d4bacc5f6f1159fc0cdd0f4d009f6a52c6209dcac0272e08703c94d59f2` |
+| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:628:21` | `c3208a863c2fbc6bb2e69845894e4685af6dae20936bb29cc7a562266ee04899` |
+| `projectsReportQueryLineage` | `query.rows` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:628:37` | `3690fa7ff0701bf5ef2a11d24e70e1c6cf7c7bcffbe8ee7bd419c4053e4ab502` |
+| `projectsReportQueryLineage` | `decoratesDrillDownRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:630:9` | `1bdbf3e15fb8f68ebaab44f7c5f03931f37487c858b4e3a7c1b83dc122b3c485` |
+| `projectsReportQueryLineage` | `decoratesBaseRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:631:9` | `ba699d6317a0a0f32b5a71f42d868a0e0fe95bc7a0ae0ae693d1f992f88dc932` |
+| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:632:21` | `deab5fc0b4a32d6b597b5864243f8a197f38a59ec515ab0f595e65eb27fed581` |
+| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:634:76` | `e61605ba49e26248352270e990626b5f407d30adb6c194c15bb8f45c4cb688ad` |
 | `projectsReportQueryLineage` | `queryReceipts
-    .find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:633:92` | `638299294755ea88fd036fb6646b86fc64c3d827df95992cc5e00d9149b81f58` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:636:8` | `6276ee251f95fb6d7ca56c64406fef45e1262330796053710a40f82c455828e2` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:637:8` | `2f491a869633715e544814a54e3b93674a74f0de11137b1c98db18cbcd7a4a0c` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:638:8` | `fca4d24c41e556f268a1aa7d784305e8881c0da4ef512b39292c8a3de7fe3133` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:639:8` | `cdc36d64e19314de3c8012f4e08a888345118a7996595ffa89e21b373fab3d03` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:640:8` | `98f655c69e97dc3029ebcba80fd83e8c46719c5358f9887f0331bb099e747321` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:641:8` | `6a5500c10e30ca5be409108c4d6ed709172591157f71d6cbaaa1fb21c1e7d738` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:642:8` | `213d5f9002161cbf764e8696def240934ded725fbbc0f4c7ace0d9a082122c25` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:643:8` | `0e64738cc77e48f6392c1f8ed848c2f03930771a1a43fce63476ace348fcf41c` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:644:8` | `26345cccebedbc5fc46253653ccfb5882eb508aa3bbad1bb9b5c4f14befb1d5d` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:645:8` | `0cd1f88182714d69dc9181edfcd14b809a034fc122df04fccfcb8076b9c7196d` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:646:8` | `18c3502e5f4d6db0180a9ecfc72392a55f13bdfc915f8444d57495e66c926120` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:647:8` | `fee337e635ef6e23f4061153872491572a193a9ac43382f4f08dcc70f2321670` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:648:8` | `6a5702b42f151e2542ca5a8ee8928ba60e1e6c4b57302ba41232c24fe11913d0` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:649:8` | `7f15d27b129d79293eb96e51a4e60bc48401b5fdf1640def48333ae77edf5c00` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:650:8` | `0d1f73411aef3abf85f8b2c5305c2311b817c321f764cb651ec2758a24018786` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:651:8` | `5f22631af133eeaa250489cb67da85efac88a76a5e1d57f220a5afb3d3cb55cd` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:652:8` | `a344e4dd42deec46effd343f8bd58fd1a4d121cb231e1ae0c7797f63d3b2cd73` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:653:8` | `2a23d84b74f993ab1ba15da6cd33926e5bdedc480b0920435558c071b8253373` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:654:8` | `a580bb83ce2b1bb5718cd07d0da3c69f8b79c9b71db46643ecdbc50a39092f26` |
-| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:655:8` | `7d18384b36f8817b4de9211211ca4b02e91ac6b1d77a48d0a6ab5d8b19235c15` |
-| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:660:24` | `9f6f71e20229332630a1a756f750b9e403f3484ca65bc778af4d29d9f93031ff` |
-| `projectsReportQueryLineage` | `claims.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:662:38` | `3f7dfa98ee8fcb5071f439c331af832063789d24979529344d8e20b1b3d14253` |
-| `projectsReportQueryLineage` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:663:19` | `56c6f49943e9cdd1a9906c30bdf2852593b4c92b5c9bfcb8fab042a826491a3b` |
-| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:671:20` | `61956db06b77fee27b26bec662d7900781e11f6b2e0adcd391da37d630b0c11c` |
-| `queryRows` | `report.queryLineage?.queryReceipts.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:703:19` | `7b7b5c86917e28daaf8e3cb6369b3cb6538945144813804dd32fb90c903459a5` |
-| `queryArtifactFileName` | `queryId.toLowerCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:720:13` | `e9c1b6bdc010be2871a7cf71886c038c6ea46f47f2d1529ea20a8d25e1e27546` |
-| `queryArtifactFileName` | `queryId.toLowerCase().replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:720:13` | `1e00cb279f22e87cec666b0ed3222206c4f943f92c23e867af4dad5a0b31fe61` |
-| `queryArtifactFileName` | `queryId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:720:13` | `8d912efe6100c3f03964ce44836cb0d2755e8ba2ffb605c20984816bed00832e` |
-| `projectsReportQueryReceiptArtifacts` | `report.queryLineage.registeredQueries.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:724:33` | `db36897792775a4b5796f7564760d639fd7d5dcc73718f0133cd7dfe04bd82b3` |
-| `projectsReportQueryReceiptArtifacts` | `report.queryLineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:725:10` | `8adf47ee1477734f120eb6000163f6ff1a30314140748e8794e99c82072bf1d1` |
-| `projectsReportQueryReceiptArtifacts` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:725:61` | `ea35b449f0433fd47c55c0856e983d121108b8bfd13703d8ba036187d9fa5184` |
-| `projectsReportQueryReceiptArtifacts` | `queryArtifactFileName` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:726:15` | `9a40c022b84510b060abe749a6ab4c9139491d0a84c912d7655230c55ef06d79` |
-| `projectsReportQueryReceiptArtifacts` | `registrations.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:730:24` | `d2b1571b0fdd220af2836bb8fef91a70890e575dc1d1b4e01193f4c7cb180dc6` |
-| `projectsReportQueryReceiptArtifacts` | `report.queryLineage.claims.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:732:15` | `78d87321b6e65c30648da8edbbc40805619b2f22bf59899db82f87fedcbb4cae` |
+    .find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:634:92` | `8a845d941d23af03139f268c7c72e8860c7b369c3724bc405380d12638edaba5` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:637:8` | `6c137f9436faa4f1704c3e48f9ab382ebc956268b64a8bb28f9aa0d9c7866de3` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:638:8` | `ae2c308ad4e195fab9dc4583f5786f8f653d57856c582f6e46ee1a73ad1418a8` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:639:8` | `53e0f8bd21df48d835df530d496810b2ad5fdd6f26157fdd00285d4f9030a393` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:640:8` | `050ced5e9c1a04cd6ac02b1c4c999c95e94da1ee1cdcb91470295beb13fbc346` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:641:8` | `51d2c596be8a87be93f7d767d111d4e0cb6bb1f6c62638422f23afff12b8cd4b` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:642:8` | `20b4a27cd11a203a11708080f3c94a379f45236b0db9d54e3782b21e035c2fc2` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:643:8` | `6bd6f5cb56f78c675ae5f72359f49dd68d5dae9205a5d6504f59a464ba632255` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:644:8` | `6f6422b9b6eef3cedd7c20280239c2011a17bc631b4ff8addf761dfaba37f89c` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:645:8` | `15a8fe850b82fe4db1c4adf528e5e2da3383f58fe03568924d83012ae8f962cd` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:646:8` | `da01e8ed831d401bc7925ae8bed8c1961d8f7b37c313f8218db4de80fa4a312b` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:647:8` | `525a8153dc496a55944faa5bfe63203fcc5489fba4eb551bbd1a14569f307a6f` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:648:8` | `d8b5811b7a8eb2a5371bbd78d4f81d86895a6553d5f33c204294a9457108633c` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:649:8` | `1b5f607718bd49464afaf3520ced06b5ce05563c7ecce4ea3824dc4ddd340cf2` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:650:8` | `ce4a785c5cf3839bd8229587f05df3c42ce06e43e645c0e99877bc82f74af20a` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:651:8` | `bb8a476b80b42872ee4ec85f648bee90788e1710eade5573ba8f1ba63f9a1ad9` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:652:8` | `81b4ef7185b039dba066221eed77d1d9d0d16c7c728f5ac8952b0cf03b20a7ab` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:653:8` | `565c816fcfe65740ec8046927ad4696980c47dd480c518dff3bc4b1baedb9bf1` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:654:8` | `69299db7e7c8c2303d356b58eb19310799118a1608c2dde147cda4191cd2ea8e` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:655:8` | `2472916c90919d65bcca3eefff1e1ba1aafb5e70aae008c457fd6d46ca7b33dd` |
+| `projectsReportQueryLineage` | `scalarClaims` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:656:8` | `f8ec65446e78919192cfe28630c55aa0283366a08098338ad876e21bb801b5df` |
+| `projectsReportQueryLineage` | `structuredClone` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:661:24` | `a7ef6d803aea09a693571fb4cddab66e84b0382fcf299b25ea4a3ac076fa2f64` |
+| `projectsReportQueryLineage` | `claims.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:663:38` | `119f7dc2075e28979c2ef2aab22f4687ad3eae97f3101cb7cf97ebdaef06e535` |
+| `projectsReportQueryLineage` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:664:19` | `04ca1ac67a15dc39797675f0badccba8c7498ccfc5cc47ff8556fa3a3e2f5013` |
+| `projectsReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:672:20` | `fdd410a1c319f1976e017a7e05ed69817eb32e724c93c7e540bb5a9298af6ccb` |
+| `queryRows` | `report.queryLineage?.queryReceipts.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:704:19` | `d38f92886b07f576b45c63a186f188137f558fde0db260b7a791f748e7cf01e3` |
+| `queryArtifactFileName` | `queryId.toLowerCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:721:13` | `4385820d60b0719e82bb849ded15d305af9847f333626c7761b836f2e90a9745` |
+| `queryArtifactFileName` | `queryId.toLowerCase().replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:721:13` | `89cbe2b38a7af61c49c98ed925c6dc4f13d8d3ae3ddbe4458557d72d4c8de4a0` |
+| `queryArtifactFileName` | `queryId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:721:13` | `867e8934399155f0b92d655f38b0bc6b5866ce95349948f7d94b7eef3d101dbf` |
+| `projectsReportQueryReceiptArtifacts` | `report.queryLineage.registeredQueries.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:725:33` | `5d0faaf729d802f8d485bedee15af39d27ed232c99c68547489e821a9f2c8dfc` |
+| `projectsReportQueryReceiptArtifacts` | `report.queryLineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:726:10` | `11c685740e2408dd0b5b18c11deae6a2c199102e28a20b7f8613aac97c99b97f` |
+| `projectsReportQueryReceiptArtifacts` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:726:61` | `e479b4ce0146e817acddfb9b4a5545270f84e429215bbf4535b5e953fcd81a26` |
+| `projectsReportQueryReceiptArtifacts` | `queryArtifactFileName` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:727:15` | `4864a8bdbc3e03ce1e1a037d644376915a82cae00b706f12ee510e4f76888d46` |
+| `projectsReportQueryReceiptArtifacts` | `registrations.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:731:24` | `306a0011866f9c2d1ea907756589ef950d70c456465b8c093dd7f309a8d7c194` |
+| `projectsReportQueryReceiptArtifacts` | `report.queryLineage.claims.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:733:15` | `bbb9a5bfb0de39b5eb2e47dd27c71c7f79d407fe9b9a03bcca1db84e470b215b` |
 | `normalizesPath` | `value.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-scenario-conformance.js:2:38` | `dab68a143e2fade202b71b44a50d5343b94fd2bdd1a936f4dd5ebb99a5318122` |
 | `normalizesPath` | `value.replaceAll("\\", "/").replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-scenario-conformance.js:2:38` | `737cc6e2bbd7b5ef356c5a27030f15cbffa6650c6561eb16f8aa335a682619f6` |
 | `belongsToWorkspace` | `modulePath.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-scenario-conformance.js:7:52` | `4b2ab7858163211b3f1b958bf0152983dcc7ff6f48463a6c10b43c212645afa4` |
@@ -5774,44 +5779,73 @@ Handler: `src/cli.js#runGovern`; entry point: `cli.js#function:runGovern`; kind:
 | `buildsFeatureIntentProposalPackets` | `String` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:244:40` | `00f8db93bf7212cda7c61d599c3b943f8260a174e510b76691ece65d45e1df5a` |
 | `buildsFeatureIntentProposalPackets` | `String(left.commandId).localeCompare` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:244:40` | `b8bc0b215258019a4c8501afb37ad6e901a83424cc3a269a079911aa42359414` |
 | `buildsFeatureIntentProposalPackets` | `String` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:244:77` | `e8a21aa0fc637d3336e17f45017eb096c666fcd9c8a97fe2969f40ddc4c70cdf` |
-| `buildsInvocationRows` | `seen.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:252:11` | `ba6216a6526f750b506d31a3794a8423fec71609a0c2178c2a9d219332ce7093` |
-| `buildsInvocationRows` | `seen.add` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:253:7` | `8b59216b395c1f0dd17f4fe718f6a3ad459d2a8e33b6f4dd17454568a05f39e2` |
-| `buildsInvocationRows` | `rows.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:254:7` | `2b5e78cbd1d869e518c8d93cbe58e412622f140757d2770c58333f9e0160b4e5` |
-| `buildsInvocationRows` | `repositoryPath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:261:21` | `6c841ba72e701c185168361a4c835615585fab968ef4f09ea8efc45cfb2de6ca` |
-| `buildsInvocationRows` | `rows.sort` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:266:10` | `c5de047546ae7102529b7b07e629030fbf5bcf92634d27d6aecd7a05e4df9838` |
-| `buildsInvocationRows` | `left.relationshipId.localeCompare` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:266:37` | `67d28e4345230875909cd9f7d913ba913c0594294e0b4bc8ee6c1f4fd3a11ce9` |
-| `buildsReportQueryContext` | `safelyBuildsCallGraph` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:349:92` | `4c280842957d9185f65028aecb4b33f210c9998fe9431466ecd304b32849c615` |
-| `buildsReportQueryContext` | `buildsOccurrenceEvidence` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:350:32` | `63c6d49238b8e46ece893387d890a32dec3c24156a4ab7885fd51b0f3fac2206` |
-| `buildsReportQueryContext` | `buildsCallPathRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:351:26` | `c7d3080a18de1eb0a9ca8a1bf6509262b3b9eb9cbc8634dea5dcbd0ce594ea3a` |
-| `buildsReportQueryContext` | `buildsInvocationRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:352:28` | `98d3c8c1451af634b97e775d398860de46719eba007ffe2e1922a788d0ebf946` |
-| `buildsReportQueryContext` | `buildsCommandExecutionGraphRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:353:39` | `76cea852f5e8a3e3c7a2175a8f35efcacf8522e3a1debb3a0dc5c16872ba0f24` |
-| `buildsReportQueryContext` | `buildsFeatureIntentProposalPackets` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:354:42` | `219bb5e6f40500eb34149db9ea741b932f5f795c8736175a96b8957761153f4c` |
-| `buildsReportQueryContext` | `(context.interfaceGovernance.commands ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:355:29` | `e8ec30ba97f8bd863496f68fdd873964440b5624f20d6bb0938df2cab5938ac6` |
-| `buildsReportQueryContext` | `(context.testTraceability?.originatingCliFeatures ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:356:26` | `9173ac18cbbdbb9e7656af3dbfbdad16392753cb99d5f374e227180898ceec90` |
-| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:357:21` | `cd6942e5b406d6706d9516a54cac3cb02f8bb4dc283b9b8e21f9d9268d68c1b4` |
-| `buildsReportQueryContext` | `commandTests.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:357:34` | `2a53b3570adde67f3a6260798c1c16ab3008c1332e1be71e8498cd8bd4e912fe` |
-| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:358:36` | `48285a74eba0c93506ff330c199f9e81912c61ecc457ac3898e107c5f2309c1e` |
-| `buildsReportQueryContext` | `commandTests.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:358:49` | `1f6702f1905f057849ef06dbb47de10bd8629d44a95734cb0f464e283160ff52` |
-| `buildsReportQueryContext` | `commandTests.filter((row) => row.coverageDisposition === "FEATURE_SPECIFIC_TEST_REACHABILITY").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:358:49` | `3ae5e48cf9efbfe4ac2fb0e9b83c315dece4334b3595c96b684c16e6d8f972f6` |
-| `buildsReportQueryContext` | `testIds.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:359:31` | `d51d804622e8a64888536d678626b67559ed6e3f9f0b59a13480141ca788805f` |
-| `buildsReportQueryContext` | `featureSpecificTestIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:359:59` | `bbf1f33c5c84e4eb314fdcbb15362d7cbec044e686b9e1368b41a2c63e441c5f` |
-| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:360:36` | `f61b70ba1e85215307bb46e7cc3b196080f32b31b0e10ffffd1085eb30d85a1d` |
-| `buildsReportQueryContext` | `(context.testTraceability?.scenarioLineage ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:360:49` | `120d5316b4793c3672273348e86f835c1ffb20bb5bbb27c130228b9863d11061` |
-| `buildsReportQueryContext` | `(context.testTraceability?.scenarioLineage ?? []).filter((row) => command.canonicalScenarioIds.includes(row.scenarioId)).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:360:49` | `037f438e144241843a805c89a61422265f56262353d72a862a7395e53dfa5015` |
-| `buildsReportQueryContext` | `command.canonicalScenarioIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:360:115` | `1252248ee24f1e043bdc3a33204e260a078eca9f7666a3284b496cb7be444090` |
-| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:361:31` | `40588bedf01cadf559edec4377d62e2eb55464d375a8fe9984c8e7a8004b930c` |
-| `buildsReportQueryContext` | `(context.testTraceability?.scenarioProofCoverage ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:361:44` | `ab950db94dc5ad3f1b6774466aca6dec307b7d13c992ace02ba2495b6c9180c4` |
-| `buildsReportQueryContext` | `(context.testTraceability?.scenarioProofCoverage ?? []).filter((row) => command.canonicalScenarioIds.includes(row.scenarioId) && row.proofCount > 0).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:361:44` | `6b60536aae075c1972edaf3c89c375e9c589e01e9581a7879d7dbe2d683f778a` |
-| `buildsReportQueryContext` | `command.canonicalScenarioIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:361:116` | `d33d40a84219410d41ea36908f85f221d3663d4d0c6a65e02df88b891b0c240b` |
-| `buildsReportQueryContext` | `command.canonicalScenarioIds.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:362:469` | `340dbf2220084137eedc3adbf3261519754740fd0504970607f41e0c4b1b464c` |
-| `buildsReportQueryContext` | `provenScenarioIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:362:522` | `d41071277b20a2b2e0cad2ab6fd3bba65dd38489f65239b9281e1a21d950c9e8` |
-| `buildsReportQueryContext` | `buildsAuthoringEvidenceContext` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:364:23` | `8de2f4991214d8d7e20db8d8fa900fbc3cf3b1b2fbeb93c30aa3d6e06729379f` |
-| `decoratesDrillDownRows` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:810:10` | `4b85fe46cae5724cd01108667c6cc2743b5904c04246cfbfedc7670981386e08` |
-| `decoratesDrillDownRows` | `query.rowDrillDowns` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:810:51` | `1ccfe298748c9d62d74bb7b0feffafdfb20ea06c088a6b1613676ebf910039b7` |
-| `validatesParameterBindings` | `(query.parameters ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:814:30` | `25ebbc8805d14cd0b01f747b44f76cec83315c20395765f6e93ca1234bef3c67` |
-| `validatesParameterBindings` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:815:31` | `b08d7254b83b47ab4395955fd9d503fbd64ac8261e42ede2b9d6d1a85de44e98` |
-| `validatesParameterBindings` | `parameters.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:816:24` | `cc4c09b6f44fb4412bbaa9580b244a777776122ca1d5e32ab7400cb4624b9eea` |
-| `validatesParameterBindings` | `value.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:818:38` | `b7a9af382a89c50af18c6fd02b87230e2b863e9757d25d3d1bd838afed9a1874` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalFeatures?.features ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:248:10` | `d911578d5bc93a1283c20e6961517e84af761e63a4246bcc81018c0226d5aa4d` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalIntents?.features ?? []).find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:250:20` | `72baafdfc2edb03ec5b7a65e3c446b093c799446b6cfca2ab60ee873be4e6854` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalTraces?.featureToInterface ?? []).find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:251:28` | `c5b4efc24478976ea14062b20cd6624fdbd78432190dfda8ff2511c5835416f3` |
+| `buildsCompleteFeatureLineageRows` | `(context.interfaceGovernance.commands ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:252:22` | `7dcd56685e464fed62124c4ebccf3de92d7a965b08c8ce22715b4926ba819fd9` |
+| `buildsCompleteFeatureLineageRows` | `row.canonicalFeatureIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:252:83` | `bb8c0eac0cba66034860dc9332d91355b8887d4420cab36a4816a1a3f7db4a20` |
+| `buildsCompleteFeatureLineageRows` | `(context.commandExecutionGraphRows ?? []).find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:253:46` | `b167ce7c7d177af9fda970f824b5de958464490c65ba7ac71e709d47bcf22d01` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalTraces?.featureToCallgraph ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:254:23` | `0733c9b83fe8b6943e4c42cb37b7f16552d3045fb264c490f81d66781a6c90a1` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalTraces?.responsibilityToCallgraph ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:255:36` | `326a8fd25e8bf4285e5b0b9b6c51de46ca68f3ae4d5d3d375cf83e2026920b85` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalFeatures?.scenarios ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:256:26` | `205e6203b117018f4e15a45096c4fedd3794a81cc70c894281873c5bef2db21a` |
+| `buildsCompleteFeatureLineageRows` | `scenarioRows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:257:23` | `58a5cab93f164857efed4c92309b33ba0413b0b12604504ed482d91f0d5eec50` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalIntents?.scenarios ?? []).find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:259:30` | `f1844c96367d2e70a23c8957e52880d8b05409cec777cdac634a737153853114` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalIntents?.responsibilities ?? []).find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:260:30` | `f94be887dd041a4ff8d9ecd6e964745cefc72bfa813f90a09f9a85223fa95ca9` |
+| `buildsCompleteFeatureLineageRows` | `responsibilityBindings.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:261:23` | `79a193a930668cab278fa1618f7f63046697dda1b0db10153f4d8a718359d934` |
+| `buildsCompleteFeatureLineageRows` | `(context.testTraceability?.scenarioLineage ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:262:21` | `e5337588b0d2dc0299fb506a941dd8c538c4cbab5c72f000c58b227529654069` |
+| `buildsCompleteFeatureLineageRows` | `(context.testTraceability?.scenarioProofCoverage ?? []).find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:263:29` | `2895660eb09bd2b6c27e4bc3e6c047b7a5bc052580d6d84997cf92aca8a146eb` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalFeatures?.steps ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:267:16` | `63f4a9506cfacd882ea08410634716ca7486839bcfacb3bd832f36875c9c0864` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalTraces?.scenarioToSourceFacts ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:271:22` | `8224b730283359c3cee9bef8af104e11744f28e5f4be8b9698272fc5484ca351` |
+| `buildsCompleteFeatureLineageRows` | `(context.canonicalTraces?.obligationToMechanics ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:272:20` | `25e9ec79923db21df607422c4f0a9e42821a0568a85f13741ad55b31b908d151` |
+| `buildsCompleteFeatureLineageRows` | `commands.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:282:20` | `5e1fd0eeb13ec42269263c42fd0d4367cea04359b1cd3e308a6701d4f9b3e28a` |
+| `buildsCompleteFeatureLineageRows` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:288:24` | `57d2c4dfff9ce41b11b0598155152c32e548b3d36d773415ffffdd97b8a8bd01` |
+| `buildsCompleteFeatureLineageRows` | `scenarios.flatMap` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:288:37` | `abb61b4ccbba6e3891c8a26a728d9b053426252d40bd26cd19d6de5b341a61fd` |
+| `buildsCompleteFeatureLineageRows` | `scenario.tests.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:288:69` | `8dbc796706dc6ad477497835ad6f31398243d97735d09545fad9aa992e022139` |
+| `buildsCompleteFeatureLineageRows` | `scenarios.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:289:31` | `041b36852e879bfa53fe3877e78ea1701f6bf7add84624f5fa079a02601c6e49` |
+| `buildsCompleteFeatureLineageRows` | `scenarios.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:290:33` | `17015963a04f62341a90bd4e5d3e43bc9f775739ee5f57a73cc6a1ccafd33e7a` |
+| `buildsCompleteFeatureLineageRows` | `scenarios.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:291:28` | `89b23488e29ba4221bd6f74eebbf5c75487a0080127eb0c6d933879edd29cba3` |
+| `buildsCompleteFeatureLineageRows` | `scenarios.filter((scenario) => (scenario.proofCoverage?.proofCount ?? 0) === 0).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:291:28` | `7dc5c1de4e96e15238f71e28b30662d857f2693fa6d393260caa7e356f8e776f` |
+| `buildsCompleteFeatureLineageRows` | `scenarios.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:296:15` | `fe2a225a6ec173d88879cd15bf446e47a6f2bfb9a69e3a23ef08baad98a7a7e6` |
+| `buildsCompleteFeatureLineageRows` | `scenarios.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:297:17` | `78a77f640fba0ee82306d69860ec43e301105a5b66d110051771745901e9b06f` |
+| `buildsInvocationRows` | `seen.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:308:11` | `c74b7dc76da517e2c8a8867e8f60bb9ac83a74aea55e9ed27e455b919c4ebd90` |
+| `buildsInvocationRows` | `seen.add` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:309:7` | `053a11be8aa33c852014059773824d13f909605a948cf9d23ff609278d0b4350` |
+| `buildsInvocationRows` | `rows.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:310:7` | `35c432135005789049194377f0062ce793d3f4f14e6fa249dc81d41aa89dc9fb` |
+| `buildsInvocationRows` | `repositoryPath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:317:21` | `782701eefc91e31250446fe0e7e10955b46b4733caf4dfb7cb0733563d88a683` |
+| `buildsInvocationRows` | `rows.sort` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:322:10` | `ec85552e5aad1c5333825bc79f78d93c1b24b5b78fae82490d405652705ef1bc` |
+| `buildsInvocationRows` | `left.relationshipId.localeCompare` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:322:37` | `bc82497146fd2b0e5e843479e0b6ffb5baf0ffb42d7b1f6aba29a5745be41db9` |
+| `buildsReportQueryContext` | `safelyBuildsCallGraph` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:405:92` | `cffd90fefa0e3031fcb4f3fba83c4826e5a4354424d05b0ed16f319def2c9eb7` |
+| `buildsReportQueryContext` | `buildsOccurrenceEvidence` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:406:32` | `a3a01979ec6d60103db00bd43c103dfb1fb0811067d9e9704cf699516489aa33` |
+| `buildsReportQueryContext` | `buildsCallPathRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:407:26` | `41657c2ea47b32cb2588f81a7c0665273f2871025206d940909c25a266b916f7` |
+| `buildsReportQueryContext` | `buildsInvocationRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:408:28` | `a670cbcdf7ec05dacaf9fd99670e287b415f8585068d0cd107653f8689b12cfc` |
+| `buildsReportQueryContext` | `buildsCommandExecutionGraphRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:409:39` | `e2469d3ec9c7f38e241b7a0fcedad0ce7bdeef221c70244429f7637a7743d3b7` |
+| `buildsReportQueryContext` | `buildsFeatureIntentProposalPackets` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:410:42` | `3100d34e212cda43cde2fa141a8255b3634b22bc87b36bab274a6780f1e9f907` |
+| `buildsReportQueryContext` | `(context.interfaceGovernance.commands ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:411:29` | `f293022c2bb3c8b98687c3571a9f299af11b1f977deab5e6b56bc752bf5b4390` |
+| `buildsReportQueryContext` | `(context.testTraceability?.originatingCliFeatures ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:412:26` | `b5e9e6ccb16fc6e298f212eed08b6f31b5ee4ba0c73d8b6a97c510203ce5bd61` |
+| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:413:21` | `e36603f3b51d8ac10b30f810755b08eb45828262ba1fce659791f4149472e819` |
+| `buildsReportQueryContext` | `commandTests.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:413:34` | `2e83e6c0f66728e8ddc98a2f863fca7b3b40aca879978c2c81e70b8db1b6a197` |
+| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:414:36` | `a809cb89e1e7e80028aa02cecc5d3a34f1703263a70b831133e7b0dffc87ab00` |
+| `buildsReportQueryContext` | `commandTests.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:414:49` | `368c010920d3ea5f86183ca89fbc7c2a3cfcd4e02cc4e26c4ed2b53f8c2af577` |
+| `buildsReportQueryContext` | `commandTests.filter((row) => row.coverageDisposition === "FEATURE_SPECIFIC_TEST_REACHABILITY").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:414:49` | `082c66801ce1336a5b3997365cc940e16e537f01003bd7f5c1fd807d218e8d45` |
+| `buildsReportQueryContext` | `testIds.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:415:31` | `4752b26c00925fa4f42ea68d9c9c62a7410f4fea2db7bee215b5a0d279e39b37` |
+| `buildsReportQueryContext` | `featureSpecificTestIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:415:59` | `7afd51e7142d94b546933ecc3597b357cfd8848906a474cf42bd7728e614b206` |
+| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:416:36` | `15ae3d843d4898212192be204ee03b3862ea81cfb3bd6fb0f834286f9e899468` |
+| `buildsReportQueryContext` | `(context.testTraceability?.scenarioLineage ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:416:49` | `7f4283fc931271dbeb1dbdb8b929105c4e759564f5a4e5f9d675a9a6ab3006f7` |
+| `buildsReportQueryContext` | `(context.testTraceability?.scenarioLineage ?? []).filter((row) => command.canonicalScenarioIds.includes(row.scenarioId)).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:416:49` | `92503916a313dfe0abe8f12ab2f3f028be3bf1d35b9efa34815e95ffd4cde671` |
+| `buildsReportQueryContext` | `command.canonicalScenarioIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:416:115` | `70f0271c89892a99180a452335734fe0564e90a895f5f640cf4881c5e00efea7` |
+| `buildsReportQueryContext` | `uniqueSorted` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:417:31` | `ab01b4e227f05588da0fc1fdf5ba8ed6da41cf7c81b070f391969b5756c9995d` |
+| `buildsReportQueryContext` | `(context.testTraceability?.scenarioProofCoverage ?? []).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:417:44` | `f9820e864b4bf198a66183e713935f5ffcd7f11efff8d157464250a9da403757` |
+| `buildsReportQueryContext` | `(context.testTraceability?.scenarioProofCoverage ?? []).filter((row) => command.canonicalScenarioIds.includes(row.scenarioId) && row.proofCount > 0).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:417:44` | `d8292007044585169daa5d0ddb2021cd82c61969135c3bc8c2b64a39a1b3ebfc` |
+| `buildsReportQueryContext` | `command.canonicalScenarioIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:417:116` | `0bdfa4b50a1311957bdc8ce2e8c6ba2fc197b16c2382d28d2619eda604a436ba` |
+| `buildsReportQueryContext` | `command.canonicalScenarioIds.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:418:469` | `710371f5eea0244fc2789b510d0642418050ea63e1fec590f163e987c63560fc` |
+| `buildsReportQueryContext` | `provenScenarioIds.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:418:522` | `df92dbe9f8003f0a61bbda002fd2b0d90907fb1b213a4c0de700b56d4187f5eb` |
+| `buildsReportQueryContext` | `buildsCompleteFeatureLineageRows` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:420:40` | `b75581ee7ebc6aa2c5885368ab5fc71a08badecab9f321ec4b613af7854d2867` |
+| `buildsReportQueryContext` | `buildsAuthoringEvidenceContext` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/report-drill-down-query-catalog.js:421:23` | `87acf71e63712204add41752262479ccfd757248d91b6019ae102b0d121bfe4f` |
+| `decoratesDrillDownRows` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:876:10` | `887e51723435e6521b4e028e783ab8a550ad55da183b0cc7c0dc0800a0087ccb` |
+| `decoratesDrillDownRows` | `query.rowDrillDowns` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:876:51` | `6bf2dfab53105f9652421a8ca66ec930d19f76c7450cf4bd101608060f16ff68` |
+| `validatesParameterBindings` | `(query.parameters ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:880:30` | `1a313ae2a6d069f59f328520e0368e978a60597f5e85137cd2e8d6de215f41dd` |
+| `validatesParameterBindings` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:881:31` | `9a1f669bcd609ed75edf255d67f8f6a7acd622e4229af76e5ccf66ca61e3ed03` |
+| `validatesParameterBindings` | `parameters.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:882:24` | `8d0b706d15bcba4d3c445896cdafdfb3ab33e9c1745e322248fe4c5b1b998be2` |
+| `validatesParameterBindings` | `value.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:884:38` | `40e019163651704cc9bfe534abf6c242054ec8300a39491dd0bd6de325a7d71a` |
 | `normalizesPathKey` | `value.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/resolves-authority-document-claims.js:2:38` | `fdfb9407bbc67ebc155954f813621601ac106c228f8e842d1d7618342a1c7068` |
 | `resolvesClaimedFiles` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/resolves-authority-document-claims.js:18:23` | `96c68b8173ff740c4e8c96a23926cf93d42d56d45b5ba4a79529b587655708f6` |
 | `resolvesClaimedFiles` | `artifacts
@@ -6655,42 +6689,42 @@ Handler: `src/cli.js#runIngest`; entry point: `cli.js#function:runIngest`; kind:
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `resolvesSqlServerConnection` | `resolvesSqlAuthConnectionFromEnv` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:698:55` | `6fad8f2dca2d22116e692fcb6403cd59f27c3211c4e59435291046dbd201f6e6` |
-| `resolvesSqlServerConnection` | `resolvesTrustedConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:699:48` | `d3771fd3d8eab36ede3beb3dd038731b22a634920585ccd48219b20f56321f4f` |
-| `runIngest` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:718:21` | `2c51c2cd833e3fa8c174025f6e08e456bdbc28481cc1947e5283fc90aa602938` |
-| `runIngest` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:719:25` | `221129bf1839148d19fec35fd4d8b30f9c015804088a501e3dc7d0d1295b58c7` |
-| `runIngest` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:719:57` | `9331e92c1ac832314237722a3f4621bdbcfc83b9425f64b39c37894324fa0ad7` |
-| `runIngest` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:720:44` | `4ec2e5fe2a38b370917c7476edc4c540f76311f2dcc50269ceaedf9b7ffd6ace` |
-| `runIngest` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:721:22` | `3e7d28df6eb6e5c2a88d1286d30664415d82827c9ed72f2a3ecc249e9fa3cbf3` |
-| `runIngest` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:721:51` | `32bb99ffc0de5dd7659fa2fe00222d127900fe32445c897f1749ad89d77b3371` |
-| `runIngest` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:721:61` | `b38cae214de06043d74f4f1b081d32f8a648a562a07f9b9ede38eb490d41f104` |
-| `runIngest` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:723:23` | `10d9c7e713f71495011bd1c114ecf4ee2c39bc08a13f2d746f61b362ebb84956` |
-| `runIngest` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:724:9` | `4a5ca156b1ec2cc86f70d7e3adb3cd72837bde2e1317de17f5f3a04313ddfc84` |
-| `runIngest` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:725:9` | `67c14d950e5c9441e352ad1dd5ce1755eccd83c7946c806fb744e8cc9794d716` |
-| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:726:3` | `ac27407e41ee5771c3f987359edc17afd04a69dd5e07c165e541bd2ffa493c01` |
-| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:727:31` | `9b06ccc4602019e2fb14f1845c300e3d1e95043bd2e2ba315fd1415b625becf8` |
-| `runIngest` | `formatSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:727:52` | `1bdd1f4ec6ede0522d4279f4b2d20c77a5cc7d695b6a1c6fa2f60de149378e67` |
-| `runIngest` | `resolvesSqlServerConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:729:22` | `de707435caf080e9e321b141fd08475019daa37a8cf5ac117a75a862a120cdf2` |
-| `runIngest` | `loadsSourceFactIndexIntoSqlServer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:730:25` | `6bd01d65226df06d4c72486a6b2c954f8381b90fd04a5f995b0e9bdcaa552f37` |
-| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:733:23` | `b558f8776f9dc232eb6b01ff58b01b432a5f54edd8f93dc435e5ef80446e03a7` |
-| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:735:3` | `3173f95edd0e4f7aab415e9429c287d4bba6c6bbfeff2550bf6ce1dbe7989a29` |
-| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:736:31` | `f36532a8734fb16b57163c587da0437a0e7e0be78aa07ffa24851377cdb30381` |
-| `runIngest` | `formatsSqlServerLoadSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:736:52` | `828715f8e7d025a4653dce22a1f0bb4effc5aa8c3cd279760995d8bad326f9e4` |
-| `formatsSqlServerLoadSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:751:13` | `fc0d2ff2746c5bb252ae272604a9744556f5bf742d922939fe1aaa33aa32d72e` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `formatSummary` | `(index.coverage.unknownSyntaxRatio * 100).toFixed` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1217:32` | `89cb90f210add4d51e997c1c836996137194bf02146542a9dcf20e219dbebb4e` |
-| `formatSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1220:13` | `484d8ffe9e456509633d94ab77165646c1753d9072d0951af797727ee8dc974e` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `resolvesSqlServerConnection` | `resolvesSqlAuthConnectionFromEnv` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:719:55` | `afeacb2304b209e7b7c4fd85e504b7817b7e313773d3d2ed33296d516de05ad8` |
+| `resolvesSqlServerConnection` | `resolvesTrustedConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:720:48` | `49eb98e745559c9f2e9533ff80b2a281f9cd9bcf042d8b2a3ea74a32cce2364d` |
+| `runIngest` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:739:21` | `661159736e7b9c80552791619d184a49ddb7dd4631526138b8ea373b4ab929d4` |
+| `runIngest` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:740:25` | `e4fb1320f5c739148aefff7d57cadf8815009393ef87d65bda633d1a92a7a27e` |
+| `runIngest` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:740:57` | `00d4bffd49a4ede832a85fb029e5cd6f82419c47e6fda38df007097c807d7b80` |
+| `runIngest` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:741:44` | `445fe33bc036619fb4dd048960ceeda9b305d204411885044ff6d1a5e2763e5c` |
+| `runIngest` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:742:22` | `e5cb1c024d96ccaff2a18a7cff4380f2cb09b3c44f5d9f43ecfc392a5cce131b` |
+| `runIngest` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:742:51` | `84e7c37ca7efb0c6638178361e8ac8b71428113e81ccea192160fa487b27076c` |
+| `runIngest` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:742:61` | `68a6e6f9967d4cccb052a9ee6496302698970f7df3b747dd51a015bddf2b8801` |
+| `runIngest` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:744:23` | `2b6053f3c3c0ad88ac87c2af44b4c8249d4cd1e10e424030e68285437041fedb` |
+| `runIngest` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:745:9` | `bef670fd90471edadc9c11da48571d616e0adda2865f578fbd769880ed2939b8` |
+| `runIngest` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:746:9` | `1c1e0a5026be95a3412db0665935100d68c63e0df13df1d29ec9ae879df8bdf9` |
+| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:747:3` | `e0955455e655bfdbb261041fad388aa63f78cc29591209799db832cb1c0c572d` |
+| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:748:31` | `7dc9252ca8d97d8f6dbf68680b0dac8f89df1aae64df96645bcdbee2e35ad52e` |
+| `runIngest` | `formatSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:748:52` | `2985493a60f46d40b3f5043904c93ac842e76555d24a96ab49e8cb0b0766d086` |
+| `runIngest` | `resolvesSqlServerConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:750:22` | `08eb7a28002298c7dbf385c21eb2e1e31ae6f77b50c17f3ff73912a9bb65ae70` |
+| `runIngest` | `loadsSourceFactIndexIntoSqlServer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:751:25` | `00716cfdc339d51d4e4fbb79bf27f0ba8e4e6ddd59feaf5b1cc32ce26b74f458` |
+| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:754:23` | `5a89897ae0c60aa660842c2ef2de11b14063934797871a4fa764e7dca849fa36` |
+| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:756:3` | `c078c65055fb7f37f0bbf819c461b26a271372dba296357ac5984b5c0f1ba9d1` |
+| `runIngest` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:757:31` | `3a7418c8569bf2fba775e975adc6aa8f19811d50ea77ab44a9dcc4e543ad55f1` |
+| `runIngest` | `formatsSqlServerLoadSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:757:52` | `922996d5cfa610cbee2c4aa3dc577e3e6635e273efdc52bb0a9ae6b65f672033` |
+| `formatsSqlServerLoadSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:772:13` | `2d205f9518b4d5937df2fee95a790b345557248f5efdce25e360dace8829b989` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `formatSummary` | `(index.coverage.unknownSyntaxRatio * 100).toFixed` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1239:32` | `d7567b478441213a1c6a093c75a02bccab8a093e977ae46a65daa35b61a7e19d` |
+| `formatSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1242:13` | `befba0976f8165aacc12891e55d7ab3205dc6d1c4fd8e0e54c4d65c2d5a135c6` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `projectsDataflowFacts` | `ts.createSourceFile` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/dataflow-projector.js:10:22` | `0e9b1e9077beaf8dc98d07d2fffcfec48525023963c78444c56b2b0e6ca7cda0` |
 | `projectsDataflowFacts` | `scriptKindForPath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:10:98` | `8cc6338c528433d9b06801de05da16fe15be2cec0cf59c609125f6b9eaa70d3d` |
 | `projectsDataflowFacts` | `buildsLineStarts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:15:17` | `bde8a6fd278ff78cb4abce571bd6fa1ca9f2075d6b424b34bdc2ae5ebd1cc70e` |
@@ -7261,32 +7295,32 @@ Handler: `src/cli.js#runLoadSqlServer`; entry point: `cli.js#function:runLoadSql
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `resolvesSqlServerConnection` | `resolvesSqlAuthConnectionFromEnv` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:698:55` | `6fad8f2dca2d22116e692fcb6403cd59f27c3211c4e59435291046dbd201f6e6` |
-| `resolvesSqlServerConnection` | `resolvesTrustedConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:699:48` | `d3771fd3d8eab36ede3beb3dd038731b22a634920585ccd48219b20f56321f4f` |
-| `runLoadSqlServer` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:704:21` | `52b728ed69c5e14d154f3fceb1a705de71c0579689567159f923c6b70caea894` |
-| `runLoadSqlServer` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:705:21` | `bd0701fe05dd903bc9a5fe510dbe631d7619f5f065a9af6f16da3cd454a1eb55` |
-| `runLoadSqlServer` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:705:49` | `6ae60ad7199d245bc0d77a07a011fb22d718891a4ccfa9964c876fdaab6b2652` |
-| `runLoadSqlServer` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:705:59` | `b3fc0955f42fa94234c79a056bf149a7e686f5d00a35f99a498079e084665f35` |
-| `runLoadSqlServer` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:706:23` | `1b13cfaabdf8e39c8e4d9e2379555feb8b1da354b20e3de8ab0525768fdf35b8` |
-| `runLoadSqlServer` | `resolvesSqlServerConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:707:22` | `3837d59ab295c202935d2cd0e6d55992b16bdf4d425cc33a72faf18e43996481` |
-| `runLoadSqlServer` | `loadsSourceFactIndexIntoSqlServer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:708:25` | `03a984a731bef865bd0bc0ca28cef23ed56cecd2c553ccb0dc9b0d9922098931` |
-| `runLoadSqlServer` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:711:23` | `464f2a03cd49f3396be25888093c0b9875d2eb0e987116634e99ff4fd5a30459` |
-| `runLoadSqlServer` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:713:3` | `00ac016bc667be17fc66c21c585aeb089d42791ba39b96525ef56ded513f9f15` |
-| `runLoadSqlServer` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:714:31` | `f8b659f32aa0aa83146928b989657df1d558f66afb1a90d1144fcec221e4fce5` |
-| `runLoadSqlServer` | `formatsSqlServerLoadSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:714:52` | `f7efff581116072ea1e5d97726a403573b73a989a61e573fb242042ab983b999` |
-| `formatsSqlServerLoadSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:751:13` | `fc0d2ff2746c5bb252ae272604a9744556f5bf742d922939fe1aaa33aa32d72e` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `resolvesSqlServerConnection` | `resolvesSqlAuthConnectionFromEnv` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:719:55` | `afeacb2304b209e7b7c4fd85e504b7817b7e313773d3d2ed33296d516de05ad8` |
+| `resolvesSqlServerConnection` | `resolvesTrustedConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:720:48` | `49eb98e745559c9f2e9533ff80b2a281f9cd9bcf042d8b2a3ea74a32cce2364d` |
+| `runLoadSqlServer` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:725:21` | `5c5fba2933a91e141c90e63083576c4fe8984d35705227743f1fd7cefddc6f10` |
+| `runLoadSqlServer` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:726:21` | `e79914314e5735d1a6b45f079f099baa7fe3e9e31fe19624f03c1f14311c6364` |
+| `runLoadSqlServer` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:726:49` | `37e90362f1ba0362f7f0d6cff777f04896d2c61a177865f16631017d1d2b25be` |
+| `runLoadSqlServer` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:726:59` | `a04ccee0638f094ffc4886ee20123ba2ffbd528b841b7e7336a4cc2f4813a457` |
+| `runLoadSqlServer` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:727:23` | `bd5211187ebf418975309f529ff801732d69bf60b8cff40f3b7dadacbdde3b57` |
+| `runLoadSqlServer` | `resolvesSqlServerConnection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:728:22` | `5dc61b1c73dd68c45d3b279cbde3b3c3ec4453a0c085a8b3a6a162e4a856908d` |
+| `runLoadSqlServer` | `loadsSourceFactIndexIntoSqlServer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:729:25` | `8b9a5e072bb0222a0b83fba9eba5a2e41ea86d85d2c8bf477c8498c1ec469056` |
+| `runLoadSqlServer` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:732:23` | `238f26cd4507c66b775b4c9000d14599d50f27607b8fe9d90309a954d3331405` |
+| `runLoadSqlServer` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:734:3` | `a96a0b50492e1cf49613d76a345b88ce076ece0761ceaa1616b002e733828a11` |
+| `runLoadSqlServer` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:735:31` | `425de4dfe03a2bffce7513aba789c0f784a29c1ce63c9902a9eb5330faafff5c` |
+| `runLoadSqlServer` | `formatsSqlServerLoadSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:735:52` | `4591b7bd9af17b002873c32d4f01fe5e916fb2c95165f1cd83636b91d4b86a68` |
+| `formatsSqlServerLoadSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:772:13` | `2d205f9518b4d5937df2fee95a790b345557248f5efdce25e360dace8829b989` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `readsJsonFile` | `stat` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:10:27` | `f3793c1c4bc07fa6810aa1f08dfc7c5891ca0ea2e95893f1cf86635bf848957f` |
 | `readsJsonFile` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:12:19` | `d4b0ce10918fb6311cf4c621e935738722cc5bafe2aa966cdd61c0d68e490395` |
 | `readsJsonFile` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:12:30` | `81b019d18cc537b085ed7274ee6d918f18a336d355ee8fb985be6db3f5a35e0b` |
@@ -7498,33 +7532,33 @@ Handler: `src/cli.js#runProject`; entry point: `cli.js#function:runProject`; kin
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runProject` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:133:33` | `fe41e62debc9c0f70fec54bda9f16ec1fe3eccca8fa3001a2251b281ae67d8cb` |
-| `runProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:134:25` | `6dc59097f84002ef61ca4d1b0bdaa2b44f872bf08acc7c1ff6d33c2d5deaf1b6` |
-| `runProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:134:57` | `6998b785b03cf2ef9ad4e8506ca98c9cf3c313d4cb83c71f46e11276fe49f107` |
-| `runProject` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:135:44` | `becadd64ea46c91e0c4c836132d5c7b06a72f53f59eafebd00db6a3ca052f85d` |
-| `runProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:136:22` | `7542364c61848e6ab24695653e013f5e76cb8f966c06fd7f9a4f0e13c1a6d2d8` |
-| `runProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:136:51` | `1d89ae8696b6cfe54a11dc9471edbaf3b6639fc1668d1e36f51ca3510963f64f` |
-| `runProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:136:61` | `e49e9b76d3f51a0f0eaee7e530c669068e696e9d79c2cf057542b0c59ce8ddb6` |
-| `runProject` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:139:23` | `b6ef7a4a9dc7f3c0fa0202a7e9b353b1be6bedc776812548735188e05ee1fec3` |
-| `runProject` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:144:9` | `2f802ffeba7d7da2b05d3a0ce82e88afe215e559bfa3c74b405884d2549a47d0` |
-| `runProject` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:146:9` | `2492428fbe88e0dd8037a24b4e1d7294fa369ab37287a40ce5484143a15e2619` |
-| `runProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:147:3` | `b812e042ff963e57a3b651149858fd81382508b63a29f57db5685f0806417627` |
-| `runProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:149:5` | `c0f2bbc2e486ca4a0ae56f67382a7359f15191187bbfa9eb10ae45ad13d85f89` |
-| `runProject` | `formatSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:149:26` | `6efaa2ff34ceb5143e0963918fada9b0afd14ba388ad3bf8a1e2d8d9737df9d1` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `formatSummary` | `(index.coverage.unknownSyntaxRatio * 100).toFixed` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1217:32` | `89cb90f210add4d51e997c1c836996137194bf02146542a9dcf20e219dbebb4e` |
-| `formatSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1220:13` | `484d8ffe9e456509633d94ab77165646c1753d9072d0951af797727ee8dc974e` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runProject` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:135:33` | `92af02184bcc3cf7ef270e57537253603cdff284739006c226fd186bc4a6ccdb` |
+| `runProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:136:25` | `4425d6c04492618416a17cfd0f1cc5636d54f081f5d94056d60d505083304713` |
+| `runProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:136:57` | `ed1408bfc86582139dae701ff6e0b7eb73a0ec693e57aba3bf7972dfe29bd1a3` |
+| `runProject` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:137:44` | `8ecd22689589beb499ec134575c1b622a30289dc53c8fd2c347744fbacb29fd0` |
+| `runProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:138:22` | `8d1c088577d0b036c55cd712dc3ee6ee448507c1d4f0a640b2953e5bf1cff80c` |
+| `runProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:138:51` | `206852f65239c9bb70dbfb94b7fa8a072e5b71ef2570625268e09be484d3f493` |
+| `runProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:138:61` | `f31591c95b73ef38760fa665fa29878836360b6070b1619dc6f466e7f98cdbe2` |
+| `runProject` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:141:23` | `1e66889f917950b9aba09bb1ea16e3b16f0edcd00180506b2472e8672d068911` |
+| `runProject` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:146:9` | `4707c4564643d58a4148bce2a38a0275a3dd712faff4b94915e3fde173113462` |
+| `runProject` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:148:9` | `b5f555dfdd0a630a13e93f30be4eabad47d924e8da00325c000ac515b0b6434e` |
+| `runProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:149:3` | `418903db5e7d3840611b82a5584bc8d4df2a2b3cf473a86b7dc7fad2b9ad4f5b` |
+| `runProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:151:5` | `8027250412d416504e3894c7e855c368d975e7d9d8070793f5d02e916cad9778` |
+| `runProject` | `formatSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:151:26` | `52c5f2b8c89a1371e161477179ab404a7a9d26e5e9e3cd87fc3c21b09b98959e` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `formatSummary` | `(index.coverage.unknownSyntaxRatio * 100).toFixed` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1239:32` | `d7567b478441213a1c6a093c75a02bccab8a093e977ae46a65daa35b61a7e19d` |
+| `formatSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1242:13` | `befba0976f8165aacc12891e55d7ab3205dc6d1c4fd8e0e54c4d65c2d5a135c6` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `projectsDataflowFacts` | `ts.createSourceFile` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/dataflow-projector.js:10:22` | `0e9b1e9077beaf8dc98d07d2fffcfec48525023963c78444c56b2b0e6ca7cda0` |
 | `projectsDataflowFacts` | `scriptKindForPath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:10:98` | `8cc6338c528433d9b06801de05da16fe15be2cec0cf59c609125f6b9eaa70d3d` |
 | `projectsDataflowFacts` | `buildsLineStarts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:15:17` | `bde8a6fd278ff78cb4abce571bd6fa1ca9f2075d6b424b34bdc2ae5ebd1cc70e` |
@@ -7982,33 +8016,33 @@ Handler: `src/cli.js#runProjectAuthority`; entry point: `cli.js#function:runProj
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runProjectAuthority` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:207:33` | `f3037dd44bb2910229b0873972dbc4b957c4256419993b86f6c231b69466144c` |
-| `runProjectAuthority` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:208:21` | `35ee41691ec580b168fea7b987ea66f857c02b1e6578002605cc0e3f516538e1` |
-| `runProjectAuthority` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:208:49` | `0a194fa44e86028fdc37a0826d9b52cda1826412e2f71ab9bd91acd2224bda7d` |
-| `runProjectAuthority` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:208:59` | `58e6ec333d3fd870577702d59dbeaa23d71cb9e4384e8102050c290c5630d8d4` |
-| `runProjectAuthority` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:209:22` | `f1625ed479bbcb9432f51fa4f2c7520a38d54e2ed7e0ba1b175306eca0c4ef05` |
-| `runProjectAuthority` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:209:51` | `8687037a79e2917431bb71f3708ed7a072e036965b0e82a4ff49ab16071019e9` |
-| `runProjectAuthority` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:209:61` | `3e16eb2af9f228949bc077fa29495bf7a91d34f9702ef1ee3b56bf3a954c560d` |
-| `runProjectAuthority` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:213:23` | `fd55dbe726f8f8741dcb823d3281dc29d4bb5f8a6ae0517286452d902fb9bca7` |
-| `runProjectAuthority` | `projectsAuthorityFromMechanics` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:214:28` | `6706c737f7a30b77ba937efcb86d053b135136ebe910e7fb52792c3cf571dce8` |
-| `runProjectAuthority` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:219:9` | `b7eea499ddc9e9a23a033595b2e3c8e5c8ba503b54e333d9912387d80b02cb4f` |
-| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:220:3` | `510f56d73e9ce08ea4125ff3cd602312d52ecf39cad1624f1400858878111410` |
-| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:222:5` | `70533b82bd53806c967bf75b60e603df7b0a72ab6ac3ca913cc5ef9fdded446f` |
-| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:223:5` | `cee11813694feeacc95353e16e40d4ed6bc4ddd3d19ab7e7830881290e49ed36` |
-| `runProjectAuthority` | `(candidates.coverageSummary?.authorityConformanceRatio * 100).toFixed` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:223:39` | `b0dcb06c7debac278ce5fc860ac20ec99ae2462d1d3840870ab4595ccdb03f06` |
-| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:224:5` | `a7877bbc0aad3ebf18e87e54c9b80b0ccb90f27af01d4128cae89ee53e1de061` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runProjectAuthority` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:209:33` | `d20c5a3a861d2b4374da0684edb85ff7d2ee3b1cf30d67dc2bcf59f5c57af297` |
+| `runProjectAuthority` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:210:21` | `b4542a52295a60775f1a4703d18f7eaf7577ef6a307b5c6591a41efae766a005` |
+| `runProjectAuthority` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:210:49` | `59792f8edf29766e550492e4b4782cb27e138226eb75e777d3dde6dcc703c273` |
+| `runProjectAuthority` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:210:59` | `48e6156d30c7bb33157e77836fb5022131caec801e99987f45696c75cbaf5111` |
+| `runProjectAuthority` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:211:22` | `38b1fc0b7ef2b9698052d1f9826ae1e27a0f68bee8c1977aec57a6f73789f6bd` |
+| `runProjectAuthority` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:211:51` | `197a8099d0efa6e958d68e40ce2b22bc29620d27a489b838a8054e0b4d41a127` |
+| `runProjectAuthority` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:211:61` | `e19bef8d00b6ffb54417efad7bc172c85778dff6ad58a2cff7425ffdcf808aa0` |
+| `runProjectAuthority` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:215:23` | `83f9c0a06b306a9f1881227b98e91a0bc99ffb0f0e750388848a595930ecbd8f` |
+| `runProjectAuthority` | `projectsAuthorityFromMechanics` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:216:28` | `84fac3f603ee37292d5f9e19601151209f3a03793b5975ecbc9594bf13facd82` |
+| `runProjectAuthority` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:221:9` | `ade13166b8ce311e9148056e16f8deda3bb1a8ce256027dba60fe67616308c53` |
+| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:222:3` | `67e65409c0e91e85758d52e90e88dbe7bafdea498647fd96ab8fd3a4e3024f56` |
+| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:224:5` | `c2fd95c80040fae1a9e15a5de73ce107bf7fb816c53d2ae0c9ee02382606db82` |
+| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:225:5` | `7d24bc4404c5bb12b9a0d853817ada2fb2de32e6881a92d7caf38c5f39d3dd21` |
+| `runProjectAuthority` | `(candidates.coverageSummary?.authorityConformanceRatio * 100).toFixed` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:225:39` | `4152f1c32fc4d844c57a502eb44c4cdff959f2d0312ced425117dc9dcee165c9` |
+| `runProjectAuthority` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:226:5` | `c5b7516d6531eae7ab6f414d29448a571241ae20eaaa47706629266e34d40789` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `readsJsonFile` | `stat` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:10:27` | `f3793c1c4bc07fa6810aa1f08dfc7c5891ca0ea2e95893f1cf86635bf848957f` |
 | `readsJsonFile` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:12:19` | `d4b0ce10918fb6311cf4c621e935738722cc5bafe2aa966cdd61c0d68e490395` |
 | `readsJsonFile` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:12:30` | `81b019d18cc537b085ed7274ee6d918f18a336d355ee8fb985be6db3f5a35e0b` |
@@ -8154,25 +8188,25 @@ Handler: `src/cli.js#runProjectAuthorityViolations`; entry point: `cli.js#functi
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runProjectAuthorityViolations` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:229:21` | `4c03c192de5ba52ba9fbf4d034140ce149de9612cd5fc08b548c045bb4b6a213` |
-| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:230:25` | `d2201b05f9cf533bfa82e42825f08c90f69629b8b552ccbff716b00b8b517ed8` |
-| `runProjectAuthorityViolations` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:231:44` | `7f6a4bb04bcb0c8393c1e9987f89a4f452da1d0ec709cf115ab095275c0cf4ee` |
-| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:232:20` | `7dfe025e266aaf051ea6cae239acf61e33e214eda119a317ba11e7b9282aee94` |
-| `runProjectAuthorityViolations` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:232:51` | `1854d9e2eea97817f8bc5cc697978d10f90213f43eab54bfe0207dc76339f778` |
-| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:233:25` | `b9cf6d8767b3507883210b7b98e8138b919757eaf1de7a66db990495346749ef` |
-| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:234:22` | `6949fbef2e23b082c30e1e5b49423f7a5766534ec95557a8b542007a91b885bb` |
-| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:235:31` | `98b1b67fcc986afe8ae894192f8598d18fb8233316b04b4a1de73945d166c63c` |
-| `runProjectAuthorityViolations` | `flags.modules.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:237:7` | `d632d3c9ed85a68505c10f4565dbd3af7bfac71c4cc78e5a45b90ee1aae3eaef` |
-| `runProjectAuthorityViolations` | `flags.modules.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:237:7` | `277106a6de61e808dc3deee25654485314fa7555383ae01a000b82d82c60a507` |
-| `runProjectAuthorityViolations` | `flags.modules.split(",").map((entry) => entry.trim()).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:237:7` | `2008866203cd0e5964e9d57582a809fdb84139545cfb7665dd5a930cfba8d477` |
-| `runProjectAuthorityViolations` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:237:47` | `af3a3b57119b370a80c0e3d0ca33adab9cfe671966b5caaa2579ab3b34e29456` |
-| `runProjectAuthorityViolations` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:240:23` | `8a03234f86ee542e9c2bdb8558dfabbfe005d12125b92539e219ee983bb9ba8a` |
-| `runProjectAuthorityViolations` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:241:9` | `64aaa4449baeb877e14c6a14e5ceedb8796f058665dfdd9f1ce5691b4191fc02` |
-| `runProjectAuthorityViolations` | `consoleViolationMechanics.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:243:44` | `358d823c1695a920e71d03bb9520eac8206e2bd69f9735645fe10a2bbe980692` |
-| `runProjectAuthorityViolations` | `consoleViolationMechanics.map(quoteSqlLiteral).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:243:44` | `b19d77e9edd528184aeaf5a70069c4b809715b9133b73eb132a8785ebb8b6cc4` |
-| `runProjectAuthorityViolations` | `whereClauses.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:245:5` | `835d67bb76137363adadc984ff6911b6fd0b7dfc38e54936c0bec71b4d147d6c` |
-| `runProjectAuthorityViolations` | `modulePaths.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:245:44` | `57204f1aa41171bed18d63ad7796d88b320a8355d210f42dfde3558732d5fb82` |
-| `runProjectAuthorityViolations` | `modulePaths.map(quoteSqlLiteral).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:245:44` | `13066de2ea018d130f4f640661312c9aa44730a60829166c0f928e26377fd49a` |
+| `runProjectAuthorityViolations` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:231:21` | `da1a5b4239d0c814ed729b414fcf47d904afd953ef6c64dca9bc411b14f25c31` |
+| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:232:25` | `04ce752e50bac93deca095b884a18b3446ad101201fff551f0289e9adb8ad6b7` |
+| `runProjectAuthorityViolations` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:233:44` | `124c89cd8b54020b10abc9d9a7b432b89080c612684536314e28da7db8f7456b` |
+| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:234:20` | `f63625e92461e404c6a6a2f958c2402769f007520480a8eac0fe711dcfcc4516` |
+| `runProjectAuthorityViolations` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:234:51` | `b421dd29d68caa156c0299d2bd37f7d8d69169cab8c07e61768e557ae4f3b67b` |
+| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:235:25` | `a0206cfa5e78d1386e3675cb9221650992f2cf82c6020505e75ad4af41c6e297` |
+| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:236:22` | `21f749ab9ddbbde5c474ba890f533eed4a7d16f030fb5eee360d663d3a24bbad` |
+| `runProjectAuthorityViolations` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:237:31` | `6728c91b66c4294c56e51216f6c500a660eb2eed3ebb8957ca5a33d626a31ff2` |
+| `runProjectAuthorityViolations` | `flags.modules.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:239:7` | `1beb525e7ac87aa22b549822e6639c5afa3689eaf82bd0214fd58c23b16a4f5f` |
+| `runProjectAuthorityViolations` | `flags.modules.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:239:7` | `ed20bf33caeb06b9492f422947d39cf296128f1f371f419f7d4e77e48e662ec7` |
+| `runProjectAuthorityViolations` | `flags.modules.split(",").map((entry) => entry.trim()).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:239:7` | `ce105cdd1f9a591f51040340b6d2d4564a9ff21fcef667d18bed145e2c568b0d` |
+| `runProjectAuthorityViolations` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:239:47` | `13cf11579cc004004d771afc2194bba0b282d972874a37f0c894bc83553d28b1` |
+| `runProjectAuthorityViolations` | `projectSourceFactsWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:242:23` | `475a17986d0cf8297a42f0397ab42686d7d947ecbe6aef941cae8a78173df6c9` |
+| `runProjectAuthorityViolations` | `validatesSourceFactIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:243:9` | `926e121509415ea6c94ad9d53996ed8eb2d8d75e1d38a6552ef0472ae127cf6a` |
+| `runProjectAuthorityViolations` | `consoleViolationMechanics.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:245:44` | `5686b0f1522d9e3b476957fe8dfa3c07cc455c532d1c7839396d6b1d0077e8be` |
+| `runProjectAuthorityViolations` | `consoleViolationMechanics.map(quoteSqlLiteral).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:245:44` | `c1de509190e159d4bd64cc1a8a59e88c25142b8a11847482aafe186e84c5b5e7` |
+| `runProjectAuthorityViolations` | `whereClauses.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:247:5` | `c876deb6901e964edcf9ee72af389ee8cc633294145547eb04424fced9d5936a` |
+| `runProjectAuthorityViolations` | `modulePaths.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:247:44` | `45bb0527d1b6b3982b092978ab7975e1d8e4528f9cc4e9ea58b60f2309d49827` |
+| `runProjectAuthorityViolations` | `modulePaths.map(quoteSqlLiteral).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:247:44` | `c1ed9959bdbb53d99b75cc0d23e71dbbf427b9de81c49d834c93f7b35441f660` |
 | `runProjectAuthorityViolations` | `[
     "SELECT bm.mechanic AS mechanic,",
     "       bm.modulePath AS modulePath,",
@@ -8186,11 +8220,11 @@ Handler: `src/cli.js#runProjectAuthorityViolations`; entry point: `cli.js#functi
     "LEFT JOIN symbols sym ON bm.fromSymbolId = sym.symbolId",
     `WHERE ${whereClauses.join(" AND ")}`,
     "ORDER BY bm.modulePath, sr.startLine, sr.endLine, bm.mechanic",
-  ].join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:248:21` | `7865f1f7a3b6ed7e67879602bd8edb385fc406f988ceb8418d702705bcd2ba3a` |
-| `runProjectAuthorityViolations` | `whereClauses.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:259:14` | `c19d9f99d0c6b1306c0287d97116b77b52d225c06fe251b12beb52aecbbe65f9` |
-| `runProjectAuthorityViolations` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:263:25` | `bacbade65a2376965b102f6ebc8c00dfdf8aba7f1f27339740df9a84c345d76f` |
-| `runProjectAuthorityViolations` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:265:48` | `e6f20e070b22d395831f8c044b55c50ed083dce98d3c9d4ce74692876f26d477` |
-| `runProjectAuthorityViolations` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:269:35` | `9a5fa6c728cae257a6e3658d16178ce55a3d5ae348873901ee1590b31b9aab97` |
+  ].join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:250:21` | `549fa2548235cd1154bd90c0812201e98a1c21f11852bba0c1b92cfc48355906` |
+| `runProjectAuthorityViolations` | `whereClauses.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:261:14` | `df3711f716414d4168ad86dca9b0ccafa4b0de94a81f81085aed6f365c2e4032` |
+| `runProjectAuthorityViolations` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:265:25` | `1f93f42a7927a07257a4e7ef8b4198cecd9cc7434a59170140d81e3162f56089` |
+| `runProjectAuthorityViolations` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:267:48` | `00adbcbc0131b62c510809d86bb0a323dc30d15e05fd45dff90171e36ee8b0b0` |
+| `runProjectAuthorityViolations` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:271:35` | `3a01c065b2594e194f89e58104557197c908f4d148bd380bced448a6459c9ca9` |
 | `runProjectAuthorityViolations` | `[
       "SELECT gr.mechanic AS mechanic,",
       "       gr.profilePath AS modulePath,",
@@ -8204,32 +8238,32 @@ Handler: `src/cli.js#runProjectAuthorityViolations`; entry point: `cli.js#functi
       "FROM governanceRules gr",
       "JOIN sourceReferences sr ON gr.sourceReferenceId = sr.referenceId",
       `WHERE gr.mechanic IN (${consoleViolationMechanics.map(quoteSqlLiteral).join(", ")})`,
-    ].join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:271:5` | `fc2c59a18bd9366c3f58aa778644c70d6ce6b867dcbe7936bb10fa56a70fa192` |
-| `runProjectAuthorityViolations` | `consoleViolationMechanics.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:283:32` | `3a783de03b92e4a6e912fd6fe96b593860957f4fe644e0bb2503c6e90b9c6022` |
-| `runProjectAuthorityViolations` | `consoleViolationMechanics.map(quoteSqlLiteral).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:283:32` | `b09ad9934e3e2a9146571307f87f4bf9bd1a620209fbd3eba144715d8e418c59` |
-| `runProjectAuthorityViolations` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:287:54` | `d151ad114516c58184e9f8971168d164f323ce92d952d3b7fd6e7e4e61d4687e` |
-| `runProjectAuthorityViolations` | `governanceReceipt.result.value.rows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:290:32` | `634eef83745335b38ba922a1b590a46d47a1f1d7d4c3eced8d39054617d24d5c` |
-| `runProjectAuthorityViolations` | `modulePaths.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:294:9` | `a26c571e8bdea84f993b5926c39773eaf3020d3a4150f7b14db1ed861203e4c2` |
-| `runProjectAuthorityViolations` | `row.modulePath.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:297:12` | `3ab7c746baaa39bdad02c3266e92aab964e4a6d6662df14b8abeec16ef98484b` |
-| `runProjectAuthorityViolations` | `row.modulePath.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:297:75` | `97bd9f244c70c0c8dcf21909cb0d7414039104767a9794e41c761d0ec72689ac` |
-| `runProjectAuthorityViolations` | `projectAuthorityCandidatesFromViolations` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:302:24` | `f5c6f0c638c1f0cd9dccb5ec744555ca882fabda67f1cf20ce71dcf0bcc5720a` |
-| `runProjectAuthorityViolations` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:314:3` | `be21c96c311fb390ed64443097fa14349c23915d4068bf26391e551b9996b7ca` |
-| `runProjectAuthorityViolations` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:316:5` | `9dd6f33996c108db4c4b19c0a89328e04231af1df42e18570a260a72adf217b4` |
-| `runProjectAuthorityViolations` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:319:5` | `210204fe08cb49aa715f0ffbffd920f3c78082a5fb1a7068489d5741ec3a9304` |
-| `runProjectAuthorityViolations` | `formatsViolationCandidatesSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:319:26` | `dae693bb5f15fc3cbc47639d7437f8635c1e022dc8653ed094693da8eae47fc5` |
-| `formatsViolationCandidatesSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:694:13` | `87d1779f182cdb01c8236dcbbf30f2103e53c6e262e442c02b9f5ae3c69c7983` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+    ].join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:273:5` | `8f3006a6d92de6aac71222719afba0fcd08226786815c7daac9256cfd9f8e216` |
+| `runProjectAuthorityViolations` | `consoleViolationMechanics.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:285:32` | `0c4a1625e272d8e5a999543d583c399621357e4342ab20fbde0c57d2f8360e56` |
+| `runProjectAuthorityViolations` | `consoleViolationMechanics.map(quoteSqlLiteral).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:285:32` | `6c6407432c113cb47475501b5b188cf1c0535b6bfe1d175a5413a5be89641e9c` |
+| `runProjectAuthorityViolations` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:289:54` | `bed73670fe160e583135800a71c0940526753cb4f7512a1f63edc6605b106dd0` |
+| `runProjectAuthorityViolations` | `governanceReceipt.result.value.rows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:292:32` | `1647cb2205c246d795392754c50020ae88d526218ea430223ff9ffce37c607c7` |
+| `runProjectAuthorityViolations` | `modulePaths.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:296:9` | `060ddbc51eebb74c7ad6196db78e2ab5e8b5689032c4811a7e6e2859373eaaef` |
+| `runProjectAuthorityViolations` | `row.modulePath.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:299:12` | `37b74f10f6f5f77472f984c06fac73bc1fac1dc3ae0b8fb24ded37aa7bf434f6` |
+| `runProjectAuthorityViolations` | `row.modulePath.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:299:75` | `28ea797dfe2aff21f96eab81b8e4e1a01c9806a5dbf5db4aa61a83bf617302d8` |
+| `runProjectAuthorityViolations` | `projectAuthorityCandidatesFromViolations` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:304:24` | `be7e57c2c6539b06b975b347949753fce9d22ae34fd5ef5a7a566c9ffc5c1067` |
+| `runProjectAuthorityViolations` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:316:3` | `4a36ca26dfe1678e95c55fe78d6b5ced4f7081cd7a558278c1a399d1b1ad1933` |
+| `runProjectAuthorityViolations` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:318:5` | `6069cbe7fd91ce36f949d17ae0215460969efd871902b8fd913c3538e615fb54` |
+| `runProjectAuthorityViolations` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:321:5` | `0b54432b660b39ea3ca32e8760f0c52bd147f575ea1795651a256d15c3cacfd5` |
+| `runProjectAuthorityViolations` | `formatsViolationCandidatesSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:321:26` | `9ceba4b862c87ec4beb49c2a62907ff38dc381a51e10ed6b716ca0ddf173a303` |
+| `formatsViolationCandidatesSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:715:13` | `b040f9c735f5606cf1a00642c58a92630ac4094f06b46e74fdfb7123e1c81c33` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `projectsDataflowFacts` | `ts.createSourceFile` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/dataflow-projector.js:10:22` | `0e9b1e9077beaf8dc98d07d2fffcfec48525023963c78444c56b2b0e6ca7cda0` |
 | `projectsDataflowFacts` | `scriptKindForPath` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:10:98` | `8cc6338c528433d9b06801de05da16fe15be2cec0cf59c609125f6b9eaa70d3d` |
 | `projectsDataflowFacts` | `buildsLineStarts` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/dataflow-projector.js:15:17` | `bde8a6fd278ff78cb4abce571bd6fa1ca9f2075d6b424b34bdc2ae5ebd1cc70e` |
@@ -8710,41 +8744,41 @@ Handler: `src/cli.js#runProjectConsoleContract`; entry point: `cli.js#function:r
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runProjectConsoleContract` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:324:21` | `2386eb9d1708a86f3d88a2c26844ae459cb816e4441558afb0ec3a16437391b7` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:325:63` | `45cac8a3ddd7ce8504649aa292cf401756c834458e588c86ef2f55208a355d28` |
-| `runProjectConsoleContract` | `projectsConsoleGovernedContract` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:326:18` | `58e0a2741f62262ffc7abf90396a02aef9814905297c9923710b33a428306db3` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:328:78` | `6756ba41a0c93b39fed4d1383aef29f06aa2299a21a728a7b63e41eda4d4d57d` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:329:68` | `03b35abbec67d05ae1792d5cb60beeab51aaf173ed8342836d50d227e9bb0498` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:330:80` | `b2354eed613041b6c3426f384c1ddcf1dacd459a5ba9b1da748ea16d8138ee3e` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:331:60` | `e9fc1781ca8118a63904cdcdb2f561e69ff39a73bc75b7719515e01278acfb69` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:332:80` | `4addeff713bd8323cd2568c8d0815fb6d5ffe4b528859eb78702384f53493f9a` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:333:68` | `b911fa99ef9caad41b8482aa162d6f241838bc9c7d72e4a7ec085f7a3118c181` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:334:58` | `2a4c0b32b275171bd19cd0647f8b79b21ecd6770674144e03e8955844ab2334e` |
-| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:341:3` | `622f7e4bf2c3dfe5ece195ab3421d84712b2c71deff8a7e24e6469fb0c8913c4` |
-| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:343:5` | `622192c89fd20288374778e6c4981ede5e371a41b9bc43a6fba78a7e65b748ad` |
-| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:344:5` | `556e03a7efa718dda6501d8412306046c7f1504d0967d4d54767de4d9493b25a` |
-| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:350:7` | `9cdd8588f87c886af3eae333ed1cc2ed27c079cab84f3538513b663b67eebe81` |
-| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:350:26` | `ae88f9781484f8900b1813bb3a56b782f2601238f29c69026d8027571ec25862` |
-| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:353:7` | `464925cdbc214b54da55c72878db3a2fdbb7c02d8473ceed24767dae3564d0c2` |
-| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:353:26` | `c9f459dcdce0c7119bc11d5708c2c4ee1c0ef7500d711bbf008ab51e850bbcfe` |
-| `runProjectConsoleContract` | `engineResults.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:355:27` | `6b94fcc259a288127816ab52fc65a7fd62115c5cbc67ebf1042beb10ec5374fe` |
-| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:662:5` | `4f1e182ca7e2b5a1b35674fdff6bc9fc7c7f569a469309a019181139fa13ba3d` |
-| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:664:5` | `cba5440b4432dfdf2194c2066aa8dec25729ae4796c9268fb887914a64fca9f7` |
-| `runsGovernedArtifactsOperation` | `spawnSync` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:667:18` | `bc5eebb3ad34bd172db825f17a03206b2f1aacc8b9c218c074bb557d3f493a6f` |
-| `runsGovernedArtifactsOperation` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:674:5` | `9e1656d377a45e957ea342f49aef93f495d9540bd3b536aa47e04206ec0e4720` |
-| `runsGovernedArtifactsOperation` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:677:5` | `97c0eb1eac05e4cdd959704480e8619fc380288de1b4ce67f9be2583f43d63c1` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runProjectConsoleContract` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:326:21` | `b5026118130aff0f8008ef7677d5dd7ca0dfe982f29d6773de105bfdf5143265` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:327:63` | `dc703dd975f46841731c1e2dad4b5226d3e1aa5c8b1a99ff0be9ef3833871e0d` |
+| `runProjectConsoleContract` | `projectsConsoleGovernedContract` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:328:18` | `538f05c3e1b61c79e1f1d624d72aa5bc293bb2a458938fc98705ae4b75ae3d77` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:330:78` | `23100eedaae16d6b14383f4087c5a8f0d57c2ccd44066a95855ea4ab899105aa` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:331:68` | `a3cd03bbdb1940f5a5fab058d65b12fa1dd029b1641d5b6fb216ea4256ed3f42` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:332:80` | `4abd193ecbd7c025b7e69b4169c2b9b63e4d53f12204a83333647f6c77914054` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:333:60` | `c1b1808533be5b08d149a84f07a00e003fccb4a9dccc1905f13a86a260e40d39` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:334:80` | `bd8f9b1f2642873df5447b1020c86e52a792eab6e4da011a11fa4ee2d51cfe61` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:335:68` | `bfa6563f2029c79e22b387b05e0691c6a97c7e6b3fd843dc29eac07ea38f21d2` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:336:58` | `473b1747d53a02025a82107e7e070c26b36a5d131417dcb1e14cb6c976126b01` |
+| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:343:3` | `52411738ca3805fae1406db44557205f3b081fa22793b512c5cff1397485851a` |
+| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:345:5` | `1e863fb15e43edccd27d96b0ecb84cf925b057e29722653209e333badf5d6166` |
+| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:346:5` | `63bca863d82b9d2a4a20e0818159a30c63aca5bbf6f7268ccc8e8df69dc8a698` |
+| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:352:7` | `9249552004b0159945c59a56747306e4448629226d7a8b35b488e8496e3d18c1` |
+| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:352:26` | `d9faee6bca5854fc72a1a62be028eba8aad8ee2c2d441bce123c6314f03a16c4` |
+| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:355:7` | `7fec89d88153b1a32f4462fb792a1a9e0a2901c6807353f2b2db6fb47f9bdb02` |
+| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:355:26` | `92e1e52021677494ea6a8eda52e6f72129ee98ff199607cf144913aa85d45e3d` |
+| `runProjectConsoleContract` | `engineResults.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:357:27` | `a686e0ea5960e8409930128737350bfef7585651235b0b6b355e496bc14350fc` |
+| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:683:5` | `b09aa94ddd389ff31f3e931f1eb3c358ff1647e036b7a3acf9658663721bd2d8` |
+| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:685:5` | `a7aee8acecbfc0e363e3ad24b3225e6474597a0584f9ba50cea809031ff6167d` |
+| `runsGovernedArtifactsOperation` | `spawnSync` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:688:18` | `088ac6a81507ace58a3157ceabc23814025c9098f96d29a2a6995843dc4632c0` |
+| `runsGovernedArtifactsOperation` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:695:5` | `5ec6a601787c1d79aa085abe42c93c0bbd0961aca4fdda2e6c02b35d1eb4e485` |
+| `runsGovernedArtifactsOperation` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:698:5` | `133c3079cd6999fc738901f635f4a12e3612983d53af7b0337c124be46909934` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `normalizesPathKey` | `value.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/projects-governed-console-contract.js:26:38` | `88d086d43c9610a7082cd1363ed7ff293b2883662ac10c36386ed47ba8427784` |
 | `loadsJson` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/projects-governed-console-contract.js:30:10` | `cc103d55a759c5d144646d7494ae6415434b4317e436841e85d6dcdec500ab2c` |
 | `loadsJson` | `readFileSync` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/projects-governed-console-contract.js:30:21` | `dc72e2598f90e8582ecc79db396752f85f85e7315a1c3b0b863a2728def7155f` |
@@ -8996,41 +9030,41 @@ Handler: `src/cli.js#runProjectConsoleContract`; entry point: `cli.js#function:r
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runProjectConsoleContract` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:324:21` | `2386eb9d1708a86f3d88a2c26844ae459cb816e4441558afb0ec3a16437391b7` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:325:63` | `45cac8a3ddd7ce8504649aa292cf401756c834458e588c86ef2f55208a355d28` |
-| `runProjectConsoleContract` | `projectsConsoleGovernedContract` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:326:18` | `58e0a2741f62262ffc7abf90396a02aef9814905297c9923710b33a428306db3` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:328:78` | `6756ba41a0c93b39fed4d1383aef29f06aa2299a21a728a7b63e41eda4d4d57d` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:329:68` | `03b35abbec67d05ae1792d5cb60beeab51aaf173ed8342836d50d227e9bb0498` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:330:80` | `b2354eed613041b6c3426f384c1ddcf1dacd459a5ba9b1da748ea16d8138ee3e` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:331:60` | `e9fc1781ca8118a63904cdcdb2f561e69ff39a73bc75b7719515e01278acfb69` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:332:80` | `4addeff713bd8323cd2568c8d0815fb6d5ffe4b528859eb78702384f53493f9a` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:333:68` | `b911fa99ef9caad41b8482aa162d6f241838bc9c7d72e4a7ec085f7a3118c181` |
-| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:334:58` | `2a4c0b32b275171bd19cd0647f8b79b21ecd6770674144e03e8955844ab2334e` |
-| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:341:3` | `622f7e4bf2c3dfe5ece195ab3421d84712b2c71deff8a7e24e6469fb0c8913c4` |
-| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:343:5` | `622192c89fd20288374778e6c4981ede5e371a41b9bc43a6fba78a7e65b748ad` |
-| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:344:5` | `556e03a7efa718dda6501d8412306046c7f1504d0967d4d54767de4d9493b25a` |
-| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:350:7` | `9cdd8588f87c886af3eae333ed1cc2ed27c079cab84f3538513b663b67eebe81` |
-| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:350:26` | `ae88f9781484f8900b1813bb3a56b782f2601238f29c69026d8027571ec25862` |
-| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:353:7` | `464925cdbc214b54da55c72878db3a2fdbb7c02d8473ceed24767dae3564d0c2` |
-| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:353:26` | `c9f459dcdce0c7119bc11d5708c2c4ee1c0ef7500d711bbf008ab51e850bbcfe` |
-| `runProjectConsoleContract` | `engineResults.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:355:27` | `6b94fcc259a288127816ab52fc65a7fd62115c5cbc67ebf1042beb10ec5374fe` |
-| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:662:5` | `4f1e182ca7e2b5a1b35674fdff6bc9fc7c7f569a469309a019181139fa13ba3d` |
-| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:664:5` | `cba5440b4432dfdf2194c2066aa8dec25729ae4796c9268fb887914a64fca9f7` |
-| `runsGovernedArtifactsOperation` | `spawnSync` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:667:18` | `bc5eebb3ad34bd172db825f17a03206b2f1aacc8b9c218c074bb557d3f493a6f` |
-| `runsGovernedArtifactsOperation` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:674:5` | `9e1656d377a45e957ea342f49aef93f495d9540bd3b536aa47e04206ec0e4720` |
-| `runsGovernedArtifactsOperation` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:677:5` | `97c0eb1eac05e4cdd959704480e8619fc380288de1b4ce67f9be2583f43d63c1` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runProjectConsoleContract` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:326:21` | `b5026118130aff0f8008ef7677d5dd7ca0dfe982f29d6773de105bfdf5143265` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:327:63` | `dc703dd975f46841731c1e2dad4b5226d3e1aa5c8b1a99ff0be9ef3833871e0d` |
+| `runProjectConsoleContract` | `projectsConsoleGovernedContract` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:328:18` | `538f05c3e1b61c79e1f1d624d72aa5bc293bb2a458938fc98705ae4b75ae3d77` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:330:78` | `23100eedaae16d6b14383f4087c5a8f0d57c2ccd44066a95855ea4ab899105aa` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:331:68` | `a3cd03bbdb1940f5a5fab058d65b12fa1dd029b1641d5b6fb216ea4256ed3f42` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:332:80` | `4abd193ecbd7c025b7e69b4169c2b9b63e4d53f12204a83333647f6c77914054` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:333:60` | `c1b1808533be5b08d149a84f07a00e003fccb4a9dccc1905f13a86a260e40d39` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:334:80` | `bd8f9b1f2642873df5447b1020c86e52a792eab6e4da011a11fa4ee2d51cfe61` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:335:68` | `bfa6563f2029c79e22b387b05e0691c6a97c7e6b3fd843dc29eac07ea38f21d2` |
+| `runProjectConsoleContract` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:336:58` | `473b1747d53a02025a82107e7e070c26b36a5d131417dcb1e14cb6c976126b01` |
+| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:343:3` | `52411738ca3805fae1406db44557205f3b081fa22793b512c5cff1397485851a` |
+| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:345:5` | `1e863fb15e43edccd27d96b0ecb84cf925b057e29722653209e333badf5d6166` |
+| `runProjectConsoleContract` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:346:5` | `63bca863d82b9d2a4a20e0818159a30c63aca5bbf6f7268ccc8e8df69dc8a698` |
+| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:352:7` | `9249552004b0159945c59a56747306e4448629226d7a8b35b488e8496e3d18c1` |
+| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:352:26` | `d9faee6bca5854fc72a1a62be028eba8aad8ee2c2d441bce123c6314f03a16c4` |
+| `runProjectConsoleContract` | `engineResults.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:355:7` | `7fec89d88153b1a32f4462fb792a1a9e0a2901c6807353f2b2db6fb47f9bdb02` |
+| `runProjectConsoleContract` | `runsGovernedArtifactsOperation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:355:26` | `92e1e52021677494ea6a8eda52e6f72129ee98ff199607cf144913aa85d45e3d` |
+| `runProjectConsoleContract` | `engineResults.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:357:27` | `a686e0ea5960e8409930128737350bfef7585651235b0b6b355e496bc14350fc` |
+| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:683:5` | `b09aa94ddd389ff31f3e931f1eb3c358ff1647e036b7a3acf9658663721bd2d8` |
+| `runsGovernedArtifactsOperation` | `commandArgs.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:685:5` | `a7aee8acecbfc0e363e3ad24b3225e6474597a0584f9ba50cea809031ff6167d` |
+| `runsGovernedArtifactsOperation` | `spawnSync` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:688:18` | `088ac6a81507ace58a3157ceabc23814025c9098f96d29a2a6995843dc4632c0` |
+| `runsGovernedArtifactsOperation` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:695:5` | `5ec6a601787c1d79aa085abe42c93c0bbd0961aca4fdda2e6c02b35d1eb4e485` |
+| `runsGovernedArtifactsOperation` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:698:5` | `133c3079cd6999fc738901f635f4a12e3612983d53af7b0337c124be46909934` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `normalizesPathKey` | `value.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/projects-governed-console-contract.js:26:38` | `88d086d43c9610a7082cd1363ed7ff293b2883662ac10c36386ed47ba8427784` |
 | `loadsJson` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/projects-governed-console-contract.js:30:10` | `cc103d55a759c5d144646d7494ae6415434b4317e436841e85d6dcdec500ab2c` |
 | `loadsJson` | `readFileSync` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/projects-governed-console-contract.js:30:21` | `dc72e2598f90e8582ecc79db396752f85f85e7315a1c3b0b863a2728def7155f` |
@@ -9279,74 +9313,74 @@ Handler: `src/cli.js#runProposeFeatureCoverage`; entry point: `cli.js#function:r
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `parsesCommaSeparated` | `value.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:433:38` | `75c47055dc4ac1a58eac58c5ecefdccbcbb09799df374dc076640a13788aa7b6` |
-| `parsesCommaSeparated` | `value.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:433:38` | `5e9eead94e891f4f69e7c8c9d1da1d172d7e0147aa3b2a57ac2d6220cc3d2cee` |
-| `parsesCommaSeparated` | `value.split(",").map((entry) => entry.trim()).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:433:38` | `468c46184fc39a9ce53c16c9543c6cffb641814ce078ecc1ad1cdf4ffee63b2d` |
-| `parsesCommaSeparated` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:433:70` | `3f95600cb1214b4d56ca808c0f36c77649db4a655fb6235cb9f58edad649a046` |
-| `readsEvidenceFiles` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:439:26` | `1bec1071834bfe0153c3ab35fd5e92fa1f5cd072110d745c01112a84d34dbd40` |
-| `readsEvidenceFiles` | `evidence.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:440:5` | `bfe96d55557db4ea8df0fc257e09ec7d2e39499943a4392bda7eb9dc3d002206` |
-| `readsEvidenceFiles` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:441:13` | `96378e1852da407f9a905ab948c8b34fa9884a259c685cd7cf07c6a2e94c164d` |
-| `readsEvidenceFiles` | `path.relative(repositoryRoot, absolutePath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:441:13` | `91ea585c4ed3ed2cc58a7512729734dc32dc77d457a01cc814d7fa4916a9bda5` |
-| `readsEvidenceFiles` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:442:22` | `9198d986c7d1ea4cac46409e148ffbba23d99528adf2d1647889946a8b2cc51b` |
-| `runProposeFeatureCoverage` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:455:21` | `fa86653511dbc5c0d01059c1d5be4201a1081b1354f558e73a688f3d1624f648` |
-| `runProposeFeatureCoverage` | `required.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:457:19` | `95c4b3c726a7fa53d65d2a1d7c76cafbf31f78f29a1c5213fc04ab0df36195b8` |
-| `runProposeFeatureCoverage` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:459:5` | `5df7cf7b503dd116a5238ab118b0208467a68eb58cb6f40fcae321cf28e0a474` |
-| `runProposeFeatureCoverage` | `missing.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:459:63` | `53684914658c671fd9a1b9d775f235e958de607f9538c4020fa611fc3fcd5878` |
-| `runProposeFeatureCoverage` | `missing.map((name) => `--${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)} <value>`).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:459:63` | `95804fd561787996ead989c3fc5cf9503973e0e8463d9bc10568ae43b03b4705` |
-| `runProposeFeatureCoverage` | `name.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:459:90` | `71f824d8f89871a3278cabdf1da45a1d226ce511dc13cfa94db7677a746e6fc8` |
-| `runProposeFeatureCoverage` | `letter.toLowerCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:459:129` | `7c014b087720ac849e54d055fda717c8874752ae8654d3974e2bb4f1eeadc271` |
-| `runProposeFeatureCoverage` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:464:21` | `357a901368373137ef979ee1412a7189687892b0856cee387525ff66b9e0a022` |
-| `runProposeFeatureCoverage` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:465:33` | `dbf2564c87154b3fa893b32a433d12600264c7e7e88f9f550dd59e45f1f8f0b8` |
-| `runProposeFeatureCoverage` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:466:30` | `464695b840d3ba83e7ba22833058617ea3160ad51a28fde33bbc95973ee958a2` |
-| `runProposeFeatureCoverage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:468:56` | `7e41fa6406a150fd0bf91bc52e2287292651b8ffdaf7ff86bb1744cb20efc94f` |
-| `runProposeFeatureCoverage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:471:8` | `51eeeba890ff8e38158f1f5ab68713accba632a39d64360810f9ed90bd2a1167` |
-| `runProposeFeatureCoverage` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:472:42` | `3fc243a2e03f8690c1f0bac67e67ad5320b24e8ed101dbb90fe7fa8d1544b5a7` |
-| `runProposeFeatureCoverage` | `rows.map((row) => row.modulePath).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:472:42` | `5253a715d870fa84c9ff7bb6886cce6810adbdf417438784bb0a18cc989894ba` |
-| `runProposeFeatureCoverage` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:473:40` | `4ac955e1849304b0c039c2c103efef9d70bfb7f8161b8e4dbb071ed3c0916256` |
-| `runProposeFeatureCoverage` | `rows.map((row) => row.mechanic).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:473:40` | `466813aea1e4639aee90dc15dd4a13c84551d02e14c490de5bf72232b75d0d76` |
-| `runProposeFeatureCoverage` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:480:37` | `3ad502c18b566fa6620be2d2791389910d8f11201e0d07a6a2ae4a39fc14764f` |
-| `runProposeFeatureCoverage` | `queriedModulePaths.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:480:56` | `bef61114e5365625ce5f72bb44ae3caf946afb1acd85eaa217248c34611251c4` |
-| `runProposeFeatureCoverage` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:480:95` | `dfd5a85eb68c04461fac3e99819ac6377e22daaebcddb00747258988e878eec5` |
-| `runProposeFeatureCoverage` | `parsesCommaSeparated` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:481:27` | `f460423200e42a7e0b8657d6b167b16e82f73a97c6453069448d273236128e2d` |
-| `runProposeFeatureCoverage` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:482:24` | `44063019dffae82d757bccdd55bc716eed9cb1147659b7994559fa6afbf7bcb8` |
-| `runProposeFeatureCoverage` | `rows.map((row) => row.symbolName).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:482:24` | `6dc350627d4f70a319e0a6881f95c07536c580754a3b063166552a82d46f91af` |
+| `parsesCommaSeparated` | `value.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:454:38` | `a0f4357fc01d7635a4c7406c301cde1581da46e1f309623aa81c974c6062786a` |
+| `parsesCommaSeparated` | `value.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:454:38` | `0488115f150a86c5373c9932bf5eef8d2f7b0bef0f7bf9175a77b95b0dcb3025` |
+| `parsesCommaSeparated` | `value.split(",").map((entry) => entry.trim()).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:454:38` | `1e08699596f853d8b805db3880c381e90b8684df33e0e8ea7dfa5e1f2fdf7d7e` |
+| `parsesCommaSeparated` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:454:70` | `7f9a92c6ba74d522dec88db5ffaf97968a9f86b1c1147cba854308f45f7d4303` |
+| `readsEvidenceFiles` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:460:26` | `d1b393b4106f023b39f396b17309db7db9f4828493ac8c6632bfb843d18783ad` |
+| `readsEvidenceFiles` | `evidence.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:461:5` | `a0d464d2fd1c82134d28cf52646dd0f48cda69f4a223a3eb59c28f3b017450ec` |
+| `readsEvidenceFiles` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:462:13` | `f8ab72c4d8f9c4c629a1228468588d3997194392d28a92c4575893a2eb2fe8a9` |
+| `readsEvidenceFiles` | `path.relative(repositoryRoot, absolutePath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:462:13` | `adee8edc30096305c10bf13a5bbbeed30716e808a46d6cfcc498856b3213c175` |
+| `readsEvidenceFiles` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:463:22` | `ce35f5a8ef34cf73237ed7710f279c5693bab23a0bbbb4cb5112d5f4575b4403` |
+| `runProposeFeatureCoverage` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:476:21` | `bda5a093fb052c73c247fd5bee577a026a9c4343c483592187771357b7bad9f9` |
+| `runProposeFeatureCoverage` | `required.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:478:19` | `df95f7180fbdfce07cc59eae5dbea4bb436e64727b6bbc36b78fb0e22cbf3525` |
+| `runProposeFeatureCoverage` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:480:5` | `14025ba8840b01689205991a2ddeb0114831445b9e0cf63d8496f8b3ac474414` |
+| `runProposeFeatureCoverage` | `missing.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:480:63` | `f0dbcdd8495f4a0c0b17161303a6984d787b849a76e0fa93a502bc3c7159a9de` |
+| `runProposeFeatureCoverage` | `missing.map((name) => `--${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)} <value>`).join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:480:63` | `d156c733a9fd34ceac675d9a21a8ac3318a04eaecd2ede0bc5478a4641340ce0` |
+| `runProposeFeatureCoverage` | `name.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:480:90` | `dfd5cc3c75c842acad174e55de4061ee5a243dd6bb100af6f9d50a7a009bada5` |
+| `runProposeFeatureCoverage` | `letter.toLowerCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:480:129` | `a583c28c5bd1ecf6d1531dfb809cd2f074dcfd25f048bff24c913da48117483a` |
+| `runProposeFeatureCoverage` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:485:21` | `c7d2f6544f984ae79784f920f6e25139a83b206e73d13771d3a68ea0e886a306` |
+| `runProposeFeatureCoverage` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:486:33` | `84ddba680c23e52eb8a769122a2ad5416ae59e2f6bb9e9974b07ea43a13e9595` |
+| `runProposeFeatureCoverage` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:487:30` | `7458ec5cf460c5051eb51ad8aaa37da701809e2d9e767ca50856c573220630c5` |
+| `runProposeFeatureCoverage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:489:56` | `e35a7de6c5bbbb51652af5fdacffca0fb0f472c193bcd7204d7a4c878f82bd55` |
+| `runProposeFeatureCoverage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:492:8` | `703804e9d0961c28bc2496e65a11c7fdce7423c400c9a074bbaed4f8b8a76564` |
+| `runProposeFeatureCoverage` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:493:42` | `9d9abd4f58162eda6d9cbbae7423e8c1aec1e25ed70f281f14569757066e8775` |
+| `runProposeFeatureCoverage` | `rows.map((row) => row.modulePath).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:493:42` | `d9a4ad9edcc0ebbe7b2f2be474d0f532e5ad772a3dcfeb45e16d1378a8d98806` |
+| `runProposeFeatureCoverage` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:494:40` | `14436f017f18b47258e190cef647abb1012c669cfd41f81bb9ca7fc426f56d05` |
+| `runProposeFeatureCoverage` | `rows.map((row) => row.mechanic).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:494:40` | `0dbf5c7d2cfb882c9b2dfc61291216baf7a9f65ead03bb589373c27630cf4ccd` |
+| `runProposeFeatureCoverage` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:501:37` | `74c88db90aa244603e8fcadee405207f0e37cf6b1d358886d6d99be85c18e68a` |
+| `runProposeFeatureCoverage` | `queriedModulePaths.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:501:56` | `ef2f27397c67d0e0824eee10a1f4d5b4060cb2be317cb345b4b6812d77908cb8` |
+| `runProposeFeatureCoverage` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:501:95` | `b0f1a7df27f035cbfb4d757e23160f202279a8bc490651fe7c6564cbb5a0d7c7` |
+| `runProposeFeatureCoverage` | `parsesCommaSeparated` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:502:27` | `e6e65d56db554c52ff92b34ef3aaf1d7beb09d615baa50aa4d7f2775fff4b4a7` |
+| `runProposeFeatureCoverage` | `rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:503:24` | `3e0e1990d04bea6d28d5f220777d0fed106003185f2039ad11480fe682c1113c` |
+| `runProposeFeatureCoverage` | `rows.map((row) => row.symbolName).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:503:24` | `9cb0392f21a455f457b5f8fd27e7b2f90713202e9f8d2e368fcf4a2a80b5ad6d` |
 | `runProposeFeatureCoverage` | `(sourceFactIndex.symbols ?? [])
-    .filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:483:29` | `99fa6a1f3fd5c31a8f8fefed69be27da3504ae913b7017c3d13058fc49a504f7` |
+    .filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:504:29` | `a58f84c9f863bb3925947414d0782c6bf02ffdecf9a5b56dd8488f43be206225` |
 | `runProposeFeatureCoverage` | `(sourceFactIndex.symbols ?? [])
     .filter((symbol) => queriedModulePaths.includes(symbol.modulePath))
-    .map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:483:29` | `0fe995d204d43e3c1acef60626b81c014b97915bde7c11b53aff0198fa84ebd1` |
+    .map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:504:29` | `d0648c2236af2d0ff720b16ee2bb1cb5e9f543c1aade4c68abad451c50f57e10` |
 | `runProposeFeatureCoverage` | `(sourceFactIndex.symbols ?? [])
     .filter((symbol) => queriedModulePaths.includes(symbol.modulePath))
     .map((symbol) => symbol.name)
-    .filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:483:29` | `7b6af98d9b5a81d7a4edd903dfbd8f9e8c2e4510b4c9686cc683f5d63a00a1c5` |
-| `runProposeFeatureCoverage` | `queriedModulePaths.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:484:25` | `1de106af6f88db7e42f0d516817adee20438cdd7820ac20797795dde22237c09` |
-| `runProposeFeatureCoverage` | `[...new Set(explicitSymbols.length > 0 ? explicitSymbols : [...querySymbols, ...discoveredSymbols])].sort` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:487:19` | `b32c47d017af6b5bab9a36a34b7b1f06c2cd37a9cf3a024a44c6de3ec0fd67e2` |
-| `runProposeFeatureCoverage` | `proposesFeatureCoverage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:489:27` | `62ac9c71ece08b35b7676de7680baf4395c66f5e5e8fa319facf06cb7536ce5b` |
-| `runProposeFeatureCoverage` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:493:35` | `0283561b0c9d88f08a0d99981a8a0acc3da4fb9281374a3a33921caea93287f3` |
-| `runProposeFeatureCoverage` | `parsesCommaSeparated` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:493:54` | `3a0a55b4b3d61dab8474ce6be70ad4b2d4602ca57241df4c5b6531ec5d0b2163` |
-| `runProposeFeatureCoverage` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:494:33` | `705597d72641473ed09a926451eff9666213148beb907bed3b135df08bae98aa` |
-| `runProposeFeatureCoverage` | `parsesCommaSeparated` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:494:52` | `906a04f057830abe30e4b0f8c89d80b9c9536b0334db258f292a59c44e8e921b` |
-| `runProposeFeatureCoverage` | `wrapsFeatureCoverageInferenceEvaluation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:508:22` | `0f1908ec452fc8f1b3d1cfdc8f1a2f8c2c835b80ff82cb47a410f0c5914cde53` |
-| `runProposeFeatureCoverage` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:511:25` | `57abff07d8fb59b885be171c5581636394b78a44509de09fa767526278f9286f` |
-| `runProposeFeatureCoverage` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:512:22` | `54987c0e2a824bf73bf5c3198f1fa3458cafd92d4ba1f74688dc04b642b674d0` |
-| `runProposeFeatureCoverage` | `fs.mkdir` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:513:9` | `05f9e425a1a3fb4963926e343ef4a443cfb6082adca04cdaadaf2cb79a753305` |
-| `runProposeFeatureCoverage` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:513:18` | `288a3490276250dcbebeb4aac4450749ba0919c61137bc0a65b3e706495d36df` |
-| `runProposeFeatureCoverage` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:514:9` | `f5bb0e14b756fab9454cb2f95af5555bca4d64aa4437362e3ecd43072f9069f3` |
-| `runProposeFeatureCoverage` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:516:3` | `90395f147411341b52b0afec3477d3a8a3c56d7ea3147fa5208a7a8d54624b44` |
-| `runProposeFeatureCoverage` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:517:3` | `e0cc786abfdd0a350e1b662ad511fd421ec244b55d3873b330b416bec6479f91` |
-| `runProposeFeatureCoverage` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:518:3` | `d7833c38b6536d896d385af145f7d147ffdbc02d0fe60dee61a3e3b3f41d1712` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+    .filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:504:29` | `f636d5f09769da1e32f1527f3a23ac30cecef1580cbfac1954cc0e86e225a763` |
+| `runProposeFeatureCoverage` | `queriedModulePaths.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:505:25` | `51e9b7732e227e5426162dc59584dc8976da77f5679949234e30acad27e5fd7f` |
+| `runProposeFeatureCoverage` | `[...new Set(explicitSymbols.length > 0 ? explicitSymbols : [...querySymbols, ...discoveredSymbols])].sort` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:508:19` | `57c6a2b6003747b716ce9504336e9ed1abea051fbddbe11b9dc23d7c0c8d23ac` |
+| `runProposeFeatureCoverage` | `proposesFeatureCoverage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:510:27` | `d71c14e7e0ebfbab68f51346a4db9eb94165fff760e071d7d6d736eeb4343753` |
+| `runProposeFeatureCoverage` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:514:35` | `f41ad98b280b13938f4744e3633a2f6207c65e8799ca0da33a2bc491b4ac9eb2` |
+| `runProposeFeatureCoverage` | `parsesCommaSeparated` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:514:54` | `8915e16ccbad0ae3f32b92353471325056c690498a13580219465860cdeef5d3` |
+| `runProposeFeatureCoverage` | `readsEvidenceFiles` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:515:33` | `bfa4ab694ec12256bcf48a39b4ee7fbd3fe4bd235e9786318ba40020c6777c64` |
+| `runProposeFeatureCoverage` | `parsesCommaSeparated` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:515:52` | `85451c5e568743a13bb63da44c5de8783cdbfe16f02a88dbb5367738bf8b2354` |
+| `runProposeFeatureCoverage` | `wrapsFeatureCoverageInferenceEvaluation` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:529:22` | `7b43e1c9d578363f8d5eeb485f2d7261f4302f31c8c4c756e40514fa5b06976b` |
+| `runProposeFeatureCoverage` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:532:25` | `5ffa2cb4e95cca24021ff669634470a97b390d85bd58d3aa98a257794e391759` |
+| `runProposeFeatureCoverage` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:533:22` | `841456abc190a28f00f33a43f221a7b54400c15d4b252c34727124211ee97ff8` |
+| `runProposeFeatureCoverage` | `fs.mkdir` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:534:9` | `ef2c7f3b9cc786f44b555bb3c325c68b4fc746283fb1cea1a6b88b583b5cbf9d` |
+| `runProposeFeatureCoverage` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:534:18` | `ac1a0ec5e994b9aa611e117b3191b64f71a8e58713676115c66696b9a1728e44` |
+| `runProposeFeatureCoverage` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:535:9` | `40631a7e249503908db3d8954337103baead41d2390e3984c0516f1cf07fd4f8` |
+| `runProposeFeatureCoverage` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:537:3` | `f61dc9b231e3faa2bcffb37c285e780845dd78d0686a28bfabf40e1171299762` |
+| `runProposeFeatureCoverage` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:538:3` | `d2f8b63ba8e732fef05aeb15f43bf81af23ca91f8260a960eba882aad6aae6a3` |
+| `runProposeFeatureCoverage` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:539:3` | `b3ea9356dc9d8d23732e03f360454afac28e34137a91cdae3f67a0ca433257e8` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `canonicalizes` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-feature-coverage.js:4:7` | `042abae500d256a1b2bfa01256e53d66b1fada604a71b2e96ef499acc1b4ea71` |
 | `canonicalizes` | `value.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-feature-coverage.js:4:36` | `60df9f876bb8b368b154a09981a5b9bcd599e3277c9c65770236af620357fd33` |
 | `canonicalizes` | `Object.fromEntries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-feature-coverage.js:6:12` | `5a09a6199886d6e97953a4757658920e39f4e5ec342d14c0fb070548911d0804` |
@@ -9610,47 +9644,47 @@ Handler: `src/cli.js#runProposeSemanticOverlap`; entry point: `cli.js#function:r
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runProposeSemanticOverlap` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:533:21` | `79a7dff5c18647fdf5a739583f974186560e702b9c2219243473bf9938acb4bd` |
-| `runProposeSemanticOverlap` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:536:5` | `3b2963e2ed8306eacc7f946c6e768f6359069306b57570c8d7e8eb00a4cf7b06` |
-| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:541:35` | `8bed58a52d2bf699ce872cb43d2e5360a92cd637c3b48bfc17a53b428c013b55` |
-| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:542:25` | `2e68ed087f7a9bd25102c645f465c3feb97ab87e3453b9917d60c56c0e5b83f4` |
-| `runProposeSemanticOverlap` | `flags.relatedFiles.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:544:7` | `12f194cb0c753660d3a5e7d79a5467ca923400a9467b1f78aabfe63881a57456` |
-| `runProposeSemanticOverlap` | `flags.relatedFiles.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:544:7` | `0d0ea08c021cf6fb55704819c92088e6a789fabfba520c67a9997ac3f72b763b` |
-| `runProposeSemanticOverlap` | `flags.relatedFiles.split(",").map((entry) => path.resolve(repositoryRoot, entry.trim())).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:544:7` | `6a8bb80c835133cb42ff89cc08d599514c77b529b794d969424ca066f0cd5fc2` |
-| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:544:52` | `c27b9522544aebf89855551f4361003391092963a0b352511dc9c84d7a12151b` |
-| `runProposeSemanticOverlap` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:544:81` | `9629ee0768d1be8c02d2f594683c5726277f8294086d327d08ad84c2936e3bda` |
-| `runProposeSemanticOverlap` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:547:45` | `03201fd687e05c5bf1dceb2f54d7b479b67e8a6454cf1785d510d50890a5c271` |
-| `runProposeSemanticOverlap` | `evidenceFiles.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:551:5` | `d9dc53a7c899fc05be725171eb1bf171885e612c62ff383554511663ffd6b864` |
-| `runProposeSemanticOverlap` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:552:13` | `643b141a6f1c6d44ad75b8cd8aa7aa4475072680b45da314b8bcd61aa08357ab` |
-| `runProposeSemanticOverlap` | `path.relative(repositoryRoot, evidencePath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:552:13` | `373b3b552c984950fe1f1377a4135f6645063a0da151691a4750578db995319f` |
-| `runProposeSemanticOverlap` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:553:22` | `6443e47b6d91f263d4928d46c77a728a0068c37bc996e8492244ccfe35a1b8e8` |
-| `runProposeSemanticOverlap` | `proposesSemanticOverlap` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:557:23` | `5d7fa561af55e4e902e42946b00c001dbd8e74b01e8a29b765d13072e5f07a89` |
-| `runProposeSemanticOverlap` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:558:30` | `ada7294211800ff884149247dd26c390d7cb0d867cc61cf6859256b0b00e261d` |
-| `runProposeSemanticOverlap` | `path.relative(repositoryRoot, historicalAuthorityPath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:558:30` | `ef60d507484972ef232856ca92c92c7e0bbd52ec7d4fe6f0fc25e4791dd5f94e` |
-| `runProposeSemanticOverlap` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:560:28` | `7e0ae82bf36db6b9237c8e08e06828104e11c69ab9a9858d98e9ee9b95615d38` |
-| `runProposeSemanticOverlap` | `path.relative(repositoryRoot, successorPath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:560:28` | `33c1211cced4554d5c292fa90683512d144a9d66702d5cb1b8ee8ef88819cb9b` |
-| `runProposeSemanticOverlap` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:565:32` | `c9adde09e81cbba683509db0b67478930ff7ed133c14b8b5d340ad6e3b08ac2c` |
-| `runProposeSemanticOverlap` | `path.basename(historicalAuthorityPath).replace` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:565:32` | `9feb749bec4e6df76e3d8100a5e3cccd7087bb89bac3ccb5df880b415b18f722` |
-| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:566:22` | `2dd5c8fe3b2d65662964f29bc63f8159ef845f942f8e9393292c4e32c63459fc` |
-| `runProposeSemanticOverlap` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:566:67` | `d538f601d14cbd97da1e781cebd5a055c98c2e280cd03688e8c387bcf882f8ba` |
-| `runProposeSemanticOverlap` | `fs.mkdir` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:567:9` | `9d895bac951c54f58c3fbdbb0a083a852d279799b6f7e18593dd4c7c1f72764d` |
-| `runProposeSemanticOverlap` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:567:18` | `2e2b330967dc0160a3a123797aac0b6ada7a1755af978739ff1308dc94c7d457` |
-| `runProposeSemanticOverlap` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:568:9` | `3d64c0e7ab35b7879980d0b626aee84b3c2a5f1fbc848a631925ffa812c0ab7d` |
-| `runProposeSemanticOverlap` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:570:3` | `f9a819e16a16e19f1a7403ebfe7096c5140443e0cf62ddddbda102f762cac8d3` |
-| `runProposeSemanticOverlap` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:571:3` | `201f915cac237e657ede77b632514b4065d87ab684fe71ea2ee31d4c690fbbbb` |
-| `runProposeSemanticOverlap` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:572:3` | `41188163749ed98a18484d5552b6fe9a635f2a7e82f0e35195dbd22a6d1a2b94` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runProposeSemanticOverlap` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:554:21` | `1b917848bbbf1fbd632a33764c400c4b7bdb886b2889564ae9010f18a994881a` |
+| `runProposeSemanticOverlap` | `process.stderr.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:557:5` | `8bee617c664c1a6873c74372972082de516f28a9d12172dbc0a2f30298aa9053` |
+| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:562:35` | `b5bb45cc88fac614a189d2071e8d10475c0daa78016c6c8e3c154b5c4ee5687c` |
+| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:563:25` | `c16ad9e88c66b8ca5bcc326d9ea04b4a1eada040f2af2ca0d24b9201de6497d4` |
+| `runProposeSemanticOverlap` | `flags.relatedFiles.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:565:7` | `e708bfe85e075b801a6952495848d61ac858521b002c51d0f09386e53ae005ed` |
+| `runProposeSemanticOverlap` | `flags.relatedFiles.split(",").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:565:7` | `0f27471d0ee659482a5bacade80e66f196b51564535168445459415fdfaea69a` |
+| `runProposeSemanticOverlap` | `flags.relatedFiles.split(",").map((entry) => path.resolve(repositoryRoot, entry.trim())).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:565:7` | `2ecb05cc50ffc15de8880d81d467b44a83d588f79f5198906bd3b0bd307566b5` |
+| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:565:52` | `08725fdfea802bf145333749b14bd61da42bd54750fd004bb82c8837b280e933` |
+| `runProposeSemanticOverlap` | `entry.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:565:81` | `5558dd2d3f69ab65664369aa1b38dbacba7ce605ffb7ae2957bf1d90dfbe6763` |
+| `runProposeSemanticOverlap` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:568:45` | `9e083ab5cf14acebb9b2689578627f2f84f249d822ff3ca7048164f89b268a84` |
+| `runProposeSemanticOverlap` | `evidenceFiles.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:572:5` | `0e026922f25421a4cb249e6505ea50db076a53492e5ca4fe3de1dcfc891b1e79` |
+| `runProposeSemanticOverlap` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:573:13` | `7980480a64eaa6b9de1c155d9f8173652fcb80048a2468e85f28369197d4c027` |
+| `runProposeSemanticOverlap` | `path.relative(repositoryRoot, evidencePath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:573:13` | `5da4c640cd2660d4e91f70865dc5933f7e1e0ec37ef11205d03d77f1a43d26f7` |
+| `runProposeSemanticOverlap` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:574:22` | `ab1cf381f633dce084e9b4f6abb42891cb61602d6cff8b450fe286470f1cc437` |
+| `runProposeSemanticOverlap` | `proposesSemanticOverlap` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:578:23` | `ba3f04d08c33471cdf979decfb1bd9547be968679da90b8aa762bb96dc9b824e` |
+| `runProposeSemanticOverlap` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:579:30` | `a970bbb628b076b226f08c10760b6d3c94dcd3a0a08cea01a87d4f97594032c8` |
+| `runProposeSemanticOverlap` | `path.relative(repositoryRoot, historicalAuthorityPath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:579:30` | `56a956e254e310eb429959b7b8209b7a158d7659d55decb4204adb47d359c83f` |
+| `runProposeSemanticOverlap` | `path.relative` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:581:28` | `16bea07fd1c1f9d6c3b3bbfd91a928c84b9e86c22e1bd104c6d312bdf8674c57` |
+| `runProposeSemanticOverlap` | `path.relative(repositoryRoot, successorPath).replaceAll` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:581:28` | `59a070a2973b312a4479ab72b90c082ea34c09d7b575d2edb92b1375ed38b35b` |
+| `runProposeSemanticOverlap` | `path.basename` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:586:32` | `5c79c019519970081b149810d956828fcd8ebeab5840f7f9a84f0b941d29e988` |
+| `runProposeSemanticOverlap` | `path.basename(historicalAuthorityPath).replace` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:586:32` | `b779fba234f6f5121afd64f926816d8918b6dc1117d59a3f674a4969b120e6c8` |
+| `runProposeSemanticOverlap` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:587:22` | `d541866a8b63572d9d306ba8bcbc975b033e98f62aa07ba69f65ebd4af90dca1` |
+| `runProposeSemanticOverlap` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:587:67` | `fadf8ffadbc1aa68c3e550ccf475d1228380a4e1e2bae1ae5ac210217f9b8e47` |
+| `runProposeSemanticOverlap` | `fs.mkdir` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:588:9` | `799d835782668e111712ae3a0fce6217bdce556fe206f586f1fec793d1baf381` |
+| `runProposeSemanticOverlap` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:588:18` | `eeea514fc1a5d12e7118af15d570970e4bf182275f3564bb7e54af6a48f43141` |
+| `runProposeSemanticOverlap` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:589:9` | `20a2f03a8188b0c0fbef0399432042093c1cb327fab42b985583f198120d0ee9` |
+| `runProposeSemanticOverlap` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:591:3` | `08519aaadda662481c7e2ce2cc79f5c1121f9a53b7b6d81e93a0451aa38cdce2` |
+| `runProposeSemanticOverlap` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:592:3` | `2cc7f44e327c817c230353443e59da05ffdb84ec4ac103f6f5521ac006c58194` |
+| `runProposeSemanticOverlap` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:593:3` | `d627dd2e18a58ecbf76831bec0800616b7fb3943c10edb1ef25b54460ec7fadb` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `buildsMechanicsBlock` | `mechanics.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/proposes-semantic-overlap.js:46:10` | `a9c8f623ea56f94e409273535b912c96d2bce939b21957483d32bc5ce90f87c6` |
 | `buildsMechanicsBlock` | `mechanics.map((mechanic, index) => `
 ### Historical mechanic ${index + 1}: ${mechanic.mechanicId}
@@ -9776,29 +9810,29 @@ Handler: `src/cli.js#runQuery`; entry point: `cli.js#function:runQuery`; kind: `
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runQuery` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:154:33` | `75b09faf39ec39001f43e07d845b5418982dc2f3180bd4be10490ae9512d6214` |
-| `runQuery` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:155:21` | `fc8201fa03c2dcb910dec90b7df42865d748473f2e4ddfaefae6a6f3f931c5ae` |
-| `runQuery` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:155:49` | `85275510296a329f3edc02cf9b728bef0ec1d675b86bed3dfd79f82eb169a28c` |
-| `runQuery` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:155:59` | `2c492d36c7b57f550b29d0459a192ca3f7eb0c65c04b0027fdfc046d9e065976` |
-| `runQuery` | `resolveQueryText` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:156:21` | `da396cb97f20fd2b4a088b8d77715e674a0cd9b0d69efffc1be7ee85cfa435fe` |
-| `runQuery` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:157:23` | `31e2e4eaf0356ff05e8d8b351e99ff479db291b05578c23b0ed544f30cc2edc7` |
-| `runQuery` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:158:24` | `1484974b2e30d5b5a826ac31678eb57e309f5bab9b4ab158a745097aa0f1154a` |
-| `runQuery` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:160:3` | `303a507f39a0b43052017e3e1272a1f661b079311034f49b511f49832371c4c6` |
-| `runQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:160:33` | `de873abfef49fabc4470b4e41cca8e3e1e67481ba67db52b4772e1156fcea1ec` |
-| `runQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:160:67` | `16b4477291e86068537705fa9e79eda7507a9e011f30c03d03f10a38d6d33e7e` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `resolveQueryText` | `positional.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1207:10` | `6fea5b5f27034404b909626b06b8edf6c7b921f0babbfc44a3dd06ae6446f4f0` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runQuery` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:156:33` | `98096eb8c7b277b2fb903c13423addc6a339df4c1886e5c730d247d147fc75b4` |
+| `runQuery` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:157:21` | `556dd1721efc2b28cd7c85eb50fffdc6ba2b98683567e0c65e79579089bd692b` |
+| `runQuery` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:157:49` | `e5c0eda753dacc7ce1fc217017569ff2d5e74ab9972a4be71d97f2420759870a` |
+| `runQuery` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:157:59` | `bc70aa0010013dba68a129f6d1182361d1f5fb750b09d202417741f3f8b87938` |
+| `runQuery` | `resolveQueryText` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:158:21` | `c0748aac99ca2a8c38e0e4cff99339a83d0de8051662f1a3a9500830a6eabb08` |
+| `runQuery` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:159:23` | `2cc3fa526b3f77b181f4614e526c17eaa6f30e9f20d3e79b0306831f298b7244` |
+| `runQuery` | `executeRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:160:24` | `1702a4dabdf913e1dbc98ba412814b927820112ad72e802d5f5ac53548434367` |
+| `runQuery` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:162:3` | `387e7b6a85785b8d3f09a74a936a583e392b9329773ecff047932b6e33019052` |
+| `runQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:162:33` | `211411dab1d035af21a7729a5aeea11440277cf992052fb6808e57b30872b544` |
+| `runQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:162:67` | `4b7fe7f77bf32c2e3b4ea69fd1141cbd0b81138630210b2984938b4fcd6056f8` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `resolveQueryText` | `positional.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1229:10` | `75c5f40aff6b4b1823018861dd5401c8296b7547c4f73f6b206c99d5c5df3daf` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `readsJsonFile` | `stat` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:10:27` | `f3793c1c4bc07fa6810aa1f08dfc7c5891ca0ea2e95893f1cf86635bf848957f` |
 | `readsJsonFile` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:12:19` | `d4b0ce10918fb6311cf4c621e935738722cc5bafe2aa966cdd61c0d68e490395` |
 | `readsJsonFile` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:12:30` | `81b019d18cc537b085ed7274ee6d918f18a336d355ee8fb985be6db3f5a35e0b` |
@@ -9864,11 +9898,245 @@ Handler: `src/cli.js#runQuery`; entry point: `cli.js#function:runQuery`; kind: `
 
 </details>
 
+### Command: report-query
+
+Handler: `src/cli.js#runReportQuery`; entry point: `cli.js#function:runReportQuery`; kind: `cli-command`.
+
+<details><summary>Inspect 22 callable node(s) and 186 invocation edge(s)</summary>
+
+#### Callable paths
+
+| Depth | Callable | File | Root-to-callable path witness |
+|---:|---|---|---|
+| 0 | `runReportQuery` | `src/cli.js` | `runReportQuery` |
+| 1 | `parseArgs` | `src/cli.js` | `runReportQuery` â†’ `parseArgs` |
+| 1 | `rerunsRegisteredReportQuery` | `src/governance/projects-report-query-lineage.js` | `runReportQuery` â†’ `rerunsRegisteredReportQuery` |
+| 1 | `validatesSelfGovernanceReport` | `src/governance/validates-self-governance-report.js` | `runReportQuery` â†’ `validatesSelfGovernanceReport` |
+| 1 | `readsJsonFile` | `src/lib/reads-json-file.js` | `runReportQuery` â†’ `readsJsonFile` |
+| 1 | `writesJsonFile` | `src/lib/writes-json-file.js` | `runReportQuery` â†’ `writesJsonFile` |
+| 2 | `normalizeLongOption` | `src/cli.js` | `runReportQuery` â†’ `parseArgs` â†’ `normalizeLongOption` |
+| 2 | `hashes` | `src/governance/projects-report-query-lineage.js` | `runReportQuery` â†’ `rerunsRegisteredReportQuery` â†’ `hashes` |
+| 2 | `freezes` | `src/governance/projects-report-query-lineage.js` | `runReportQuery` â†’ `rerunsRegisteredReportQuery` â†’ `freezes` |
+| 2 | `reconcilesReportQueryLineage` | `src/governance/projects-report-query-lineage.js` | `runReportQuery` â†’ `validatesSelfGovernanceReport` â†’ `reconcilesReportQueryLineage` |
+| 2 | `validatesParameterBindings` | `src/governance/report-drill-down-query-catalog.js` | `runReportQuery` â†’ `rerunsRegisteredReportQuery` â†’ `validatesParameterBindings` |
+| 2 | `filtersRowsByParameters` | `src/governance/report-drill-down-query-catalog.js` | `runReportQuery` â†’ `rerunsRegisteredReportQuery` â†’ `filtersRowsByParameters` |
+| 2 | `readsLineDelimitedTopLevelJson` | `src/lib/reads-json-file.js` | `runReportQuery` â†’ `readsJsonFile` â†’ `readsLineDelimitedTopLevelJson` |
+| 2 | `selectsKeys` | `src/lib/reads-json-file.js` | `runReportQuery` â†’ `readsJsonFile` â†’ `selectsKeys` |
+| 2 | `stripsByteOrderMark` | `src/lib/reads-json-file.js` | `runReportQuery` â†’ `readsJsonFile` â†’ `stripsByteOrderMark` |
+| 2 | `writesTopLevelObject` | `src/lib/writes-json-file.js` | `runReportQuery` â†’ `writesJsonFile` â†’ `writesTopLevelObject` |
+| 2 | `writesChunk` | `src/lib/writes-json-file.js` | `runReportQuery` â†’ `writesJsonFile` â†’ `writesChunk` |
+| 3 | `canonicalizes` | `src/governance/projects-report-query-lineage.js` | `runReportQuery` â†’ `validatesSelfGovernanceReport` â†’ `reconcilesReportQueryLineage` â†’ `canonicalizes` |
+| 3 | `resolvesJsonPointer` | `src/governance/projects-report-query-lineage.js` | `runReportQuery` â†’ `validatesSelfGovernanceReport` â†’ `reconcilesReportQueryLineage` â†’ `resolvesJsonPointer` |
+| 3 | `findsPropertyColon` | `src/lib/reads-json-file.js` | `runReportQuery` â†’ `readsJsonFile` â†’ `readsLineDelimitedTopLevelJson` â†’ `findsPropertyColon` |
+| 3 | `writesArray` | `src/lib/writes-json-file.js` | `runReportQuery` â†’ `writesJsonFile` â†’ `writesTopLevelObject` â†’ `writesArray` |
+| 4 | `pointerSegments` | `src/governance/projects-report-query-lineage.js` | `runReportQuery` â†’ `validatesSelfGovernanceReport` â†’ `reconcilesReportQueryLineage` â†’ `resolvesJsonPointer` â†’ `pointerSegments` |
+
+#### Invocation edges
+
+| Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
+|---|---|---|---|---|---|---|
+| `runReportQuery` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:435:21` | `f73af143535e5f68cbfe15a4c73ac37f63f8de19e413027431fad4de6328fb27` |
+| `runReportQuery` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:439:24` | `1aa655235a81bddb2916664491d8e053355cccf6c78ecc931124dfebc05f3c7e` |
+| `runReportQuery` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:439:38` | `c62f77a9680911bfc05d54a72019e72c8f8d86d76fc3d70b03b859d7c8951eac` |
+| `runReportQuery` | `validatesSelfGovernanceReport` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:440:9` | `d8479ac44046ea9852e09b280abbcc02c1b119b078c7f2ff266a15862e258b09` |
+| `runReportQuery` | `rerunsRegisteredReportQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:441:18` | `d51e9702c2274318feb6c9cc9da3a4b8f74aaf1cfddb0efc1479cc1ac724ca9f` |
+| `runReportQuery` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:445:24` | `53e3ea3256d4631084cc848c3df0658f4084dde7cec9b211ac66d529f15d2449` |
+| `runReportQuery` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:446:11` | `804f72b44d44cfc9772b000f3278cea87e01c8078d820715da011e702e0f8187` |
+| `runReportQuery` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:447:5` | `6645d45826c05009e848f0eaa9b8fb84cf64a92fc29d25400a5ef20d0e24d408` |
+| `runReportQuery` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:450:3` | `e235f4a3ba73f6fc9427e32442af12fbcaf1c4360c71b91c361613901ce4c0c2` |
+| `runReportQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:450:27` | `00bfe42c834f1b49fb83aad645afc0ff0d5849f4120ab3f632141a6cea78f696` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
+| `canonicalizes` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:11:7` | `1c78507a9a1642275fc0041e4199b533a4c521d36441b5af40a04c79248cda2a` |
+| `canonicalizes` | `value.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:11:36` | `3490c1152060e642e72e31137f2b36425f7477dbf271678cee23a0e8a0f5a078` |
+| `canonicalizes` | `Object.fromEntries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:13:12` | `444f8cb58c0d19435963cb1b9fce2f4a58c6160523c50bbaab89a26e27b967d1` |
+| `canonicalizes` | `Object.keys` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:13:31` | `a200f28de712d16d3b3e640505af1b2471a2d2d70b9180ae461c9eeac51a0852` |
+| `canonicalizes` | `Object.keys(value).sort` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:13:31` | `8f5a25b7f5764d6e9d7463aecec19dc921fd02ceb2efdbb20926f80c3f04bb29` |
+| `canonicalizes` | `Object.keys(value).sort().map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:13:31` | `3dd7a0524bbea235faadb25e7af5da1cbe70138020fff3ecd0f90a0e17574de1` |
+| `canonicalizes` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:13:76` | `7947e7e3f26248e397968a33e478405d473eb9b61069573d2fefa3f110b4aba6` |
+| `hashes` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:19:52` | `8635a5cbf6db1eda295303e080d680cfbe148be5a7b71a777f4d5536e8174cd5` |
+| `hashes` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:19:67` | `3b124807ebe675620d3ebbd4a23016dbd37884549769138cfca53c42c5850208` |
+| `hashes` | `createHash` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:20:20` | `11c41285a6ed7db3b943efb6ed1be75e9d8b73880e2fc06fc00946360a3506b1` |
+| `hashes` | `createHash("sha256").update` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:20:20` | `ac529f6886cc2f2489e48dece139b57f8783d1592e896ec8cb1be1f65457893d` |
+| `hashes` | `createHash("sha256").update(text, "utf8").digest` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:20:20` | `dfb037c0c0e448c76c809fb2691c6ed5c9a86bac876e7948fef8b248f40b6719` |
+| `freezes` | `Object.isFrozen` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:24:54` | `89d2c615b8109bf1545200af3e52b4bab4e068efcd4afce563ad7c0e33634bc6` |
+| `freezes` | `Object.values` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:25:23` | `5ac51ede3b1b83e235aa7fe906c9e151fc2490af2f7d0660510fa50002ff2930` |
+| `freezes` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:25:45` | `54e9ddc3facfd071fa41b4160e11cb88b7512db3c4303e422d2f400dd80e9f42` |
+| `freezes` | `Object.freeze` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:26:10` | `786f5952c4bf997116ef2f0a8136cae00eb1043f36798bf2edaf1341c01c06f8` |
+| `pointerSegments` | `pointer.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:384:8` | `a37c7546acea7ee6eab7d48c6643f0b11416ad5dc1078bbb113301edb22f1cef` |
+| `pointerSegments` | `pointer.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:385:10` | `80047016dcc55c6844539ac0dd79593ae65f12e9f6473ea0291286b0f1bd6d0e` |
+| `pointerSegments` | `pointer.slice(1).split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:385:10` | `45087aac3eb55d9765ee62bb8c29424687181b00e99c63186a0b1625de8561fe` |
+| `pointerSegments` | `pointer.slice(1).split("/").map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:385:10` | `795496f517fca51081018ded642dc62bde155e6afd188a6cffc61d7451a7559b` |
+| `pointerSegments` | `part.replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:385:52` | `7336389db8baa56dd53a1efd6168d4b06927b7c7e7d68fa5a57d4155ac670238` |
+| `pointerSegments` | `part.replaceAll("~1", "/").replaceAll` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:385:52` | `d310b8d91314f13d447721e4ff001a049776f0f69cec8dff25a4e7185c3b3957` |
+| `resolvesJsonPointer` | `pointerSegments` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:389:10` | `a23d0c0654488aa99d47790cb24c1e22e61f40645c492491557dc4acd8dabf42` |
+| `resolvesJsonPointer` | `pointerSegments(pointer).reduce` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:389:10` | `fb412c9005de03175d92b16fde8f407859ad55bf2804db46a80642cdbaf366a7` |
+| `reconcilesReportQueryLineage` | `lineage.registeredQueries.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:416:33` | `89c5451a604baca3be6aa0c70cdc9de3ded2545214f01216d393f5e9d4fd2ae2` |
+| `reconcilesReportQueryLineage` | `lineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:417:28` | `3d1c095f6da3489ab0753c2daebdc35b3581f6a6c57b05a4619887955fc8205e` |
+| `reconcilesReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:421:39` | `62db4827ee52776f251d945888dd81bc3af622e1be704423a31d67d0e6653319` |
+| `reconcilesReportQueryLineage` | `registrations.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:425:20` | `e16293a9c91ddb7d6755c0b4d525a8712ad7bbc628ff99e7bd746decebd472c6` |
+| `reconcilesReportQueryLineage` | `validatesParameterBindings` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:427:10` | `1fdf2e14cdb41d45def146e3b87ffc1ebe3d7fa9d669a86ca56c9c447ee04d6e` |
+| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:435:54` | `f38ebb36ab22fd4b9c4616387f05a7e17a571859e7bc802abd763678edd14d42` |
+| `reconcilesReportQueryLineage` | `registrations.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:439:26` | `154256cb498678e2c05ace5efaf15ec834280d7e147f20f3716f1afb32ef7114` |
+| `reconcilesReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:442:36` | `186049f8f58365032a85aca21ac87b28a40b1c53558eea620ae24047f8642438` |
+| `reconcilesReportQueryLineage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:445:10` | `39b7a4c136f0f4d67b1fc9b647f0ad1174c4df6b795569fe06e25279883bc003` |
+| `reconcilesReportQueryLineage` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:454:9` | `ed340c3704dc8eb5849376a3073a13e30beab6191ac6a44cef205b915563f59a` |
+| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:457:49` | `94c82c2d8de1eda48cf657a275c116e350bdad8875bb7ef484ff7c1935e8fc6c` |
+| `reconcilesReportQueryLineage` | `receipt.result.rows.entries` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:458:35` | `9180bb73093857344506e4ef33a0d20cab7edfb78b06b7c6ec0ef76ce7cbfb74` |
+| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:459:53` | `bb6dfb759f51c5fe97d7011d05ed80f61106f404ba5a694a654de642e7873c28` |
+| `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:474:10` | `fa8df596038fb374bab22323feabad2e6453216e30c0c01051c0e2ab35265c72` |
+| `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:474:41` | `d703a7062378f3e8933a010a35f8828458790817af5fcad91c51f9098661026e` |
+| `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:484:10` | `5022cd3e4b6d5ca424843a1f310d88cf877e0dbb77c9147316127656e7fe3ca5` |
+| `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:484:41` | `e948f81c5214557a596976844feededd113696cb2ee9180265040b81c54d3043` |
+| `reconcilesReportQueryLineage` | `registrations.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:494:10` | `d527ba1da00ce84f04847dcaaf9894a98dbd740c663171d059d6c9a73b1df44b` |
+| `reconcilesReportQueryLineage` | `receipts.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:494:41` | `e66fd763428ee95418c483fd4030790e7751c46b7f3cbe49266d76927b4d21dc` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:496:22` | `401c136fce617e7c90f3c9324ce9ff7162c0c16b8409698582bbec88c22cbefa` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:497:24` | `c15519b6e897d2ff6e3777a70149fd2226b7f9339cbd5a37bf7a60cff6a3b8c4` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:498:35` | `d9faf22adf1aca9b1853aa4173364a0ae0b3bc27d6cb6625e0179c4098bf5ac7` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:499:31` | `60a7d7230f19c2bfd8913d8a4d62ab2f35edf32350c310d329f16b35dd4ba733` |
+| `reconcilesReportQueryLineage` | `unreachableCallableRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:503:8` | `2fc3b462a8ec820910fdc05e6240c31f345804a5c37bcd81e76f264aa6b287b6` |
+| `reconcilesReportQueryLineage` | `unreachableFactRows.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:504:8` | `458c3f295cb0a449bfb0713cc12305b09928fa8870fbe6779bd389f3f08eb38b` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:507:23` | `f50e6a09bfac9aff28997a6ae2bd1c6bc05929cb33d78a0aeec214a4a568b825` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:508:22` | `974f47bb9ac689118ab02817bad0695461ab7d79612e0d24748194216c56091d` |
+| `reconcilesReportQueryLineage` | `bundleRows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:509:28` | `ae69d7ac40ed4c3d6ccee33bb008a30a73d7eb7430eb610fc045a19189d97173` |
+| `reconcilesReportQueryLineage` | `lineage.queryReceipts.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:510:35` | `8732d031922dc1dca2e302b942001ebdb7e6bb89fc1320dddc6845df12f9a2a5` |
+| `reconcilesReportQueryLineage` | `receipt.result.rows.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:511:13` | `9db09ae3792ec347bab3ebc02838a16bd02abe0d49433b27fbc663dc4954a896` |
+| `reconcilesReportQueryLineage` | `receipt.result.rows.map((row) => row.resultRowId).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:511:13` | `5c770aae6a3eb18e569b1621358b53d96a8fbf7787bb976265c1447c62de24e1` |
+| `reconcilesReportQueryLineage` | `authoringRowIds.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:520:20` | `8ceb557eb3a4383e556be68d7e759b6ae92bf5a573a715b608d22a12b27dc53b` |
+| `reconcilesReportQueryLineage` | `reference.resultRowIds.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:521:20` | `a9e007bc17b3be32ff00f79d85dd62fbe4e2812ccbf7bc5c75ef4d7e6316cf0f` |
+| `reconcilesReportQueryLineage` | `rows.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:521:66` | `9a127fa37073e5c8f6058631581310c5209051b6d97cc213750ee04fecc75bb8` |
+| `reconcilesReportQueryLineage` | `bundle.queryReceipts.some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:527:10` | `2f00f4c44185751a2a8d9c2728bdf8c9fea1f2d1c7045a34f5ccffa6d71b1cd5` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:529:11` | `ad50309d056d6d79d98847d11d91d5918ad65cacfef773360d3cd47ce386742e` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:537:11` | `a74dcad002f864d830f10b08d633bd77db15f7b59883e87f063c7e8701fd494a` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:541:11` | `f5e0318c0992c7ec795ee8a7109be992f314d0dff3e1847d27e64a6df17ba0ba` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:545:11` | `a8288a24d6f865fefa1a7638a3854c2bdd3d46c102abcd7a625aa3d2cc86b152` |
+| `reconcilesReportQueryLineage` | `bundle.unresolvedEvidence.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:549:11` | `a32cab9e66b00a7a35c97948b93b36800e180ca9f7b92342d214af0a032ba51d` |
+| `reconcilesReportQueryLineage` | `[
+      "missingQueryPointers", "unsupportedFactualClaims", "staleReceipts", "indexMismatches",
+      "scopeMismatches", "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
+      "deterministicRerunMismatches", "claimsLackingDrillDownPath", "brokenDrillDownQueryReferences",
+      "invalidDrillDownParameterBindings", "drillDownResultSchemaFailures",
+    ].some` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:561:8` | `5ce2e540380a837fd6be367753141083803613e096748b6740db54f1fdca5955` |
+| `reconcilesReportQueryLineage` | `receipts.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:570:21` | `aa437f6c9bc24f088c27797ac706d49539c8e2255e082f4dcc737966e8508652` |
+| `reconcilesReportQueryLineage` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:572:10` | `6587fbfd8456a4f665e2055637eea269e79f9f9a41eda2b12439d9fa6b15317a` |
+| `reconcilesReportQueryLineage` | `validatesDrillDown` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:575:47` | `20798f89e52fadec1abc08d30f1ced928a87b6464c95314f3164abee0f01e4d2` |
+| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:576:22` | `68ad4879f15ddd355e1b63c84afb2877a0a8d0d2e5dbf93dd01618ddeb784ac2` |
+| `reconcilesReportQueryLineage` | `resolvesJsonPointer` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:577:21` | `e8f04609b8c6d5c1043c3c251e1b052711b2b908457ea11ee52646d7652ac529` |
+| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:578:9` | `ed7163e406c8ee570afe775dafdc7e72495b1551c996d48ff2242ef85b4d00e4` |
+| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:578:24` | `5fbba1bd2d7ce60b3dc648fef30f7eb1df87078e6835c74ab42c9d28d7c1c5be` |
+| `reconcilesReportQueryLineage` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:578:53` | `ce3dd3a2f2a87f9476518186fe2da672f956fa234a0e10659ddcaae595ae7318` |
+| `reconcilesReportQueryLineage` | `canonicalizes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:578:68` | `86207f4a92eed2addc8320381139528c7da3dbd3c750ff5ce87fd2bd01719ec5` |
+| `rerunsRegisteredReportQuery` | `report.queryLineage?.registeredQueries.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:710:17` | `20c8731ec5a77a7d18ccb12e56a93e4f8ba0ff6eb65d6c21d3425d306e4c4f1e` |
+| `rerunsRegisteredReportQuery` | `validatesParameterBindings` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:712:8` | `12c95f655e17fcddc17cda10addfa05b1ce05e8e7ccb8fa4bfb248b7408e0cf4` |
+| `rerunsRegisteredReportQuery` | `report.queryLineage?.queryReceipts.find` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/projects-report-query-lineage.js:713:19` | `c44497bb418e1b96394f7f8cf218c995bdb903254b5a14fd5f04c26d3c6ed539` |
+| `rerunsRegisteredReportQuery` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:715:7` | `d45aa389a81c47ed18130cd32f55cd115c1cb26d253ae366bd170ddffede5417` |
+| `rerunsRegisteredReportQuery` | `filtersRowsByParameters` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:716:16` | `c8f33b24aa97d759839d52020b5feb1290dbd6eebf8685f1282416dcabf705a6` |
+| `rerunsRegisteredReportQuery` | `freezes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:717:10` | `9d94c124c1e204b0016fd67e379dce63f96302aca570437392b9b2cc401f316b` |
+| `rerunsRegisteredReportQuery` | `hashes` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/projects-report-query-lineage.js:717:82` | `02ba63c9a4510a83bee1c0c60c97d3427c705c5b0369b82656bec53a91973c22` |
+| `validatesParameterBindings` | `(query.parameters ?? []).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:880:30` | `1a313ae2a6d069f59f328520e0368e978a60597f5e85137cd2e8d6de215f41dd` |
+| `validatesParameterBindings` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:881:31` | `9a1f669bcd609ed75edf255d67f8f6a7acd622e4229af76e5ccf66ca61e3ed03` |
+| `validatesParameterBindings` | `parameters.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:882:24` | `8d0b706d15bcba4d3c445896cdafdfb3ab33e9c1745e322248fe4c5b1b998be2` |
+| `validatesParameterBindings` | `value.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:884:38` | `40e019163651704cc9bfe534abf6c242054ec8300a39491dd0bd6de325a7d71a` |
+| `filtersRowsByParameters` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:892:18` | `79d4e5444d4f8d709816a8b6911a9549cf96a2c65da31dd91cee5dc41bcb9729` |
+| `filtersRowsByParameters` | `Object.entries(parameters).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:892:18` | `aa52c3816e9354665d8120a22c78f3ad6e5f4a8bda750a53c508cdaee995082a` |
+| `filtersRowsByParameters` | `rows.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:894:10` | `c3aa8bf4f4b76ebf7e49be3df0113ab09b12a977ee5ae26d9199b86a3ce7d4b1` |
+| `filtersRowsByParameters` | `active.every` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:894:31` | `1beb1e1f1aebfb943b837820fd123c0e7e2d78ea247321317e55253ff53bb92c` |
+| `filtersRowsByParameters` | `row.featureIds?.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:899:109` | `e8fd0b944e85c825bf56ad09835293e177f05cc9c5df310318b91d2d25ef7059` |
+| `filtersRowsByParameters` | `row.canonicalFeatureIds?.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:899:144` | `59465eedd383db7d11c9b4a3afe6182866b8381e2c9f1338ed186facde47c4c1` |
+| `filtersRowsByParameters` | `row.scenarioIds?.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:900:112` | `b60f992865531e940ba5254ba21ca9165b5f090daba69ce1e79732cfb94362fa` |
+| `filtersRowsByParameters` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:907:12` | `77805da1562948d29085b3e6fa21afa02e3176268999cef8a839af88527c1628` |
+| `filtersRowsByParameters` | `candidate.includes` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/report-drill-down-query-catalog.js:907:39` | `388344b70fe3da76c6259b2b3d06dc76daec236a7d7db3c9a30e1b6ea44e9a4d` |
+| `validatesSelfGovernanceReport` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:11:20` | `516ca7e3fd6db857da9947413d34c220e34ae42443f1c9e8d6e2506e400044bc` |
+| `validatesSelfGovernanceReport` | `readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:11:37` | `e76d52ff99678ffbb285cf9bc05b63b4160b97b90312f397253a74056bc74518` |
+| `validatesSelfGovernanceReport` | `new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true, validateFormats: false }).compile` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:12:16` | `070ee2b4d3ee91d3428c5c935d84900793662f0b262b8f4690d06abefd913636` |
+| `validatesSelfGovernanceReport` | `validate` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:14:7` | `ff73b6f8e089225a8cefd177ebc1a6685cc36f39c57c7c4165f4b576cac3d2fe` |
+| `validatesSelfGovernanceReport` | `reconcilesReportQueryLineage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/governance/validates-self-governance-report.js:14:32` | `76ea7f572f004f0b2e0fa7308444cb1d973f0054495c8241b3a7182970773526` |
+| `validatesSelfGovernanceReport` | `validate.errors
+    .map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:15:19` | `e51de798dfc5fad1a5dc983fb2c14d15b8c07ab5df9fb26e6d194b83f3851226` |
+| `validatesSelfGovernanceReport` | `validate.errors
+    .map((error) => `${error.instancePath || "/"} ${error.message}`)
+    .join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/governance/validates-self-governance-report.js:15:19` | `81f35996b68d7b84b6ffce6c867cfb075dea2f979b82ccc47e7d24440a500baa` |
+| `readsJsonFile` | `stat` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:10:27` | `f3793c1c4bc07fa6810aa1f08dfc7c5891ca0ea2e95893f1cf86635bf848957f` |
+| `readsJsonFile` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:12:19` | `d4b0ce10918fb6311cf4c621e935738722cc5bafe2aa966cdd61c0d68e490395` |
+| `readsJsonFile` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:12:30` | `81b019d18cc537b085ed7274ee6d918f18a336d355ee8fb985be6db3f5a35e0b` |
+| `readsJsonFile` | `readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:12:56` | `2c8d522c9e63cb335eec75afd8fc9c2b7aeaf58e6717822f5aa86d78ef048e40` |
+| `readsJsonFile` | `selectsKeys` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:13:43` | `cc4a6812106dd38640b7a7948dbac4dcdbf6b75fd7ded68a6c686b4f87974977` |
+| `readsJsonFile` | `readsLineDelimitedTopLevelJson` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:15:16` | `60a76d8b99ff5279571a9f1e25132059b91d9e8253e2ce4a7fc4d49101f34edf` |
+| `readsLineDelimitedTopLevelJson` | `createReadStream` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:23:17` | `0920d4c0341f364b9a1f4a199d0b8059ffaf50db75d4aa1173a82d48a015f361` |
+| `readsLineDelimitedTopLevelJson` | `readline.createInterface` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:24:17` | `71f514b5afebf41b31ce4362d9e5cf1f69d55651e79418718c7a79b42aa82ef7` |
+| `readsLineDelimitedTopLevelJson` | `rawLine.trim` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:28:18` | `aae43730dd9e8701bec2cd5310eb21669cc88af11c927d126be6258d7d4a7885` |
+| `readsLineDelimitedTopLevelJson` | `line.endsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:35:24` | `160f1a38ccee72d53985a34e7b939e03852833bf329dedbc2af87d115fadb6f8` |
+| `readsLineDelimitedTopLevelJson` | `line.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:35:45` | `50af0424cca0ac6573c7e41bf55ce2b9826f1aec9b23b0ac67b084c9cefd60df` |
+| `readsLineDelimitedTopLevelJson` | `result[activeArrayKey].push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:36:32` | `9f4603722e61f7c28b3e85ef89c3a87e298d14afcdcf87cd747ac7eb0eb25032` |
+| `readsLineDelimitedTopLevelJson` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:36:60` | `81eeb1067fce94bc72a6dda96fbf7e694d395466082b66e1585f35f6f306ca2c` |
+| `readsLineDelimitedTopLevelJson` | `findsPropertyColon` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/reads-json-file.js:40:24` | `be8676d6bc8c05ac2f47f1429408e722e9d2b5eaf3898b955824c7c6084dc0a1` |
+| `readsLineDelimitedTopLevelJson` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:42:17` | `b1c05fda47196df972d6cd4519f823685a59fd8e0607de78f7138b934a5e9b24` |
+| `readsLineDelimitedTopLevelJson` | `line.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:42:28` | `7634b230fc93689bae83e1d3fc0a510ebfb9155ed6c718bd310be44152407a8e` |
+| `readsLineDelimitedTopLevelJson` | `line.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:43:22` | `62a2f917d60a93a326bde59440cac2fa45a6c2cb96cff8ec6359067e838a0eca` |
+| `readsLineDelimitedTopLevelJson` | `line.slice(colonIndex + 1).trimStart` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:43:22` | `5ac865c498452e96252bcdb811c942d05257cf015d1622829895a4021f41950d` |
+| `readsLineDelimitedTopLevelJson` | `included.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:45:50` | `c177a07f25d69dc7dd77899b60ddbba10354ea35b1de0c8138ca6fc12a0f482a` |
+| `readsLineDelimitedTopLevelJson` | `included.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:50:31` | `cb15936f55c849079bc3d982733aa97739d833de006f38db9ed034d09b58d690` |
+| `readsLineDelimitedTopLevelJson` | `rawValue.endsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:51:23` | `3c0b2731c9bb30ba7da8ec1c42af6a93417e3fe5fe408aa2a528a3ea8b9e59cb` |
+| `readsLineDelimitedTopLevelJson` | `rawValue.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:51:48` | `8bdde1b2e9d79872699518ced5780bf4a5416cefc8dde0a2f5f8024d31c2b23d` |
+| `readsLineDelimitedTopLevelJson` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:52:19` | `98ad90fcd1c31d5209f0b1923c7d3f6965bbb8d7b175e7a26ba7ebb13e12f757` |
+| `readsLineDelimitedTopLevelJson` | `finished` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:54:9` | `64869f06545c46291ee8ed1e773d44155c350c4d9c5184c61945fdc92f863f7a` |
+| `readsLineDelimitedTopLevelJson` | `once` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:55:28` | `89edf1650b0c898a7a7f404a37fc14ce81e45f8a2b80c47ec3fca056806c4a11` |
+| `selectsKeys` | `Object.fromEntries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:62:10` | `e45271085ef7378088483eac9d5d23bf9fa56598295adb02c7e0437bf7e204df` |
+| `selectsKeys` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/reads-json-file.js:62:29` | `9452508dfed43bd485b40eaff74717d24dfcfb17be336dc974900bcfd9a231ba` |
+| `selectsKeys` | `Object.entries(value).filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/lib/reads-json-file.js:62:29` | `0dca2c1c520a47254fecbea692fc494957bd7c24c44c1c326e3287325630d48b` |
+| `selectsKeys` | `included.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:62:69` | `c2cf66c4f1c0cad18b01d13b7839f47bb660cbcd3ffdf17f4360943a8a6e1c5c` |
+| `stripsByteOrderMark` | `text.charCodeAt` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:83:10` | `7801025ac0b35f18d524130d46d15cdf1e81ffd19f596cc635c1475a5c9443e9` |
+| `stripsByteOrderMark` | `text.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/reads-json-file.js:83:42` | `52c0d456df2bc8022dab011b6f4d2676895aec288fa10c96a58ffd0e1d09859f` |
+| `writesJsonFile` | `mkdir` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:8:9` | `c28234cc685d3addfba2d0170fa8864d9dc48cb4a8ef56cc0cb07bb9fd837d13` |
+| `writesJsonFile` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:8:15` | `a437e314e0725537d82682685bb1f99814f544efab10b3c40ca11ac8f59f2649` |
+| `writesJsonFile` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:8:28` | `3581126a0290c2583147a6d3a8fa9deb6663b6845c1779dfc014c729b890590c` |
+| `writesJsonFile` | `createWriteStream` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:9:18` | `a2fc27e20fdb5437919b8f953388add4f3adb03f3a4d91f64ebe6806b925d7f5` |
+| `writesJsonFile` | `finished` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:10:22` | `ef2a9ab490caa4f4c20aea25cb037a4dfa96dc055ac33c13890f2180775f011b` |
+| `writesJsonFile` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:12:56` | `f08c476c669bcd8f3804f7f8488da7a0d0c1d171d75e21b3473e11910ba2cf61` |
+| `writesJsonFile` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:13:13` | `192b02db558aea02f47f8e711c83053b3a0cba5426ff5959e26462c92e27d880` |
+| `writesJsonFile` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:13:33` | `9e08c8962f84487e91b758989362bb970c39a99b4b4ef7bb59a02adf20c634c6` |
+| `writesJsonFile` | `writesTopLevelObject` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:15:13` | `4258a19defdf19d42705bf8f83e8790e64c86292b7416baf5c23a391805f34d0` |
+| `writesJsonFile` | `stream.end` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:17:5` | `8b1a073c6d4f6737ccd5cc429f753fef849a6f835f602fd4279e5f28bab9274a` |
+| `writesJsonFile` | `stream.destroy` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:20:5` | `37d3323ac366098e8a687a6ee4663f989e27195d6f03a2d665486a06ccf4889b` |
+| `writesJsonFile` | `completion.catch` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/lib/writes-json-file.js:21:11` | `9940d1dca21da846e3fcd1fca46e9ba4422c47f4d5a058022866124953069c43` |
+| `writesTopLevelObject` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:27:19` | `8e385615a43dd9d236870f6a64ab3830c0ba91459962043e2edf92ab7154ecb7` |
+| `writesTopLevelObject` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:28:9` | `7c329abec88604a325c328e81c87a472290208068bd64b9e288d0b73bffd541b` |
+| `writesTopLevelObject` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:31:23` | `a5f93d2f1a9d2c5165ffe87727361074cc31ae80db1cf8d437c88fd75dec9b9d` |
+| `writesTopLevelObject` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:31:48` | `3b4a59ef40f7adaa6e2127d86145bde5d5060c36a551839acdf4e32254d65fd5` |
+| `writesTopLevelObject` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:32:16` | `66ad96aae71956df34f4448f43fc6636b8fb7633b2fc7cbe28d989bec50d1d63` |
+| `writesTopLevelObject` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:32:39` | `f92ce6b845c406d68eb9ed8cbaf3adb47772636e6cc255969073cb78f07a69c8` |
+| `writesTopLevelObject` | `Array.isArray` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:33:9` | `ec5d177ca717b507239023063dfc23b516309b8a5cecca812d8ad5b439ddc261` |
+| `writesTopLevelObject` | `writesArray` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:33:37` | `6765ce8d90d34a5e5c9d44f0a530189e48abf703ebf8e7d002588b677ff49794` |
+| `writesTopLevelObject` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:34:16` | `aae9067b23ac539c322ddeffc59a5f1395abc53a7abf3854599ee8145f3f37cd` |
+| `writesTopLevelObject` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:34:36` | `555cfd223d584d8d92404c44207c644d4cb910f937526e5974ec17e08a9685d6` |
+| `writesTopLevelObject` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:35:43` | `4f1db27020bb4e1fecc03a2e2612af9cbeee414d71a2193f5b31cebadce78e3e` |
+| `writesTopLevelObject` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:37:9` | `219d03c28bb812a207507c03d3cf5882c5ba226d856b8eef3e3fd5f8b9be791d` |
+| `writesArray` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:42:11` | `347337ee88ccee39916442df7588fed4a343e891cb45bd556715cefb564bceaa` |
+| `writesArray` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:45:9` | `5db9fef4254eca7ecc36fef7ac92388309af636a4ac95bb77aae6f526e71b27c` |
+| `writesArray` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:47:11` | `ce0dfade94361a5c16f7c498aa0bc0613eb3c718d9421315d4256a8d895f7812` |
+| `writesArray` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:47:57` | `80d4ca2988b1c71d82afc64557f8326ba186ddc96933236835436bd41a66952b` |
+| `writesArray` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:48:42` | `a878e0185ad36dca9cc77468a683c5fe42a1eb168bb5a185f1d181f6d4377423` |
+| `writesArray` | `writesChunk` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/lib/writes-json-file.js:50:9` | `edb27684a5a65d43830f97d25f8f60fd572a3670fffbf646fef32b02f2686abd` |
+| `writesChunk` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:54:8` | `7b90563ccf48341113d477469e960d879041ca6a522c23b33e85956378a7b55b` |
+| `writesChunk` | `once` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/lib/writes-json-file.js:54:35` | `997a5c52e7cda6239769049d3202255fbf22a4f00ca34ced07f435d7b09e2c43` |
+
+</details>
+
 ### Command: web
 
 Handler: `src/cli.js#runWeb`; entry point: `cli.js#function:runWeb`; kind: `cli-command`.
 
-<details><summary>Inspect 251 callable node(s) and 2333 invocation edge(s)</summary>
+<details><summary>Inspect 251 callable node(s) and 2335 invocation edge(s)</summary>
 
 #### Callable paths
 
@@ -10130,276 +10398,278 @@ Handler: `src/cli.js#runWeb`; entry point: `cli.js#function:runWeb`; kind: `cli-
 
 | Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |
 |---|---|---|---|---|---|---|
-| `runWeb` | `runWebInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:782:11` | `dc3311befe7b46366cc78d3ebd605dbe7f46f661f36cc279d94013bf2725bd81` |
-| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:782:27` | `1a2e45b95850e781bdaaf75aba255eb5189666730dc4cc74136970cca2ab529a` |
-| `runWeb` | `runWebProject` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:784:11` | `fa959db5337750258d564299bd5a05d06cb71e7f25a591f7738d7159f13602d6` |
-| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:784:25` | `c8fe8be6687aace625c76193dfdcc070830f8c112598b88e5a9d8b1f4582196a` |
-| `runWeb` | `runWebQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:786:11` | `d319bd8152ed6bfc5fe9ade00fe1918cabc0246d20dea98f091b161fd539fc1a` |
-| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:786:23` | `ee3ae8b23ac95ea4de3167bb35dae5fe81c534ed9618101a98ccde6ffb52e0aa` |
-| `runWeb` | `runWebGallery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:788:11` | `e0f598753f6415061a73a340b6856f045fc2bbae98b4ff503b395da8f5642cd5` |
-| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:788:25` | `1f85123ce8964c370071bddda5d02252c892d79a05180b4ec1c4ee1df3eb2529` |
-| `runWeb` | `runWebCompose` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:790:11` | `d3485cd75bfd3b0bf402c185698cd6f7064acc5f4f42b707abe2697cbc455118` |
-| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:790:25` | `0d94c7b08dd7ebd8de5ea8eabbfd23883acb3e5a081083c60f502e90f6273613` |
-| `runWeb` | `runWebNorthStar` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:792:11` | `6e92dd45bfc205d627cb6972cb73035e64c667353c6db749cf00ede8ebbbe064` |
-| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:792:27` | `2e6ec6e08d9becfa3380052afd41b1f345ef4d89490adfb6607444b16d502d86` |
-| `runWeb` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:794:5` | `70d725fe69cc9973c715d3d9fb246f4818cfc5e6d5407a2a50dfc783f3234b2e` |
-| `runWebNorthStar` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:802:5` | `8b464428060ba94b2a43ef4d86338792c4b49b36890ea3196980d47d740dd90c` |
-| `runWebNorthStar` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:806:21` | `e490b81c8871f4225465e9d930ed8c75a7ea5574c1513aa18643cfc09db40ef1` |
-| `runWebNorthStar` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:806:31` | `325848a59d1363c03aec881ff940d25206a09b9038b916ec6ec79343270cb27c` |
-| `runWebNorthStar` | `readsGalleryInputs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:807:38` | `1ef80414c52ce97e82786d90d7b53d83a33c38e934d0313ee05b6e71a5a55a8a` |
-| `runWebNorthStar` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:808:23` | `b0823f6e7bac21ce1962f17f52b363834a457f8c6acda670357e41c27e89bf62` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:808:53` | `58a23ca6835df65059c72b858d5a1d8fd153e08a4bd251ca35763e453e6c9be7` |
-| `runWebNorthStar` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:809:33` | `0188178ff2ef6f4d904c370f9b6cf9df4c2f71a53fa3058024885b3073478387` |
-| `runWebNorthStar` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:816:27` | `30245cfcf6b3b3721d1070fe16e3d85fa2a259b72d503be962487942e74b3da6` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:816:69` | `78c61d37bfff0c43a8c86813627437007c65afe18526974006ed42633c1e48ac` |
-| `runWebNorthStar` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:816:79` | `a8c07c9d0dbd8ee0768dcc5a86868f3516249934fc7287025635920603f269a8` |
-| `runWebNorthStar` | `runsSignInNorthStar` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:817:24` | `0c12dada0d0bbfbf26bb05540b286a5f9b0398bd4c9ac5888daa3954f67c5329` |
-| `runWebNorthStar` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:828:73` | `c17868b41eb660fb818f85fdd1e5bdb4892a391433f14ddf7402854c01a03c6b` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:832:3` | `f471f33465aea689c4ac3d19fde2ee22f591f598f3c76a7d5a7482038dc2f095` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:832:27` | `488b3db4deca798cf7a2ed71faaf6fe74439e48b21bc9df19452addce6c74a37` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:833:3` | `4e926a6bfa89e62dc692668da39f669699ca52e8af553758abde42122b34e875` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:833:27` | `effc6b481d52683bfb0f560648d82ec1d51c649d6c9d807d28e0816c9dd82ca2` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:834:3` | `85bf0f190aac8d93211c682a850bbd48ee242975296a57a607386e877b614e47` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:834:27` | `a7571694e196aef80c58e1f7c9b4cd70748bc147f367ad3da2f1910fd7ed2e3e` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:835:3` | `93a8789eb402ff44770306f71860d85ece75c71102c4d0e352292f1a0695c3f7` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:835:27` | `669c48ecf2c4d411d75f6bb29e40e5f43ff4bc31a8815a7643576da9e75783b2` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:837:5` | `8f10da3db6da92f1a7f10a2ece7430df10bdfd444beedb09d7db1c0f061e0a5d` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:837:29` | `0d6126053c6182ebb281045a266b89636c604c7052c191eb7b03b8505a7fc59c` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:838:5` | `5b0cacc4e6e6278162006cbbf29af58d441755a86545bb1c7d9adf9437c959fa` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:838:29` | `c518166014892fe6b7f3796f1377e3107ed9886d8d5988e11b25487e6e72a244` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:839:5` | `54f22cf93d51c786f6c4a62feff68626502df2045179179fa2dfbae157d4deed` |
-| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:839:29` | `3a0633a709ea837c90adf1606b994fba235132d898af4778ceb88b015f19eaf7` |
-| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:841:31` | `b33b0c5ccda19d61c56186a8b2b6eaa0834655166f60181f8f46708b5120a44f` |
-| `runWebNorthStar` | `formatsNorthStarSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:841:52` | `e675a6bafe7c783fd232600308e11051053bfdf7ba8b0c4a38eeeeaf46ea426b` |
-| `runWebCompose` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:848:5` | `cdeb6d5fbbb901e3fbe36f403460d3ab167930d7a746a2af785187544d94f2f7` |
-| `runWebCompose` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:852:21` | `a7018e5adee6c31e5a5205bb1269b3cd0fa0d09bc7e67098ad96de29db3bee83` |
-| `runWebCompose` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:852:31` | `d131407f72e074564eea411bc6120175f70b4238bb40e83ff870bb41c60f853e` |
-| `runWebCompose` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:855:24` | `351504d411b427b496e1a970b85e4aa5dd81bcf7ea116b62cbad9c54b0420d66` |
-| `runWebCompose` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:855:35` | `aad714a0bf0532b8159246223433c6af5b7b96755e44d4d968e2c72b12e752bd` |
-| `runWebCompose` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:855:61` | `bad87f57780d47aec46485615b600dc46cb157b36d1a9a9fb41734ff8aee09eb` |
-| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:855:73` | `4d3137a638101dfea1145c91eff25ef49b458b7c07beab12fef5d288b56caa64` |
-| `runWebCompose` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:856:20` | `192a8e25d16c9e2d8c8a4fbaec1e4e0891aeca469b66d32373611e16987f9669` |
-| `runWebCompose` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:856:31` | `37bdda751a49b161be6dfdc8176fb99fee3531cc003d7e8caae318bedcdb3cf4` |
-| `runWebCompose` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:856:57` | `501d61005f28d6cbf4f135c9ac6031bd5bf4612f413341b30b68faf6139d35ee` |
-| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:856:69` | `af14e4c9dc5355266c27a4faf82b944d4b9e22a65b7b777ffd0b56d4ef3159fd` |
-| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:857:27` | `326e77cea240baebdab484e14acb802ab436fdf0c64b8730f29408c3c12fe5d8` |
-| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:857:69` | `3008f48b6527b8c19750699f87d7a0206bc3e4e94cc758d904f2ee5c47bd7675` |
-| `runWebCompose` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:857:79` | `0817f48ccca4e21f2a221d9911274fbdd9b5b9539fb0ac77a947634c01a90636` |
-| `runWebCompose` | `writesSignInComposition` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:858:24` | `88810699c02968bb0e4ffb764b7e3a3bd4812c78c50868585c3ce0d4258c0db0` |
-| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:862:73` | `f72722b011dcb3818f9b5174d8701e25d11388d8cdb0281406fc86a960980c84` |
-| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:864:3` | `6534db3ca5af0708c9f51a55c0f5d4de8f22ce918e8413ee1d9b2982b00d9b3a` |
-| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:864:27` | `760090715516156b03f415314f8ee81b668162bf68a6e5f5c57e8d768daadade` |
-| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:866:5` | `975dc219a2dfd6c6e4768758a2360f62e25fe61177eb15c1fb5e6eff7e8f4c11` |
-| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:866:29` | `8dbbb48f78994ee8553a8201e45faba591562345853d9c6989fa41c854e88fe6` |
-| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:867:5` | `020cc83ae0bb9cebd7ea34d2d975620ee1f358d7f76d6cf13bfb7110a2594518` |
-| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:867:29` | `d5acb372c5869e914651559e23ce7f5bc34ee5e6710a5e1f848adb74f7ece787` |
-| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:868:5` | `c77de134d39e4621ec5b0710ba710614d598010e2a29988f1ba4762178d97c72` |
-| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:868:29` | `e7e8cf090c7a99401578e65368de9cb7b0d9af81f569c33a19a39d7e27134029` |
-| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:869:5` | `f08094cb0504ce7a9ff3cb30c4251c789d9516bdf30eeb70146f94d873f2548f` |
-| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:869:29` | `b4cdf49a2c03d490e671e9b32a201041df7252b4f79f58ec97b90e0c35f6c201` |
-| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:872:5` | `cbb72649f865770a62e0e1fd61017c072926f44c238250721254773e0ffe0640` |
-| `runWebGallery` | `runWebGalleryPlan` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:880:11` | `d49d23bd34c21b75b8161bd4d06bd4523bfafca51d9ee9c8501e6ea6797e0ac7` |
-| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:880:29` | `ac08b05330dc9301b37061625890dbf43d98d67c81b4fd96338a67cb86c839a9` |
-| `runWebGallery` | `runWebGalleryProject` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:882:11` | `f654c1c1f415c3311efc696ff5ffa68135ad63eb3ac8c973d009a12d194ba13c` |
-| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:882:32` | `1cd17fbfa40233b9b68bae344e13167bfb27c854f496fdffb58b8056cee25b67` |
-| `runWebGallery` | `runWebGalleryServe` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:884:11` | `679f0c2fea5aacd44fbf2db2043cc01ce787b9b1969f5592dbee8091e6ffc5bd` |
-| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:884:30` | `5f39ad2b2a77c631ccecd23909f3f44477794e98450546282b8a75ffdb90eb69` |
-| `runWebGallery` | `runWebGalleryProve` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:886:11` | `ffe08f95a6ce559f04932ca0d0109bcf6617ed9d2d685b48c2495d2f9a7c1544` |
-| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:886:30` | `ddd580bf00c9c173fcf800333736c4fb5524ea0ce6071c0595719616ade784cb` |
-| `runWebGallery` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:888:5` | `aaf2b6a1bb9e2cc221b7f4cea6e31a0a80ac44e8b6abeb3dde5f6d5ebb0b7daf` |
-| `runWebGalleryPlan` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:894:21` | `5bcc8f3983d15bdc3ce66d8eb1fad6e71d7a299112ee173c47e6fec0d3d6e7a4` |
-| `runWebGalleryPlan` | `readsGalleryInputs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:895:38` | `24eea747bf144ebf5d5536ceb3b3875d019328acf66289dda549a3e7229ab0ee` |
-| `runWebGalleryPlan` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:896:27` | `43748ba49e9d89e0eb0350f71bbf4712d752d26d33272195ff4e0bfd28a1d8da` |
-| `runWebGalleryPlan` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:896:69` | `a11b1cd6e92b14a341927a228d549f93d71a6a8e5e9b9a557336591d072d71b3` |
-| `runWebGalleryPlan` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:896:79` | `83cdd6e78a92a4978712cb0e5cb7974f87254388c568453082b6c217812b672a` |
-| `runWebGalleryPlan` | `writesGalleryPlan` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:897:24` | `65ff637ea48ffab6ca6d2ee6945db429438ab05ee2808269d93e3746406a19f8` |
-| `runWebGalleryPlan` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:905:3` | `72d2b94e5f1dbcb18ae80705ef3d1721a7ca5548e19f85405d85d462e8f0a0ff` |
-| `runWebGalleryPlan` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:905:27` | `0d02b30f96dfee364a0d85484eda93c30f0fcac72c8b96053ca82dfa023767c6` |
-| `runWebGalleryPlan` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:906:3` | `65ff32ea1c26cf54dd3172dd5222de3349100ff0cf50d2ddec94dd54d5c19994` |
-| `runWebGalleryPlan` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:906:27` | `10e2a2a59cb86014996c5a2f3a26ddbfb11bfec7f6d8435f140cbd5c7871ebf6` |
-| `runWebGalleryPlan` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:907:31` | `b1000c6a850ea1d6fccc66506da9d690dd7372525a90fc83a55df4bde907c216` |
-| `runWebGalleryPlan` | `formatsGallerySummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:907:52` | `11ea2dd71a117474349541e16c8520fd890d77eafba662fe64776f026f46addf` |
-| `runWebGalleryProject` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:911:21` | `144bdda0dab65b76f60db2456adfa64c7c460fec61477e8d577bdd1510d2d416` |
-| `runWebGalleryProject` | `readsGalleryInputs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:912:38` | `292c59d8f6f1e18d9f2c988163c430fc940194a9aafe40ff6b6817e47b4fceaa` |
-| `runWebGalleryProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:913:27` | `d5c77b16d023efae65354baffe44e23349431d122f9e132585d0ae442f6e7f23` |
-| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:913:69` | `e3d8a51d152bb6d8af06a216cebe5c3d281c7959b7ccda45a322526d7cc34626` |
-| `runWebGalleryProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:913:79` | `099a62a2104da198c5e76dc55b9527f0b85204283cbb1d7b2816dba4409567be` |
-| `runWebGalleryProject` | `writesGalleryProjection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:914:24` | `6053953694c8da787fdfc9405a2f9c3fe5e3f300f9ac9b6cb4112ee0fdbbeb96` |
-| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:922:3` | `fb721b67a1e65dac5771b9eb1e6781b0687bda70a59384cf2727fa86a0f5efd0` |
-| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:922:27` | `f6af7f500018a021ff7e225e93998bcdbc3893fd06585f79eb9ae7a4ac938609` |
-| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:923:3` | `41ece93f7eed159125f7051987513e63ce22a1db84ae428340bae02801053350` |
-| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:923:27` | `c3a8af5deaf1bec7ac9670d3bad2568ceedfd1d5c7d80fe1b11d1e4cd8a91022` |
-| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:924:3` | `0dee7bc648b70d42f206b5d75b763a49a5d38c019972cb098f11b200f41b31cf` |
-| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:924:27` | `2f4b772509e98a1c3fd63223d190ec2a0792485c43ce73958d7064da1c74f7aa` |
-| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:925:31` | `c0bf88e26593c2326cc736b4f18cd86b0159324575db222f977a6ca9a5ad06e0` |
-| `runWebGalleryProject` | `formatsGallerySummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:925:52` | `6b6b8b0a33ffa18dc8d5ca8f75cda6bdf7487096a79169e6cfd311f5ef34f75d` |
-| `runWebGalleryServe` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:929:21` | `3925c77134b007bdb3c7a3c7f1e95dd9b00f8a2fcf09c6e5ef2bb1fce65fa681` |
-| `runWebGalleryServe` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:930:27` | `108fa56c4aa92daa876cf2a5332f2e6c207e21b4a94d3143d5f125160cb8f9f7` |
-| `runWebGalleryServe` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:930:69` | `2658e8de93147ab0eeb31d0b8dbab649fca7c962463f7f83b59a853fa6cf0273` |
-| `runWebGalleryServe` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:930:79` | `e60fd47530f0e965de43b41638be0a6258b7fa3b35312d4fb689e8de61b2a561` |
-| `runWebGalleryServe` | `readsPersistedGalleryPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:931:31` | `77a13e47f948ed61c6f99d286836993bcca904bf7cd0e64ba8d58888ae2976c8` |
-| `runWebGalleryServe` | `servesIsolatedPreviews` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:932:31` | `bf7ea3533318539264f059c1254b99945c948c43aa0042b1d1ffdcb7f803f2ec` |
-| `runWebGalleryServe` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:933:3` | `5282193e54cbf7012bba9b2b8018f3ef0024d70fe691e93b3f055e3f8e511233` |
-| `runWebGalleryServe` | `waitsForTerminationSignal` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:934:9` | `206212e9528e102748225224307c74990000dc3c22246e97fd7362e3f6252352` |
-| `runWebGalleryProve` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:938:21` | `71081987d3b5207833a890b3c7d59bac65ba32820b0643a4db54ff986f0c0101` |
-| `runWebGalleryProve` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:939:27` | `9254a8789fd043ff74c9e7962505b5f13cd0dbd35ddab9726bc7f313d6dce597` |
-| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:939:69` | `e3d9171a9a25b41b3671d433fb9c0717d403d669ae6fb9bda300fdc4c5dbe572` |
-| `runWebGalleryProve` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:939:79` | `0deb7a760cfe56cfeb72cc75b1b50cca5434c7578e2f9f272cd53edbe1b4a9aa` |
-| `runWebGalleryProve` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:940:20` | `f19377a8303201658ba4d522b352f7e1128028d286064b0ae359a700175fb258` |
-| `runWebGalleryProve` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:940:31` | `e0eb43d9acc29be1dc88241faca433acb951f1557fef6905aaa97c5c978feb03` |
-| `runWebGalleryProve` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:940:57` | `103242a85da15c322c19f2de8089f51a57ebe328acfef69d1cefde254eadfce3` |
-| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:940:69` | `643aac2e9d1b0a22048967ddcb28b35f86a31fb091455cfb0642c01369ad3be2` |
-| `runWebGalleryProve` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:941:16` | `9ba37f7181b9d9c41ecaf81ef6a253575d608eb80c88d58b939702d66a51a57d` |
-| `runWebGalleryProve` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:941:27` | `f143f7d11ffa0877e7712024d144ffbbe1c4c3fe5129800904084c845b999f65` |
-| `runWebGalleryProve` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:941:53` | `49bac36cd29a528013207b416155c7d2a97cc4df392cc8478a8827cf4231f3f0` |
-| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:941:65` | `0c3dfb9e291c1b9e5a9f878209ebb90a01024bc9b52e083e3645e1e3e57e3cb4` |
-| `runWebGalleryProve` | `readsPersistedGalleryPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:942:31` | `fa2a3bfd84840ce5cc2eef84b2e143aa43501f9d0bd8528856bd6ccfcc9308f7` |
-| `runWebGalleryProve` | `validatesEnterpriseGalleryManifest` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:943:9` | `3c2ae211b5bc010bd5490ad9f8f2f0df7fa4cfcae2f30faeec0a575c82be0c71` |
-| `runWebGalleryProve` | `validatesSurfacePreviewPlan` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:944:9` | `b49e64e182105e7e27ccd01ebd2214393e789a28cb240b8b9eddeb515e541e1c` |
-| `runWebGalleryProve` | `servesIsolatedPreviews` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:946:31` | `e1f4fcc26dc95f7e59d5ee9ded2dc6bed52f352c72d40a2cd97608767274561f` |
-| `runWebGalleryProve` | `capturesBrowserRenders` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:949:19` | `daadea8c1d4307d1c92c77ffbd5a2c5a16bb8d65512f23eb3e32468a38942497` |
-| `runWebGalleryProve` | `previewServer.close` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:958:11` | `a824ba318403b2c4a930ef372b348be35ce5af7796b39fc1affd25a2d84ac092` |
-| `runWebGalleryProve` | `proof.emittedFiles.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:960:29` | `0745e059015964b1c8cdcef40e1cf1765b789586a02fbb1b35a73c619db26dc9` |
-| `runWebGalleryProve` | `file.path.endsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:960:65` | `e030d77aca045d4acd205fa282f8c21e49a940f3ced30ada7b3e5982d64bb303` |
-| `runWebGalleryProve` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:961:5` | `948d99ab737d30af7b0c5f7b872855c963ed5fb456d9579b1e79dd52f869e0e6` |
-| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:961:29` | `23d5ee16eb054ab2d12da511d8b4d6cb769aa04b23e6f499caa789aad470201c` |
-| `runWebGalleryProve` | `emittedFile.path.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:961:59` | `3394b9e356fb5335db3132be34fbb92d955416f1bd0c5c85916ad87040f15b1f` |
-| `runWebGalleryProve` | `proof.receipts.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:963:25` | `5c31864159c0c6b8d0dcfc59ca33c7bf4ad2c405f7488b93766fd3a935b4a3d1` |
-| `runWebGalleryProve` | `receipt.verdict.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:963:60` | `b76aaa18e5eea4ec46ab041c8f1df959e1e955d0a5cff9b8beed5c36a2e6b490` |
-| `runWebGalleryProve` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:964:3` | `16460862b75eca7b5d13d855af359b0f7ef6f4e9b8e5401b5f55227bffce491c` |
-| `readsGalleryInputs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:968:21` | `5aaff6bc6adff8df63db17a1f0b883e2833a596e00b81c1e6209d8f61f6feade` |
-| `readsGalleryInputs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:968:49` | `46b46e0aaca3266e6534881d0eb6eb93170073f8c81aca3571a5309ccba65076` |
-| `readsGalleryInputs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:968:59` | `d51c6a74a40ec092ddfb684eac29f1bd8460518858e7e66f57b9b2721356ec24` |
-| `readsGalleryInputs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:969:25` | `9e386e30032a5547f5023bedc713cbabba3b0bd84d331a734cc9c4645b6b6450` |
-| `readsGalleryInputs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:969:57` | `999a6944906528d191744d72184e541bd248923fa56b3218bf9884badc8115ce` |
-| `readsGalleryInputs` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:969:67` | `2122ef51070c42fe146af8628df08f75fb10190a49d815bb2c98d77dd766180f` |
-| `readsGalleryInputs` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:970:23` | `77f2c121277eebdb6a13a86715684aa6cbaf980e3a7411acb8eea583999abbfd` |
-| `readsGalleryInputs` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:971:27` | `5b803c0a689eec287ff6e74f054199b1e64e9f920ddff5af840aef7a10333c91` |
-| `readsGalleryInputs` | `validatesWebSurfaceIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:972:9` | `8137db12e4a4fc236ddb9b0f24ad5955b016340d795a5d06f2365c33428c0c33` |
-| `readsGalleryInputs` | `validatesWebSurfaceInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:973:9` | `51a0f792bd129c6c664c8cfb55aa627f4960869f35ad1e10dd5d8ba0b0fdc68e` |
-| `readsPersistedGalleryPolicy` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:978:31` | `02af9d46b8ca155c222c13524f3d84c5ae3f746e14988bfe4d1e380927f41002` |
-| `readsPersistedGalleryPolicy` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:981:21` | `64a5a38fe24c6b0c378586c6e9e19350142756ed15a7c99ba732bfaa7c1fc67d` |
-| `readsPersistedGalleryPolicy` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:981:32` | `f05398e20e14b55c344db1cf7fdf0b9a5bfbecba31183164b40d2b5b8b963dcd` |
-| `readsPersistedGalleryPolicy` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:981:58` | `dd0eacfbced4b897585af6a15cce8868b23023c83f848af2f81c9820212f8c12` |
-| `readsPersistedGalleryPolicy` | `resolvesGalleryPreviewPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:984:27` | `e141b0e961b9dbf0d357e72de8cb745d35ceb0e9fd60e9e76e263b0aa3ac028b` |
-| `readsPersistedGalleryPolicy` | `validatesSurfacePreviewPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:986:9` | `5027e118cdafe1dd9776a4b78b852eefd9900f263d871d5903be0af02613ad88` |
-| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:996:7` | `36d2454d9705f099ef8a23b4c21e4086515e6736c7e362a7fdb506ccb4274175` |
-| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:997:7` | `fbd7a09ed15d87940b9196de04fad7b2453cbbba5103a030d12a97007a21dcd4` |
-| `waitsForTerminationSignal` | `previewServer.close` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:999:15` | `a661aadaa35ca85fe021e26b351a2b8893339c20ea551c7cf80229e18057f947` |
-| `waitsForTerminationSignal` | `resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1000:9` | `629f2e97e98a7585672a694231ddbe512bae09b7e01d6d5da3c72fa64561107c` |
-| `waitsForTerminationSignal` | `reject` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:1002:9` | `61d3b2a6bb5f90f55a2bf7f373cf3cdb1c8b00fed1d34d3e8aaf23e5db3c6216` |
-| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1005:5` | `71495fc275d47cd11179ac3643edde86db8f593846d705164324b3d8b4bb2f32` |
-| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1006:5` | `3923544367120ef80a431e4018ca065db35f386f2bd33dd9324bc295918c52de` |
-| `runWebInventory` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1011:21` | `b78ce340964caecbc3e876ec7b1ecaa7f189e383b9696e30a2e7fc355f03a0a5` |
-| `runWebInventory` | `readsPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1012:24` | `f74ccf6a0a7c8491773cc4e9be9a9590a60a49b45a58771820ec3dd33dddd740` |
-| `runWebInventory` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1013:22` | `2ee97c1bb78a7e0763d5a11408cdea3d5e24fd44de6a80e68c039c02159e1b85` |
-| `runWebInventory` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1013:51` | `38fb47f31fa8d0b80ba3f3ee80a08a54dbd654efa5aa252adcad67f17f91993f` |
-| `runWebInventory` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1013:61` | `0f63846fd0d7cfd2b7ae49a65bc2faeed3b52497ef66cea572789627d7b8cecc` |
-| `runWebInventory` | `projectsWebSurfaceInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1016:27` | `7aa5fca8d54c10717d567e490a32bc9f50e0b044b527677d2a005637a38903a8` |
-| `runWebInventory` | `validatesWebSurfaceInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1017:9` | `514298ce9d128be0d4d7cda3b31d1e8f6ac27aa4d95a337c1dd7438fede5a379` |
-| `runWebInventory` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1019:9` | `ee7ffcf8afe19f13ae6d78af89d895de1b82dc4d814c0937b588aec137dfcd30` |
-| `runWebInventory` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1020:3` | `d9e33ea9cc8f27069e9c579f4fdda5d65ca84abca3db879085d88b7c6a9fb6bf` |
-| `runWebInventory` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1022:5` | `5d642f09ddaee14fba37f0895f2c63d612ed619ed2acfd2a757a382c36c7b47d` |
-| `runWebInventory` | `formatInventorySummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1022:26` | `85da26aa9069148a5067138f63f9d8a3028e9ee68595752fd856aced3e448089` |
-| `runWebProject` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1027:21` | `b2371340082bc89be6f48b71fe47b722a256ad214a57bc1a65b3be0624cd4508` |
-| `runWebProject` | `readsPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1028:24` | `dccdb7bf28badd4c81f8798fb9f68cbe24c1a1eed031ad7cf10c226a280dbead` |
-| `runWebProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1029:22` | `91c337237c9a8fc5cb18cf510e768660fe60b8f31a8eed7d90e5c157377b5f23` |
-| `runWebProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1029:51` | `d0e4c155166170a7742ba3ab8bccbdd30cf46327ff920872efdf98970d09b18e` |
-| `runWebProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1029:61` | `fe37c7a14167bfbc6d7886a63d1471c7c91962dbfdf1dd85f006c7c34afa4659` |
-| `runWebProject` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1032:13` | `e239316573200e03a3f63c77d12192f5724e3c9d4afaea8cba86619175496908` |
-| `runWebProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1032:27` | `8809d7756b7381160c1e7706eadb05f92b0e059e6908353ce836278ad38293f4` |
-| `runWebProject` | `projectsWebSurfaceIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1035:23` | `ab491b5ce47eeb522b8762d777f8ac2c7038f5438e0f4a7f96e5b90086c0fe2e` |
-| `runWebProject` | `validatesWebSurfaceIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1036:9` | `32e7a99f7f1c317300a6a06bf9a38d71eef35f2c32512fc70d277dac9de0c609` |
-| `runWebProject` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1038:9` | `91210e5dbeaa1efc758491114012785ff9edad915c1eb6204485bbaf8c30627c` |
-| `runWebProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1039:3` | `7b1f7c17e67d19d1debaf63b6fbed6b68a0b099f99c787b0140e0176b67c90de` |
-| `runWebProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1041:5` | `d99dbdac629c468019b37947e75351dc6606a7aaf1d7d1f0ed586da3ec0dd293` |
-| `runWebProject` | `formatWebIndexSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1041:26` | `56a2712ad6158c2d63da30fbaaf28af66ca6827eca45a362812871da5ca9a317` |
-| `runWebQuery` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1046:33` | `5bde124ed81e0e03f7177c3b17c4254a86d056958485d8527847282b234ca684` |
-| `runWebQuery` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1047:21` | `f725768c7500550ca83e7a11ebb62d8c0d357deef227c1f899fd76a7c253ce3b` |
-| `runWebQuery` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1047:49` | `543197746a926ecd060bc605f77788ce6f4fe588e74533065f00121a86182d72` |
-| `runWebQuery` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1047:59` | `606c51e7d247d0a0ff536efc91484ae1a7d6604e28a097469f0de952da6c9635` |
-| `runWebQuery` | `resolveQueryText` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1048:21` | `2821da69e09893a7705a6c6d14f4784b538bec819c423ce7a503da2cf7d37c4f` |
-| `runWebQuery` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1049:23` | `58ff41aaadae1a36a46f863bb2f3dc1f53b3ba7700e361970545d470281c3666` |
-| `runWebQuery` | `deducesWebQuerySourceNames` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1049:63` | `bdad8492c31b0801997fa3a0f42b70d0d30839893cb9ac7d251cbf6b5cc639cb` |
-| `runWebQuery` | `executesWebRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1050:24` | `2fce077631b44a494a44ea06e9f199ffce658cc7c3237ceec7e1ed70affd95bd` |
-| `runWebQuery` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1052:3` | `2d5c8bbac9953ad9657d196abd49b5391d0a29441e85082aacdf1bc50f79db1e` |
-| `runWebQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1052:33` | `d880b7461772fa495cb07e7d8b0cc87ceb795c5646a56bc315189158dd313b28` |
-| `runWebQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1052:67` | `5bec62587c2185b1659a1982902ffd12e0cebcae9eb2d7d4ef926989f142a0e8` |
-| `readsPolicy` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1059:18` | `036b31a40fa6c863ff53e085192bcc9faa315167c349a121ba78c930774b7269` |
-| `readsPolicy` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1059:29` | `5d06a96274271b4bf9b2efa8e8587999e45978257cf590f962f489112ffd103f` |
-| `readsPolicy` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1059:55` | `724e3e1a1f14532740bf95d7dbccc3b413bedc9e862a0174f1bdde44069fec93` |
-| `readsPolicy` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1059:67` | `7a65812f88547d8091c3cc697344fc0bd8e5eccfa662070a0f44fc71f5fc7180` |
-| `readsPolicy` | `validatesWebKnowWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1060:9` | `b8a8ef8bb562dfb04054474fa3a735b0b8dee9f35918e1f440621c154aa36301` |
-| `stripsByteOrderMark` | `text.charCodeAt` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1065:10` | `6d6fa6affaf2894fad650339e96c807a521acee4ab62b5c302a732d60f2199e7` |
-| `stripsByteOrderMark` | `text.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1065:42` | `2c17cbb52680f2c18c6e1299495709358f1e9d51ea50686a4da111954bd8e973` |
-| `formatInventorySummary` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1072:8` | `b01976961877c1aabe5a403911a7a7d0ced168e3786aea07722d6d207ff99416` |
-| `formatInventorySummary` | `Object.entries(inventory.coverage.byDisposition).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:1072:8` | `f93ba1ee055688aa73f2914fd5099dc9846065defdfe32d50f4a97b0a6260410` |
-| `formatInventorySummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1074:13` | `ad073ce6c631ab30cceeffa5bdf888c15ddbacb2924648c120db5580c638598c` |
-| `formatWebIndexSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1093:13` | `adb59e4ac990a3a29cc52b65f7f99ea6da55ea52fddf70d7b6c370b9c3a08ed0` |
-| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1097:17` | `e58330bff0918ee8ba286e8b5f581c827f4d3986f71150e287ca0d42188342b6` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1169:10` | `f4b3903cea79f22f4c729505743770b14d345b1d59003ef5840fd6036eb8c9e9` |
-| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1170:7` | `feec35ef1e817f6ff3d6d1230c180485f7d72c970c6a12ef6de9aa4267db516a` |
-| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1174:10` | `2fb066f93a418b3f92ef2f81236e358e8f213b1124f170c3f6c9108598d8915a` |
-| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1188:9` | `c2bff2d5f310d38745823bff56222a86d16bd753c4fd4ea6e093c05f0d0ebb55` |
-| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1189:33` | `5d923dfb126348b4c55761c6bb11a01c64e552f9b0451b87c488242c5b81dd97` |
-| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1192:13` | `f4e12cd091ac92ce04366045a1746d5ce8af2adb9a4542ff6a5daa77b38fe9dc` |
-| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:9` | `5ef83604f0202d0522dd432d278dea35483959a70ec0fa79dacff15acb038de6` |
-| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1197:13` | `d71a6e83303123c4e2ddac7569b42dd7b9c77d3ac997b51c7dba57c10f183356` |
-| `resolveQueryText` | `positional.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1207:10` | `6fea5b5f27034404b909626b06b8edf6c7b921f0babbfc44a3dd06ae6446f4f0` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1224:3` | `7891245da7db3395fc4b3b8e9c27332f27447f32648db31e11fa4e29651c2c06` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1225:3` | `be222b71975eb07a43267bbeeb8c52ab11e370fa64c04cf7c6cc4bb450cf69d4` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1226:3` | `662e5d3b255473f6f05f094503ca13fa26543591d0a8b30e23aff5392f135b3d` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1227:3` | `91d95fbd0fda01c9ae59250da896558a752fc446736042d8cd03a0ffaea709ca` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1228:3` | `6d751b67c571fcaa9e293a54b90c189df237aec2b811d1368bb96b7825ec02d6` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1229:3` | `01b3a8f6727c09000703184b5b8dcb8042045ca5fd758e8238d5aa9a36cd9756` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1230:3` | `95ea66ea159fa9630c9969dce6869bbdcd82d32d509fd30c2f05c3ab4ade521b` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1231:3` | `f60374b9a97c8ed7ae79a907e2eeec93cc02b94f47145a265161432d88c39436` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1232:3` | `231b44846cebec046786cdc63fe2a6475e735bd4f7d7cb6ac93e18e79b535dd0` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1233:3` | `261d1fe0077e56cd311af42ec077a33863b8357c053e5911a7a0f7e5655a3402` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1234:3` | `61dbf96dfb0c7558eb3132264e001e59508c39855e0bc2849f8d319604d9b17e` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1235:3` | `23a0e21617d7198d956aa6b78b7bf8c2e9fbb008150543a933f4eecbe04e84d0` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1236:3` | `b460a7330e11984e0a3f48fa16dca4a1ce3987bc13c8e58789209979415f1227` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1237:3` | `3e3f264d66ff6656b3f92f4b9bb94c953506270b92bf6faadf15c701ac0a91a2` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1238:3` | `98fdb9492d895bc770d081fda0dffef9d1b27605b5a3158f35193ccab3e0a980` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1239:3` | `0c9aa4936603e06b6d368923977021e6b08e1ae4bd7affc8cd4854b4b20f5a9c` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1240:3` | `55ad852097eeb845a067973e1ead042e479412dd3612fc9af0d431d2e6e80877` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1241:3` | `815fb4589e06461b30b44b63d0fb0ce9d50f616a3640d85f018f09b7c1491ec9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1242:3` | `0d891b4a09f30ac74d2ae57a4b613de75021daed021bd7056e4011b6a5d656ad` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1243:3` | `488c9b2064b41e3dad4d321f341448ddaaa39dd17a1d5b7235536cb5684b6600` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1244:3` | `a8336a737cf36cdc47f344b9fcfdbd4b9442283b3cff6208b63ad3b16f4cca1d` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1245:3` | `ec900f2dfb14389833aae75820a6fb951da8927fedf64af1348d05cccf9e38cb` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1246:3` | `a7ea1d2551388a68fd77f323a3191751d57dd2bc4a23ca8f8b5273e94df89e4d` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1247:3` | `76f83350fd0b3d57db378d5e97e22a19d1e19862a7629defef793d05ecc254df` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1248:3` | `0553310b4a9d57c30cbd6008c66f8413ff26f47aa76a711c30ebf49df0890b14` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1249:3` | `8fe545f3e3a9a4a5c61f618eb1b3db6a35348121d46ff184af63ab8557708ec8` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1250:3` | `a19bcb3a265a1acc7e70fc548a45d8889fa8ff53bb3585fc0c230095a0526da9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1251:3` | `4bdf4215d7d4ed8f189adfc04d695678309dce662989ae9f8c0a9efe150fc4e9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1252:3` | `79977abcb5034f5a682d90421a1a9dcdae284e19a4a0aff1d09f668620965af7` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1253:3` | `6eea3dbfcc5a4ab1568f05dc25205eb909778b67e0ad1247cd9bcc063e513883` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1254:3` | `4a4de0f279b84236f8635bc79987eb0c4cfaa627c6bca53fff2bc3ffd8df700b` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1255:3` | `0de6f5b2d2bba7592661eefc73d22604c52f65d6e095cdedbd16dd293f568ff9` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1256:3` | `5e195de606dbb7b12c25c06afc7e8a1eb2c647dcca5bb4117bfaae403ea95fac` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1257:3` | `b2df431b220b251d8260a47c80e053ae20c4d3dbcdaca2e1a71d02fbc7b4a887` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1258:3` | `9b6872f61b1664f8fb85df69eb88bcdbf57da3e0555ce8951203a30dd08981a8` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1259:3` | `49f209ae570f940555db49e81d445976dc63a1159ee58f921fe55d7547b9c76f` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1260:3` | `52d9398bb2b32115d03d395dee69c7bba502b0c824f8c867fe76c06c40cf0f0f` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1261:3` | `d7607948ee7ed1ecd74916738509e1366c6c1bf3b79a781728ceed8a49aa997b` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1262:3` | `e27f2f4a815e2bd2e1bfea30af110420207ec02355fd81e1674c7d864f56be42` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1263:3` | `236098bbb117f2d6b93cee0fe8a8ad0e0ecaf1c0749aca8ad6986143ce7faa77` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1264:3` | `bef099599348290c7573830bcf02c8492c3df572c8ec834d8495544523942f40` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1265:3` | `c788edab04f2499c348538c0a8dc2b89612b6a25b12db27827d973574e725517` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1266:3` | `ab498c892c8c598daeed843b2f334022068a54ffb36310f3553e5d7259671150` |
-| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1267:3` | `0294d9c5f27107de179fa235e9bb98ab1755242c92dc1a9af5ee0f442b346cef` |
-| `formatsGallerySummary` | `byDisposition.set` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1272:34` | `fcf03753ad89c9f9c19cfde7d895b63373b921138b04ee58118d7fd67c9bd2c9` |
-| `formatsGallerySummary` | `byDisposition.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1272:83` | `f9eaa2998d508b64fb8380b82ea83bab264afb2458bc5a5c83250c1750b15e51` |
-| `formatsGallerySummary` | `[...byDisposition.entries()].map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:1277:8` | `16ef7a60a52b8bca780428d4e8ebfb8c4e14248c03e2a978f4646f37b5747f62` |
-| `formatsGallerySummary` | `byDisposition.entries` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1277:12` | `e32958bab8a6a7d63b10a654f21a2a4d970e40533e604514e3bbb72ef392edc1` |
-| `formatsGallerySummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1279:13` | `946064764e9d520940f9fa8b95a2825f055bbfefdab0287c0ff0cfd2ae6c2e2e` |
-| `formatsNorthStarSummary` | `result.report.selectedAuthorities.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:1287:8` | `e37164ad5a141fcf739c587f579cb2008c96c537fab1cc0352fcfdabd1c9bbde` |
-| `formatsNorthStarSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1293:13` | `a50e3dd855f91573e350c47c1eb954879694f857d9fd00b912b58934df9381f6` |
-| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1297:29` | `b4ec590cf90495eee841b8baa7f4c168aba4534afdf21064b84bda12a97a168a` |
-| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:10` | `094c85937f6f8d7554d64b0f1e9c722673916f124bd9d43c9f4832f3b0fda3bd` |
-| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1298:67` | `3612ee7188172180a57119ec669198e8ba49244a47c1f783c5007a57d10aee9a` |
+| `runWeb` | `runWebInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:803:11` | `9e020456d4ea75a62fff20ffa1c92c9ca3b580b0b9a7e160e1bd28dbcea3bae5` |
+| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:803:27` | `6c5b2c32fd058c80630ce75c15550483fed9144f7114df92747013a814f7914c` |
+| `runWeb` | `runWebProject` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:805:11` | `4b9232e7e8f2360bbc503d53626bda8b82f6614a106ddaab64e4c26e5068b3a3` |
+| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:805:25` | `0c8bff3b0034cb9d1befcd7d333e1aeb52e714a46f66aedfcf2723a5e3d38a91` |
+| `runWeb` | `runWebQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:807:11` | `bfd5e6d102b174114d34719839978c20a2b707846d06f9dd1fa6e7ee1665c4ee` |
+| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:807:23` | `f4394709cb15194171a3ed4b9701465a3eb64c716e7ece9800df62331b51e706` |
+| `runWeb` | `runWebGallery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:809:11` | `b4bb2d5b5abb778af119f3a694829c3780f0f27a4ae53d81da45f2cfd2c3ba73` |
+| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:809:25` | `8bb4f41d92af7c6aed2384c29b23d071069ac444c2750bae90c88477b80f3d6a` |
+| `runWeb` | `runWebCompose` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:811:11` | `8200bfe181e5bf77ee8a0e102a294da14cefeab27bce0299def41b22ba5322eb` |
+| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:811:25` | `1fa2c8c69a1db619e84cedf1c7b69192c4492b7fbb8a04588edf99f5d46d9ef2` |
+| `runWeb` | `runWebNorthStar` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:813:11` | `ecf56faaadd0fce748e5becc8ce0657405935bdab8381d1382a6fbae1a471757` |
+| `runWeb` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:813:27` | `8d3e5fd7cdf7c8b2120f348326f6f5afad554687274ccfe7935215d36f8b5874` |
+| `runWeb` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:815:5` | `dcff009cbbbf563f310eec482f50e7c77f548ca0e5372c908d8eb8029da39b89` |
+| `runWebNorthStar` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:823:5` | `1dede15c995c6b54d55d613a66a4b4d938d3c862615d6d1d12c38047f03902ef` |
+| `runWebNorthStar` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:827:21` | `fa1378dc8f9ac76497ec4969ad52dffebecf42a5c6f6f9a8e42f71c6f6f45ae1` |
+| `runWebNorthStar` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:827:31` | `1c60c95816431459be704bf9fb48e593e7ee38435d22c51ecf102069c373c637` |
+| `runWebNorthStar` | `readsGalleryInputs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:828:38` | `592e917afa69130936e5c9010deb449e0fae624029ad144f1aece9ad46bbe136` |
+| `runWebNorthStar` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:829:23` | `a31833b1a439f6e634c285b5a9da9e5a6ee3bac10a75017eb0860cc838b45689` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:829:53` | `ba3ac19d798068e4aedc7acda2c449b60ab615658f2145846759187f24a5a1e9` |
+| `runWebNorthStar` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:830:33` | `f8e2b3b0b81a8f3eb1263674e497f5b06a1abcc02cbf2a91afc642b0ddf77373` |
+| `runWebNorthStar` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:837:27` | `ff49656f2e94a32d445f365ca766218a90e8c8c741e2502fa7c693f63d129856` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:837:69` | `f21f4217a192377bafc9998f256cac3960a82d6513bbc194fa1a6611feec1ac4` |
+| `runWebNorthStar` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:837:79` | `373e84c5e906c7b4c1ae8d4bc9a8cdbe19209ed102971ab8bd27ea8307220946` |
+| `runWebNorthStar` | `runsSignInNorthStar` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:838:24` | `a7460814053f89e0133251f245708a63c2c3248800a63fc067a518cf8b958788` |
+| `runWebNorthStar` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:849:73` | `c3c5716eca0afac3b14f67cda26c1d99bbed9ccfe2c0340fefd0f7bdbdb337be` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:853:3` | `dbbe54580790e6571e80b0f1bcea2200283e5074951706f390e916c5f4995304` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:853:27` | `1808f863c5f54be7d7957f739cab8b73a18f0d6907a41dea9823107e8c8afe83` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:854:3` | `030b544cc6cea90a512acc66033e491eac3d60bd1445ae8c5935af93fe6d1fc0` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:854:27` | `a9e2178e8980219b0fee53906157160fa9aad570123b0e80d92bbdac234a6b1e` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:855:3` | `567685227652b3d19c8a76f95818c910a2eece151bc1859a087ff8bb3331bdf7` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:855:27` | `31d4447a00f0863628a53d73f33527d4034a7e46b95798018c5ef656a90014c6` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:856:3` | `f574a60a3690d05f9032f7ad02894b5b4f339554166d5853f2b0ccb6c4966713` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:856:27` | `83012c0d7ed452003099bf4bd7c5790ec212d37d3fa5ede18b96f4a8c4e94296` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:858:5` | `ce6af652a9efaf35219eac9aac94b94c83ffd59f425ce6b6d84040f575b61a42` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:858:29` | `5e9e74884d9f451e596257b413c5bdff6e00e3b3db02e411de5cc3bb75db8ca5` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:859:5` | `33d3e9b44ca1d1735db8271cbb3f96e5e0fb7e462fc0abddf1293408788b9e99` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:859:29` | `af53e9ceb977d2328fe3622ba887eb563d88916691092303c7258efb9a0c4bf3` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:860:5` | `d72c5fd31ded47312146f3af9451cb40d52756d7a477a00105f29da8783b1674` |
+| `runWebNorthStar` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:860:29` | `3535f74264d8bb975c37d5172784d11dd7ad8a987df4de45ca1cf8515439ba75` |
+| `runWebNorthStar` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:862:31` | `3dbe2a7302ee92f46812db842ac39722008a47977f16fbe8aab96e97a46256c5` |
+| `runWebNorthStar` | `formatsNorthStarSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:862:52` | `11ec766cde4cbd4c3cd87ccd843b7f5b7f6421421c657369b5d68736f6e00363` |
+| `runWebCompose` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:869:5` | `3b22ac6cf32f2d52e07d17a79afa0884e538e61df9ef0f78ff879b90cd574734` |
+| `runWebCompose` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:873:21` | `d8e7aa7c4bf20632f322558716c08f940bfeb4a279d8d9f607bc4bea97850db7` |
+| `runWebCompose` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:873:31` | `ca81226b483b5e6bb10be6192a323f8e998aa883f38a2c38a36b947df01e89ac` |
+| `runWebCompose` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:876:24` | `759f3044240d90769b46a9d257aa2369ee3f34be753c257375464bc4aac5c0a7` |
+| `runWebCompose` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:876:35` | `cbcff9a91842f7dbecc9a0413713d2ce3313a3e1b06e1b02bf088d1fef7306a7` |
+| `runWebCompose` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:876:61` | `06fb2f294426da00a3dea61400dd93f28db0fbcb029a66464331ac3ba4a3fe56` |
+| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:876:73` | `ee22cc9c971ee7a2dde204f932bf922bc0658edc8d7495d741a2994d2a95d9d3` |
+| `runWebCompose` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:877:20` | `5df2aa04c55dca462173d22f28468eb7ee7a96c4cd9a658338693370e6c0bfa9` |
+| `runWebCompose` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:877:31` | `4b5f168392ff5a3697971fce0a5a8a7c728a17eb015a717d77e8a6e1177d2875` |
+| `runWebCompose` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:877:57` | `ac64384b0a649dfd41833a1654fe26b3eb5763e3119c0e633d0c9524e0d683c8` |
+| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:877:69` | `3a48f7292a302ee30ae7d527ca53da8608be1e1a9a541913a464005562e799fa` |
+| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:878:27` | `139fe359a9f4ddfe38551d46883370f122f7978ebf6f9f67918db5e5c6f3716a` |
+| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:878:69` | `31d994cf0babfabceb64264d8fad8bf759178bbbc9ce181d0d985dc566062288` |
+| `runWebCompose` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:878:79` | `008c8bfaf1f28bb0d737b3ad20f6c45316789a40d46cb4d5b6ccd92d579188b7` |
+| `runWebCompose` | `writesSignInComposition` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:879:24` | `62e32ab9f157107f380ec88540cb9f926159bdfa56cea01d47dd54fd7f75594e` |
+| `runWebCompose` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:883:73` | `394f9c624e50bce0333d9342663ccc187d6c6e6dccf250267faa282415919dad` |
+| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:885:3` | `df2bbcaacfb8c3b8f0fadf87d384eeb8c89faeabb9ede0a31abe7ffd31149f8b` |
+| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:885:27` | `b64dc371aa3913b82717a7cd29bbaf9ea9cd991fcde573ebbdd128f9447a6eb7` |
+| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:887:5` | `ce88c208c442d90c3e2efb41dad03158da1a6dfbd07453dd1d818e5317a9c18c` |
+| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:887:29` | `2c492972bcfbd6286944b06d7600b4094ede2c12c8dfb20c9e8e33d3211f8748` |
+| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:888:5` | `b36cbe462b4f1e6924620007e534bdf7359aec0c671282c6057e4ce341e539a6` |
+| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:888:29` | `cb72a8ad70819f7a0e76eab4150dbe74201b37e2e597ef1191f776d3684adb01` |
+| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:889:5` | `acebe60c22d365dec8d862f8be7498cff223c84566e82deedc4bc3b878e71c36` |
+| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:889:29` | `46c956638e410606ce50540b3f4c9fdf2741e6dcbb6b25686e270e7686620c61` |
+| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:890:5` | `376bc45f75b879a23acf0dfe5079ccf739d468a993799a3603925675c1c7f59b` |
+| `runWebCompose` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:890:29` | `4f41ce600cda66f68b2a6aa9c494a663fe4e8e16c697846f5112f0d36309a2de` |
+| `runWebCompose` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:893:5` | `19af8cb9a3a14f3d26b790debac26faa9f993bd8df6bb9e21a6763dd33f24d62` |
+| `runWebGallery` | `runWebGalleryPlan` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:901:11` | `a58fdc76d83bd750635839b03822386dd9d0a4cb42a74195c1f31ccd543dd95c` |
+| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:901:29` | `c02143d3b3730c457fdaf60cc24223ddf459b63ddcbab67c5af4bfc28eaa404b` |
+| `runWebGallery` | `runWebGalleryProject` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:903:11` | `3a1f5a5b5dffece40ba6e319415154eef7e284bce65eaeaffa06b632792ed646` |
+| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:903:32` | `f9f5379245ac3116d9508722a08411af0acc9be2b67a20902689356c79dce5c8` |
+| `runWebGallery` | `runWebGalleryServe` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:905:11` | `e09ec9f0a8bc5c9b95f0c748c898ac074548be9f73c288ef9a92382a75f74381` |
+| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:905:30` | `9ace7f05ea933cdcd8fd3f56cfe58cabe7d509084ec561044233e78cbcebbded` |
+| `runWebGallery` | `runWebGalleryProve` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:907:11` | `6c335cc30dcc2d412ea4ec46961b9763cc1908f3f4c6fec917ab5235aaa9ec51` |
+| `runWebGallery` | `rawArgs.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:907:30` | `2ddb59dac64c1a69ca17d41ab7425b93a38867d39b1a55677d43df9ee1d82d0f` |
+| `runWebGallery` | `writeUsage` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:909:5` | `fce57fd4d1f0f7028a489bb770f3e10185bbec6e703e8242c29f4519772475fd` |
+| `runWebGalleryPlan` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:915:21` | `47c740acdeeda242a8f25c6457fda9888f33caaebe6f6bf26691b91177da697f` |
+| `runWebGalleryPlan` | `readsGalleryInputs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:916:38` | `4b3bfe91bc24e6e2b11678fa18ce353cab48386c18adcd6e65d5a94fb3f3c6d1` |
+| `runWebGalleryPlan` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:917:27` | `0656e3ed7299d1052f851140f2ca52a51d9f37046a5a8de31149fef455edc004` |
+| `runWebGalleryPlan` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:917:69` | `6deca06cd292af30d4ba441428fb2eaa0f1a312cd34df446250be7decbe3351a` |
+| `runWebGalleryPlan` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:917:79` | `73dc9f3106c752bdc1419547eea8475c91cd2e32d5896e6b13cae06c842b9061` |
+| `runWebGalleryPlan` | `writesGalleryPlan` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:918:24` | `73fdf219edc9a57e7765dd8b76276146120ecf66fa15da687330c62a5dfb1022` |
+| `runWebGalleryPlan` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:926:3` | `562b0976e2e938689ea33cd2359c4d17ac53f19aa4aa0e6926a740655726b074` |
+| `runWebGalleryPlan` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:926:27` | `4578652c847d37c1a6c5907d4581e83cc9a08182682847b3747c4f50f5610a8b` |
+| `runWebGalleryPlan` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:927:3` | `f0bc2e7372d8d903fac69d62247d3693abb25664dff39148abd00be77ec248aa` |
+| `runWebGalleryPlan` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:927:27` | `208591d1544ee592148bedee2d10741c64fa41b3d2b16c33ee1ddef477101bea` |
+| `runWebGalleryPlan` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:928:31` | `7f9d82c1160a779b8d50b94e6d0e4081832de0add7cdeeab75bf2973e7497101` |
+| `runWebGalleryPlan` | `formatsGallerySummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:928:52` | `a03e9ca94c1a660c2971a408ba28b5129ec7dd3e49661e5f03f4e791d4747fbc` |
+| `runWebGalleryProject` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:932:21` | `8079af921e04e2f2f9d4c2b2c8e1246bff4c706a15d1ff198b76e311349fb4e6` |
+| `runWebGalleryProject` | `readsGalleryInputs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:933:38` | `002f5a68f24d9bb98fd10acaa1cf43f2d44ef2e1316df22cdcd9097f92d70cd9` |
+| `runWebGalleryProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:934:27` | `c31997b804b0a1a4efb158eb1632bb62ff1abe912a9480421a62f7f964eae7b6` |
+| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:934:69` | `74c7f456bbc3a7eb62dc908e8f8bce7702d33fdc05aa86dafb264ed4fdb5401d` |
+| `runWebGalleryProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:934:79` | `996b1e9d885c7ebe1ebcfe6999b56b02beb20a992b245764f8cda85a97d1b00a` |
+| `runWebGalleryProject` | `writesGalleryProjection` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:935:24` | `0d92696190cdcc6c33ad3fdfec349a273e09e28f733bdbb9d0c4e0aa7ac88f95` |
+| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:943:3` | `43a1edeef870980ba38c0c096af59c988c28ce6136272096f0960577ba32def4` |
+| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:943:27` | `8ce4b38110c8c03a3029baa6241cc946ce051aee75da40d1a20dd3a1b0fbd418` |
+| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:944:3` | `ecabac6a2ff56b24e86d5e4fd2038afe465b7a96537688735184f6185d4f2110` |
+| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:944:27` | `ce639eeabdc6d27297531b8eef1d65bbecc3695c15d13fc3e2f3134472d9e55e` |
+| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:945:3` | `86f16b812103c7c31f59df6a6db16b36cacf10c0e09e3eab22471836ffcb81b2` |
+| `runWebGalleryProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:945:27` | `0a8d24802fccb4098c841cfe233371e9e1fce02fbd34a918ddf813a47be6005f` |
+| `runWebGalleryProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:946:31` | `d2337a77df978072de0b3c3943ea13302f098b792eb366a389eb2520e3f6f0e6` |
+| `runWebGalleryProject` | `formatsGallerySummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:946:52` | `9c0ade8628d89fec3034b9c053a7360d1609948957f2f10011a153912871c0e3` |
+| `runWebGalleryServe` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:950:21` | `b0f10837d144b6326b94ca069d3a363282e26d8e9b07538d98ca24f71803f504` |
+| `runWebGalleryServe` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:951:27` | `46f8296c9ad5e98446bcbb188daac57e7adda0f25452d0cfe707d8360e9e15a4` |
+| `runWebGalleryServe` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:951:69` | `1e79b9687a2e2f08f28c40d6dcb2b25510a9d963edf27484b55e8f675ec9766e` |
+| `runWebGalleryServe` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:951:79` | `306098cc5661a073c131c1d1201b15b8ed1255226ebcc3b86470f35e09eefc56` |
+| `runWebGalleryServe` | `readsPersistedGalleryPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:952:31` | `acd1359d26304d1972574432217dd8f3bcf351e400fc00aedde20e811091c4d3` |
+| `runWebGalleryServe` | `servesIsolatedPreviews` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:953:31` | `ca33e5d714f1e7872b6a3d604802403a8e46cd959e13bcb7c5f7f59a86d9604a` |
+| `runWebGalleryServe` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:954:3` | `2a123d4e5a3edd06a61ff549f011aebcfb2a004d9e909503e75050c06ec22ba1` |
+| `runWebGalleryServe` | `waitsForTerminationSignal` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:955:9` | `049482fb922b74a09b56170e6fb675760cd6a4e3bd81412e1abd3b4f5789f3d8` |
+| `runWebGalleryProve` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:959:21` | `e023f0031eaee6bda43ff5531b1fea1cf30d23ce90227b5355c1d3bd0bf97211` |
+| `runWebGalleryProve` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:960:27` | `fc47d352d46a1e9bf92904d2980c61aa10c357975b3d7f93efbc905b241c9109` |
+| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:960:69` | `fc7d650a30e3d846103acdd87f4dc12d648f099794a2fd86450233bf9459c1ff` |
+| `runWebGalleryProve` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:960:79` | `43cdc5fc9c99991b8552387f7afa0d14af7fbb7ef75ff95a10ac4fccc26da8d6` |
+| `runWebGalleryProve` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:961:20` | `782dc6ec833ed1e14f3ccc06cd1f4d5539dfc8912d5ad3649c2f958fa7e71917` |
+| `runWebGalleryProve` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:961:31` | `d1709c48d7d8e9a23cd0857912cb0d168931eb83b7dff60b027c1c04f14919bf` |
+| `runWebGalleryProve` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:961:57` | `3b139ef8b9803a1d2942ca1a1906befa27790c08d7751f783e28cf9a09831851` |
+| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:961:69` | `c11bd2121d5d7d42668607b37641bcd415a5491486fbdb2466edc49e60eb0273` |
+| `runWebGalleryProve` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:962:16` | `78e74f12da3343f81e9b7859fb0da415e840f51551cd8b2e6d8ea58bf092c153` |
+| `runWebGalleryProve` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:962:27` | `9105705608cc9d26863609c08a35ea4d48252a829c46bbe597ac689c562cb53c` |
+| `runWebGalleryProve` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:962:53` | `18d3aa58c9defa1d61f12f933fcc2f43bde6347a2f84a41aa8fcc26d93cfb34b` |
+| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:962:65` | `c0a4180e5295bc5a4890337c401ad8bd4eda157afe4cd16bdb468d7b6a1bdbed` |
+| `runWebGalleryProve` | `readsPersistedGalleryPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:963:31` | `a70325fc955fc5201441da7c00102537cc421134b52d25ea719298389fdadbc7` |
+| `runWebGalleryProve` | `validatesEnterpriseGalleryManifest` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:964:9` | `8d35dd0c17291622836c6fba14f3934b5665c3178dc0029ff401fbdb39310143` |
+| `runWebGalleryProve` | `validatesSurfacePreviewPlan` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:965:9` | `3a284316010bc5f58d71c4f8920c34783749afeec57378b6a6831eb639a4333b` |
+| `runWebGalleryProve` | `servesIsolatedPreviews` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:967:31` | `91421f6cb87d26a5248ad2e6201c3bfde0573c4ac904dcfe5952bf09f840c516` |
+| `runWebGalleryProve` | `capturesBrowserRenders` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:970:19` | `e3f04f51ce4e81e303ed768b7d30fdb43069407e7578eff6b5a6f49adeb5fc4c` |
+| `runWebGalleryProve` | `previewServer.close` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:979:11` | `effd58e58f05fa99f48a4b2d294861b105ac2d6b53149800951c1b3f80a84036` |
+| `runWebGalleryProve` | `proof.emittedFiles.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:981:29` | `34abb2e43d4bedddb3539fafc78cf3efe10f2d961872700a953a3e717a5bcf2e` |
+| `runWebGalleryProve` | `file.path.endsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:981:65` | `7be6857e4a0ecb17b231ca163e2aa5c250c836d83cde8b44afa49d0fdc7196f5` |
+| `runWebGalleryProve` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:982:5` | `2473c1bbb70710047ce61b2dd6b2e466656b61388d8cab860025b34db9315c15` |
+| `runWebGalleryProve` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:982:29` | `335da66f22bab8975d92b0ded7950e23beedba655b080adcb55e0103122edb3b` |
+| `runWebGalleryProve` | `emittedFile.path.split` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:982:59` | `bc834d1827cb3690d9dd7064afccad64d45eae03dca067420511275427857901` |
+| `runWebGalleryProve` | `proof.receipts.filter` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:984:25` | `a13330b0e96da697085a16448b1195d874fecec1b17ef5749ff521bcde710c2a` |
+| `runWebGalleryProve` | `receipt.verdict.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:984:60` | `9aa469df8c71886446088e70c224c49df8de478710fd64bb5dd81783fd228580` |
+| `runWebGalleryProve` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:985:3` | `f0820f0ec739ef472caff0eac303226d8136fd7905e3c75312c5dad259cff147` |
+| `readsGalleryInputs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:989:21` | `60ab3032a9ce048cd598668938296505953c3de999971878eb97b22f6c89a220` |
+| `readsGalleryInputs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:989:49` | `161e76fe47b4381fa75acb1b49343f4854a7f7824d2d62e23edd922477349aff` |
+| `readsGalleryInputs` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:989:59` | `2703dafb4d1e5f5cfa29e9a75d314c274f3ca2914b7066bf3825e70e12af2560` |
+| `readsGalleryInputs` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:990:25` | `4869258ec20e4d40528964eed08c7c39db0d5a281e6baac7c7314620bb9b3fe0` |
+| `readsGalleryInputs` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:990:57` | `86fd858f44e1242564e6d2b6c0374680a405095be89b99720e56d5e8f11a3cb1` |
+| `readsGalleryInputs` | `path.dirname` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:990:67` | `a0d6f6bb1cd89adb22cde3e5884a00db6fb2e4271510efc7539db63da389dd93` |
+| `readsGalleryInputs` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:991:23` | `0b0fddd00a5eb65a9364d26084ef60495cc2242554de4477274162238f350dc0` |
+| `readsGalleryInputs` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:992:27` | `0c7cf03d8cb23a25723f0e20256aa327d65ccd4f99ad5a93ada62bba828ad539` |
+| `readsGalleryInputs` | `validatesWebSurfaceIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:993:9` | `02f62267a3fe177756ef4ccb79eb08c0677e8a59780106946d96ea2b3ce18ed0` |
+| `readsGalleryInputs` | `validatesWebSurfaceInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:994:9` | `0b15f7b08a847de7dad009e3bfe8ff90dc84c0b7235e6350c0454b93a1acecff` |
+| `readsPersistedGalleryPolicy` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:999:31` | `97845eeb539df6e5f74e8c997a6efe8285878552b2292fc552760743bb306711` |
+| `readsPersistedGalleryPolicy` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1002:21` | `b5251bdfac46d4079c3a349fb94298bc781bc416cc7b9ed4b90de90b470f4b4e` |
+| `readsPersistedGalleryPolicy` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1002:32` | `72cd44876ef01102cda1e575a67bd094af9a135e9e72d8cd1e2b1d6c435641a3` |
+| `readsPersistedGalleryPolicy` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1002:58` | `180e82e326f9058c47e8a1a8626cc0c2db1015ec3efef1edce40c700e60e29f1` |
+| `readsPersistedGalleryPolicy` | `resolvesGalleryPreviewPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1005:27` | `b38001d0f607c74056495d83e52b4bd5f1d9c2253b00746d343addeef24ba2de` |
+| `readsPersistedGalleryPolicy` | `validatesSurfacePreviewPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1007:9` | `10ed7fe7b8cd7675e82cd70c4465f64e68baffd579b446294751a48259df7531` |
+| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1017:7` | `90b4cbe0f97715cea210f43be9e9af4b578e981072a16bffa4d6897d0913a3e5` |
+| `waitsForTerminationSignal` | `process.off` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1018:7` | `49e53d14efdfdd80f43049119f2403a8527f7f3978a24d86e9891922499c9768` |
+| `waitsForTerminationSignal` | `previewServer.close` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1020:15` | `768a5df57d4a917afa8c83486266d7436674d8bb06d6946758ecaf459f2618d8` |
+| `waitsForTerminationSignal` | `resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1021:9` | `8020dabe8d8a528216809d37014c58807e4f1d12f352d892caa2288996811a53` |
+| `waitsForTerminationSignal` | `reject` | `unresolved` | `UNRESOLVED_INTERNAL_SYMBOL` | `no-symbol-match` | `src/cli.js:1023:9` | `ca4aa9edb3686f27cf0f163bfc33eb9e9f7e1aed4eb35a1f67e1f18dcbd5eba7` |
+| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1026:5` | `4d996af2c67a80aa14a218f1e9148ce306ce53bb7f97edb8f9f884c6e56070f4` |
+| `waitsForTerminationSignal` | `process.on` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1027:5` | `562f615b4bcdadda39e767dbf6527610e013a0d4e2ded287f2a200c6e943b7eb` |
+| `runWebInventory` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1032:21` | `a60a498720fd5725e13348411bdef5cd8d174fc54be4f244cd083185010837bd` |
+| `runWebInventory` | `readsPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1033:24` | `61fb6227b2c31956d37a0c4d7576e9b29bedcccea2d11a5ea83b37654404a35c` |
+| `runWebInventory` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1034:22` | `6d8ad00305acc5b7a95725f5bccf6ef9834eff68a24c21dfa021e8a1ac2914de` |
+| `runWebInventory` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1034:51` | `83f260284bca1806ab367c9c76fe218678136a87a67a89f2a04a666c6db0850b` |
+| `runWebInventory` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1034:61` | `4808b8678a6d4943e73c9e2626676180d2dc4b9339dd79c26c52a010eac3a371` |
+| `runWebInventory` | `projectsWebSurfaceInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1037:27` | `6eee965e388051f7e9ac9a392def3e0f0341f7d6b95a1c3762c18e90f7bfa0bc` |
+| `runWebInventory` | `validatesWebSurfaceInventory` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1038:9` | `4fa743afc3bfa1f67b1dd8373852cdfe85e84727a5109114b5bd82b51cdb2183` |
+| `runWebInventory` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1040:9` | `736240f193898c9818d6615b1fbcbbeccdc1e04ba0a17b7bfe5c6c612c9af6db` |
+| `runWebInventory` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1041:3` | `639e744049950b37c9bedfc9dcb00ac74040f832fff09129954faa2314bf19f8` |
+| `runWebInventory` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1043:5` | `b0f302238882db0a16a357f594eb9afc8da6eecfb3031aa4ee09eb34345a0682` |
+| `runWebInventory` | `formatInventorySummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1043:26` | `d0d6286c85a1eae49e48491754744acb7b0569d5a969508ae07696dcef1bc3b9` |
+| `runWebProject` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1048:21` | `fb6ff862b9dc8a53c04524a1ae6b949d2a7f679f13e27b069c3a4e869c8dc008` |
+| `runWebProject` | `readsPolicy` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1049:24` | `97c77df8479ed863b612a94e22c804c789b03f5d1e954c8f4193e85fbb2b7e5f` |
+| `runWebProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1050:22` | `d9532ea4345e37871b0270bf1dbf5a409e9a40cd15a0dd70ac975a9867aa6ee9` |
+| `runWebProject` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1050:51` | `24c570b5b03f251a806437a5fe2ed8e22f05b0898290d45001953f7c99369eb6` |
+| `runWebProject` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1050:61` | `c98fd713aeffa32eb7482171f0c4b03a1b40e2c66cb84c729302bd81536a3d5e` |
+| `runWebProject` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1053:13` | `39215c4235c98e790a4bea9ff33fa395487ee9059971d1294b58d8d3243d8ed4` |
+| `runWebProject` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1053:27` | `ff3aadd07dd2695c8ae0be4655dd24b59def8b947c702ee5ca1a20654e569974` |
+| `runWebProject` | `projectsWebSurfaceIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1056:23` | `9b4da9b8bfb4267dc4dc2ec312f29908342867f299cb45c52a23e2aa64dd0131` |
+| `runWebProject` | `validatesWebSurfaceIndex` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1057:9` | `5b0294c7350c200ee02899e58212f064bc2a3fafe962677adcc559810d5dfc6f` |
+| `runWebProject` | `writesJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1059:9` | `ec0808b1208e8da30aaab6ab119dd8e461a8c4c969dcdbd4a0c9c9a577d6ce85` |
+| `runWebProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1060:3` | `e2b537c669fc1dcfa0e287ca01386248be173923c1d83635396f889addfa6b2d` |
+| `runWebProject` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1062:5` | `a0b722be99161fafafa1733be850ff953ee7bd871f39160af1df023399328e1c` |
+| `runWebProject` | `formatWebIndexSummary` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1062:26` | `82d7fa5d43f2bbdd5fec509a8e5e30e76e35b34dc378a9bbebf9ec6aaa71e438` |
+| `runWebQuery` | `parseArgs` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1067:33` | `c908c9e19c039f1c05530e4f06034e9ce2f3840cc5944e4b15e310ab5b09b150` |
+| `runWebQuery` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1068:21` | `f5c3768ae5261f3218f6d31434f69252da43973441c85f6b43312af4ef1f2a4c` |
+| `runWebQuery` | `path.join` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1068:49` | `a1974cb0e4326bf17228307b7f914c6cf13663d5d958669f75ecfc413b9974b2` |
+| `runWebQuery` | `process.cwd` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1068:59` | `44d8f82345c11d5adaf4d98b40d78aa243beee04197736c18ce3e924eda4ed23` |
+| `runWebQuery` | `resolveQueryText` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1069:21` | `65763673c61a2c405c15937273ba6ee4094f29c009785b8bcac4cc9fcad25323` |
+| `runWebQuery` | `readsJsonFile` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1070:23` | `82917eec14b69e3e22d7796d82deb9c43fcd6d8dd2758867c01047129542ff1e` |
+| `runWebQuery` | `deducesWebQuerySourceNames` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1070:63` | `13a52db4cce14306ea1e276ee18ef13569f1fa6f0702fb94313d1c48b7905a31` |
+| `runWebQuery` | `executesWebRelationalQuery` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1071:24` | `e3ff974f48a07124c9b316f3d665196886935dbeff5ad8e9afab36be40f8b651` |
+| `runWebQuery` | `process.stdout.write` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1073:3` | `5197ec390c0ee781b8cce0504013cf37cc5afb6949b063b0bcfacf5baa378fcb` |
+| `runWebQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1073:33` | `404fd06f8eec97801f4c01001b260b4881673d256d4a2fadeed8b374bab6cf4a` |
+| `runWebQuery` | `JSON.stringify` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1073:67` | `4d2a60ea207d291d7594832888dea9a38647c0675fb4fa0fcbe790c49680d96c` |
+| `readsPolicy` | `JSON.parse` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1080:18` | `547f891f6c462b822c0feec73939c34be1cc7c44db6dc03e7768d38bddbdfde8` |
+| `readsPolicy` | `stripsByteOrderMark` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1080:29` | `eda6ded15d10e2dafb63ceb9628affa51d5e7f4ecf9319b18fcfad8cf7c24787` |
+| `readsPolicy` | `fs.readFile` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1080:55` | `ee0a96cc3ba8a7e494a272536cbebab54fd08fdd4620253bcce3604f33ad0f8f` |
+| `readsPolicy` | `path.resolve` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1080:67` | `804b8a3ba6355f1da0f46b419c61f49b55fc4c2dedc22e78cd976cff223fb911` |
+| `readsPolicy` | `validatesWebKnowWorkspace` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1081:9` | `ecedc5897bf059a03d4c4eea76789d4ebbb2ff134330d900dff2e95284afcdb2` |
+| `stripsByteOrderMark` | `text.charCodeAt` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1086:10` | `fa5915e40f096732304a3da95b44101440236e48fb6f3cfd8c9d7886c6aba9e1` |
+| `stripsByteOrderMark` | `text.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1086:42` | `bf500185cba4478b5122430f6198d8743868f24576c058e07f911857c742efeb` |
+| `formatInventorySummary` | `Object.entries` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1093:8` | `547a784128853a3056918b7fa61728382b60cbec529872389cad5622666f98bc` |
+| `formatInventorySummary` | `Object.entries(inventory.coverage.byDisposition).map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:1093:8` | `a81a514a7b919cc0e0b65c40b8ed44c8b7912486816d550c2f96a6642c0786d3` |
+| `formatInventorySummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1095:13` | `b26f36be1f9801238702c2eff005b025f8eff5982db23c2e0d815528734b0fa1` |
+| `formatWebIndexSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1114:13` | `9fd3d2ea876ca5cad85f24179b071f522274e983f8e4ec0d4627cca66c1e08c5` |
+| `parseArgs` | `Object.create` | `unresolved` | `PLATFORM_BUILTIN_BOUNDARY` | `no-symbol-match` | `src/cli.js:1118:17` | `96191195c3be051bb1022882c3ae9d15a8ba55f6c16e1ffb40c540f396feab88` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1191:10` | `3aef64883d876a3f89500a5ce4c120f0ab4c45474088340c99c07338bff8910c` |
+| `parseArgs` | `positional.push` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1192:7` | `8e2a896b14e9f6454a9c99b5876979a730a3dc628b8c14bd25c6fc50fd96c872` |
+| `parseArgs` | `current.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1196:10` | `347f2c43cc63efde21999019d84f16fc21bf170c180ba7e94c55a3f05903811d` |
+| `parseArgs` | `longValueOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1210:9` | `d7dc4393b6febe800a7e65bf4232260ac53416b4cefe7d740ba95c0033e35010` |
+| `parseArgs` | `next.startsWith` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1211:33` | `e67cffaed12372cea9cb723d1c6c610f76b15f94b14fc9301dc6b4cafb9581f6` |
+| `parseArgs` | `normalizeLongOption` | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | `resolved` | `src/cli.js:1214:13` | `1ec5da46a3427310bdd951d3dfd51737db968fa2d61605a049ba68642359a054` |
+| `parseArgs` | `booleanOptions.has` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1218:9` | `913d23bfd249e2258a47902e42f133326a1ebe94abfb5ca38e2d875c5885c84e` |
+| `parseArgs` | `current.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1219:13` | `db394f65b4cf6e461f1d7ec1122bf9a13063b6f0a0236898c62a0321abecf352` |
+| `resolveQueryText` | `positional.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1229:10` | `75c5f40aff6b4b1823018861dd5401c8296b7547c4f73f6b206c99d5c5df3daf` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1246:3` | `6a17585e0f5e36de82aa7da04f6156d4e3bd97df69851863acee669a470d7530` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1247:3` | `e54d2a337c1df0cc221c075314222f46322c5132b50757b98f05b3b744cdb84d` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1248:3` | `eed543a125e43a9aec913dc69037f55c7ffffd7434372f149650baee2e7f08cb` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1249:3` | `3e3f264d66ff6656b3f92f4b9bb94c953506270b92bf6faadf15c701ac0a91a2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1250:3` | `e3e8af54cb1d3fbcd4d96c4fcc97dd57c2c635f7ce4cacd11724704792b5e129` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1251:3` | `b7272155e4af7ecec84b55fbf95251c733725eb7cf5b988fe5a1fd458b2c976c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1252:3` | `7711843421782fc6eaf07b30755d401844549a37205625703cb1d1c3bbc0f429` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1253:3` | `c0bd262163729e6af075e5a4ba4125dbb9ce7c1b3b5c0e7fa62251ded02257ef` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1254:3` | `eb99c55a476441a7493e9c64c9ca3bbbd8379f0aa2f33b927b0a3eb4e517618c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1255:3` | `ee051c9dd4c3706cdf00f2b63959cd49ce03ea0d144d88c35df5b58e4b4bb6b0` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1256:3` | `23373309023955fc9d3a56f16e00719603853ec88eafbb8938814b16870ad3c4` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1257:3` | `7175c32711dda7759a35e91fb958f26a7e9d6e11227fe796512fc73a5f708ce1` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1258:3` | `8a37fbeb7b32a8f16a0bc4e1b65e86b60e0ccbb93898e01d4238bab47c69a2bf` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1259:3` | `af6878cecd255ed47e7b5f851b5b15f7f62b1a8621b39c5460517d7446f5665b` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1260:3` | `cb52a5e4f632fe3ba24590d5ebd69e56010bc1b3234ba237002f20b43db3efd5` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1261:3` | `527efa621eb6b3e565e68b1f24025ddc451695614260ff707c3fdea9f6c1d265` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1262:3` | `bc73b3cafa4ce8bf9bc8ad10ac433669a3c33f8c6914bea459894ff489bcd5b2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1263:3` | `a18dd06bf12133554bd865f1cffb8ff3fd66e0afd7a79708fac3dcd686291bd6` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1264:3` | `c6ada230510c29e033e773bd0aca79d2d8ab2f504bcbe549d13a695b31cb85d1` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1265:3` | `f5df59eeaee4c77be52c6589feee35815ca75d246c0e9c9d2e31723396b31403` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1266:3` | `dc00a48a88cb9888f1a47d79534186bffe6ab4330233c67e3427f5567c9441c4` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1267:3` | `40216cc4574bd6c002644f992ad101db86328fc832e56d95fd8de6671505a54c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1268:3` | `7dec4682a9071f1d0b2625b426e7108ea52d40e8207f6b6ead0d98b5cf761d7a` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1269:3` | `9ab171cd8e59be37d5fec609b091704000663ce6fd743e7a4ad2e2de1057cc79` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1270:3` | `b8a4ff97b0a280556bec665f44958ede63650116435782b2b645beb3431f1199` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1271:3` | `b566481e46c0462b41f3d4149f742c04a2e421e57c7b8863a1f729673218db3d` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1272:3` | `7b50b9c99338a7f62950743818124e4a6bd8dcd0548e8083fac7aff9cecb31bc` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1273:3` | `991a36a9418ecd28e025a52a02d9c093b6fb0fa2617fef7c354bf6406ea7c46f` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1274:3` | `d6d3424f87465dc2370fee23e4b6e68162b6c6e8703a942941b092e55e71c584` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1275:3` | `e636254d6ffe8ce74081c9b01f84f0be3b1c7526c53c55423c07b68e16a36591` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1276:3` | `7392972d79a293bab718e32fd3ccf48d0773766cfbbd5405da1d3a96556045b2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1277:3` | `e2a6c9476d0204b169f2030023456fc265aceab14d5382469f67b485e1b5f35e` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1278:3` | `fad9ff92063f6c59344b9a6cee3d1b6d31ed2ad15b12feb74417146570ea5fc8` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1279:3` | `420b5adc3cf459ba3826939da44289fd0489d1f66db2e4953313291f8749b062` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1280:3` | `f3be8d11d1c22710950853afc89c4f9b0b912f4dbe68c08aefa212305e88ec55` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1281:3` | `6ce27094c6dd43000d234817a3d65729a15f330a30919d9b470f1a72a84437d9` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1282:3` | `40ca33fbb56b242015a16e6c41bd83aef434897dd501c2779816eae54280eba2` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1283:3` | `4bed4a78f92258ad9b64939c731bd2e59b2121338d11b17b6d4febf04d8bb5b8` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1284:3` | `f45208554a897822a619b19622886875af26fcd39660fb6324ae25adf1d7152c` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1285:3` | `7f4c28d85376724bd998b3cdc9e07b1a92039c59f00a4e7b3412673dbbdb2951` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1286:3` | `427919c730617c879c81b739af0ccd448350cf22ce6b740faac86b407e9e915f` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1287:3` | `115137a3671e31931586f59f3cba0fcbaad34eb5bdbc1aab0400dc207cc7284a` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1288:3` | `73e85a154a65c6cc6c5da1b3770171e3664a4cc72b344899d83a86bd18cf5520` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1289:3` | `d1401358b9827c6125a17e45da9d8032eaa1c2e2d8ca5a0fda1e15a84fb6ca09` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1290:3` | `e553635fb7953de5f8965ce8ff3d977331361a061af70247860842357bf08621` |
+| `writeUsage` | `stream.write` | `unresolved` | `STANDARD_LIBRARY_BOUNDARY` | `no-symbol-match` | `src/cli.js:1291:3` | `3e8b78624b29e0fe1ab9fdf46a55c9d75345668a1b686b6b8f09010542c9e0af` |
+| `formatsGallerySummary` | `byDisposition.set` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1296:34` | `908afeb0e4da46a99456f4818be5cd0783b0c28defd4b782545b81dfd523e23d` |
+| `formatsGallerySummary` | `byDisposition.get` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1296:83` | `dfd608cc8f8118a0d007a437f68000a1dd92473cd1ae93ff240b9771892a4845` |
+| `formatsGallerySummary` | `[...byDisposition.entries()].map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:1301:8` | `ed230c07df3b4303271841e469c4dcae1b9705e23972cd4308a481febcd1960f` |
+| `formatsGallerySummary` | `byDisposition.entries` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1301:12` | `5eb0df1938869df3089807ba0e6df7361652701e2731c452513dc016a7973e6c` |
+| `formatsGallerySummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1303:13` | `efeafb3cbc69b574d720442fde898135bfd097ec0b5d5d6723b0d9a5c51600a2` |
+| `formatsNorthStarSummary` | `result.report.selectedAuthorities.map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/cli.js:1311:8` | `143a1afad470ec8bebf13b1a144bf4152923b0450bacf7138f02e9473be2b0f5` |
+| `formatsNorthStarSummary` | `lines.join` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1317:13` | `9c90a22b2b47427bc32c59b747b245fbc19fc35cf15c947d76c0eb81f885ff8a` |
+| `normalizeLongOption` | `value.slice` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1321:29` | `4e5bd0d1a211d10755652d6674d5a77f0573e096643dfd85c67dd010d4c20f30` |
+| `normalizeLongOption` | `withPrefixRemoved.replace` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:10` | `d1e8bc249a2e11246fbdb8b27191c8e1bc45f34bd64d28a8dd10ed1667c05dd2` |
+| `normalizeLongOption` | `character.toUpperCase` | `unresolved` | `INSTANCE_MEMBER_CALL` | `no-symbol-match` | `src/cli.js:1322:67` | `82e3f72d1c69b2c74ed1d2545b427d1a5ea013f77a57c3005203369f5e3d37bf` |
 | `buildsSignInCompositionRequest` | `[...input.selections]
     .map` | `unresolved` | `CALLBACK_OR_HIGHER_ORDER` | `no-symbol-match` | `src/composition/projects-sign-in-composition.js:15:22` | `1192533f35e9cec39e1ec1a5520762053e1b1c1720733d28104bfc6f910e63b3` |
 | `buildsSignInCompositionRequest` | `[...input.selections]
@@ -12601,7 +12871,7 @@ Handler: `src/cli.js#runWeb`; entry point: `cli.js#function:runWeb`; kind: `cli-
 
 One packet is emitted per distinct handler execution slice, so aliases do not create duplicate feature proposals. Existing canonical intents are reconciled against their declared implementation symbols.
 
-Query result: [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) — 15 row(s), result `sha256:096b968c961e2c3ba76f1139a683cc6043a2febea43cfebf7db8de3d068aedbd`
+Query result: [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) — 16 row(s), result `sha256:0f86f0eab1f1c517f90b3a76fd9695f51be3e9e0aa73b54e631a62bc0dbdc8fb`
 
 | Canonical command | Aliases | Handler | Existing features | Responsibility bindings | Disposition | Evidence |
 |---|---|---|---|---:|---|---|
@@ -12619,6 +12889,7 @@ Query result: [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-featu
 | `propose-feature-coverage` | `propose-feature-coverage` | `runProposeFeatureCoverage` | `source-facts.cli-propose-feature-coverage` | 2 | `FEATURE_INTENT_RESPONSIBILITY_BINDING_REQUIRED` | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
 | `propose-semantic-overlap` | `propose-semantic-overlap` | `runProposeSemanticOverlap` | none | 0 | `FEATURE_INTENT_REQUIRED` | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
 | `query` | `query` | `runQuery` | `source-facts.cli-query` | 1 | `FEATURE_INTENT_RESPONSIBILITY_BINDING_REQUIRED` | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
+| `report-query` | `report-query` | `runReportQuery` | none | 0 | `FEATURE_INTENT_REQUIRED` | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
 | `web` | `web` | `runWeb` | none | 0 | `FEATURE_INTENT_REQUIRED` | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) |
 
 ## Fat and Waste Inventory
@@ -12639,12 +12910,10 @@ Only `NO_CLI_REACHABILITY` appears here. Test/proof, generated, runtime-sensitiv
 | `formatsGroundingManifest` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `parsesCodeSymbols` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `parsesJsonEvidence` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
-| `rerunsRegisteredReportQuery` | `src/governance/projects-report-query-lineage.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `callbackBody` | `src/governance/projects-test-traceability.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `callName` | `src/governance/projects-test-traceability.js` | `NO_CLI_REACHABILITY` | 3 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `hashes` | `src/governance/projects-test-traceability.js` | `NO_CLI_REACHABILITY` | 11 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `literalText` | `src/governance/projects-test-traceability.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
-| `filtersRowsByParameters` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `groups` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 3 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `scenarioResponsibilityRows` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `subjectItemRows` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
@@ -12677,7 +12946,9 @@ Only `NO_CLI_REACHABILITY` appears here. Test/proof, generated, runtime-sensitiv
 | `buildDecisionAuthority` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 8 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `buildFailurePolicy` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 6 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
 | `buildIterationAuthority` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
-| ... | ... | 95 additional rows | ... | ... | ... | Open full receipt | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) |
+| `buildProjectionMapping` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 9 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildResponsibilityAuthorityReference` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| ... | ... | 93 additional rows | ... | ... | ... | Open full receipt | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) |
 
 Reverse justification: [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1). Removal impact: [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1).
 
@@ -12691,7 +12962,7 @@ Tests are indexed as an independent evidence boundary, connected to production t
 | Tests with canonical scenario lineage | 0 | [`test.scenario-lineage.v1`](#query-result-test-scenario-lineage-v1) |
 | Tests with proposed lineage only | 1 | [`test.scenario-lineage.v1`](#query-result-test-scenario-lineage-v1) |
 | Shared-infrastructure tests | 48 | [`test.supporting-lineage.v1`](#query-result-test-supporting-lineage-v1) |
-| Tests proving CLI-unreachable code | 22 | [`test.unreachable-production-dependencies.v1`](#query-result-test-unreachable-production-dependencies-v1) |
+| Tests proving CLI-unreachable code | 16 | [`test.unreachable-production-dependencies.v1`](#query-result-test-unreachable-production-dependencies-v1) |
 | Tests with no canonical lineage | 112 | [`test.without-canonical-lineage.v1`](#query-result-test-without-canonical-lineage-v1) |
 | Canonical/proposed scenarios without runtime test proof | 6 | [`scenario.without-test-proof.v1`](#query-result-scenario-without-test-proof-v1) |
 | Duplicate proof candidates | 0 | [`test.duplicate-obligation-proof.v1`](#query-result-test-duplicate-obligation-proof-v1) |
@@ -12704,7 +12975,7 @@ Tests are indexed as an independent evidence boundary, connected to production t
 | `console` | 28 | 0 | 20 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `generate-connective-tissue` | 14 | 3 | 2 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `generate-docs` | 52 | 15 | 22 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
-| `govern` | 305 | 77 | 16 | 1 | 0 | 0 | 1 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
+| `govern` | 306 | 77 | 16 | 1 | 0 | 0 | 1 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `ingest` | 78 | 0 | 15 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `load-sqlserver` | 25 | 0 | 3 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `project` | 61 | 0 | 15 | 1 | 0 | 0 | 1 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
@@ -12715,11 +12986,12 @@ Tests are indexed as an independent evidence boundary, connected to production t
 | `propose-feature-coverage` | 32 | 3 | 23 | 2 | 0 | 0 | 2 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `propose-semantic-overlap` | 15 | 3 | 2 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `query` | 14 | 0 | 20 | 1 | 0 | 0 | 1 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
+| `report-query` | 22 | 6 | 15 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 | `web` | 251 | 47 | 3 | 0 | 0 | 0 | 0 | [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) |
 
 ### Test Fat and Waste
 
-The critical intersection contains 50 test-to-production path(s) where the production callable has `NO_CLI_REACHABILITY`. 112 test(s) execute production without canonical or admitted supporting lineage. These are review candidates, not automatic deletion instructions.
+The critical intersection contains 44 test-to-production path(s) where the production callable has `NO_CLI_REACHABILITY`. 112 test(s) execute production without canonical or admitted supporting lineage. These are review candidates, not automatic deletion instructions.
 
 Unjustified lineage: [`test.without-canonical-lineage.v1`](#query-result-test-without-canonical-lineage-v1). Test-preserved unreachable implementation: [`test.unreachable-production-dependencies.v1`](#query-result-test-unreachable-production-dependencies-v1). Joint removal impact: [`test.removal-impact.v1`](#query-result-test-removal-impact-v1).
 
@@ -12746,12 +13018,12 @@ a runtime execution receipt for a scenario.
 | Mechanics with canonical scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Mechanics with proposed scenario lineage | [158](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Mechanics with ambiguous scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
-| Mechanics without scenario lineage | [7,478](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
+| Mechanics without scenario lineage | [7,530](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents with canonical scenario lineage | [2](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents with proposed scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents with ambiguous scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents without scenario lineage | [10](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
-| Unresolved responsibility-evidence clusters | [733](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
+| Unresolved responsibility-evidence clusters | [735](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Clusters confirmed as feature candidates | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Live LLM inference evaluations | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Optional capability relations proposed from evidence | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
@@ -12765,9 +13037,9 @@ a runtime execution receipt for a scenario.
 
 **Query evidence**
 
-- [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) — 1 row(s), result `sha256:3337907d2573bdff4f6afcf5112ec158f2d8f6c183407ad2461b26fba9a632ef`
+- [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) — 1 row(s), result `sha256:6f2e40b38be53f55cea4f6daaa69723fe09a19255edb2308ea381d4cccb1f9f7`
 - [`scenario-conformance.summary.v1`](#query-result-scenario-conformance-summary-v1) — 1 row(s), result `sha256:c3fcd087e881750d3cf83381a22ecf525fd0d50f4503a448d5883df1ad902f1a`
-- [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 733 row(s), result `sha256:fbdeb4f7b0c76da478e058bfc522027afc7f99e72c5d86937326c6a09cf1c40b`
+- [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 735 row(s), result `sha256:3462373bea89a0f299e26aedf4bb471e988fce1ac0e7028aa19fcefc77e71db4`
 
 ## Feature Coverage Proposals
 
@@ -12793,13 +13065,13 @@ Claim type: `QUERYED_GAP_FACT`
 
 These are bounded static-evidence clusters, not feature candidates. A function or module scope becomes eligible for feature inference only after a separate feature-shaping review establishes an actor, outcome, scenario boundary, responsibility, and obligation.
 
-Query result: [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 733 row(s), result `sha256:fbdeb4f7b0c76da478e058bfc522027afc7f99e72c5d86937326c6a09cf1c40b`
+Query result: [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 735 row(s), result `sha256:3462373bea89a0f299e26aedf4bb471e988fce1ac0e7028aa19fcefc77e71db4`
 
 | Evidence cluster | Cluster kind | Mechanics | Occurrences | Feature candidacy | Inference eligibility | Query result |
 |---|---|---|---:|---|---|---|
 | `src/governance/authoring-evidence-query-catalog.js#buildsAuthoringCollections` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, serialization, state-mutation, validation | [278](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/governance/generates-connective-tissue.js#generatesConnectiveTissue` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, normalization, object-construction, serialization, state-mutation, throw, validation | [221](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
-| `src/governance/report-drill-down-query-catalog.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | branch, fallback, object-construction | [216](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
+| `src/governance/report-drill-down-query-catalog.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | branch, fallback, object-construction | [220](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/governance/projects-report-query-lineage.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | [195](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/governance/projects-report-query-lineage.js#reconcilesReportQueryLineage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, normalization, object-construction, serialization, throw, validation | [146](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/web/html-projector.js#projectsHtmlDocument` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | [101](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
@@ -12997,7 +13269,7 @@ shown as proposed coverage; it is never counted as canonical coverage.
 
 | Inventory | Count | Disposition | Query |
 |---|---:|---|---|
-| Static mechanics without canonical or proposed lineage | [7,478](#query-result-feature-coverage-unclassified-inventory-v1) | [`NO_SCENARIO_LINEAGE`](#query-result-feature-coverage-unclassified-inventory-v1) | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
+| Static mechanics without canonical or proposed lineage | [7,530](#query-result-feature-coverage-unclassified-inventory-v1) | [`NO_SCENARIO_LINEAGE`](#query-result-feature-coverage-unclassified-inventory-v1) | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
 | Authority documents without canonical scenario lineage | [10](#query-result-feature-coverage-unclassified-inventory-v1) | inspect per-item posture below | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
 | Admitted know-how without canonical obligation lineage | [0](#query-result-feature-coverage-unclassified-inventory-v1) | inspect per-item posture below | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
 | Healing drafts without a canonical scenario target | [0](#query-result-feature-coverage-unclassified-inventory-v1) | [`HEALING_WITHOUT_CANONICAL_SCENARIO_TARGET`](#query-result-feature-coverage-unclassified-inventory-v1) | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
@@ -13006,17 +13278,17 @@ shown as proposed coverage; it is never counted as canonical coverage.
 
 | Mechanic | Occurrences | Files | Query |
 |---|---:|---:|---|
-| branch | [1,330](#query-result-feature-coverage-unlined-mechanics-v1) | [81](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| branch | [1,335](#query-result-feature-coverage-unlined-mechanics-v1) | [81](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | exception-handling | [111](#query-result-feature-coverage-unlined-mechanics-v1) | [28](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| fallback | [1,810](#query-result-feature-coverage-unlined-mechanics-v1) | [79](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| fallback | [1,836](#query-result-feature-coverage-unlined-mechanics-v1) | [79](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | iteration | [456](#query-result-feature-coverage-unlined-mechanics-v1) | [67](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | normalization | [144](#query-result-feature-coverage-unlined-mechanics-v1) | [31](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| object-construction | [2,814](#query-result-feature-coverage-unlined-mechanics-v1) | [89](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| object-construction | [2,829](#query-result-feature-coverage-unlined-mechanics-v1) | [89](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | retry | [1](#query-result-feature-coverage-unlined-mechanics-v1) | [1](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| serialization | [88](#query-result-feature-coverage-unlined-mechanics-v1) | [29](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| state-mutation | [333](#query-result-feature-coverage-unlined-mechanics-v1) | [59](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| throw | [224](#query-result-feature-coverage-unlined-mechanics-v1) | [42](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| validation | [167](#query-result-feature-coverage-unlined-mechanics-v1) | [26](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| serialization | [89](#query-result-feature-coverage-unlined-mechanics-v1) | [29](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| state-mutation | [334](#query-result-feature-coverage-unlined-mechanics-v1) | [59](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| throw | [227](#query-result-feature-coverage-unlined-mechanics-v1) | [42](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| validation | [168](#query-result-feature-coverage-unlined-mechanics-v1) | [26](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 
 ### Authority without canonical scenario lineage
 
@@ -13058,12 +13330,12 @@ Reconciliation query: [`authoring.reconciliation.v1`](#query-result-authoring-re
 
 | Check | Result | Proving query |
 |---|---:|---|
-| Healing candidates | [7478](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates with authoring evidence bundle | [7478](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates with complete query provenance | [7478](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates with unresolved required evidence | [7478](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Healing candidates | [7530](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates with authoring evidence bundle | [7530](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates with complete query provenance | [7530](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates with unresolved required evidence | [7530](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Candidates ready for semantic authority authoring | [0](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates ready for projection | [6836](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates ready for projection | [6883](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Declared responsibilities with authoring bundles | [10](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Declared responsibilities awaiting interface evidence for authoring | [7](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Declared responsibilities ready for projection | [7](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
@@ -13089,9 +13361,9 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 
 | Check | Result |
 |---|---:|
-| Registered factual claim values | 173385 |
-| Claims with query pointers | 173385 |
-| Claims with required drill-down path | 173385 |
+| Registered factual claim values | 175010 |
+| Claims with query pointers | 175010 |
+| Claims with required drill-down path | 175010 |
 | Claims lacking drill-down path | 0 |
 | Broken drill-down query references | 0 |
 | Invalid parameter bindings | 0 |
@@ -13114,14 +13386,14 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 
 | Query ID | Purpose | Rows | Query hash | Result hash | Status |
 |---|---|---:|---|---|---|
-| [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | Executive Summary | 1 | `sha256:dfa7d56d37bdd8ca458d537b1a511f32562eb95c05dd19157d705a4617b0056b` | `sha256:3337907d2573bdff4f6afcf5112ec158f2d8f6c183407ad2461b26fba9a632ef` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | Executive Summary | 1 | `sha256:dfa7d56d37bdd8ca458d537b1a511f32562eb95c05dd19157d705a4617b0056b` | `sha256:6f2e40b38be53f55cea4f6daaa69723fe09a19255edb2308ea381d4cccb1f9f7` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.summary.v1`](#query-result-scenario-conformance-summary-v1) | Executive Summary | 1 | `sha256:b230d306d1b6235c356f228a8fbe154b94ded15c1d017b8459b2c4db455fc944` | `sha256:c3fcd087e881750d3cf83381a22ecf525fd0d50f4503a448d5883df1ad902f1a` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.proposal-evidence.v1`](#query-result-feature-coverage-proposal-evidence-v1) | Feature Coverage Proposals | 0 | `sha256:24a7bd5de2d4710e8917e12ac89f18418667b3ed56690d4a93dcc04c09b11411` | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.live-inference.v1`](#query-result-feature-coverage-live-inference-v1) | Live LLM Feature-Inference Evaluations | 0 | `sha256:6d426be0037939f720654e271d2debfe3737345106909d22a6ef600b792c0bbc` | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) | Unresolved Responsibility Evidence | 733 | `sha256:f0194dd8100b3ee64d528a4253968fe48f0b7212badf2575b852c5b948cb780b` | `sha256:fbdeb4f7b0c76da478e058bfc522027afc7f99e72c5d86937326c6a09cf1c40b` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) | Unresolved Responsibility Evidence | 735 | `sha256:f0194dd8100b3ee64d528a4253968fe48f0b7212badf2575b852c5b948cb780b` | `sha256:3462373bea89a0f299e26aedf4bb471e988fce1ac0e7028aa19fcefc77e71db4` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.drilldown.v1`](#query-result-scenario-conformance-drilldown-v1) | Canonical Feature Drill-Down | 4 | `sha256:63140f2c93dfaff428cf1792965fca681c1dc8459b409af57bac1ed680df6edb` | `sha256:58df4b2b1d73dcede8c618b2deea032b3a8ccdecc9dcb35882724a9b6d75afbf` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) | Evidence Without Canonical Lineage | 1 | `sha256:1aafa4839d6a214e6acc0be187c500279ab27a67382b4bbe5160a099c2a0e6a0` | `sha256:6f6d7b64d605531c30fd547fd8794efdf4b34d3534751385cb9e5847afd24f41` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) | Evidence Without Canonical Lineage | 11 | `sha256:8d95fc7d5b7dc91ad64e723c18eaf7f43aec31da133f1ec9eb82ca6423d987ef` | `sha256:af5ee6149ea74880af31a7289ef304126369089bbcf43de023f3aae406ece693` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) | Evidence Without Canonical Lineage | 1 | `sha256:1aafa4839d6a214e6acc0be187c500279ab27a67382b4bbe5160a099c2a0e6a0` | `sha256:f4d2bb2ae70696f91df87377d2f46b8c3eca62e1d321e3932ed1e608de661a04` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) | Evidence Without Canonical Lineage | 11 | `sha256:8d95fc7d5b7dc91ad64e723c18eaf7f43aec31da133f1ec9eb82ca6423d987ef` | `sha256:4e4ea0022fa2ab65a1a0296c4b53f90f5de3e910fa32219b2fffeafbfa2dc5f9` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.evidence.v1`](#query-result-subject-boundary-evidence-v1) | Subject Boundary | 1 | `sha256:bb62a3b13d996b599f8ff93979338026e619914bc0972f42c77d1211de60d3bb` | `sha256:593f3a0d4ba5545debcc6a1739061dd7618401ffe7c489256e16a16ed6e1a615` | `RELATIONAL_QUERY_EXECUTED` |
 | [`gherkin.feature-by-id.v1`](#query-result-gherkin-feature-by-id-v1) | Canonical Identity Resolution | 5 | `sha256:4dd68eecb6d82521549290c732cffb688ebae650b570ecb4218f51836e05a8d9` | `sha256:d7c9d61f899f688d5bd32bbe8bf0e25597c40ee4b317b83b75b0ef3aaec8349c` | `RELATIONAL_QUERY_EXECUTED` |
 | [`gherkin.scenario-by-id.v1`](#query-result-gherkin-scenario-by-id-v1) | Canonical Identity Resolution | 6 | `sha256:9dde0a09613e9edbd0a0747f336e81c9e09d5ceac032d8c6f27f3ce8faad5b8b` | `sha256:1b0d3549e021571bdbafa5da764ca541218b922610639fd8e628385c1e34f294` | `RELATIONAL_QUERY_EXECUTED` |
@@ -13129,84 +13401,85 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 | [`intent.feature-by-id.v1`](#query-result-intent-feature-by-id-v1) | Canonical Intent | 5 | `sha256:f6cc3c1775897b00241ddaf09ad0712314f96124afa6daca786ea29801472139` | `sha256:2aa32e581a0e7caaaf6e290a46319539c745cbab036ee3a8fa084f70567bad73` | `RELATIONAL_QUERY_EXECUTED` |
 | [`intent.scenario-lineage.v1`](#query-result-intent-scenario-lineage-v1) | Canonical Intent | 6 | `sha256:dc5de2cfb274147d909f6e2f80fa0887593f75470759fb812b382d6fcb3ff0d0` | `sha256:53afdc335252364f81685a64084b75d1fd65487016f51e2d8a235d8782eb2134` | `RELATIONAL_QUERY_EXECUTED` |
 | [`intent.responsibility-obligation.v1`](#query-result-intent-responsibility-obligation-v1) | Canonical Intent | 6 | `sha256:b101b808f894e6843030b1c0a4129cfdbfd1c859c0ca53ef3dfb2d057866d62f` | `sha256:dae82ca999b513e0a2591a4be38bbe88567323e4211dd76df2a1c978efa260ca` | `RELATIONAL_QUERY_EXECUTED` |
-| [`trace.responsibility-to-command-graph.v1`](#query-result-trace-responsibility-to-command-graph-v1) | Canonical Trace | 6 | `sha256:d934fc831f6707fea8da1b3393b54ad3d7cbda3554ae1da11e79282d12a51588` | `sha256:ad11bebbd260a302f79691e46511317f7545844697dbc1daed605f17458b0ba2` | `RELATIONAL_QUERY_EXECUTED` |
-| [`trace.feature-to-interface.v1`](#query-result-trace-feature-to-interface-v1) | Canonical Trace | 5 | `sha256:13489bfdb33239d8908e68e8fc55d9719bb00c47265ec8404f0184676d57d1cf` | `sha256:6144500c69b445852500cbe31c4dbc912f7dad872216a995f6ca442a25396c45` | `RELATIONAL_QUERY_EXECUTED` |
-| [`trace.feature-to-callgraph.v1`](#query-result-trace-feature-to-callgraph-v1) | Canonical Trace | 453 | `sha256:b0e76803540cb3dcb2fb4f9c037d8c86a7cfc88e94abf6f7e2711d6d0bcb9877` | `sha256:c9bcf40804a08ce8877e8198ce1e42fe8746ac0589538c67e43b98d8a0c93dc3` | `RELATIONAL_QUERY_EXECUTED` |
-| [`trace.scenario-to-source-facts.v1`](#query-result-trace-scenario-to-source-facts-v1) | Canonical Trace | 1280 | `sha256:5b3fe0af9b66fab81913cbd63fcfdc02c9022542c8655878668eb9ec6b5c4fdd` | `sha256:8667a811eaed744ae86df9b014704ac3fcc2622c70995665a8aac75c67f7544f` | `RELATIONAL_QUERY_EXECUTED` |
-| [`trace.obligation-to-mechanics.v1`](#query-result-trace-obligation-to-mechanics-v1) | Canonical Trace | 4598 | `sha256:c02102b1c7723b5bc468c7f4772324e695710cc0cf01c894056fc2cd74df50eb` | `sha256:1f1467c0a7ae3b2c152eb8d45ca6121add9e30cfff2ac52e4aec3e41eb52a6ae` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.traceability-summary.v1`](#query-result-cli-traceability-summary-v1) | CLI Traceability | 1 | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` | `sha256:815a1e2f195e9e6b6540b9fcf8a3c62bdb13d17e94dcff8680c63e11e271622a` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) | CLI Execution Graphs | 15 | `sha256:e3c309c9619420fdbb4e97ac70e584bea643b714bc915b1411b809828478f2e1` | `sha256:096b968c961e2c3ba76f1139a683cc6043a2febea43cfebf7db8de3d068aedbd` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.summary.v1`](#query-result-test-summary-v1) | Test Traceability | 1 | `sha256:5463bff43e9fe46eeb009e28e292365a2f77f47340259bc071525811aca3ba03` | `sha256:7b194c480853354330de4c7c8e964b827951c24441b04e1f504b760b5becc073` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.inventory.v1`](#query-result-test-inventory-v1) | Test Traceability | 178 | `sha256:073fef36423de8f7d5eca19a4740de0a87f42fb1bb5e370038feea06f6e2d4bf` | `sha256:ee316bf6854ffb4534e55c98f295876acf513385295cbe3d1860578ce4ee033e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.production-reachability.v1`](#query-result-test-production-reachability-v1) | Test Traceability | 9994 | `sha256:7436329c8e817f8c1ed3793d9fe39d33a5c6e49cd32f7c4024685af490fca928` | `sha256:8e3bff49b5004ba99a63fe3d2e9ae970aa344a82ec56d7af9fd9a7947ebbac7f` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.originating-cli-features.v1`](#query-result-test-originating-cli-features-v1) | Test Traceability | 326 | `sha256:e382edeb8d99bf3af870ce5aea8d33a7fa984df1af4fa8b78fc76db9abae90ae` | `sha256:e3aed02204077ea2ceea4d8e4de36d14a6cecfcddfe13742f006a08018b8b086` | `RELATIONAL_QUERY_EXECUTED` |
+| [`trace.responsibility-to-command-graph.v1`](#query-result-trace-responsibility-to-command-graph-v1) | Canonical Trace | 6 | `sha256:d934fc831f6707fea8da1b3393b54ad3d7cbda3554ae1da11e79282d12a51588` | `sha256:73464af52f0546da3a60dae5d02526254d21ffeb0b624e48239776d95adcd3e5` | `RELATIONAL_QUERY_EXECUTED` |
+| [`trace.feature-to-interface.v1`](#query-result-trace-feature-to-interface-v1) | Canonical Trace | 5 | `sha256:13489bfdb33239d8908e68e8fc55d9719bb00c47265ec8404f0184676d57d1cf` | `sha256:e42467b682ab94d65ddc124d79d2a2dddf44559421b6d55ee927050b5e573d27` | `RELATIONAL_QUERY_EXECUTED` |
+| [`trace.feature-to-callgraph.v1`](#query-result-trace-feature-to-callgraph-v1) | Canonical Trace | 454 | `sha256:b0e76803540cb3dcb2fb4f9c037d8c86a7cfc88e94abf6f7e2711d6d0bcb9877` | `sha256:2804f0d4d6da9c12deca31a9d430b15266bba60403a17466a8d25f94f50757a6` | `RELATIONAL_QUERY_EXECUTED` |
+| [`trace.scenario-to-source-facts.v1`](#query-result-trace-scenario-to-source-facts-v1) | Canonical Trace | 1282 | `sha256:5b3fe0af9b66fab81913cbd63fcfdc02c9022542c8655878668eb9ec6b5c4fdd` | `sha256:5d75bdfe26ab873ac8668bcf3582db4bca7b6fbcc49b65428b48964a936aaf89` | `RELATIONAL_QUERY_EXECUTED` |
+| [`trace.obligation-to-mechanics.v1`](#query-result-trace-obligation-to-mechanics-v1) | Canonical Trace | 4629 | `sha256:c02102b1c7723b5bc468c7f4772324e695710cc0cf01c894056fc2cd74df50eb` | `sha256:172ad37bb7068b0b66bcb9e9f031e71112960a520d2964b8f148388a530d2730` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.traceability-summary.v1`](#query-result-cli-traceability-summary-v1) | CLI Traceability | 1 | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` | `sha256:862cc073ca0497e4f773d4e066694862ba29fa6810a4e11e4c3e0931bc515daf` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) | CLI Execution Graphs | 16 | `sha256:e3c309c9619420fdbb4e97ac70e584bea643b714bc915b1411b809828478f2e1` | `sha256:0f86f0eab1f1c517f90b3a76fd9695f51be3e9e0aa73b54e631a62bc0dbdc8fb` | `RELATIONAL_QUERY_EXECUTED` |
+| [`trace.feature-complete-lineage.v1`](#query-result-trace-feature-complete-lineage-v1) | Canonical Trace | 5 | `sha256:db4d0a095d4b08dd987156a861356eb75ed5c5ebe5dfbf31e2c41395838bdafe` | `sha256:57882b115d599753d3bced1a2eac9ebc5a7f3a9aa18a7d19f2bb9aefd7c4112a` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.summary.v1`](#query-result-test-summary-v1) | Test Traceability | 1 | `sha256:5463bff43e9fe46eeb009e28e292365a2f77f47340259bc071525811aca3ba03` | `sha256:cc6658a08268a2374db40f61eb1fbd480d7524c6b959a4f84bf9794f102b92e2` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.inventory.v1`](#query-result-test-inventory-v1) | Test Traceability | 178 | `sha256:073fef36423de8f7d5eca19a4740de0a87f42fb1bb5e370038feea06f6e2d4bf` | `sha256:515be3a87eb5d83a1af3595cc82a1596924023b8d6af3f50df03b7b05b90c837` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.production-reachability.v1`](#query-result-test-production-reachability-v1) | Test Traceability | 10031 | `sha256:7436329c8e817f8c1ed3793d9fe39d33a5c6e49cd32f7c4024685af490fca928` | `sha256:0954b2506efc57ced9763d8244fe9c5da2f63138c8fd573fb4d3d9e3ee9a1da4` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.originating-cli-features.v1`](#query-result-test-originating-cli-features-v1) | Test Traceability | 347 | `sha256:e382edeb8d99bf3af870ce5aea8d33a7fa984df1af4fa8b78fc76db9abae90ae` | `sha256:e429b73b4f9606675953926dd1938092695826e10681fb2a8e4b95984ef27109` | `RELATIONAL_QUERY_EXECUTED` |
 | [`test.scenario-lineage.v1`](#query-result-test-scenario-lineage-v1) | Test Traceability | 1 | `sha256:71236554fd53c720e99eaff32609809429701fd214ea9f5886520225ed2e4576` | `sha256:0b8e207fa9ad00d107cae57e979453454d45f0eb63befe73c1f47150c12c4ce2` | `RELATIONAL_QUERY_EXECUTED` |
 | [`test.scenario-proof-coverage.v1`](#query-result-test-scenario-proof-coverage-v1) | Test Traceability | 6 | `sha256:ea7ef6946110fc3b9b3043e2ae384fc47b76b2e9a3dba72a7d30e5b004a40614` | `sha256:11b71ec852488f8e2a032896c6c386061095c31d2991f11157b1c3875e28389e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.unreachable-production-dependencies.v1`](#query-result-test-unreachable-production-dependencies-v1) | Test Fat and Waste | 50 | `sha256:c87acd4e8995bda86e01a4146c3a0e17c5bb4ccbb32910811ad51d0688056786` | `sha256:00051fe0bdc7af51d0c71b036a095fb52886ae819f83b4d9bd1ad1895964d115` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.without-canonical-lineage.v1`](#query-result-test-without-canonical-lineage-v1) | Test Fat and Waste | 112 | `sha256:1163910d7658feb6453cf71e4cde74f617ea06d4ace226f2dc05b44a5bbd71c3` | `sha256:9a87285f6114a58078566cb04b4c72af104f1b83102cb30734f6dc6cf77c0445` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.supporting-lineage.v1`](#query-result-test-supporting-lineage-v1) | Test Traceability | 48 | `sha256:a86c7859775b1fbed3940ece2ad968dfd04ad9662902055de8d436306941b7f0` | `sha256:29619be8c8b34d1b528015c80d181cbf76be0ed7706c0acfe9ad5d3fc3de701f` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.unreachable-production-dependencies.v1`](#query-result-test-unreachable-production-dependencies-v1) | Test Fat and Waste | 44 | `sha256:c87acd4e8995bda86e01a4146c3a0e17c5bb4ccbb32910811ad51d0688056786` | `sha256:a60bca110f6485178145bbe1ed714dde0d42678aa9a2d498ca484d7fce764201` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.without-canonical-lineage.v1`](#query-result-test-without-canonical-lineage-v1) | Test Fat and Waste | 112 | `sha256:1163910d7658feb6453cf71e4cde74f617ea06d4ace226f2dc05b44a5bbd71c3` | `sha256:9c7225949632e4073238d671d0ac30b9342572db67b372806afaed395c462ad0` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.supporting-lineage.v1`](#query-result-test-supporting-lineage-v1) | Test Traceability | 48 | `sha256:a86c7859775b1fbed3940ece2ad968dfd04ad9662902055de8d436306941b7f0` | `sha256:e5905e51c689d395ab62876cf71900f8882b3438ec2ff57f172c88d1df980b9b` | `RELATIONAL_QUERY_EXECUTED` |
 | [`test.duplicate-obligation-proof.v1`](#query-result-test-duplicate-obligation-proof-v1) | Test Fat and Waste | 0 | `sha256:e65b9cbcdc8cd4d3768fbffa5eaf6316a6c69516ae79def7ba41711d4f420eae` | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario.without-test-proof.v1`](#query-result-scenario-without-test-proof-v1) | Test Fat and Waste | 6 | `sha256:26752b8348ebe08e1540a7841f74adf9f828b5681ab5ac8bbc0768da5f08eea8` | `sha256:11b71ec852488f8e2a032896c6c386061095c31d2991f11157b1c3875e28389e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.removal-impact.v1`](#query-result-test-removal-impact-v1) | Test Fat and Waste | 112 | `sha256:5a28c96ea638d55cc93fb9653542422d27db618d45b9af7849883601e031ae40` | `sha256:97a14f161837595365b0cf1a6470f7b78a92d8aaaa2c31193a5175969b67bda3` | `RELATIONAL_QUERY_EXECUTED` |
-| [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) | Test Traceability | 16 | `sha256:855420e3f59962f37c415fbe8fddc934d51e50639200cb8f9135c6052a166d62` | `sha256:229cc7ce930daa1d0ebb9d2e7c6fe5a289767c872e4b554a475732a9c7314852` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) | CLI Traceability | 16 | `sha256:6d63d220b5df0ae523d1ff1bae9742a3d6a400ec59564d56f5a8f3147303212f` | `sha256:2a97c4617563c1e0a1f6cf0a21953f0d908d2fe0743580d9894638b83a04022e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) | CLI Execution Graphs | 16 | `sha256:a7493744e50568edede23a011f7279651f72875d071026e2da4367f5680ee7e5` | `sha256:95eac4330a9a503cfd1c8ac91e3d818fab5283b3644a7f98eb13328fe67bce06` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) | CLI Traceability | 824 | `sha256:9a9868803ac90ade1ac49f7fcc41a520e88f19150efd87435c0333c7f34b3be4` | `sha256:b8385d253d145dac2938f99f4414edd7c53d3afb6e64b89c060535bea9424183` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) | CLI Reachability | 1027 | `sha256:5a68b386bc943e7983c3e20e6f2afd468d25a89683b0cfe2abeddffd3cea9e6a` | `sha256:0141acfb6ec4ecf4fc043e143328460e89cddb6f9349e6fc8e9c806f79252816` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.shared-reachability.v1`](#query-result-cli-shared-reachability-v1) | CLI Reachability | 131 | `sha256:49a77e977b9941a90b7e7d9ee847c286c1322508bc70f195aa16834ad43b1e25` | `sha256:a8798b8a9ed666664ac7ffb5dc497cee1733403f849412499f6702f565c19407` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.removal-impact.v1`](#query-result-test-removal-impact-v1) | Test Fat and Waste | 112 | `sha256:5a28c96ea638d55cc93fb9653542422d27db618d45b9af7849883601e031ae40` | `sha256:1dd87d91cd46e01bf4fad9a1834dcd76849678a5d53c798c3c59cd06d634f666` | `RELATIONAL_QUERY_EXECUTED` |
+| [`test.cli-coverage.v1`](#query-result-test-cli-coverage-v1) | Test Traceability | 17 | `sha256:855420e3f59962f37c415fbe8fddc934d51e50639200cb8f9135c6052a166d62` | `sha256:a3b6ba44c76d17442db7443c5536e343bf537b6e1aeb0dd9cd1a847a2388772b` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) | CLI Traceability | 17 | `sha256:6d63d220b5df0ae523d1ff1bae9742a3d6a400ec59564d56f5a8f3147303212f` | `sha256:6b721b1f33c479d3a52042bd5c09f8c779024f1ac3f3917c8338d7174584a440` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) | CLI Execution Graphs | 17 | `sha256:a7493744e50568edede23a011f7279651f72875d071026e2da4367f5680ee7e5` | `sha256:83647b79bc91a6c5ef5f9f5e1ed307a52cb095faf84ffd7d116303394f5ae24d` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) | CLI Traceability | 826 | `sha256:9a9868803ac90ade1ac49f7fcc41a520e88f19150efd87435c0333c7f34b3be4` | `sha256:050611b2df2b5cf6d1f2c7a611eab5b785fcb867928de4eceb38995dc9240ad4` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) | CLI Reachability | 1050 | `sha256:5a68b386bc943e7983c3e20e6f2afd468d25a89683b0cfe2abeddffd3cea9e6a` | `sha256:26a083ac1de34cd47d17ad7324548de860c3783635d6857a5e59dfdf8f0c8688` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.shared-reachability.v1`](#query-result-cli-shared-reachability-v1) | CLI Reachability | 132 | `sha256:49a77e977b9941a90b7e7d9ee847c286c1322508bc70f195aa16834ad43b1e25` | `sha256:a910812be3e6f4620802238672fcfbb1032db2ded6ed09f2b62fdab209e84124` | `RELATIONAL_QUERY_EXECUTED` |
 | [`cli.runtime-resolution-debt.v1`](#query-result-cli-runtime-resolution-debt-v1) | CLI Reachability | 8 | `sha256:5dd66999c648686e342b1d7e7847cca6bc2d6aba3b46a83eca08b9f639612160` | `sha256:81c6e783e4b15159ca6bd65b6db8926878414b4da2abf7f8eb564e57c289c319` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.reachable-source-facts.v1`](#query-result-cli-reachable-source-facts-v1) | CLI Reachable Source Facts | 5972 | `sha256:9a90cc569a898443ff2911aa820c437abfd1e09df76cb8fc97f9af450eca4cbb` | `sha256:4233d0a6d644e87e9d0cd67c98d4cb76f86c2fafbad69cdf3f831bc216f4d281` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) | Fat and Waste Inventory | 145 | `sha256:b9685d65ca5e3116ff73e36a4fcc75bcde6ee74d27ae1c53571b27e806caeb3d` | `sha256:3261062b92df9c3b99e8fc202cfdc60ae5a942c1163d1087bf7131c82e3f48a8` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) | Fat and Waste Inventory | 993 | `sha256:94440b0342c83f2f7820cda1a4e12a1b41e3b294c43be109c2cae564636110de` | `sha256:1d0632455afd637224f05c8bd0f686fb72c87ab4c5a848dc3116e7829f4756cc` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1) | Reverse CLI Justification | 1027 | `sha256:414642febefcfb3b5cb7888a130f5c1d578619fc38e661aef67ec6b8e797e853` | `sha256:3f57c83b51d3c298758677478a10548cb38faf55e99cad4d09222bd12794592f` | `RELATIONAL_QUERY_EXECUTED` |
-| [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | Removal Impact | 145 | `sha256:d01ecae4d4e7adc553ea633a4bf509d430835ac4495d2f338a454cea8a152027` | `sha256:041eb4c63b6affcbdcc2bf624ba66c8a41383f6e9a53e26d53847586ffce4f2a` | `RELATIONAL_QUERY_EXECUTED` |
-| [`interface.summary.v1`](#query-result-interface-summary-v1) | Interface Governance | 1 | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` | `sha256:815a1e2f195e9e6b6540b9fcf8a3c62bdb13d17e94dcff8680c63e11e271622a` | `RELATIONAL_QUERY_EXECUTED` |
-| [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | CLI Command Inventory | 16 | `sha256:1cb099fc098a9301e59dae42cf27ab6c5b78a9e37cd5f5e5b21ead9785ee0454` | `sha256:bfa84be61bbc750ba5eac9a761006dbfb3658e1b83abdde6695353eebbe1683d` | `RELATIONAL_QUERY_EXECUTED` |
-| [`interface.authority-gaps.v1`](#query-result-interface-authority-gaps-v1) | CLI Authority Gaps | 16 | `sha256:9489a56fb6b3fd0b380f95572d062b54e7c1a0e641832c581d4b02e214d6b38a` | `sha256:fda919ac974715e20cfd34249c6dc1a0a5f8e1205e3e6779abb75b9032df95cc` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.reachable-source-facts.v1`](#query-result-cli-reachable-source-facts-v1) | CLI Reachable Source Facts | 6056 | `sha256:9a90cc569a898443ff2911aa820c437abfd1e09df76cb8fc97f9af450eca4cbb` | `sha256:a558679d0eebf125a262351ab17bb1a571206432c3239154fdedfe2f5605159a` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) | Fat and Waste Inventory | 143 | `sha256:b9685d65ca5e3116ff73e36a4fcc75bcde6ee74d27ae1c53571b27e806caeb3d` | `sha256:24cc98fa5b42b8e3c3a3ded6155bf1721b1065d9567b5308ddb7dd681c34245f` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) | Fat and Waste Inventory | 956 | `sha256:94440b0342c83f2f7820cda1a4e12a1b41e3b294c43be109c2cae564636110de` | `sha256:d7eab16fe8edbeb0eb920b9c4a0162de1e6ea93f3b5700b65dfaeb9c45d63692` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1) | Reverse CLI Justification | 1050 | `sha256:414642febefcfb3b5cb7888a130f5c1d578619fc38e661aef67ec6b8e797e853` | `sha256:885983e8659b3a3579a411c42aa351d9f60e6a852ffe9318cc949f2d39d9a235` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | Removal Impact | 143 | `sha256:d01ecae4d4e7adc553ea633a4bf509d430835ac4495d2f338a454cea8a152027` | `sha256:643577209011ce30aba0b346389e3e587e12e1497945845eb0ceecb236c6c84a` | `RELATIONAL_QUERY_EXECUTED` |
+| [`interface.summary.v1`](#query-result-interface-summary-v1) | Interface Governance | 1 | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` | `sha256:862cc073ca0497e4f773d4e066694862ba29fa6810a4e11e4c3e0931bc515daf` | `RELATIONAL_QUERY_EXECUTED` |
+| [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | CLI Command Inventory | 17 | `sha256:1cb099fc098a9301e59dae42cf27ab6c5b78a9e37cd5f5e5b21ead9785ee0454` | `sha256:ea790daa9f732164cc8f78d9b262724f94002ebd232db10fdd7297c6ea80ab5a` | `RELATIONAL_QUERY_EXECUTED` |
+| [`interface.authority-gaps.v1`](#query-result-interface-authority-gaps-v1) | CLI Authority Gaps | 17 | `sha256:9489a56fb6b3fd0b380f95572d062b54e7c1a0e641832c581d4b02e214d6b38a` | `sha256:031348be2e8207be33bcccef050b666b9ad963e371f7ddb4c5f0f822cf6d89ee` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.features.v1`](#query-result-feature-coverage-features-v1) | Canonical Features | 4 | `sha256:b507b9960f74168182112bb151a954844379cf125b19fe84166cbc25a5b68de3` | `sha256:063171974f526756fb724236ea5b36ef9e0966af52c3e7bb29acd8a1133f5701` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.feature-scenarios.v1`](#query-result-feature-coverage-feature-scenarios-v1) | Feature Scenarios | 6 | `sha256:6971565a6037b39edde137eb108803f4360451bbffe1c34b9ed28dccb3e45f7b` | `sha256:3fb54aaf62148af47a5ced46cdd37fc624036b0648beb5061fd1c55389f839a9` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.scenarios.v1`](#query-result-scenario-conformance-scenarios-v1) | Canonical Scenarios | 6 | `sha256:713f34d346172b89a6d2641cabe6b68b4cdcfab36d97ef84c6aacebaec1ea8d9` | `sha256:3a98900c82bacbbcbb9465b913bb85114c4522861d5fed8059724415fd5fa91d` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.by-structural-status.v1`](#query-result-scenario-conformance-by-structural-status-v1) | Structural Status | 6 | `sha256:c57d1e34cc94400a0112b0f630664f25d804b761ccfce4d6203ef63e1a1838be` | `sha256:9dda679bcce7505b7e4c07910fb3d137b021030e23ea5f6b216b6d335d3630e9` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.scenario-responsibilities.v1`](#query-result-scenario-conformance-scenario-responsibilities-v1) | Scenario Responsibilities | 10 | `sha256:4ebd6c77ccdbd9cb5424de261939db79c47da42a230c2b08f309a9682eb18cc1` | `sha256:d27ae627cf1fe9610ffeb16a31979828fd9dde280261e4e991cf637f792f9343` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.scenario-call-paths.v1`](#query-result-scenario-conformance-scenario-call-paths-v1) | Scenario Call Paths | 10 | `sha256:fbd7a1a7480a478232d79b077bc2dc1ee7820e72195339b31c479e06046150f6` | `sha256:4ef4a19f76ee643e261cbe4cc173494cd45c07a7d5910e76bbe2c4d42c16ece5` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics-by-file.v1`](#query-result-feature-coverage-unlined-mechanics-by-file-v1) | Unlined Mechanics by File | 532 | `sha256:2582f0c7032aea45ac90c9cd28622ae599c2c68977459483704a6754173c67e6` | `sha256:634300c6b70d7eb38082b49d94ebb109b26f591dac477b2cb704da176f6b0478` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics-by-responsibility.v1`](#query-result-feature-coverage-unlined-mechanics-by-responsibility-v1) | Unlined Mechanics by Responsibility | 2000 | `sha256:b5006477e6033f0ad57959635500ba21c302cf5b3acd8bc23f5d7a8d30273e3c` | `sha256:e69d9939f0070a0ef6fed309bd530575f26b3eb01ff4636ba51b919c43082d5a` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics-by-symbol.v1`](#query-result-feature-coverage-unlined-mechanics-by-symbol-v1) | Unlined Mechanics by Symbol | 2002 | `sha256:830653ecd0f8d113685176d29b42361210d2240d15ccfec633e72aa6ec8c2f9a` | `sha256:499a1a5c594ddf9f18fe98ccceac7d409915ccca49f1aff5915e5bd16b71aa7e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-occurrences.v1`](#query-result-feature-coverage-unlined-occurrences-v1) | Exact Unlined Occurrences | 7478 | `sha256:6a0a84598e1e351c5002c0680a73855cdb8f3e7312d18638005b291d2e84a624` | `sha256:d42ef1ae76770dff547ce23b87e8d2f0ea1478f5df4619031c09243418116ca0` | `RELATIONAL_QUERY_EXECUTED` |
-| [`source-facts.occurrence-source-references.v1`](#query-result-source-facts-occurrence-source-references-v1) | Physical Source Evidence | 7636 | `sha256:0b89b4d3e3751396bfc0ab6b67462c9374f1ee659e070472b22a92b38d378860` | `sha256:a11b8ba1abcd8552bd5ee82c1f765fec3b58261843b70b93b11720eee4a25cfc` | `RELATIONAL_QUERY_EXECUTED` |
-| [`reachability.symbol-originating-entrypoints.v1`](#query-result-reachability-symbol-originating-entrypoints-v1) | Interface Reachability | 1027 | `sha256:242009af849c0ffd1b366b4a1f3738d9a0096d6ef97a55affcfe10e30122b742` | `sha256:8dfe3af2ab8e7a795829a7128761970d5f0d56c63f0ec1a17c6ec3c63c70bde4` | `RELATIONAL_QUERY_EXECUTED` |
-| [`reachability.symbol-callers.v1`](#query-result-reachability-symbol-callers-v1) | Reverse Callers | 7537 | `sha256:3072ae466d3c8d6933062458482de3c8922d3c2dfbaacae932d61b69cbb6a540` | `sha256:0393e3e6514ca5183244d0e4d3822c3b916bb2226e8a0dc5867ed95f89b1fd1e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`reachability.symbol-callees.v1`](#query-result-reachability-symbol-callees-v1) | Forward Callees | 7537 | `sha256:f0078a6d8c0e4e7617a1f3d24415bc84b9c011a179710cfa5306510d8985ad66` | `sha256:04ff484685713df145e4d474e7c84e73068812924eb2b03dd9d8f32b0b6a1a58` | `RELATIONAL_QUERY_EXECUTED` |
-| [`responsibility-evidence.cluster-by-id.v1`](#query-result-responsibility-evidence-cluster-by-id-v1) | Responsibility Cluster | 733 | `sha256:efd390e1804079a28babb8ed8caf90f3075b0a093be587f663ad2ae9320b5068` | `sha256:877c1632e982734d8e7f4eefecc2201bbe0822dbbe708de8c4ea4b1f987e6e2c` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics-by-file.v1`](#query-result-feature-coverage-unlined-mechanics-by-file-v1) | Unlined Mechanics by File | 532 | `sha256:2582f0c7032aea45ac90c9cd28622ae599c2c68977459483704a6754173c67e6` | `sha256:e2237761c65e3af2969c07b52153939a31275797719ca9ff2fe3c06424327f12` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics-by-responsibility.v1`](#query-result-feature-coverage-unlined-mechanics-by-responsibility-v1) | Unlined Mechanics by Responsibility | 2008 | `sha256:b5006477e6033f0ad57959635500ba21c302cf5b3acd8bc23f5d7a8d30273e3c` | `sha256:f2373191dd77f0a6d6a852f9a130b00148961fc6c3ea2a3efd2f6691f67cbc8f` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics-by-symbol.v1`](#query-result-feature-coverage-unlined-mechanics-by-symbol-v1) | Unlined Mechanics by Symbol | 2010 | `sha256:830653ecd0f8d113685176d29b42361210d2240d15ccfec633e72aa6ec8c2f9a` | `sha256:febc8f22aa90738d4cad9f0cfced114a3cf15fe9d246ca956f3c20b130b6e490` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-occurrences.v1`](#query-result-feature-coverage-unlined-occurrences-v1) | Exact Unlined Occurrences | 7530 | `sha256:6a0a84598e1e351c5002c0680a73855cdb8f3e7312d18638005b291d2e84a624` | `sha256:09d796362a8f60f87b017815fc52db34b45ee054c9b7d80af3d637a9156f14ea` | `RELATIONAL_QUERY_EXECUTED` |
+| [`source-facts.occurrence-source-references.v1`](#query-result-source-facts-occurrence-source-references-v1) | Physical Source Evidence | 7688 | `sha256:0b89b4d3e3751396bfc0ab6b67462c9374f1ee659e070472b22a92b38d378860` | `sha256:7cde9c5ef9ce80e5a83df32295af41f7abf4d2d44c87648c666718e347ec6d50` | `RELATIONAL_QUERY_EXECUTED` |
+| [`reachability.symbol-originating-entrypoints.v1`](#query-result-reachability-symbol-originating-entrypoints-v1) | Interface Reachability | 1050 | `sha256:242009af849c0ffd1b366b4a1f3738d9a0096d6ef97a55affcfe10e30122b742` | `sha256:521fcb240a2f6f5b269aab8081f48c42827f885805040670067e24f85919baf1` | `RELATIONAL_QUERY_EXECUTED` |
+| [`reachability.symbol-callers.v1`](#query-result-reachability-symbol-callers-v1) | Reverse Callers | 7594 | `sha256:3072ae466d3c8d6933062458482de3c8922d3c2dfbaacae932d61b69cbb6a540` | `sha256:ce0563221555a8acbf1d31464bf4a6ba9adfeebdc7fa5e8d6de334fbb634f28b` | `RELATIONAL_QUERY_EXECUTED` |
+| [`reachability.symbol-callees.v1`](#query-result-reachability-symbol-callees-v1) | Forward Callees | 7594 | `sha256:f0078a6d8c0e4e7617a1f3d24415bc84b9c011a179710cfa5306510d8985ad66` | `sha256:3fff8fb48f84e37d8d0fe30fd4a596a451123c577fbc3c0bc0793a63c452acb2` | `RELATIONAL_QUERY_EXECUTED` |
+| [`responsibility-evidence.cluster-by-id.v1`](#query-result-responsibility-evidence-cluster-by-id-v1) | Responsibility Cluster | 735 | `sha256:efd390e1804079a28babb8ed8caf90f3075b0a093be587f663ad2ae9320b5068` | `sha256:d986bde17480dc2c06c5445fae7a6e6105e27d5a925c4a5ecbd691ae6c11e0d9` | `RELATIONAL_QUERY_EXECUTED` |
 | [`authority.documents.v1`](#query-result-authority-documents-v1) | Authority Lineage | 12 | `sha256:aa543b2c7ab5577f034bd1257164fc69ec434efa54926c34f63bc305255f5c31` | `sha256:1292556b29e7ad54fc5555e8ed6c07d425cbc6c6c0b5292a27c025de41fa4d0f` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authority.authority-near-symbol.v1`](#query-result-authority-authority-near-symbol-v1) | Authority Near Symbol | 7636 | `sha256:c1f34de65cd661e85cc9c07f9d950251c8fa4dc8ee743b395907a337116df88c` | `sha256:5c47aeef59bf688c39e0c99d69e3786110e5fff06babc29ea2754cb219c257de` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authority.authority-near-symbol.v1`](#query-result-authority-authority-near-symbol-v1) | Authority Near Symbol | 7688 | `sha256:c1f34de65cd661e85cc9c07f9d950251c8fa4dc8ee743b395907a337116df88c` | `sha256:be9b5f06847365542d1cc2a29143cf2e6f13c94ea00d99f11ab7177e3f78ff06` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.items-by-disposition.v1`](#query-result-subject-boundary-items-by-disposition-v1) | Subject Boundary Items | 18 | `sha256:3ddeefdb2493e00e7021c129748933e87fa6fe5c7fa1b140e1538d8af86f6ede` | `sha256:df6183da0e000c80d3dfa9abbdda95a2dc3d2817e28267989529a2c85769d969` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.included-items.v1`](#query-result-subject-boundary-included-items-v1) | Included Subject Items | 12 | `sha256:86ccec9fb998fd3f4ef516f0cbe33beb7c2b636d6ecd330ec487db7f7bf6f5ab` | `sha256:cd5c1b08b0deec4eb5847b548b0bff3acf8ff2022be6f81216a2a59ac6b960c7` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.excluded-items.v1`](#query-result-subject-boundary-excluded-items-v1) | Excluded Subject Items | 6 | `sha256:afafdb3b9d69acd6c8a1d16c0247e29e22d25e96ccf54c0133cce6cc22d4f08c` | `sha256:cd96c3ad8b9374dbccbc0e4a68319ba5b23dbda63c871e9baef49debad679788` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.item-scope-reason.v1`](#query-result-subject-boundary-item-scope-reason-v1) | Subject Item Scope Reason | 18 | `sha256:a3933b1341b539303541191b403c8cc9d2b6e51e484de9e49583c0852b34e435` | `sha256:40f693882dd30b2a4526da2ae692795d3c51180d95e5c7907826260df09710bc` | `RELATIONAL_QUERY_EXECUTED` |
-| [`impact.source-reference-reverse-impact.v1`](#query-result-impact-source-reference-reverse-impact-v1) | Reverse Impact | 7636 | `sha256:11fee5b05392548326dff3dfaf80ffbb726ed06e182cda40a7f5cdfd81133bf3` | `sha256:fb89f571c3c0540f3aae434b17ebc84a8c8b2696e57d9b97b094c7b4ffca9aea` | `RELATIONAL_QUERY_EXECUTED` |
-| [`healing.source-fact-candidates.v1`](#query-result-healing-source-fact-candidates-v1) | Change and Healing | 7478 | `sha256:80ff9ca4e23a4da9a8312b08ba3e148f67675ef5c8c56d3a2d48c6991b2cfdbf` | `sha256:749f97bb36b2bdb35f132cf45331acfb283a446722c8b460c50bb68fec977bbe` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.interface-execution-slice.v1`](#query-result-authoring-interface-execution-slice-v1) | Interface-to-Responsibility Slice | 1633 | `sha256:c3366a48fc90431e4874916dba2eb03d7eb73d2b6fda23b841c87da63917debb` | `sha256:1e061c32c4ad96e3f4fe00a722197655badef0062151453416750caaf4cc886b` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.responsibility-body-evidence.v1`](#query-result-authoring-responsibility-body-evidence-v1) | Responsibility Body Evidence | 724 | `sha256:798add784465cc049ae5fafd026257b873551da34655e12252477cdc6ff57240` | `sha256:74d4f263c830f74dd058295bc2490cf849b7bbadc460226dbf2b191642c476e3` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.decision-evidence.v1`](#query-result-authoring-decision-evidence-v1) | Decision Semantics | 1330 | `sha256:1b742701efaeeecc5ca8f85fb4db7d8d1fc0b16c6692e41e1298393b848d5487` | `sha256:aa99e73cc152a3637ed59596187107489d88187854dd2f6e56c5bebcf7795b10` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.fallback-evidence.v1`](#query-result-authoring-fallback-evidence-v1) | Fallback and Missing-Value Policy | 1810 | `sha256:d4bcb3099a71a172a1d26e52f782473bd1a877fa57833757a02b38ec136c2039` | `sha256:76eb8a0fa7d2b7bfa0a8bc8d8bb2f872cc5d90d2652044b9f50f3962d36c7744` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.validation-evidence.v1`](#query-result-authoring-validation-evidence-v1) | Validation and Rejection Semantics | 167 | `sha256:987e66b52ca7bcefd1c09b4a721f188302f1708c91bbf61e28c7de0e944ea807` | `sha256:3a0844d4f94218ead893b4bc9f82eb548b017520d4d5b4c5d59cb844132f2644` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.failure-policy-evidence.v1`](#query-result-authoring-failure-policy-evidence-v1) | Exception and Failure Policy | 336 | `sha256:8a66c42dfc3fa269b39827bd1fa2c0f6a64008dfd8c668e36d764b270f8e68b5` | `sha256:bdb0bdabf4e685fd1f1afffc81e309da6a01fdc6a367cbfc9b69636b39afc68f` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.object-shape-evidence.v1`](#query-result-authoring-object-shape-evidence-v1) | Object Shape Evidence | 2814 | `sha256:322a74e7fd1f1bbfaf8e014194ceaafd06dc283e624a96aa398afec32ba04621` | `sha256:6436638a22fe252ab522952c2a84021883fc1081f7f6740106256c2521e19a0c` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.result-contract-evidence.v1`](#query-result-authoring-result-contract-evidence-v1) | Result Contract Evidence | 1110 | `sha256:e295e5c199b8e405f479624723ee975cc1a4ab89bb1f8f9a2a309a4e183dd0c3` | `sha256:662778e432ee4c99036db0663a96a6ee2949af9f9a95299c932128bd4d4ea504` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.serialization-evidence.v1`](#query-result-authoring-serialization-evidence-v1) | Serialization Profile | 88 | `sha256:66d9960a07465b5af9e5c49cbadb38dc781b1664bae8f38f2a729a69b8c957f0` | `sha256:ca779051fe552ec77a26ef267d1b30edcf1bfbad31b5d742a57adc45b55b0e95` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.normalization-evidence.v1`](#query-result-authoring-normalization-evidence-v1) | Normalization and Translation | 144 | `sha256:e19f5b592048026bb385df580778f608c57c298fd8aea8cc7ae0b90637bd8dc8` | `sha256:3cd21fd0d6762c15e15d078f584f357634b63849e7d870c92d2fab957a431283` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.iteration-evidence.v1`](#query-result-authoring-iteration-evidence-v1) | Iteration Semantics | 456 | `sha256:1b7b1d5154de8375af5dc76f91ec87f46affe2bbe4ff7af27599261f1684bcef` | `sha256:2e39f7e0531a734527696555de6f4059be05b0a043ac01dad4eec2297c8ef613` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.state-transition-evidence.v1`](#query-result-authoring-state-transition-evidence-v1) | State-Transition Semantics | 333 | `sha256:ead8095a81ee48e74190abe6541bf069075d94dbb900d5dce6a1755cc18fcd7f` | `sha256:8aefcdd5b708dd7601dd0bc8c800a0675201cca7f55865234e7d824063e8ec49` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.data-flow-slice.v1`](#query-result-authoring-data-flow-slice-v1) | Data-Flow Slice | 724 | `sha256:93b7ed049ac305c55e6cd12a887b18f5a594e603c2b930996db52058b54a29bb` | `sha256:367764f9978d0a73f4f4f59075df35634f4cffd9a8fb1cb5c02d6b4f0587a9bc` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.authority-overlap.v1`](#query-result-authoring-authority-overlap-v1) | Existing Authority Overlap | 7488 | `sha256:9be4fb88b4dc0cc75eea562b505a03ab159223bacb14d98809a9c74086e70397` | `sha256:bc983b33e7203c659bb7c4e3d04a0ebc4ccb6294e68a5f05ae182e16dd69f6fa` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.scenario-context.v1`](#query-result-authoring-scenario-context-v1) | Feature and Scenario Context | 7488 | `sha256:97b4eb2ae7b3a88a110536b2a42857be7834f14e5efe6f2386f330e85c461f36` | `sha256:a7e0e95fce8fb1ec6dc9da1efc8abdbc2f5907ca25fa38c6dabcf31a480a390e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.projection-target.v1`](#query-result-authoring-projection-target-v1) | Projection Target Evidence | 724 | `sha256:10dd92a9a30e97cac4ed07f7bdc5c501de66ced1d0e732a86e659e7d1dcf1505` | `sha256:f1200564615f27b7b9a0f3b1abbc85aebf9b3ca064e50e8b27e84707ed8498e0` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.proof-vector-candidates.v1`](#query-result-authoring-proof-vector-candidates-v1) | Equivalence and Proof Candidates | 724 | `sha256:3116890ff31c7b4c5a80c14a67253c9f6312b023eecb25ea3fff8f9382ca4308` | `sha256:01742dc66eb566d7d54222a406984efe5268923a9f03b189875f64007fbd2832` | `RELATIONAL_QUERY_EXECUTED` |
+| [`impact.source-reference-reverse-impact.v1`](#query-result-impact-source-reference-reverse-impact-v1) | Reverse Impact | 7688 | `sha256:11fee5b05392548326dff3dfaf80ffbb726ed06e182cda40a7f5cdfd81133bf3` | `sha256:7843bb5039a73605836920e12f33ae1a7b61174600a25ceb373f734f6689083f` | `RELATIONAL_QUERY_EXECUTED` |
+| [`healing.source-fact-candidates.v1`](#query-result-healing-source-fact-candidates-v1) | Change and Healing | 7530 | `sha256:80ff9ca4e23a4da9a8312b08ba3e148f67675ef5c8c56d3a2d48c6991b2cfdbf` | `sha256:9f8acdc06938b592e3112065cf30dc57ff2f4f176f9b45af725685af290296e7` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.interface-execution-slice.v1`](#query-result-authoring-interface-execution-slice-v1) | Interface-to-Responsibility Slice | 1656 | `sha256:c3366a48fc90431e4874916dba2eb03d7eb73d2b6fda23b841c87da63917debb` | `sha256:f0868fe5f6dc359793e776ea1e5e3029ad1df4dd4c6d70cbd381771e250a2329` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.responsibility-body-evidence.v1`](#query-result-authoring-responsibility-body-evidence-v1) | Responsibility Body Evidence | 726 | `sha256:798add784465cc049ae5fafd026257b873551da34655e12252477cdc6ff57240` | `sha256:7d784de78ac17628cd323f23b51f947d108ab6964651681b99a775027fefc979` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.decision-evidence.v1`](#query-result-authoring-decision-evidence-v1) | Decision Semantics | 1335 | `sha256:1b742701efaeeecc5ca8f85fb4db7d8d1fc0b16c6692e41e1298393b848d5487` | `sha256:a6016a4e71b5c4376e7210d925e6222d4dba47155c674fb3aab5bb7e3ea56be6` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.fallback-evidence.v1`](#query-result-authoring-fallback-evidence-v1) | Fallback and Missing-Value Policy | 1836 | `sha256:d4bcb3099a71a172a1d26e52f782473bd1a877fa57833757a02b38ec136c2039` | `sha256:3b2b7f91484432f14d43e9bd4e15df78a1225f8666008cf3d9a3cf7367fff415` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.validation-evidence.v1`](#query-result-authoring-validation-evidence-v1) | Validation and Rejection Semantics | 168 | `sha256:987e66b52ca7bcefd1c09b4a721f188302f1708c91bbf61e28c7de0e944ea807` | `sha256:4b3f1716b5c8ea6e70bf0e4a721f706b1f495fc1b83aee2b59fa19f5f70959fa` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.failure-policy-evidence.v1`](#query-result-authoring-failure-policy-evidence-v1) | Exception and Failure Policy | 339 | `sha256:8a66c42dfc3fa269b39827bd1fa2c0f6a64008dfd8c668e36d764b270f8e68b5` | `sha256:ecfa535625d4c223a1e63102030e9fccd47a37341d655de26fced6b2a4036203` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.object-shape-evidence.v1`](#query-result-authoring-object-shape-evidence-v1) | Object Shape Evidence | 2829 | `sha256:322a74e7fd1f1bbfaf8e014194ceaafd06dc283e624a96aa398afec32ba04621` | `sha256:27af616e5fc628c85989943f955bbf67bebd068596b86a441fc8d094662adaa5` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.result-contract-evidence.v1`](#query-result-authoring-result-contract-evidence-v1) | Result Contract Evidence | 1113 | `sha256:e295e5c199b8e405f479624723ee975cc1a4ab89bb1f8f9a2a309a4e183dd0c3` | `sha256:8b7a56e5eb0b6b27aa2ff44cd35613df9a1126de34ec589e2f6e273ad212e8f8` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.serialization-evidence.v1`](#query-result-authoring-serialization-evidence-v1) | Serialization Profile | 89 | `sha256:66d9960a07465b5af9e5c49cbadb38dc781b1664bae8f38f2a729a69b8c957f0` | `sha256:3831e3e57801a7b60758977e38c485b3a9f13856c95280c54288462bc5d7ee48` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.normalization-evidence.v1`](#query-result-authoring-normalization-evidence-v1) | Normalization and Translation | 144 | `sha256:e19f5b592048026bb385df580778f608c57c298fd8aea8cc7ae0b90637bd8dc8` | `sha256:ded5a11282594b5fb9d1248b595af3dfc97be72442c4f811c96564d98dffdcf0` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.iteration-evidence.v1`](#query-result-authoring-iteration-evidence-v1) | Iteration Semantics | 456 | `sha256:1b7b1d5154de8375af5dc76f91ec87f46affe2bbe4ff7af27599261f1684bcef` | `sha256:f26f606c396f0b05eaa255f9190c12a5f4fc14b853ec772e63feba88b92571f8` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.state-transition-evidence.v1`](#query-result-authoring-state-transition-evidence-v1) | State-Transition Semantics | 334 | `sha256:ead8095a81ee48e74190abe6541bf069075d94dbb900d5dce6a1755cc18fcd7f` | `sha256:b3641c7c8fdfc530b4709e49f2fa86b900726d579c150e1ff34cbb0103d0449b` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.data-flow-slice.v1`](#query-result-authoring-data-flow-slice-v1) | Data-Flow Slice | 726 | `sha256:93b7ed049ac305c55e6cd12a887b18f5a594e603c2b930996db52058b54a29bb` | `sha256:e1ffd1dc92f0e5482287c6f5c9316f9d10024f883f499af1e0b5528ad21dc3a6` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.authority-overlap.v1`](#query-result-authoring-authority-overlap-v1) | Existing Authority Overlap | 7540 | `sha256:9be4fb88b4dc0cc75eea562b505a03ab159223bacb14d98809a9c74086e70397` | `sha256:c40f26ebb5ed2a952864b6422c1718e4c1ee0a6a58647e446cd27b21d51a8d85` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.scenario-context.v1`](#query-result-authoring-scenario-context-v1) | Feature and Scenario Context | 7540 | `sha256:97b4eb2ae7b3a88a110536b2a42857be7834f14e5efe6f2386f330e85c461f36` | `sha256:d50280d7f19da6b3334d7e681ff9227df37eeca1c512fa4c428c64c1d090e46c` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.projection-target.v1`](#query-result-authoring-projection-target-v1) | Projection Target Evidence | 726 | `sha256:10dd92a9a30e97cac4ed07f7bdc5c501de66ced1d0e732a86e659e7d1dcf1505` | `sha256:ca114a7283734a69d67449af331e6e4282b6bfbb0ab4f5bd600da3ed4b3b1a3e` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.proof-vector-candidates.v1`](#query-result-authoring-proof-vector-candidates-v1) | Equivalence and Proof Candidates | 726 | `sha256:3116890ff31c7b4c5a80c14a67253c9f6312b023eecb25ea3fff8f9382ca4308` | `sha256:39a849f240fd7201b75a7db5d7f5935e94154c9c8080e473ff32ceee708683d0` | `RELATIONAL_QUERY_EXECUTED` |
 | [`authoring.contract-map.v1`](#query-result-authoring-contract-map-v1) | Authority Contract Map | 23 | `sha256:2cab84afc1cf2e4d424570646d118218f21b67d5012f16f5c50afde84898a08a` | `sha256:c937a111b29f531e9648da3292d3cadc4534582833828b93e2f9d70e388f50c5` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.semantic-authority-evidence-bundle.v1`](#query-result-authoring-semantic-authority-evidence-bundle-v1) | Semantic Authority Evidence Bundle | 7488 | `sha256:3348a52e9913d17e1a2b1e9b9020c60a879e3d9107aa5673643cb49b3e9260ca` | `sha256:e740c00791df03634f4473eee9fe103187e4c771deb880a45da953e582e97f11` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.readiness.v1`](#query-result-authoring-readiness-v1) | Authoring Readiness | 7488 | `sha256:3be2d3d609c7431f172b6d174112f5f225fe9471c92b5cb96099181c51471470` | `sha256:3eb5b47c58cd8214cf9e98b6760d43143f3b21bd3548eb23095aaf8e4bc2218e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) | Authority Authoring Reconciliation | 1 | `sha256:326068c7279d28afe22f7ed87720a096fc7d1e1d0cd70604e89a034a56185dfd` | `sha256:16902b4663bab1d8dd5027c11448c96cf8b584b08f6db83afafbd40bb618eaf4` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.semantic-authority-evidence-bundle.v1`](#query-result-authoring-semantic-authority-evidence-bundle-v1) | Semantic Authority Evidence Bundle | 7540 | `sha256:3348a52e9913d17e1a2b1e9b9020c60a879e3d9107aa5673643cb49b3e9260ca` | `sha256:abd853959946a0e30aa3eb485dda9db8a3e3dbb33cb840f9cd014a64e15d0f27` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.readiness.v1`](#query-result-authoring-readiness-v1) | Authoring Readiness | 7540 | `sha256:3be2d3d609c7431f172b6d174112f5f225fe9471c92b5cb96099181c51471470` | `sha256:324567b39523dd82dcd24cd727d609717edbbbecb2437dcb5d3dde3c55e2acf8` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) | Authority Authoring Reconciliation | 1 | `sha256:326068c7279d28afe22f7ed87720a096fc7d1e1d0cd70604e89a034a56185dfd` | `sha256:b82653bbb18c38437766433cc259d4e1992eac94fa5394d5382e16c984d032ba` | `RELATIONAL_QUERY_EXECUTED` |
 
 ### Drill-Down Query Register
 
@@ -13246,6 +13519,9 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 | [`cli.traceability-summary.v1`](#query-result-cli-traceability-summary-v1) | 0 | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) | none | Inspect NO_CLI_REACHABILITY remainder |
 | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) | 1 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) | `entryPointId=:entryPointId` | Inspect execution graph evidence |
 | [`cli.feature-intent-proposal-packets.v1`](#query-result-cli-feature-intent-proposal-packets-v1) | 1 | [`trace.responsibility-to-command-graph.v1`](#query-result-trace-responsibility-to-command-graph-v1) | `entryPointId=:entryPointId` | Inspect responsibility bindings |
+| [`trace.feature-complete-lineage.v1`](#query-result-trace-feature-complete-lineage-v1) | 0 | [`gherkin.feature-by-id.v1`](#query-result-gherkin-feature-by-id-v1) | `featureId=:featureId` | Inspect Gherkin feature |
+| [`trace.feature-complete-lineage.v1`](#query-result-trace-feature-complete-lineage-v1) | 0 | [`cli.command-execution-graphs.v1`](#query-result-cli-command-execution-graphs-v1) | none | Inspect execution graph |
+| [`trace.feature-complete-lineage.v1`](#query-result-trace-feature-complete-lineage-v1) | 0 | [`test.scenario-lineage.v1`](#query-result-test-scenario-lineage-v1) | `featureId=:featureId` | Inspect test lineage |
 | [`test.summary.v1`](#query-result-test-summary-v1) | 0 | [`test.inventory.v1`](#query-result-test-inventory-v1) | none | Inspect test inventory |
 | [`test.summary.v1`](#query-result-test-summary-v1) | 0 | [`test.scenario-lineage.v1`](#query-result-test-scenario-lineage-v1) | none | Inspect scenario lineage |
 | [`test.summary.v1`](#query-result-test-summary-v1) | 0 | [`test.without-canonical-lineage.v1`](#query-result-test-without-canonical-lineage-v1) | none | Inspect unresolved test lineage |
@@ -13351,11 +13627,11 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 |---|---|
 | Purpose | Executive Summary |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:dfa7d56d37bdd8ca458d537b1a511f32562eb95c05dd19157d705a4617b0056b` |
-| Result hash | `sha256:3337907d2573bdff4f6afcf5112ec158f2d8f6c183407ad2461b26fba9a632ef` |
+| Result hash | `sha256:6f2e40b38be53f55cea4f6daaa69723fe09a19255edb2308ea381d4cccb1f9f7` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-summary-v1.json) |
@@ -13383,9 +13659,9 @@ SELECT * FROM reportFeatureCoverageSummary
     "scenariosRuntimeNotEvaluated": 6,
     "scenariosWithLineageQualityFindings": 2,
     "featureProposalsPendingReview": 0,
-    "unresolvedEvidenceClusters": 733,
+    "unresolvedEvidenceClusters": 735,
     "supportingImplementationClusters": 49,
-    "responsibilityEvidenceClusters": 684,
+    "responsibilityEvidenceClusters": 686,
     "confirmedFeatureCandidateClusters": 0,
     "capabilityRelationsProposed": 0,
     "liveInferenceEvaluations": 0,
@@ -13393,14 +13669,14 @@ SELECT * FROM reportFeatureCoverageSummary
     "mechanicsWithCanonicalLineage": 0,
     "mechanicsWithProposedLineage": 158,
     "mechanicsWithAmbiguousLineage": 0,
-    "mechanicsWithoutLineage": 7478,
+    "mechanicsWithoutLineage": 7530,
     "authorityWithCanonicalLineage": 2,
     "authorityWithProposedLineage": 0,
     "authorityWithAmbiguousLineage": 0,
     "authorityWithoutLineage": 10,
-    "unclassifiedMechanics": 7478,
+    "unclassifiedMechanics": 7530,
     "byPosture": {
-      "FEATURE_COVERAGE_MISSING": 7478,
+      "FEATURE_COVERAGE_MISSING": 7530,
       "FEATURE_COVERAGE_PROPOSED": 158
     },
     "authorityByPosture": {
@@ -13459,8 +13735,8 @@ SELECT * FROM reportFeatureCoverageSummary
 |---|---|
 | Purpose | Executive Summary |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b230d306d1b6235c356f228a8fbe154b94ded15c1d017b8459b2c4db455fc944` |
 | Result hash | `sha256:c3fcd087e881750d3cf83381a22ecf525fd0d50f4503a448d5883df1ad902f1a` |
@@ -13546,8 +13822,8 @@ SELECT * FROM reportScenarioConformanceSummary
 |---|---|
 | Purpose | Feature Coverage Proposals |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:24a7bd5de2d4710e8917e12ac89f18418667b3ed56690d4a93dcc04c09b11411` |
 | Result hash | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` |
@@ -13582,8 +13858,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Live LLM Feature-Inference Evaluations |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:6d426be0037939f720654e271d2debfe3737345106909d22a6ef600b792c0bbc` |
 | Result hash | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` |
@@ -13618,12 +13894,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unresolved Responsibility Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:f0194dd8100b3ee64d528a4253968fe48f0b7212badf2575b852c5b948cb780b` |
-| Result hash | `sha256:fbdeb4f7b0c76da478e058bfc522027afc7f99e72c5d86937326c6a09cf1c40b` |
-| Rows | 733 |
+| Result hash | `sha256:3462373bea89a0f299e26aedf4bb471e988fce1ac0e7028aa19fcefc77e71db4` |
+| Rows | 735 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json) |
 | Next queries | [`Inspect individual cluster`](#query-result-responsibility-evidence-cluster-by-id-v1) |
@@ -13632,9 +13908,9 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportUnresolvedEvidenceClusters ORDER BY modulePath, responsibility
 ```
 
-Full 733-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
+Full 735-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
 
-Full 9131-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
+Full 9161-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
 
 <a id="query-result-scenario-conformance-drilldown-v1"></a>
 
@@ -13644,8 +13920,8 @@ Full 9131-pointer claim map: [open the bound receipt artifact](source-facts-self
 |---|---|
 | Purpose | Canonical Feature Drill-Down |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:63140f2c93dfaff428cf1792965fca681c1dc8459b409af57bac1ed680df6edb` |
 | Result hash | `sha256:58df4b2b1d73dcede8c618b2deea032b3a8ccdecc9dcb35882724a9b6d75afbf` |
@@ -14132,11 +14408,11 @@ Full 197-pointer claim map: [open the bound receipt artifact](source-facts-self-
 |---|---|
 | Purpose | Evidence Without Canonical Lineage |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1aafa4839d6a214e6acc0be187c500279ab27a67382b4bbe5160a099c2a0e6a0` |
-| Result hash | `sha256:6f6d7b64d605531c30fd547fd8794efdf4b34d3534751385cb9e5847afd24f41` |
+| Result hash | `sha256:f4d2bb2ae70696f91df87377d2f46b8c3eca62e1d321e3932ed1e608de661a04` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unclassified-inventory-v1.json) |
@@ -14188,11 +14464,11 @@ Full 1-row result: [open the bound receipt artifact](source-facts-self-governanc
 |---|---|
 | Purpose | Evidence Without Canonical Lineage |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:8d95fc7d5b7dc91ad64e723c18eaf7f43aec31da133f1ec9eb82ca6423d987ef` |
-| Result hash | `sha256:af5ee6149ea74880af31a7289ef304126369089bbcf43de023f3aae406ece693` |
+| Result hash | `sha256:4e4ea0022fa2ab65a1a0296c4b53f90f5de3e910fa32219b2fffeafbfa2dc5f9` |
 | Rows | 11 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-v1.json) |
@@ -14208,7 +14484,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
 [
   {
     "mechanic": "branch",
-    "occurrenceCount": 1330,
+    "occurrenceCount": 1335,
     "fileCount": 81,
     "drillDowns": [
       {
@@ -14264,7 +14540,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "fallback",
-    "occurrenceCount": 1810,
+    "occurrenceCount": 1836,
     "fileCount": 79,
     "drillDowns": [
       {
@@ -14348,7 +14624,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "object-construction",
-    "occurrenceCount": 2814,
+    "occurrenceCount": 2829,
     "fileCount": 89,
     "drillDowns": [
       {
@@ -14404,7 +14680,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "serialization",
-    "occurrenceCount": 88,
+    "occurrenceCount": 89,
     "fileCount": 29,
     "drillDowns": [
       {
@@ -14432,7 +14708,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "state-mutation",
-    "occurrenceCount": 333,
+    "occurrenceCount": 334,
     "fileCount": 59,
     "drillDowns": [
       {
@@ -14460,7 +14736,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "throw",
-    "occurrenceCount": 224,
+    "occurrenceCount": 227,
     "fileCount": 42,
     "drillDowns": [
       {
@@ -14488,7 +14764,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "validation",
-    "occurrenceCount": 167,
+    "occurrenceCount": 168,
     "fileCount": 26,
     "drillDowns": [
       {
@@ -14533,8 +14809,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Subject Boundary |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:bb62a3b13d996b599f8ff93979338026e619914bc0972f42c77d1211de60d3bb` |
 | Result hash | `sha256:593f3a0d4ba5545debcc6a1739061dd7618401ffe7c489256e16a16ed6e1a615` |
@@ -14611,8 +14887,8 @@ SELECT * FROM reportSubjectBoundary
 |---|---|
 | Purpose | Canonical Identity Resolution |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:4dd68eecb6d82521549290c732cffb688ebae650b570ecb4218f51836e05a8d9` |
 | Result hash | `sha256:d7c9d61f899f688d5bd32bbe8bf0e25597c40ee4b317b83b75b0ef3aaec8349c` |
@@ -14754,8 +15030,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Identity Resolution |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:9dde0a09613e9edbd0a0747f336e81c9e09d5ceac032d8c6f27f3ce8faad5b8b` |
 | Result hash | `sha256:1b0d3549e021571bdbafa5da764ca541218b922610639fd8e628385c1e34f294` |
@@ -14935,8 +15211,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Identity Resolution |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:2e0e91e04ecd255d4b0ddfdae462e2dd2f6b7e01538bc91ed83578fdb8bcde57` |
 | Result hash | `sha256:e4f416c89eb9b5d201704c62ba4ed9f9346634dd40ab9865e1222c79c223ebe9` |
@@ -14965,8 +15241,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Intent |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:f6cc3c1775897b00241ddaf09ad0712314f96124afa6daca786ea29801472139` |
 | Result hash | `sha256:2aa32e581a0e7caaaf6e290a46319539c745cbab036ee3a8fa084f70567bad73` |
@@ -15118,8 +15394,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Intent |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:dc5de2cfb274147d909f6e2f80fa0887593f75470759fb812b382d6fcb3ff0d0` |
 | Result hash | `sha256:53afdc335252364f81685a64084b75d1fd65487016f51e2d8a235d8782eb2134` |
@@ -15305,8 +15581,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Intent |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b101b808f894e6843030b1c0a4129cfdbfd1c859c0ca53ef3dfb2d057866d62f` |
 | Result hash | `sha256:dae82ca999b513e0a2591a4be38bbe88567323e4211dd76df2a1c978efa260ca` |
@@ -15507,11 +15783,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Trace |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:d934fc831f6707fea8da1b3393b54ad3d7cbda3554ae1da11e79282d12a51588` |
-| Result hash | `sha256:ad11bebbd260a302f79691e46511317f7545844697dbc1daed605f17458b0ba2` |
+| Result hash | `sha256:73464af52f0546da3a60dae5d02526254d21ffeb0b624e48239776d95adcd3e5` |
 | Rows | 6 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/trace-responsibility-to-command-graph-v1.json) |
@@ -15537,11 +15813,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Trace |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:13489bfdb33239d8908e68e8fc55d9719bb00c47265ec8404f0184676d57d1cf` |
-| Result hash | `sha256:6144500c69b445852500cbe31c4dbc912f7dad872216a995f6ca442a25396c45` |
+| Result hash | `sha256:e42467b682ab94d65ddc124d79d2a2dddf44559421b6d55ee927050b5e573d27` |
 | Rows | 5 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/trace-feature-to-interface-v1.json) |
@@ -15562,7 +15838,7 @@ SELECT f.featureId, f.featureFile, i.intentFile, i.interfaceRoot, s.file AS inte
     "interfaceRoot": "src/cli.js#runCallGraph",
     "interfaceFile": "src/cli.js",
     "interfaceSymbol": "runCallGraph",
-    "lineNumber": 163,
+    "lineNumber": 165,
     "symbolId": "cli.js#function:runCallGraph",
     "interfaceDisposition": "INTERFACE_ROOT_RESOLVED",
     "drillDowns": [
@@ -15582,7 +15858,7 @@ SELECT f.featureId, f.featureFile, i.intentFile, i.interfaceRoot, s.file AS inte
     "interfaceRoot": "src/cli.js#runGovern",
     "interfaceFile": "src/cli.js",
     "interfaceSymbol": "runGovern",
-    "lineNumber": 362,
+    "lineNumber": 364,
     "symbolId": "cli.js#function:runGovern",
     "interfaceDisposition": "INTERFACE_ROOT_RESOLVED",
     "drillDowns": [
@@ -15602,7 +15878,7 @@ SELECT f.featureId, f.featureFile, i.intentFile, i.interfaceRoot, s.file AS inte
     "interfaceRoot": "src/cli.js#runProject",
     "interfaceFile": "src/cli.js",
     "interfaceSymbol": "runProject",
-    "lineNumber": 132,
+    "lineNumber": 134,
     "symbolId": "cli.js#function:runProject",
     "interfaceDisposition": "INTERFACE_ROOT_RESOLVED",
     "drillDowns": [
@@ -15622,7 +15898,7 @@ SELECT f.featureId, f.featureFile, i.intentFile, i.interfaceRoot, s.file AS inte
     "interfaceRoot": "src/cli.js#runProposeFeatureCoverage",
     "interfaceFile": "src/cli.js",
     "interfaceSymbol": "runProposeFeatureCoverage",
-    "lineNumber": 454,
+    "lineNumber": 475,
     "symbolId": "cli.js#function:runProposeFeatureCoverage",
     "interfaceDisposition": "INTERFACE_ROOT_RESOLVED",
     "drillDowns": [
@@ -15642,7 +15918,7 @@ SELECT f.featureId, f.featureFile, i.intentFile, i.interfaceRoot, s.file AS inte
     "interfaceRoot": "src/cli.js#runQuery",
     "interfaceFile": "src/cli.js",
     "interfaceSymbol": "runQuery",
-    "lineNumber": 153,
+    "lineNumber": 155,
     "symbolId": "cli.js#function:runQuery",
     "interfaceDisposition": "INTERFACE_ROOT_RESOLVED",
     "drillDowns": [
@@ -15674,12 +15950,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Trace |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b0e76803540cb3dcb2fb4f9c037d8c86a7cfc88e94abf6f7e2711d6d0bcb9877` |
-| Result hash | `sha256:c9bcf40804a08ce8877e8198ce1e42fe8746ac0589538c67e43b98d8a0c93dc3` |
-| Rows | 453 |
+| Result hash | `sha256:2804f0d4d6da9c12deca31a9d430b15266bba60403a17466a8d25f94f50757a6` |
+| Rows | 454 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/trace-feature-to-callgraph-v1.json) |
 | Next queries | terminal physical/healing evidence |
@@ -15688,7 +15964,7 @@ No scalar claims were rendered from this empty result.
 SELECT f.featureId, f.interfaceRoot, c.callableId, c.file AS callableFile, c.symbol AS callableSymbol, c.depth FROM trace.feature-to-interface(?) f JOIN callGraphRegistry c ON f.interfaceRoot = c.entryPoint
 ```
 
-Full 453-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/trace-feature-to-callgraph-v1.json).
+Full 454-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/trace-feature-to-callgraph-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -15704,12 +15980,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Trace |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:5b3fe0af9b66fab81913cbd63fcfdc02c9022542c8655878668eb9ec6b5c4fdd` |
-| Result hash | `sha256:8667a811eaed744ae86df9b014704ac3fcc2622c70995665a8aac75c67f7544f` |
-| Rows | 1280 |
+| Result hash | `sha256:5d75bdfe26ab873ac8668bcf3582db4bca7b6fbcc49b65428b48964a936aaf89` |
+| Rows | 1282 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/trace-scenario-to-source-facts-v1.json) |
 | Next queries | [`Inspect exact obligation mechanics`](#query-result-trace-obligation-to-mechanics-v1) `obligationId=:obligationId` |
@@ -15718,7 +15994,7 @@ No scalar claims were rendered from this empty result.
 SELECT s.scenarioId, r.obligationId, c.callableId, m.mechanicType, COUNT(*) as mechanicCount FROM intentScenarioRegistry s JOIN intentResponsibilityRegistry r ON s.scenarioId = r.scenarioId JOIN callGraphRegistry c ON r.responsibilityId = c.responsibilityId JOIN sourceMechanics m ON c.callableId = m.callableId GROUP BY s.scenarioId, r.obligationId, c.callableId, m.mechanicType
 ```
 
-Full 1280-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/trace-scenario-to-source-facts-v1.json).
+Full 1282-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/trace-scenario-to-source-facts-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -15734,12 +16010,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Trace |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c02102b1c7723b5bc468c7f4772324e695710cc0cf01c894056fc2cd74df50eb` |
-| Result hash | `sha256:1f1467c0a7ae3b2c152eb8d45ca6121add9e30cfff2ac52e4aec3e41eb52a6ae` |
-| Rows | 4598 |
+| Result hash | `sha256:172ad37bb7068b0b66bcb9e9f031e71112960a520d2964b8f148388a530d2730` |
+| Rows | 4629 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/trace-obligation-to-mechanics-v1.json) |
 | Next queries | terminal physical/healing evidence |
@@ -15748,7 +16024,7 @@ No scalar claims were rendered from this empty result.
 SELECT o.obligationId, o.responsibilityId, s.scenarioId, m.callableId, m.mechanicType, m.file, m.line, m.column, m.snippet FROM obligations o JOIN responsibilities r ON o.obligationId = r.obligationId JOIN scenarios s ON r.responsibilityId = s.responsibilityId JOIN sourceMechanics m ON s.scenarioId = m.scenarioId
 ```
 
-Full 4598-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/trace-obligation-to-mechanics-v1.json).
+Full 4629-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/trace-obligation-to-mechanics-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -15764,11 +16040,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | CLI Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` |
-| Result hash | `sha256:815a1e2f195e9e6b6540b9fcf8a3c62bdb13d17e94dcff8680c63e11e271622a` |
+| Result hash | `sha256:862cc073ca0497e4f773d4e066694862ba29fa6810a4e11e4c3e0931bc515daf` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-traceability-summary-v1.json) |
@@ -15785,14 +16061,14 @@ SELECT * FROM reportInterfaceGovernanceSummary
   {
     "interfacePortfolioDisposition": "CLI_IS_FIRST_CLASS_OBSERVED_INTERFACE",
     "cliDispatchEvidenceDisposition": "CLI_DISPATCH_SOURCE_PARSED",
-    "cliDispatchSourceHash": "sha256:6727ecd491f0403aa6abe464ca362d2188a79526f277217e15714330b46fd0a5",
-    "observedCliCommandHandlers": 15,
-    "observedCliCommandTokens": 16,
-    "distinctCliExecutionSlices": 15,
+    "cliDispatchSourceHash": "sha256:7229bb1c3db7989d9e507e0d1cc7469b2db5bc2c911e30776068bd81f3ee3f50",
+    "observedCliCommandHandlers": 16,
+    "observedCliCommandTokens": 17,
+    "distinctCliExecutionSlices": 16,
     "aliasedCliCommandTokens": 2,
     "observedHttpEntryPoints": 8,
     "commandsWithCanonicalFeature": 5,
-    "commandsWithoutCanonicalFeature": 11,
+    "commandsWithoutCanonicalFeature": 12,
     "canonicalFeaturesAccessibleViaCli": 5,
     "canonicalFeatureIdsAccessibleViaCli": [
       "source-facts.cli-call-graph",
@@ -15804,13 +16080,13 @@ SELECT * FROM reportInterfaceGovernanceSummary
     "cliInterfaceAuthorityDocuments": 0,
     "cliInterfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
     "admittedCliCommands": 0,
-    "runtimeCallables": 824,
-    "cliReachableCallables": 671,
-    "sharedCliInfrastructure": 131,
+    "runtimeCallables": 826,
+    "cliReachableCallables": 675,
+    "sharedCliInfrastructure": 132,
     "runtimeResolutionRequired": 8,
-    "noCliReachabilityCallables": 145,
-    "reachableMechanicOccurrences": 5972,
-    "unreachableMechanicOccurrences": 993
+    "noCliReachabilityCallables": 143,
+    "reachableMechanicOccurrences": 6056,
+    "unreachableMechanicOccurrences": 956
   }
 ]
 ```
@@ -15856,12 +16132,12 @@ SELECT * FROM reportInterfaceGovernanceSummary
 |---|---|
 | Purpose | CLI Execution Graphs |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:e3c309c9619420fdbb4e97ac70e584bea643b714bc915b1411b809828478f2e1` |
-| Result hash | `sha256:096b968c961e2c3ba76f1139a683cc6043a2febea43cfebf7db8de3d068aedbd` |
-| Rows | 15 |
+| Result hash | `sha256:0f86f0eab1f1c517f90b3a76fd9695f51be3e9e0aa73b54e631a62bc0dbdc8fb` |
+| Rows | 16 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-feature-intent-proposal-packets-v1.json) |
 | Next queries | [`Inspect execution graph evidence`](#query-result-cli-command-execution-graphs-v1) `entryPointId=:entryPointId`<br>[`Inspect responsibility bindings`](#query-result-trace-responsibility-to-command-graph-v1) `entryPointId=:entryPointId` |
@@ -15870,7 +16146,37 @@ SELECT * FROM reportInterfaceGovernanceSummary
 SELECT * FROM reportCliFeatureIntentProposalPackets WHERE (:commandName IS NULL OR commandId = :commandName) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY commandId
 ```
 
-Full 15-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-feature-intent-proposal-packets-v1.json).
+Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-feature-intent-proposal-packets-v1.json).
+
+<details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
+
+No scalar claims were rendered from this empty result.
+
+</details>
+
+<a id="query-result-trace-feature-complete-lineage-v1"></a>
+
+#### `trace.feature-complete-lineage.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | Canonical Trace |
+| Version | `1.0.0` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:db4d0a095d4b08dd987156a861356eb75ed5c5ebe5dfbf31e2c41395838bdafe` |
+| Result hash | `sha256:57882b115d599753d3bced1a2eac9ebc5a7f3a9aa18a7d19f2bb9aefd7c4112a` |
+| Rows | 5 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/trace-feature-complete-lineage-v1.json) |
+| Next queries | [`Inspect Gherkin feature`](#query-result-gherkin-feature-by-id-v1) `featureId=:featureId`<br>[`Inspect execution graph`](#query-result-cli-command-execution-graphs-v1)<br>[`Inspect test lineage`](#query-result-test-scenario-lineage-v1) `featureId=:featureId` |
+
+```sql
+SELECT * FROM completeFeatureLineage WHERE featureId = :featureId
+```
+
+Full 5-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/trace-feature-complete-lineage-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -15886,11 +16192,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:5463bff43e9fe46eeb009e28e292365a2f77f47340259bc071525811aca3ba03` |
-| Result hash | `sha256:7b194c480853354330de4c7c8e964b827951c24441b04e1f504b760b5becc073` |
+| Result hash | `sha256:cc6658a08268a2374db40f61eb1fbd480d7524c6b959a4f84bf9794f102b92e2` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-summary-v1.json) |
@@ -15909,7 +16215,7 @@ SELECT * FROM reportTestTraceabilitySummary
     "testsWithCanonicalScenarioLineage": 0,
     "testsWithProposedLineageOnly": 1,
     "sharedInfrastructureTests": 48,
-    "testsProvingCliUnreachableCode": 22,
+    "testsProvingCliUnreachableCode": 16,
     "testsWithoutCanonicalLineage": 112,
     "canonicalScenariosWithoutTestProof": 6,
     "duplicateProofCandidates": 0
@@ -15933,11 +16239,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:073fef36423de8f7d5eca19a4740de0a87f42fb1bb5e370038feea06f6e2d4bf` |
-| Result hash | `sha256:ee316bf6854ffb4534e55c98f295876acf513385295cbe3d1860578ce4ee033e` |
+| Result hash | `sha256:515be3a87eb5d83a1af3595cc82a1596924023b8d6af3f50df03b7b05b90c837` |
 | Rows | 178 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-inventory-v1.json) |
@@ -15963,12 +16269,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:7436329c8e817f8c1ed3793d9fe39d33a5c6e49cd32f7c4024685af490fca928` |
-| Result hash | `sha256:8e3bff49b5004ba99a63fe3d2e9ae970aa344a82ec56d7af9fd9a7947ebbac7f` |
-| Rows | 9994 |
+| Result hash | `sha256:0954b2506efc57ced9763d8244fe9c5da2f63138c8fd573fb4d3d9e3ee9a1da4` |
+| Rows | 10031 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-production-reachability-v1.json) |
 | Next queries | [`Join production paths to CLI graphs`](#query-result-test-originating-cli-features-v1) `testId=:testId` |
@@ -15977,7 +16283,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportTestProductionReachability WHERE (:testId IS NULL OR testId = :testId) AND (:productionSymbolId IS NULL OR productionSymbolId = :productionSymbolId) ORDER BY testFile, testId, depth
 ```
 
-Full 9994-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-production-reachability-v1.json).
+Full 10031-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-production-reachability-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -15993,12 +16299,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:e382edeb8d99bf3af870ce5aea8d33a7fa984df1af4fa8b78fc76db9abae90ae` |
-| Result hash | `sha256:e3aed02204077ea2ceea4d8e4de36d14a6cecfcddfe13742f006a08018b8b086` |
-| Rows | 326 |
+| Result hash | `sha256:e429b73b4f9606675953926dd1938092695826e10681fb2a8e4b95984ef27109` |
+| Rows | 347 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-originating-cli-features-v1.json) |
 | Next queries | [`Inspect covered CLI graph`](#query-result-cli-command-execution-graphs-v1) `entryPointId=:entryPointId`<br>[`Inspect scenario proof lineage`](#query-result-test-scenario-lineage-v1) `testId=:testId` |
@@ -16007,7 +16313,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportTestOriginatingCliFeatures WHERE (:testId IS NULL OR testId = :testId) AND (:commandName IS NULL OR commandName = :commandName)
 ```
 
-Full 326-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-originating-cli-features-v1.json).
+Full 347-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-originating-cli-features-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -16023,8 +16329,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:71236554fd53c720e99eaff32609809429701fd214ea9f5886520225ed2e4576` |
 | Result hash | `sha256:0b8e207fa9ad00d107cae57e979453454d45f0eb63befe73c1f47150c12c4ce2` |
@@ -16083,8 +16389,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:ea7ef6946110fc3b9b3043e2ae384fc47b76b2e9a3dba72a7d30e5b004a40614` |
 | Result hash | `sha256:11b71ec852488f8e2a032896c6c386061095c31d2991f11157b1c3875e28389e` |
@@ -16242,12 +16548,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Fat and Waste |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c87acd4e8995bda86e01a4146c3a0e17c5bb4ccbb32910811ad51d0688056786` |
-| Result hash | `sha256:00051fe0bdc7af51d0c71b036a095fb52886ae819f83b4d9bd1ad1895964d115` |
-| Rows | 50 |
+| Result hash | `sha256:a60bca110f6485178145bbe1ed714dde0d42678aa9a2d498ca484d7fce764201` |
+| Rows | 44 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-unreachable-production-dependencies-v1.json) |
 | Next queries | [`Inspect joint removal impact`](#query-result-test-removal-impact-v1) `testId=:testId` |
@@ -16256,7 +16562,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportTestProductionReachability WHERE cliClosureClassification = 'NO_CLI_REACHABILITY'
 ```
 
-Full 50-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-unreachable-production-dependencies-v1.json).
+Full 44-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-unreachable-production-dependencies-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -16272,11 +16578,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Fat and Waste |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1163910d7658feb6453cf71e4cde74f617ea06d4ace226f2dc05b44a5bbd71c3` |
-| Result hash | `sha256:9a87285f6114a58078566cb04b4c72af104f1b83102cb30734f6dc6cf77c0445` |
+| Result hash | `sha256:9c7225949632e4073238d671d0ac30b9342572db67b372806afaed395c462ad0` |
 | Rows | 112 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-without-canonical-lineage-v1.json) |
@@ -16302,11 +16608,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:a86c7859775b1fbed3940ece2ad968dfd04ad9662902055de8d436306941b7f0` |
-| Result hash | `sha256:29619be8c8b34d1b528015c80d181cbf76be0ed7706c0acfe9ad5d3fc3de701f` |
+| Result hash | `sha256:e5905e51c689d395ab62876cf71900f8882b3438ec2ff57f172c88d1df980b9b` |
 | Rows | 48 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-supporting-lineage-v1.json) |
@@ -16332,8 +16638,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Fat and Waste |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:e65b9cbcdc8cd4d3768fbffa5eaf6316a6c69516ae79def7ba41711d4f420eae` |
 | Result hash | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` |
@@ -16368,8 +16674,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Fat and Waste |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:26752b8348ebe08e1540a7841f74adf9f828b5681ab5ac8bbc0768da5f08eea8` |
 | Result hash | `sha256:11b71ec852488f8e2a032896c6c386061095c31d2991f11157b1c3875e28389e` |
@@ -16527,11 +16833,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Fat and Waste |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:5a28c96ea638d55cc93fb9653542422d27db618d45b9af7849883601e031ae40` |
-| Result hash | `sha256:97a14f161837595365b0cf1a6470f7b78a92d8aaaa2c31193a5175969b67bda3` |
+| Result hash | `sha256:1dd87d91cd46e01bf4fad9a1834dcd76849678a5d53c798c3c59cd06d634f666` |
 | Rows | 112 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-removal-impact-v1.json) |
@@ -16557,12 +16863,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Test Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:855420e3f59962f37c415fbe8fddc934d51e50639200cb8f9135c6052a166d62` |
-| Result hash | `sha256:229cc7ce930daa1d0ebb9d2e7c6fe5a289767c872e4b554a475732a9c7314852` |
-| Rows | 16 |
+| Result hash | `sha256:a3b6ba44c76d17442db7443c5536e343bf537b6e1aeb0dd9cd1a847a2388772b` |
+| Rows | 17 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/test-cli-coverage-v1.json) |
 | Next queries | [`Inspect covering tests`](#query-result-test-originating-cli-features-v1) `commandName=:commandName`<br>[`Inspect proof gaps`](#query-result-scenario-without-test-proof-v1) |
@@ -16571,7 +16877,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportTestCliCoverage WHERE (:commandName IS NULL OR commandName = :commandName) ORDER BY commandName
 ```
 
-Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-cli-coverage-v1.json).
+Full 17-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/test-cli-coverage-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -16587,12 +16893,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | CLI Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:6d63d220b5df0ae523d1ff1bae9742a3d6a400ec59564d56f5a8f3147303212f` |
-| Result hash | `sha256:2a97c4617563c1e0a1f6cf0a21953f0d908d2fe0743580d9894638b83a04022e` |
-| Rows | 16 |
+| Result hash | `sha256:6b721b1f33c479d3a52042bd5c09f8c779024f1ac3f3917c8338d7174584a440` |
+| Rows | 17 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-entry-points-v1.json) |
 | Next queries | [`Inspect complete reachable graph slice`](#query-result-cli-entry-point-reachability-v1) `entryPointId=:entryPointId` |
@@ -16601,9 +16907,9 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportCliCommands WHERE (:commandName IS NULL OR commandName = :commandName) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY commandName
 ```
 
-Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-points-v1.json).
+Full 17-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-points-v1.json).
 
-Full 317-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-points-v1.json).
+Full 335-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-points-v1.json).
 
 <a id="query-result-cli-command-execution-graphs-v1"></a>
 
@@ -16613,12 +16919,12 @@ Full 317-pointer claim map: [open the bound receipt artifact](source-facts-self-
 |---|---|
 | Purpose | CLI Execution Graphs |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:a7493744e50568edede23a011f7279651f72875d071026e2da4367f5680ee7e5` |
-| Result hash | `sha256:95eac4330a9a503cfd1c8ac91e3d818fab5283b3644a7f98eb13328fe67bce06` |
-| Rows | 16 |
+| Result hash | `sha256:83647b79bc91a6c5ef5f9f5e1ed307a52cb095faf84ffd7d116303394f5ae24d` |
+| Rows | 17 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-command-execution-graphs-v1.json) |
 | Next queries | [`Inspect flattened reachable callables`](#query-result-cli-entry-point-reachability-v1) `entryPointId=:entryPointId`<br>[`Inspect mechanics reachable from the command`](#query-result-cli-reachable-source-facts-v1) `entryPointId=:entryPointId` |
@@ -16627,7 +16933,7 @@ Full 317-pointer claim map: [open the bound receipt artifact](source-facts-self-
 SELECT * FROM reportCliCommandExecutionGraphs WHERE (:commandName IS NULL OR commandName = :commandName) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY commandName, handlerName
 ```
 
-Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-command-execution-graphs-v1.json).
+Full 17-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-command-execution-graphs-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -16643,12 +16949,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | CLI Traceability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:9a9868803ac90ade1ac49f7fcc41a520e88f19150efd87435c0333c7f34b3be4` |
-| Result hash | `sha256:b8385d253d145dac2938f99f4414edd7c53d3afb6e64b89c060535bea9424183` |
-| Rows | 824 |
+| Result hash | `sha256:050611b2df2b5cf6d1f2c7a611eab5b785fcb867928de4eceb38995dc9240ad4` |
+| Rows | 826 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json) |
 | Next queries | [`Inspect justifying CLI commands`](#query-result-cli-symbol-originating-commands-v1) `symbolId=:symbolId`<br>[`Inspect removal impact`](#query-result-cli-unreachable-removal-impact-v1) `symbolId=:symbolId` |
@@ -16657,9 +16963,9 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportCallableInventory WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:classification IS NULL OR cliClosureClassification = :classification) ORDER BY modulePath, declarationLine
 ```
 
-Full 824-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json).
+Full 826-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json).
 
-Full 22981-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json).
+Full 23062-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json).
 
 <a id="query-result-cli-entry-point-reachability-v1"></a>
 
@@ -16669,12 +16975,12 @@ Full 22981-pointer claim map: [open the bound receipt artifact](source-facts-sel
 |---|---|
 | Purpose | CLI Reachability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:5a68b386bc943e7983c3e20e6f2afd468d25a89683b0cfe2abeddffd3cea9e6a` |
-| Result hash | `sha256:0141acfb6ec4ecf4fc043e143328460e89cddb6f9349e6fc8e9c806f79252816` |
-| Rows | 1027 |
+| Result hash | `sha256:26a083ac1de34cd47d17ad7324548de860c3783635d6857a5e59dfdf8f0c8688` |
+| Rows | 1050 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json) |
 | Next queries | [`Invert reachability to originating commands`](#query-result-cli-symbol-originating-commands-v1) `symbolId=:symbolId` |
@@ -16683,9 +16989,9 @@ Full 22981-pointer claim map: [open the bound receipt artifact](source-facts-sel
 SELECT * FROM reportCliReachability WHERE (:entryPointId IS NULL OR entryPointId = :entryPointId) AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY entryPointId, depth, symbolId
 ```
 
-Full 1027-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json).
+Full 1050-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json).
 
-Full 17039-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json).
+Full 17363-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json).
 
 <a id="query-result-cli-shared-reachability-v1"></a>
 
@@ -16695,12 +17001,12 @@ Full 17039-pointer claim map: [open the bound receipt artifact](source-facts-sel
 |---|---|
 | Purpose | CLI Reachability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:49a77e977b9941a90b7e7d9ee847c286c1322508bc70f195aa16834ad43b1e25` |
-| Result hash | `sha256:a8798b8a9ed666664ac7ffb5dc497cee1733403f849412499f6702f565c19407` |
-| Rows | 131 |
+| Result hash | `sha256:a910812be3e6f4620802238672fcfbb1032db2ded6ed09f2b62fdab209e84124` |
+| Rows | 132 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json) |
 | Next queries | [`Inspect sharing CLI commands`](#query-result-cli-symbol-originating-commands-v1) `symbolId=:symbolId` |
@@ -16709,9 +17015,9 @@ Full 17039-pointer claim map: [open the bound receipt artifact](source-facts-sel
 SELECT * FROM reportCallableInventory WHERE cliClosureClassification = 'SHARED_CLI_INFRASTRUCTURE' AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, declarationLine
 ```
 
-Full 131-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json).
+Full 132-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json).
 
-Full 4024-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json).
+Full 4071-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json).
 
 <a id="query-result-cli-runtime-resolution-debt-v1"></a>
 
@@ -16721,8 +17027,8 @@ Full 4024-pointer claim map: [open the bound receipt artifact](source-facts-self
 |---|---|
 | Purpose | CLI Reachability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:5dd66999c648686e342b1d7e7847cca6bc2d6aba3b46a83eca08b9f639612160` |
 | Result hash | `sha256:81c6e783e4b15159ca6bd65b6db8926878414b4da2abf7f8eb564e57c289c319` |
@@ -17074,12 +17380,12 @@ Full 200-pointer claim map: [open the bound receipt artifact](source-facts-self-
 |---|---|
 | Purpose | CLI Reachable Source Facts |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:9a90cc569a898443ff2911aa820c437abfd1e09df76cb8fc97f9af450eca4cbb` |
-| Result hash | `sha256:4233d0a6d644e87e9d0cd67c98d4cb76f86c2fafbad69cdf3f831bc216f4d281` |
-| Rows | 5972 |
+| Result hash | `sha256:a558679d0eebf125a262351ab17bb1a571206432c3239154fdedfe2f5605159a` |
+| Rows | 6056 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json) |
 | Next queries | [`Inspect exact physical source`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId` |
@@ -17088,9 +17394,9 @@ Full 200-pointer claim map: [open the bound receipt artifact](source-facts-self-
 SELECT * FROM reportSourceFacts WHERE cliClosureClassification IN ('CLI_FEATURE_ROOT','CLI_FEATURE_REACHABLE','SHARED_CLI_INFRASTRUCTURE') AND (:entryPointId IS NULL OR :entryPointId IN originatingEntryPointIds) AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, startLine
 ```
 
-Full 5972-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json).
+Full 6056-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json).
 
-Full 86292-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json).
+Full 87734-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json).
 
 <a id="query-result-cli-unreachable-callables-v1"></a>
 
@@ -17100,12 +17406,12 @@ Full 86292-pointer claim map: [open the bound receipt artifact](source-facts-sel
 |---|---|
 | Purpose | Fat and Waste Inventory |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b9685d65ca5e3116ff73e36a4fcc75bcde6ee74d27ae1c53571b27e806caeb3d` |
-| Result hash | `sha256:3261062b92df9c3b99e8fc202cfdc60ae5a942c1163d1087bf7131c82e3f48a8` |
-| Rows | 145 |
+| Result hash | `sha256:24cc98fa5b42b8e3c3a3ded6155bf1721b1065d9567b5308ddb7dd681c34245f` |
+| Rows | 143 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json) |
 | Next queries | [`Inspect deterministic removal impact`](#query-result-cli-unreachable-removal-impact-v1) `symbolId=:symbolId` |
@@ -17114,9 +17420,9 @@ Full 86292-pointer claim map: [open the bound receipt artifact](source-facts-sel
 SELECT * FROM reportCallableInventory WHERE cliClosureClassification = 'NO_CLI_REACHABILITY' AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, declarationLine
 ```
 
-Full 145-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json).
+Full 143-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json).
 
-Full 3637-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json).
+Full 3587-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json).
 
 <a id="query-result-cli-unreachable-source-facts-v1"></a>
 
@@ -17126,12 +17432,12 @@ Full 3637-pointer claim map: [open the bound receipt artifact](source-facts-self
 |---|---|
 | Purpose | Fat and Waste Inventory |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:94440b0342c83f2f7820cda1a4e12a1b41e3b294c43be109c2cae564636110de` |
-| Result hash | `sha256:1d0632455afd637224f05c8bd0f686fb72c87ab4c5a848dc3116e7829f4756cc` |
-| Rows | 993 |
+| Result hash | `sha256:d7eab16fe8edbeb0eb920b9c4a0162de1e6ea93f3b5700b65dfaeb9c45d63692` |
+| Rows | 956 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json) |
 | Next queries | [`Inspect exact physical source`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId`<br>[`Inspect owner removal impact`](#query-result-cli-unreachable-removal-impact-v1) `symbolId=:symbolId` |
@@ -17140,9 +17446,9 @@ Full 3637-pointer claim map: [open the bound receipt artifact](source-facts-self
 SELECT * FROM reportSourceFacts WHERE cliClosureClassification = 'NO_CLI_REACHABILITY' AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, startLine
 ```
 
-Full 993-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json).
+Full 956-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json).
 
-Full 12909-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json).
+Full 12428-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json).
 
 <a id="query-result-cli-symbol-originating-commands-v1"></a>
 
@@ -17152,12 +17458,12 @@ Full 12909-pointer claim map: [open the bound receipt artifact](source-facts-sel
 |---|---|
 | Purpose | Reverse CLI Justification |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:414642febefcfb3b5cb7888a130f5c1d578619fc38e661aef67ec6b8e797e853` |
-| Result hash | `sha256:3f57c83b51d3c298758677478a10548cb38faf55e99cad4d09222bd12794592f` |
-| Rows | 1027 |
+| Result hash | `sha256:885983e8659b3a3579a411c42aa351d9f60e6a852ffe9318cc949f2d39d9a235` |
+| Rows | 1050 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json) |
 | Next queries | [`Inspect complete path`](#query-result-cli-entry-point-reachability-v1) `entryPointId=:entryPointId` `symbolId=:symbolId` |
@@ -17166,9 +17472,9 @@ Full 12909-pointer claim map: [open the bound receipt artifact](source-facts-sel
 SELECT * FROM reportCliOriginatingCommands WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY symbolId, depth, entryPointId
 ```
 
-Full 1027-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json).
+Full 1050-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json).
 
-Full 13958-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json).
+Full 14213-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json).
 
 <a id="query-result-cli-unreachable-removal-impact-v1"></a>
 
@@ -17178,12 +17484,12 @@ Full 13958-pointer claim map: [open the bound receipt artifact](source-facts-sel
 |---|---|
 | Purpose | Removal Impact |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:d01ecae4d4e7adc553ea633a4bf509d430835ac4495d2f338a454cea8a152027` |
-| Result hash | `sha256:041eb4c63b6affcbdcc2bf624ba66c8a41383f6e9a53e26d53847586ffce4f2a` |
-| Rows | 145 |
+| Result hash | `sha256:643577209011ce30aba0b346389e3e587e12e1497945845eb0ceecb236c6c84a` |
+| Rows | 143 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json) |
 | Next queries | [`Inspect callers`](#query-result-reachability-symbol-callers-v1) `symbolId=:symbolId`<br>[`Inspect callees`](#query-result-reachability-symbol-callees-v1) `symbolId=:symbolId` |
@@ -17192,9 +17498,9 @@ Full 13958-pointer claim map: [open the bound receipt artifact](source-facts-sel
 SELECT * FROM reportCliRemovalImpact WHERE (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, symbolName
 ```
 
-Full 145-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json).
+Full 143-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json).
 
-Full 2554-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json).
+Full 2513-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json).
 
 <a id="query-result-interface-summary-v1"></a>
 
@@ -17204,11 +17510,11 @@ Full 2554-pointer claim map: [open the bound receipt artifact](source-facts-self
 |---|---|
 | Purpose | Interface Governance |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` |
-| Result hash | `sha256:815a1e2f195e9e6b6540b9fcf8a3c62bdb13d17e94dcff8680c63e11e271622a` |
+| Result hash | `sha256:862cc073ca0497e4f773d4e066694862ba29fa6810a4e11e4c3e0931bc515daf` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/interface-summary-v1.json) |
@@ -17225,14 +17531,14 @@ SELECT * FROM reportInterfaceGovernanceSummary
   {
     "interfacePortfolioDisposition": "CLI_IS_FIRST_CLASS_OBSERVED_INTERFACE",
     "cliDispatchEvidenceDisposition": "CLI_DISPATCH_SOURCE_PARSED",
-    "cliDispatchSourceHash": "sha256:6727ecd491f0403aa6abe464ca362d2188a79526f277217e15714330b46fd0a5",
-    "observedCliCommandHandlers": 15,
-    "observedCliCommandTokens": 16,
-    "distinctCliExecutionSlices": 15,
+    "cliDispatchSourceHash": "sha256:7229bb1c3db7989d9e507e0d1cc7469b2db5bc2c911e30776068bd81f3ee3f50",
+    "observedCliCommandHandlers": 16,
+    "observedCliCommandTokens": 17,
+    "distinctCliExecutionSlices": 16,
     "aliasedCliCommandTokens": 2,
     "observedHttpEntryPoints": 8,
     "commandsWithCanonicalFeature": 5,
-    "commandsWithoutCanonicalFeature": 11,
+    "commandsWithoutCanonicalFeature": 12,
     "canonicalFeaturesAccessibleViaCli": 5,
     "canonicalFeatureIdsAccessibleViaCli": [
       "source-facts.cli-call-graph",
@@ -17244,13 +17550,13 @@ SELECT * FROM reportInterfaceGovernanceSummary
     "cliInterfaceAuthorityDocuments": 0,
     "cliInterfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
     "admittedCliCommands": 0,
-    "runtimeCallables": 824,
-    "cliReachableCallables": 671,
-    "sharedCliInfrastructure": 131,
+    "runtimeCallables": 826,
+    "cliReachableCallables": 675,
+    "sharedCliInfrastructure": 132,
     "runtimeResolutionRequired": 8,
-    "noCliReachabilityCallables": 145,
-    "reachableMechanicOccurrences": 5972,
-    "unreachableMechanicOccurrences": 993
+    "noCliReachabilityCallables": 143,
+    "reachableMechanicOccurrences": 6056,
+    "unreachableMechanicOccurrences": 956
   }
 ]
 ```
@@ -17271,12 +17577,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | CLI Command Inventory |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1cb099fc098a9301e59dae42cf27ab6c5b78a9e37cd5f5e5b21ead9785ee0454` |
-| Result hash | `sha256:bfa84be61bbc750ba5eac9a761006dbfb3658e1b83abdde6695353eebbe1683d` |
-| Rows | 16 |
+| Result hash | `sha256:ea790daa9f732164cc8f78d9b262724f94002ebd232db10fdd7297c6ea80ab5a` |
+| Rows | 17 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/interface-cli-commands-v1.json) |
 | Next queries | [`Inspect command execution paths`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolId=:entryPointId`<br>[`Inspect accessible canonical features`](#query-result-feature-coverage-features-v1) `featureId=:featureId`<br>[`Inspect interface authority gaps`](#query-result-interface-authority-gaps-v1) `commandName=:commandName` |
@@ -17285,7 +17591,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportCliCommands WHERE (:commandName IS NULL OR commandName = :commandName) AND (:handlerName IS NULL OR handlerName = :handlerName) AND (:featureId IS NULL OR :featureId IN canonicalFeatureIds) ORDER BY commandName, handlerName
 ```
 
-Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/interface-cli-commands-v1.json).
+Full 17-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/interface-cli-commands-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -17301,12 +17607,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | CLI Authority Gaps |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:9489a56fb6b3fd0b380f95572d062b54e7c1a0e641832c581d4b02e214d6b38a` |
-| Result hash | `sha256:fda919ac974715e20cfd34249c6dc1a0a5f8e1205e3e6779abb75b9032df95cc` |
-| Rows | 16 |
+| Result hash | `sha256:031348be2e8207be33bcccef050b666b9ad963e371f7ddb4c5f0f822cf6d89ee` |
+| Rows | 17 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/interface-authority-gaps-v1.json) |
 | Next queries | [`Inspect command evidence`](#query-result-interface-cli-commands-v1) `commandName=:commandName`<br>[`Inspect canonical authority`](#query-result-authority-documents-v1) |
@@ -17315,7 +17621,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportCliCommands WHERE governanceGapDisposition <> 'CLI_INTERFACE_GOVERNED' AND (:commandName IS NULL OR commandName = :commandName) AND (:gapDisposition IS NULL OR governanceGapDisposition = :gapDisposition) ORDER BY governanceGapDisposition, commandName
 ```
 
-Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/interface-authority-gaps-v1.json).
+Full 17-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/interface-authority-gaps-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -17331,8 +17637,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Features |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b507b9960f74168182112bb151a954844379cf125b19fe84166cbc25a5b68de3` |
 | Result hash | `sha256:063171974f526756fb724236ea5b36ef9e0966af52c3e7bb29acd8a1133f5701` |
@@ -17487,8 +17793,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Feature Scenarios |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:6971565a6037b39edde137eb108803f4360451bbffe1c34b9ed28dccb3e45f7b` |
 | Result hash | `sha256:3fb54aaf62148af47a5ced46cdd37fc624036b0648beb5061fd1c55389f839a9` |
@@ -17675,8 +17981,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Scenarios |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:713f34d346172b89a6d2641cabe6b68b4cdcfab36d97ef84c6aacebaec1ea8d9` |
 | Result hash | `sha256:3a98900c82bacbbcbb9465b913bb85114c4522861d5fed8059724415fd5fa91d` |
@@ -17905,8 +18211,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Structural Status |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c57d1e34cc94400a0112b0f630664f25d804b761ccfce4d6203ef63e1a1838be` |
 | Result hash | `sha256:9dda679bcce7505b7e4c07910fb3d137b021030e23ea5f6b216b6d335d3630e9` |
@@ -18093,8 +18399,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Scenario Responsibilities |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:4ebd6c77ccdbd9cb5424de261939db79c47da42a230c2b08f309a9682eb18cc1` |
 | Result hash | `sha256:d27ae627cf1fe9610ffeb16a31979828fd9dde280261e4e991cf637f792f9343` |
@@ -18490,8 +18796,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Scenario Call Paths |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:fbd7a1a7480a478232d79b077bc2dc1ee7820e72195339b31c479e06046150f6` |
 | Result hash | `sha256:4ef4a19f76ee643e261cbe4cc173494cd45c07a7d5910e76bbe2c4d42c16ece5` |
@@ -18777,11 +19083,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unlined Mechanics by File |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:2582f0c7032aea45ac90c9cd28622ae599c2c68977459483704a6754173c67e6` |
-| Result hash | `sha256:634300c6b70d7eb38082b49d94ebb109b26f591dac477b2cb704da176f6b0478` |
+| Result hash | `sha256:e2237761c65e3af2969c07b52153939a31275797719ca9ff2fe3c06424327f12` |
 | Rows | 532 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-file-v1.json) |
@@ -18807,12 +19113,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unlined Mechanics by Responsibility |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b5006477e6033f0ad57959635500ba21c302cf5b3acd8bc23f5d7a8d30273e3c` |
-| Result hash | `sha256:e69d9939f0070a0ef6fed309bd530575f26b3eb01ff4636ba51b919c43082d5a` |
-| Rows | 2000 |
+| Result hash | `sha256:f2373191dd77f0a6d6a852f9a130b00148961fc6c3ea2a3efd2f6691f67cbc8f` |
+| Rows | 2008 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-responsibility-v1.json) |
 | Next queries | [`Inspect interface reachability`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolName=:responsibility`<br>[`Inspect occurrences`](#query-result-feature-coverage-unlined-occurrences-v1) `responsibility=:responsibility` |
@@ -18821,7 +19127,7 @@ No scalar claims were rendered from this empty result.
 SELECT modulePath, responsibility, mechanic, COUNT(*) AS occurrenceCount FROM reportOccurrences WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:mechanic IS NULL OR mechanic = :mechanic) AND (:modulePath IS NULL OR modulePath = :modulePath) GROUP BY modulePath, responsibility, mechanic ORDER BY occurrenceCount DESC
 ```
 
-Full 2000-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-responsibility-v1.json).
+Full 2008-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-responsibility-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -18837,12 +19143,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unlined Mechanics by Symbol |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:830653ecd0f8d113685176d29b42361210d2240d15ccfec633e72aa6ec8c2f9a` |
-| Result hash | `sha256:499a1a5c594ddf9f18fe98ccceac7d409915ccca49f1aff5915e5bd16b71aa7e` |
-| Rows | 2002 |
+| Result hash | `sha256:febc8f22aa90738d4cad9f0cfced114a3cf15fe9d246ca956f3c20b130b6e490` |
+| Rows | 2010 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-symbol-v1.json) |
 | Next queries | [`Inspect entry surfaces`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolId=:symbolId` |
@@ -18851,7 +19157,7 @@ No scalar claims were rendered from this empty result.
 SELECT symbolId, symbolName, modulePath, mechanic, COUNT(*) AS occurrenceCount FROM reportOccurrences WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' GROUP BY symbolId, symbolName, modulePath, mechanic ORDER BY occurrenceCount DESC
 ```
 
-Full 2002-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-symbol-v1.json).
+Full 2010-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-symbol-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -18867,12 +19173,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Exact Unlined Occurrences |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:6a0a84598e1e351c5002c0680a73855cdb8f3e7312d18638005b291d2e84a624` |
-| Result hash | `sha256:d42ef1ae76770dff547ce23b87e8d2f0ea1478f5df4619031c09243418116ca0` |
-| Rows | 7478 |
+| Result hash | `sha256:09d796362a8f60f87b017815fc52db34b45ee054c9b7d80af3d637a9156f14ea` |
+| Rows | 7530 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-occurrences-v1.json) |
 | Next queries | [`Inspect physical source references`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId` |
@@ -18881,7 +19187,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportOccurrenceEvidence WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:mechanic IS NULL OR mechanic = :mechanic) AND (:modulePath IS NULL OR modulePath = :modulePath) AND (:responsibility IS NULL OR responsibility = :responsibility) ORDER BY modulePath, startLine
 ```
 
-Full 7478-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-occurrences-v1.json).
+Full 7530-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-occurrences-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -18897,12 +19203,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Physical Source Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:0b89b4d3e3751396bfc0ab6b67462c9374f1ee659e070472b22a92b38d378860` |
-| Result hash | `sha256:a11b8ba1abcd8552bd5ee82c1f765fec3b58261843b70b93b11720eee4a25cfc` |
-| Rows | 7636 |
+| Result hash | `sha256:7cde9c5ef9ce80e5a83df32295af41f7abf4d2d44c87648c666718e347ec6d50` |
+| Rows | 7688 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/source-facts-occurrence-source-references-v1.json) |
 | Next queries | [`Inspect reverse semantic impact`](#query-result-impact-source-reference-reverse-impact-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -18911,7 +19217,7 @@ No scalar claims were rendered from this empty result.
 SELECT occurrenceId, sourceReferenceId, modulePath, startLine, startColumn, endLine, endColumn, mechanic, symbolId, symbolName FROM reportOccurrenceEvidence WHERE (:occurrenceId IS NULL OR occurrenceId = :occurrenceId) AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, startLine, startColumn
 ```
 
-Full 7636-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/source-facts-occurrence-source-references-v1.json).
+Full 7688-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/source-facts-occurrence-source-references-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -18927,12 +19233,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Interface Reachability |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:242009af849c0ffd1b366b4a1f3738d9a0096d6ef97a55affcfe10e30122b742` |
-| Result hash | `sha256:8dfe3af2ab8e7a795829a7128761970d5f0d56c63f0ec1a17c6ec3c63c70bde4` |
-| Rows | 1027 |
+| Result hash | `sha256:521fcb240a2f6f5b269aab8081f48c42827f885805040670067e24f85919baf1` |
+| Rows | 1050 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/reachability-symbol-originating-entrypoints-v1.json) |
 | Next queries | [`Inspect callers`](#query-result-reachability-symbol-callers-v1) `symbolId=:symbolId`<br>[`Inspect callees`](#query-result-reachability-symbol-callees-v1) `symbolId=:symbolId`<br>[`Inspect semantic context`](#query-result-authority-authority-near-symbol-v1) `symbolId=:symbolId` |
@@ -18941,7 +19247,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportCallPaths WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:symbolName IS NULL OR symbolName = :symbolName) ORDER BY symbolId, depth, entryPointId
 ```
 
-Full 1027-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-originating-entrypoints-v1.json).
+Full 1050-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-originating-entrypoints-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -18957,12 +19263,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Reverse Callers |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3072ae466d3c8d6933062458482de3c8922d3c2dfbaacae932d61b69cbb6a540` |
-| Result hash | `sha256:0393e3e6514ca5183244d0e4d3822c3b916bb2226e8a0dc5867ed95f89b1fd1e` |
-| Rows | 7537 |
+| Result hash | `sha256:ce0563221555a8acbf1d31464bf4a6ba9adfeebdc7fa5e8d6de334fbb634f28b` |
+| Rows | 7594 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/reachability-symbol-callers-v1.json) |
 | Next queries | [`Inspect call-site source`](#query-result-source-facts-occurrence-source-references-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -18971,7 +19277,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportInvocationEdges WHERE (:symbolId IS NULL OR calleeSymbolId = :symbolId) ORDER BY relationshipId
 ```
 
-Full 7537-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callers-v1.json).
+Full 7594-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callers-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -18987,12 +19293,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Forward Callees |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:f0078a6d8c0e4e7617a1f3d24415bc84b9c011a179710cfa5306510d8985ad66` |
-| Result hash | `sha256:04ff484685713df145e4d474e7c84e73068812924eb2b03dd9d8f32b0b6a1a58` |
-| Rows | 7537 |
+| Result hash | `sha256:3fff8fb48f84e37d8d0fe30fd4a596a451123c577fbc3c0bc0793a63c452acb2` |
+| Rows | 7594 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/reachability-symbol-callees-v1.json) |
 | Next queries | [`Inspect call-site source`](#query-result-source-facts-occurrence-source-references-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -19001,7 +19307,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportInvocationEdges WHERE (:symbolId IS NULL OR callerSymbolId = :symbolId) ORDER BY relationshipId
 ```
 
-Full 7537-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callees-v1.json).
+Full 7594-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callees-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -19017,12 +19323,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Responsibility Cluster |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:efd390e1804079a28babb8ed8caf90f3075b0a093be587f663ad2ae9320b5068` |
-| Result hash | `sha256:877c1632e982734d8e7f4eefecc2201bbe0822dbbe708de8c4ea4b1f987e6e2c` |
-| Rows | 733 |
+| Result hash | `sha256:d986bde17480dc2c06c5445fae7a6e6105e27d5a925c4a5ecbd691ae6c11e0d9` |
+| Rows | 735 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/responsibility-evidence-cluster-by-id-v1.json) |
 | Next queries | [`Inspect entry surfaces`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolName=:responsibility`<br>[`Inspect nearby authority`](#query-result-authority-authority-near-symbol-v1) `symbolName=:responsibility` |
@@ -19031,7 +19337,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportUnresolvedEvidenceClusters WHERE (:clusterId IS NULL OR clusterId = :clusterId)
 ```
 
-Full 733-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/responsibility-evidence-cluster-by-id-v1.json).
+Full 735-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/responsibility-evidence-cluster-by-id-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -19047,8 +19353,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Lineage |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:aa543b2c7ab5577f034bd1257164fc69ec434efa54926c34f63bc305255f5c31` |
 | Result hash | `sha256:1292556b29e7ad54fc5555e8ed6c07d425cbc6c6c0b5292a27c025de41fa4d0f` |
@@ -19347,12 +19653,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Near Symbol |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c1f34de65cd661e85cc9c07f9d950251c8fa4dc8ee743b395907a337116df88c` |
-| Result hash | `sha256:5c47aeef59bf688c39e0c99d69e3786110e5fff06babc29ea2754cb219c257de` |
-| Rows | 7636 |
+| Result hash | `sha256:be9b5f06847365542d1cc2a29143cf2e6f13c94ea00d99f11ab7177e3f78ff06` |
+| Rows | 7688 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authority-authority-near-symbol-v1.json) |
 | Next queries | [`Inspect physical evidence`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId` |
@@ -19361,7 +19667,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportOccurrenceEvidence WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:symbolName IS NULL OR symbolName = :symbolName) AND (:authorityFile IS NULL OR authorityHomeFile = :authorityFile)
 ```
 
-Full 7636-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authority-authority-near-symbol-v1.json).
+Full 7688-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authority-authority-near-symbol-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -19377,8 +19683,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Subject Boundary Items |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3ddeefdb2493e00e7021c129748933e87fa6fe5c7fa1b140e1538d8af86f6ede` |
 | Result hash | `sha256:df6183da0e000c80d3dfa9abbdda95a2dc3d2817e28267989529a2c85769d969` |
@@ -19768,8 +20074,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Included Subject Items |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:86ccec9fb998fd3f4ef516f0cbe33beb7c2b636d6ecd330ec487db7f7bf6f5ab` |
 | Result hash | `sha256:cd5c1b08b0deec4eb5847b548b0bff3acf8ff2022be6f81216a2a59ac6b960c7` |
@@ -19985,8 +20291,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Excluded Subject Items |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:afafdb3b9d69acd6c8a1d16c0247e29e22d25e96ccf54c0133cce6cc22d4f08c` |
 | Result hash | `sha256:cd96c3ad8b9374dbccbc0e4a68319ba5b23dbda63c871e9baef49debad679788` |
@@ -20112,8 +20418,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Subject Item Scope Reason |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:a3933b1341b539303541191b403c8cc9d2b6e51e484de9e49583c0852b34e435` |
 | Result hash | `sha256:40f693882dd30b2a4526da2ae692795d3c51180d95e5c7907826260df09710bc` |
@@ -20275,12 +20581,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Reverse Impact |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:11fee5b05392548326dff3dfaf80ffbb726ed06e182cda40a7f5cdfd81133bf3` |
-| Result hash | `sha256:fb89f571c3c0540f3aae434b17ebc84a8c8b2696e57d9b97b094c7b4ffca9aea` |
-| Rows | 7636 |
+| Result hash | `sha256:7843bb5039a73605836920e12f33ae1a7b61174600a25ceb373f734f6689083f` |
+| Rows | 7688 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/impact-source-reference-reverse-impact-v1.json) |
 | Next queries | [`Inspect missing lineage and healing candidates`](#query-result-healing-source-fact-candidates-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -20289,7 +20595,7 @@ No scalar claims were rendered from this empty result.
 SELECT sourceReferenceId, symbolId, authorityHomeFile, featureIds, scenarioIds, obligationIds, featureCoveragePosture FROM reportOccurrenceEvidence WHERE (:sourceReferenceId IS NULL OR sourceReferenceId = :sourceReferenceId) AND (:symbolId IS NULL OR symbolId = :symbolId)
 ```
 
-Full 7636-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/impact-source-reference-reverse-impact-v1.json).
+Full 7688-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/impact-source-reference-reverse-impact-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20305,12 +20611,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Change and Healing |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:80ff9ca4e23a4da9a8312b08ba3e148f67675ef5c8c56d3a2d48c6991b2cfdbf` |
-| Result hash | `sha256:749f97bb36b2bdb35f132cf45331acfb283a446722c8b460c50bb68fec977bbe` |
-| Rows | 7478 |
+| Result hash | `sha256:9f8acdc06938b592e3112065cf30dc57ff2f4f176f9b45af725685af290296e7` |
+| Rows | 7530 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/healing-source-fact-candidates-v1.json) |
 | Next queries | [`Build authority evidence bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect inferred feature/scenario context`](#query-result-authoring-scenario-context-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect decision policy`](#query-result-authoring-decision-evidence-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect data shapes`](#query-result-authoring-object-shape-evidence-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect failure behavior`](#query-result-authoring-failure-policy-evidence-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect existing authority overlap`](#query-result-authoring-authority-overlap-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Build projection target`](#query-result-authoring-projection-target-v1) `symbolId=:symbolId`<br>[`Build proof vectors`](#query-result-authoring-proof-vector-candidates-v1) `symbolId=:symbolId` |
@@ -20319,7 +20625,7 @@ No scalar claims were rendered from this empty result.
 SELECT occurrenceId, sourceReferenceId, modulePath, symbolId, mechanic, featureCoveragePosture, authorityHomeFile FROM reportOccurrenceEvidence WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:sourceReferenceId IS NULL OR sourceReferenceId = :sourceReferenceId)
 ```
 
-Full 7478-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/healing-source-fact-candidates-v1.json).
+Full 7530-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/healing-source-fact-candidates-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20335,12 +20641,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Interface-to-Responsibility Slice |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c3366a48fc90431e4874916dba2eb03d7eb73d2b6fda23b841c87da63917debb` |
-| Result hash | `sha256:1e061c32c4ad96e3f4fe00a722197655badef0062151453416750caaf4cc886b` |
-| Rows | 1633 |
+| Result hash | `sha256:f0868fe5f6dc359793e776ea1e5e3029ad1df4dd4c6d70cbd381771e250a2329` |
+| Rows | 1656 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-interface-execution-slice-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20349,7 +20655,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM interfaceRows WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1633-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-interface-execution-slice-v1.json).
+Full 1656-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-interface-execution-slice-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20365,12 +20671,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Responsibility Body Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:798add784465cc049ae5fafd026257b873551da34655e12252477cdc6ff57240` |
-| Result hash | `sha256:74d4f263c830f74dd058295bc2490cf849b7bbadc460226dbf2b191642c476e3` |
-| Rows | 724 |
+| Result hash | `sha256:7d784de78ac17628cd323f23b51f947d108ab6964651681b99a775027fefc979` |
+| Rows | 726 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-responsibility-body-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20379,7 +20685,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM bodyRows WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 724-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-responsibility-body-evidence-v1.json).
+Full 726-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-responsibility-body-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20395,12 +20701,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Decision Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1b742701efaeeecc5ca8f85fb4db7d8d1fc0b16c6692e41e1298393b848d5487` |
-| Result hash | `sha256:aa99e73cc152a3637ed59596187107489d88187854dd2f6e56c5bebcf7795b10` |
-| Rows | 1330 |
+| Result hash | `sha256:a6016a4e71b5c4376e7210d925e6222d4dba47155c674fb3aab5bb7e3ea56be6` |
+| Rows | 1335 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-decision-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20409,7 +20715,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM decisions WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1330-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-decision-evidence-v1.json).
+Full 1335-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-decision-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20425,12 +20731,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Fallback and Missing-Value Policy |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:d4bcb3099a71a172a1d26e52f782473bd1a877fa57833757a02b38ec136c2039` |
-| Result hash | `sha256:76eb8a0fa7d2b7bfa0a8bc8d8bb2f872cc5d90d2652044b9f50f3962d36c7744` |
-| Rows | 1810 |
+| Result hash | `sha256:3b2b7f91484432f14d43e9bd4e15df78a1225f8666008cf3d9a3cf7367fff415` |
+| Rows | 1836 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-fallback-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20439,7 +20745,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM fallbacks WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1810-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-fallback-evidence-v1.json).
+Full 1836-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-fallback-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20455,12 +20761,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Validation and Rejection Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:987e66b52ca7bcefd1c09b4a721f188302f1708c91bbf61e28c7de0e944ea807` |
-| Result hash | `sha256:3a0844d4f94218ead893b4bc9f82eb548b017520d4d5b4c5d59cb844132f2644` |
-| Rows | 167 |
+| Result hash | `sha256:4b3f1716b5c8ea6e70bf0e4a721f706b1f495fc1b83aee2b59fa19f5f70959fa` |
+| Rows | 168 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-validation-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20469,7 +20775,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM validations WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 167-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-validation-evidence-v1.json).
+Full 168-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-validation-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20485,12 +20791,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Exception and Failure Policy |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:8a66c42dfc3fa269b39827bd1fa2c0f6a64008dfd8c668e36d764b270f8e68b5` |
-| Result hash | `sha256:bdb0bdabf4e685fd1f1afffc81e309da6a01fdc6a367cbfc9b69636b39afc68f` |
-| Rows | 336 |
+| Result hash | `sha256:ecfa535625d4c223a1e63102030e9fccd47a37341d655de26fced6b2a4036203` |
+| Rows | 339 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-failure-policy-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20499,7 +20805,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM failures WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 336-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-failure-policy-evidence-v1.json).
+Full 339-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-failure-policy-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20515,12 +20821,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Object Shape Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:322a74e7fd1f1bbfaf8e014194ceaafd06dc283e624a96aa398afec32ba04621` |
-| Result hash | `sha256:6436638a22fe252ab522952c2a84021883fc1081f7f6740106256c2521e19a0c` |
-| Rows | 2814 |
+| Result hash | `sha256:27af616e5fc628c85989943f955bbf67bebd068596b86a441fc8d094662adaa5` |
+| Rows | 2829 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-object-shape-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20529,7 +20835,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM objectShapes WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 2814-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-object-shape-evidence-v1.json).
+Full 2829-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-object-shape-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20545,12 +20851,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Result Contract Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:e295e5c199b8e405f479624723ee975cc1a4ab89bb1f8f9a2a309a4e183dd0c3` |
-| Result hash | `sha256:662778e432ee4c99036db0663a96a6ee2949af9f9a95299c932128bd4d4ea504` |
-| Rows | 1110 |
+| Result hash | `sha256:8b7a56e5eb0b6b27aa2ff44cd35613df9a1126de34ec589e2f6e273ad212e8f8` |
+| Rows | 1113 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-result-contract-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20559,7 +20865,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM resultContracts WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1110-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-result-contract-evidence-v1.json).
+Full 1113-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-result-contract-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20575,12 +20881,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Serialization Profile |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:66d9960a07465b5af9e5c49cbadb38dc781b1664bae8f38f2a729a69b8c957f0` |
-| Result hash | `sha256:ca779051fe552ec77a26ef267d1b30edcf1bfbad31b5d742a57adc45b55b0e95` |
-| Rows | 88 |
+| Result hash | `sha256:3831e3e57801a7b60758977e38c485b3a9f13856c95280c54288462bc5d7ee48` |
+| Rows | 89 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-serialization-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20589,7 +20895,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM serializations WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 88-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-serialization-evidence-v1.json).
+Full 89-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-serialization-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20605,11 +20911,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Normalization and Translation |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:e19f5b592048026bb385df580778f608c57c298fd8aea8cc7ae0b90637bd8dc8` |
-| Result hash | `sha256:3cd21fd0d6762c15e15d078f584f357634b63849e7d870c92d2fab957a431283` |
+| Result hash | `sha256:ded5a11282594b5fb9d1248b595af3dfc97be72442c4f811c96564d98dffdcf0` |
 | Rows | 144 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-normalization-evidence-v1.json) |
@@ -20635,11 +20941,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Iteration Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1b7b1d5154de8375af5dc76f91ec87f46affe2bbe4ff7af27599261f1684bcef` |
-| Result hash | `sha256:2e39f7e0531a734527696555de6f4059be05b0a043ac01dad4eec2297c8ef613` |
+| Result hash | `sha256:f26f606c396f0b05eaa255f9190c12a5f4fc14b853ec772e63feba88b92571f8` |
 | Rows | 456 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-iteration-evidence-v1.json) |
@@ -20665,12 +20971,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | State-Transition Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:ead8095a81ee48e74190abe6541bf069075d94dbb900d5dce6a1755cc18fcd7f` |
-| Result hash | `sha256:8aefcdd5b708dd7601dd0bc8c800a0675201cca7f55865234e7d824063e8ec49` |
-| Rows | 333 |
+| Result hash | `sha256:b3641c7c8fdfc530b4709e49f2fa86b900726d579c150e1ff34cbb0103d0449b` |
+| Rows | 334 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-state-transition-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20679,7 +20985,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM stateTransitions WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 333-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-state-transition-evidence-v1.json).
+Full 334-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-state-transition-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20695,12 +21001,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Data-Flow Slice |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:93b7ed049ac305c55e6cd12a887b18f5a594e603c2b930996db52058b54a29bb` |
-| Result hash | `sha256:367764f9978d0a73f4f4f59075df35634f4cffd9a8fb1cb5c02d6b4f0587a9bc` |
-| Rows | 724 |
+| Result hash | `sha256:e1ffd1dc92f0e5482287c6f5c9316f9d10024f883f499af1e0b5528ad21dc3a6` |
+| Rows | 726 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-data-flow-slice-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20709,7 +21015,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM dataFlowSlices WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 724-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-data-flow-slice-v1.json).
+Full 726-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-data-flow-slice-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20725,12 +21031,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Existing Authority Overlap |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:9be4fb88b4dc0cc75eea562b505a03ab159223bacb14d98809a9c74086e70397` |
-| Result hash | `sha256:bc983b33e7203c659bb7c4e3d04a0ebc4ccb6294e68a5f05ae182e16dd69f6fa` |
-| Rows | 7488 |
+| Result hash | `sha256:c40f26ebb5ed2a952864b6422c1718e4c1ee0a6a58647e446cd27b21d51a8d85` |
+| Rows | 7540 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-authority-overlap-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20739,7 +21045,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM overlaps WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 7488-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-authority-overlap-v1.json).
+Full 7540-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-authority-overlap-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20755,12 +21061,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Feature and Scenario Context |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:97b4eb2ae7b3a88a110536b2a42857be7834f14e5efe6f2386f330e85c461f36` |
-| Result hash | `sha256:a7e0e95fce8fb1ec6dc9da1efc8abdbc2f5907ca25fa38c6dabcf31a480a390e` |
-| Rows | 7488 |
+| Result hash | `sha256:d50280d7f19da6b3334d7e681ff9227df37eeca1c512fa4c428c64c1d090e46c` |
+| Rows | 7540 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-scenario-context-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20769,7 +21075,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM scenarioContexts WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 7488-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-scenario-context-v1.json).
+Full 7540-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-scenario-context-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20785,12 +21091,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Projection Target Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:10dd92a9a30e97cac4ed07f7bdc5c501de66ced1d0e732a86e659e7d1dcf1505` |
-| Result hash | `sha256:f1200564615f27b7b9a0f3b1abbc85aebf9b3ca064e50e8b27e84707ed8498e0` |
-| Rows | 724 |
+| Result hash | `sha256:ca114a7283734a69d67449af331e6e4282b6bfbb0ab4f5bd600da3ed4b3b1a3e` |
+| Rows | 726 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-projection-target-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20799,7 +21105,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM projectionTargets WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 724-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-projection-target-v1.json).
+Full 726-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-projection-target-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20815,12 +21121,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Equivalence and Proof Candidates |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3116890ff31c7b4c5a80c14a67253c9f6312b023eecb25ea3fff8f9382ca4308` |
-| Result hash | `sha256:01742dc66eb566d7d54222a406984efe5268923a9f03b189875f64007fbd2832` |
-| Rows | 724 |
+| Result hash | `sha256:39a849f240fd7201b75a7db5d7f5935e94154c9c8080e473ff32ceee708683d0` |
+| Rows | 726 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-proof-vector-candidates-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -20829,7 +21135,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM proofVectors WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 724-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-proof-vector-candidates-v1.json).
+Full 726-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-proof-vector-candidates-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20845,8 +21151,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Contract Map |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:2cab84afc1cf2e4d424570646d118218f21b67d5012f16f5c50afde84898a08a` |
 | Result hash | `sha256:c937a111b29f531e9648da3292d3cadc4534582833828b93e2f9d70e388f50c5` |
@@ -20875,12 +21181,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Semantic Authority Evidence Bundle |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3348a52e9913d17e1a2b1e9b9020c60a879e3d9107aa5673643cb49b3e9260ca` |
-| Result hash | `sha256:e740c00791df03634f4473eee9fe103187e4c771deb880a45da953e582e97f11` |
-| Rows | 7488 |
+| Result hash | `sha256:abd853959946a0e30aa3eb485dda9db8a3e3dbb33cb840f9cd014a64e15d0f27` |
+| Rows | 7540 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-semantic-authority-evidence-bundle-v1.json) |
 | Next queries | [`Inspect deterministic readiness`](#query-result-authoring-readiness-v1) `occurrenceId=:occurrenceId` |
@@ -20889,7 +21195,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM bundles WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 7488-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-semantic-authority-evidence-bundle-v1.json).
+Full 7540-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-semantic-authority-evidence-bundle-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20905,12 +21211,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authoring Readiness |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3be2d3d609c7431f172b6d174112f5f225fe9471c92b5cb96099181c51471470` |
-| Result hash | `sha256:3eb5b47c58cd8214cf9e98b6760d43143f3b21bd3548eb23095aaf8e4bc2218e` |
-| Rows | 7488 |
+| Result hash | `sha256:324567b39523dd82dcd24cd727d609717edbbbecb2437dcb5d3dde3c55e2acf8` |
+| Rows | 7540 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-readiness-v1.json) |
 | Next queries | terminal physical/healing evidence |
@@ -20919,7 +21225,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM readinessRows WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 7488-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-readiness-v1.json).
+Full 7540-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-readiness-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -20935,11 +21241,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Authoring Reconciliation |
 | Version | `1.0.0` |
-| Index ID | `sha256:bb15e676b4540b3c84f678129dd4abc49288be1e75f4abeb045eb45f741e8242` |
-| Scan ID | `b0b5d9f1e582bf39277bed1bf6caf13a522c196c6c976114feaf9c3f24e5c3df` |
+| Index ID | `sha256:550c452b2647e00d64267758d9372fac6801cd3b93f63054ceb111dd3218dcac` |
+| Scan ID | `99776a51bd75b483e4cd1e20387d241603973281155ff7ddb20ff76927b0f692` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:326068c7279d28afe22f7ed87720a096fc7d1e1d0cd70604e89a034a56185dfd` |
-| Result hash | `sha256:16902b4663bab1d8dd5027c11448c96cf8b584b08f6db83afafbd40bb618eaf4` |
+| Result hash | `sha256:b82653bbb18c38437766433cc259d4e1992eac94fa5394d5382e16c984d032ba` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-reconciliation-v1.json) |
@@ -20955,12 +21261,12 @@ SELECT * FROM authoringReconciliation
 [
   {
     "disposition": "PASSED",
-    "healingCandidates": 7478,
-    "candidatesWithAuthoringEvidenceBundle": 7478,
-    "candidatesWithCompleteQueryProvenance": 7478,
-    "candidatesWithUnresolvedRequiredEvidence": 7478,
+    "healingCandidates": 7530,
+    "candidatesWithAuthoringEvidenceBundle": 7530,
+    "candidatesWithCompleteQueryProvenance": 7530,
+    "candidatesWithUnresolvedRequiredEvidence": 7530,
     "candidatesReadyForSemanticAuthorityAuthoring": 0,
-    "candidatesReadyForProjection": 6836,
+    "candidatesReadyForProjection": 6883,
     "declaredResponsibilities": 10,
     "declaredResponsibilityBundles": 10,
     "declaredResponsibilitiesBlockedByInterface": 7,
@@ -20969,10 +21275,10 @@ SELECT * FROM authoringReconciliation
     "missingAuthoringQueries": 0,
     "incompleteEvidenceBundles": 0,
     "missingSourceReferences": 0,
-    "unresolvedCallPaths": 1664,
-    "missingScenarioContexts": 7478,
+    "unresolvedCallPaths": 1632,
+    "missingScenarioContexts": 7530,
     "authorityOverlapNotEvaluated": 0,
-    "proofVectorMissing": 642,
+    "proofVectorMissing": 647,
     "contractMapMissing": 0,
     "drillDowns": [
       {

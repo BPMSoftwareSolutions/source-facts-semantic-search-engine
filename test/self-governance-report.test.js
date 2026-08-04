@@ -117,9 +117,9 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(commandNames.includes("govern"));
   assert.ok(commandNames.includes("propose-feature-coverage"));
   assert.ok(commandNames.includes("project-governed-console-contract"));
-  assert.equal(projection.summary.observedCliCommandHandlers, 15);
-  assert.equal(projection.summary.observedCliCommandTokens, 16);
-  assert.equal(projection.summary.distinctCliExecutionSlices, 15);
+  assert.equal(projection.summary.observedCliCommandHandlers, 16);
+  assert.equal(projection.summary.observedCliCommandTokens, 17);
+  assert.equal(projection.summary.distinctCliExecutionSlices, 16);
   assert.equal(projection.summary.aliasedCliCommandTokens, 2);
   assert.equal(projection.commands.find((row) => row.commandName === "project-console-contract").executionSliceDisposition, "MULTIPLE_INTERFACE_ALIASES_ONE_EXECUTION_SLICE");
   assert.equal(projection.summary.admittedCliCommands, 0);
@@ -153,7 +153,7 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(governGraph.rows[0].summary.actionableInternalClosureDebt < governGraph.rows[0].summary.unresolvedInvocationEdgeCount);
 
   const packets = rerunsRegisteredReportQuery(report, "cli.feature-intent-proposal-packets.v1", {});
-  assert.equal(packets.rowCount, 15);
+  assert.equal(packets.rowCount, 16);
   assert.deepEqual(packets.rows.find((row) => row.handler === "runProjectConsoleContract").commandAliases, ["project-console-contract", "project-governed-console-contract"]);
   const callGraphPacket = packets.rows.find((row) => row.commandId === "call-graph");
   assert.equal(callGraphPacket.proposalDisposition, "FEATURE_INTENT_EXECUTION_GRAPH_BOUND");
@@ -175,6 +175,14 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.equal(callGraphProofs.rows[0].lineageStatus, "PROPOSED_SCENARIO_LINEAGE");
   const unreachableTestDependencies = rerunsRegisteredReportQuery(report, "test.unreachable-production-dependencies.v1", {});
   assert.ok(unreachableTestDependencies.rows.every((row) => row.depth === 0 && row.cliClosureClassification === "NO_CLI_REACHABILITY"));
+  const completeLineage = rerunsRegisteredReportQuery(report, "trace.feature-complete-lineage.v1", { featureId: "source-facts.cli-call-graph" });
+  assert.equal(completeLineage.rowCount, 1);
+  assert.equal(completeLineage.rows[0].gherkin.featureId, "source-facts.cli-call-graph");
+  assert.equal(completeLineage.rows[0].executionGraph.nodes.length, 41);
+  assert.equal(completeLineage.rows[0].scenarios.length, 1);
+  assert.equal(completeLineage.rows[0].scenarios[0].tests.length, 1);
+  assert.equal(completeLineage.rows[0].scenarios[0].proofCoverage.proofCount, 0);
+  assert.equal(completeLineage.rows[0].lineageDisposition, "FEATURE_LINEAGE_BOUND_RUNTIME_PROOF_MISSING");
 });
 
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {

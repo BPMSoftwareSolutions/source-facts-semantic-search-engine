@@ -244,6 +244,62 @@ function buildsFeatureIntentProposalPackets(context) {
   return packets.sort((left, right) => String(left.commandId).localeCompare(String(right.commandId)));
 }
 
+function buildsCompleteFeatureLineageRows(context) {
+  return (context.canonicalFeatures?.features ?? []).map((gherkinFeature) => {
+    const featureId = gherkinFeature.featureId;
+    const intent = (context.canonicalIntents?.features ?? []).find((row) => row.featureId === featureId) ?? null;
+    const interfaceTrace = (context.canonicalTraces?.featureToInterface ?? []).find((row) => row.featureId === featureId) ?? null;
+    const commands = (context.interfaceGovernance.commands ?? []).filter((row) => row.canonicalFeatureIds.includes(featureId));
+    const graph = interfaceTrace?.symbolId ? (context.commandExecutionGraphRows ?? []).find((row) => row.entryPointId === interfaceTrace.symbolId) ?? null : null;
+    const callables = (context.canonicalTraces?.featureToCallgraph ?? []).filter((row) => row.featureId === featureId);
+    const responsibilityBindings = (context.canonicalTraces?.responsibilityToCallgraph ?? []).filter((row) => row.featureId === featureId);
+    const scenarioRows = (context.canonicalFeatures?.scenarios ?? []).filter((row) => row.featureId === featureId);
+    const scenarios = scenarioRows.map((gherkinScenario) => {
+      const scenarioId = gherkinScenario.scenarioId;
+      const intentScenario = (context.canonicalIntents?.scenarios ?? []).find((row) => row.scenarioId === scenarioId) ?? null;
+      const responsibility = (context.canonicalIntents?.responsibilities ?? []).find((row) => row.scenarioId === scenarioId) ?? null;
+      const binding = responsibilityBindings.find((row) => row.scenarioId === scenarioId) ?? null;
+      const tests = (context.testTraceability?.scenarioLineage ?? []).filter((row) => row.scenarioId === scenarioId);
+      const proofCoverage = (context.testTraceability?.scenarioProofCoverage ?? []).find((row) => row.scenarioId === scenarioId) ?? null;
+      return {
+        gherkin: gherkinScenario,
+        intent: intentScenario,
+        steps: (context.canonicalFeatures?.steps ?? []).filter((row) => row.scenarioId === scenarioId),
+        responsibility,
+        obligation: responsibility ? { obligationId: responsibility.obligationId, statement: responsibility.obligationStatement } : null,
+        executionBinding: binding,
+        sourceFacts: (context.canonicalTraces?.scenarioToSourceFacts ?? []).filter((row) => row.scenarioId === scenarioId),
+        mechanics: (context.canonicalTraces?.obligationToMechanics ?? []).filter((row) => row.scenarioId === scenarioId),
+        tests,
+        proofCoverage,
+      };
+    });
+    return {
+      featureId,
+      gherkin: gherkinFeature,
+      intent,
+      interface: interfaceTrace,
+      cliSurfaces: commands.map((row) => ({ commandName: row.commandName, commandAliases: row.commandAliases, handlerName: row.handlerName, entryPointId: row.entryPointId, governanceGapDisposition: row.governanceGapDisposition })),
+      executionGraph: graph,
+      callables,
+      responsibilityBindings,
+      scenarios,
+      testSummary: {
+        linkedTestIds: uniqueSorted(scenarios.flatMap((scenario) => scenario.tests.map((test) => test.testId))),
+        proofLinkedScenarios: scenarios.filter((scenario) => scenario.tests.length > 0).length,
+        runtimeProvenScenarios: scenarios.filter((scenario) => (scenario.proofCoverage?.proofCount ?? 0) > 0).length,
+        scenarioProofGaps: scenarios.filter((scenario) => (scenario.proofCoverage?.proofCount ?? 0) === 0).map((scenario) => scenario.gherkin.scenarioId),
+      },
+      lineageDisposition: !intent ? "FEATURE_INTENT_MISSING"
+        : interfaceTrace?.interfaceDisposition !== "INTERFACE_ROOT_RESOLVED" ? "FEATURE_INTERFACE_UNRESOLVED"
+          : !graph ? "FEATURE_EXECUTION_GRAPH_MISSING"
+            : scenarios.some((scenario) => scenario.executionBinding?.bindingDisposition !== "RESPONSIBILITY_EXECUTION_GRAPH_BOUND") ? "FEATURE_RESPONSIBILITY_BINDING_INCOMPLETE"
+              : scenarios.some((scenario) => (scenario.proofCoverage?.proofCount ?? 0) === 0) ? "FEATURE_LINEAGE_BOUND_RUNTIME_PROOF_MISSING"
+                : "FEATURE_LINEAGE_AND_RUNTIME_PROOF_COMPLETE",
+    };
+  });
+}
+
 function buildsInvocationRows(context) {
   const seen = new Set();
   const rows = [];
@@ -361,6 +417,7 @@ export function buildsReportQueryContext(view, index, canonicalFeatureQueryPlane
     const provenScenarioIds = uniqueSorted((context.testTraceability?.scenarioProofCoverage ?? []).filter((row) => command.canonicalScenarioIds.includes(row.scenarioId) && row.proofCount > 0).map((row) => row.scenarioId));
     return { commandName: command.commandName, handlerName: command.handlerName, entryPointId: command.entryPointId, reachableCallableCount: command.reachableCallableCount, testIds, testsReachingGraph: testIds.length, featureSpecificTestIds, featureSpecificTests: featureSpecificTestIds.length, sharedOnlyTestIds, sharedOnlyTests: sharedOnlyTestIds.length, canonicalScenarioIds: command.canonicalScenarioIds, proofLinkedScenarioIds, provenScenarioIds, scenarioGapIds: command.canonicalScenarioIds.filter((scenarioId) => !provenScenarioIds.includes(scenarioId)) };
   });
+  context.completeFeatureLineageRows = buildsCompleteFeatureLineageRows(context);
   context.authoring = buildsAuthoringEvidenceContext(context);
   return context;
 }
@@ -381,6 +438,15 @@ export const reportDrillDownQueries = Object.freeze([
     rows: (context) => context.featureIntentProposalPackets,
     drillDowns: [next("cli.command-execution-graphs.v1", "Inspect execution graph evidence", { entryPointId: ":entryPointId" }), next("trace.responsibility-to-command-graph.v1", "Inspect responsibility bindings", { entryPointId: ":entryPointId" })],
     rowDrillDowns: (row) => [next("cli.command-execution-graphs.v1", "Inspect execution graph evidence", { entryPointId: row.entryPointId }), next("trace.responsibility-to-command-graph.v1", "Inspect responsibility bindings", { entryPointId: row.entryPointId })],
+  },
+  {
+    queryId: "trace.feature-complete-lineage.v1", section: "Canonical Trace", depth: 0,
+    queryText: "SELECT * FROM completeFeatureLineage WHERE featureId = :featureId",
+    inputCollections: ["gherkinFeatureRegistry", "intentFeatureRegistry", "intentScenarioRegistry", "intentResponsibilityRegistry", "reportCliCommands", "reportCliCommandExecutionGraphs", "sourceMechanics", "reportTestScenarioLineage", "reportScenarioProofCoverage"],
+    expectedResultSchema: "one nested feature-rooted lineage row containing Gherkin, intent, interface, complete execution graph, source mechanics, tests, and proof posture",
+    parameters: [parameter("featureId")], rows: (context) => context.completeFeatureLineageRows,
+    drillDowns: [next("gherkin.feature-by-id.v1", "Inspect Gherkin feature", { featureId: ":featureId" }), next("cli.command-execution-graphs.v1", "Inspect execution graph", {}), next("test.scenario-lineage.v1", "Inspect test lineage", { featureId: ":featureId" })],
+    terminal: true,
   },
   {
     queryId: "test.summary.v1", section: "Test Traceability", depth: 0,

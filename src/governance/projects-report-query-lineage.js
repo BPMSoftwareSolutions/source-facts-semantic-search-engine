@@ -484,6 +484,7 @@ export function reconcilesReportQueryLineage(report) {
     if (!registrations.has(queryId) || !receipts.has(queryId)) throw new FactQueryLineageError("CLI_QUERY_MISSING", queryId);
   }
   const requiredTestQueries = [
+    "trace.feature-complete-lineage.v1",
     "test.summary.v1", "test.inventory.v1", "test.production-reachability.v1", "test.originating-cli-features.v1",
     "test.scenario-lineage.v1", "test.scenario-proof-coverage.v1", "test.unreachable-production-dependencies.v1",
     "test.without-canonical-lineage.v1", "test.supporting-lineage.v1", "test.duplicate-obligation-proof.v1",
