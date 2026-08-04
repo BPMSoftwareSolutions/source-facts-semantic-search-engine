@@ -5,6 +5,7 @@ import Ajv2020 from "ajv/dist/2020.js";
 const schemaPaths = Object.freeze({
   "traceability-metric-catalog.v1": fileURLToPath(new URL("../contracts/traceability-metric-catalog.schema.v1.json", import.meta.url)),
   "traceability-query-receipts.v1": fileURLToPath(new URL("../contracts/traceability-query-receipts.schema.v1.json", import.meta.url)),
+  "traceability-documentation-closure-receipt.v1": fileURLToPath(new URL("../contracts/traceability-documentation-closure-receipt.schema.v1.json", import.meta.url)),
 });
 const validatorCache = new Map();
 
@@ -20,6 +21,13 @@ export async function validatesTraceabilityQueryReceipts(receipts) {
   if (validate(receipts)) return receipts;
   const details = validate.errors.map((error) => `${error.instancePath || "/"} ${error.message}`).join("; ");
   throw new Error(`traceability-query-receipts schema validation failed: ${details}`);
+}
+
+export async function validatesTraceabilityClosureReceipt(receipt) {
+  const validate = await loadsValidator("traceability-documentation-closure-receipt.v1");
+  if (validate(receipt)) return receipt;
+  const details = validate.errors.map((error) => `${error.instancePath || "/"} ${error.message}`).join("; ");
+  throw new Error(`traceability-documentation-closure-receipt schema validation failed: ${details}`);
 }
 
 async function loadsValidator(schemaKey) {

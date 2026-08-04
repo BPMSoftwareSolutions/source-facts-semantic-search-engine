@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { validatesSourceFactIndex } from "./validate-index.js";
+import { executeRelationalQuery } from "./query.js";
 import {
   validatesTraceabilityMetricCatalog,
   validatesTraceabilityQueryReceipts,
@@ -77,7 +78,7 @@ export async function generatesTraceabilityDocs(
   for (const metric of metricCatalog.metrics) {
     if (resolved.has(metric.metricId)) continue;
     orderedMetricValues.push({
-      ...resolveMetric(
+      ...(await resolveMetric(
         metric.metricId,
         metricById,
         artifactByKind,
@@ -87,10 +88,11 @@ export async function generatesTraceabilityDocs(
           indexBinding,
           graphBinding,
           catalogBinding,
+          index,
         },
         resolved,
         new Set(),
-      ),
+      )),
       source: metric.source,
       resultType: metric.resultType,
       section: metric.section,
@@ -132,11 +134,11 @@ export async function generatesTraceabilityDocs(
 }
 
 function validateArtifactCompatibility(report, graph, index) {
-  const reportIndexId = readRequiredString(report, "index.indexId", "Report indexId");
-  const reportScanId = readRequiredString(report, "index.scanId", "Report scanId");
-  const sourceIndexId = readRequiredString(index, "indexId", "Source indexId");
-  const sourceScanId = readRequiredString(index, "manifest.scanId", "Source scanId");
-  const graphIndexId = readRequiredString(graph, "indexId", "Call-graph indexId");
+  const reportIndexId = readRequiredString(report, "/index/indexId", "Report indexId");
+  const reportScanId = readRequiredString(report, "/index/scanId", "Report scanId");
+  const sourceIndexId = readRequiredString(index, "/indexId", "Source indexId");
+  const sourceScanId = readRequiredString(index, "/manifest/scanId", "Source scanId");
+  const graphIndexId = readRequiredString(graph, "/indexId", "Call-graph indexId");
   const reportRepositoryId = report.repository?.repositoryId ?? report.subject?.repositoryId ?? null;
   const sourceWorkspaceId = index.workspace?.workspaceId ?? null;
 
@@ -269,7 +271,7 @@ function formatMetric(value, resultType, disposition) {
   return String(Number(value.toFixed ? value.toFixed(1) : value));
 }
 
-function resolveMetric(metricId, metricById, artifactByKind, queryReceiptById, context, resolved, seenIds) {
+async function resolveMetric(metricId, metricById, artifactByKind, queryReceiptById, context, resolved, seenIds) {
   const metric = metricById.get(metricId);
   if (metric === undefined) {
     throw new Error(`METRIC_POINTER_NOT_FOUND: ${metricId} is referenced but not present in the catalog.`);
@@ -289,7 +291,7 @@ function resolveMetric(metricId, metricById, artifactByKind, queryReceiptById, c
     if (receipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
       throw new Error(`QUERY_RECEIPT_STALE: ${metric.query.queryId} for ${metricId} was ${receipt.disposition}.`);
     }
-    validatesQueryReceiptBinding(metric, receipt, context);
+    await validatesQueryReceiptBinding(metric, receipt, context);
   }
 
   const { source } = metric;
@@ -323,11 +325,21 @@ function resolveMetric(metricId, metricById, artifactByKind, queryReceiptById, c
     if (!Array.isArray(source.addendMetricIds) || source.addendMetricIds.length === 0) {
       throw new Error(`METRIC_POINTER_NOT_FOUND: missing addend metric ids for ${metricId}.`);
     }
-    value = source.addendMetricIds.reduce((total, addendMetricId) => (
-      total + resolveMetric(addendMetricId, metricById, artifactByKind, queryReceiptById, context, resolved, seenIds).value
-    ), 0);
+    value = 0;
+    for (const addendMetricId of source.addendMetricIds) {
+      const addend = await resolveMetric(
+        addendMetricId,
+        metricById,
+        artifactByKind,
+        queryReceiptById,
+        context,
+        resolved,
+        seenIds,
+      );
+      value += addend.value;
+    }
   } else if (source.valueMode === "ratio") {
-    const numeratorMetric = resolveMetric(
+    const numeratorMetric = await resolveMetric(
       source.numeratorMetricId,
       metricById,
       artifactByKind,
@@ -336,7 +348,7 @@ function resolveMetric(metricId, metricById, artifactByKind, queryReceiptById, c
       resolved,
       seenIds,
     );
-    const denominatorMetric = resolveMetric(
+    const denominatorMetric = await resolveMetric(
       source.denominatorMetricId,
       metricById,
       artifactByKind,
@@ -393,7 +405,7 @@ function normalizesQueryReceipts(receipts) {
   return receiptsById;
 }
 
-function validatesQueryReceiptBinding(metric, receipt, { reportBinding, indexBinding, graphBinding, catalogBinding }) {
+async function validatesQueryReceiptBinding(metric, receipt, { reportBinding, indexBinding, graphBinding, catalogBinding, index }) {
   if (receipt.queryText === undefined || receipt.queryText.length === 0) {
     throw new Error(`QUERY_RECEIPT_TEXT_MISSING: ${metric.metricId} has no query text for ${metric.query?.queryId}.`);
   }
@@ -433,6 +445,37 @@ function validatesQueryReceiptBinding(metric, receipt, { reportBinding, indexBin
   }
   if (expectedReceiptBinding.scanId !== null && receipt.artifactBinding.scanId !== expectedReceiptBinding.scanId) {
     throw new Error(`QUERY_RECEIPT_ARTIFACT_BINDING_MISMATCH: ${metric.metricId} artifact scanId ${receipt.artifactBinding.scanId} does not match expected ${expectedReceiptBinding.scanId}.`);
+  }
+
+  const queryExecutionReceipt = await executeRelationalQuery(index, receipt.queryText);
+  if (queryExecutionReceipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
+    throw new Error(`QUERY_RECEIPT_QUERY_EXECUTION_FAILED: ${metric.metricId} query execution for ${metric.query?.queryId} ended with ${queryExecutionReceipt.disposition}.`);
+  }
+  if (queryExecutionReceipt.result?.value?.commandText !== receipt.queryText) {
+    throw new Error(`QUERY_RECEIPT_QUERY_TEXT_MISMATCH: ${metric.metricId} command text reported by engine does not match query receipt.`);
+  }
+
+  if (typeof receipt.inputHash !== "string" || receipt.inputHash.length === 0) {
+    throw new Error(`QUERY_RECEIPT_INPUT_HASH_MISSING: ${metric.metricId} for ${metric.query?.queryId}.`);
+  }
+  if (receipt.inputHash !== queryExecutionReceipt.inputHash) {
+    throw new Error(`QUERY_RECEIPT_INPUT_HASH_MISMATCH: ${metric.metricId} input hash ${receipt.inputHash} does not match expected value for ${metric.query?.queryId}.`);
+  }
+  if (typeof receipt.rowCount !== "number" || Number.isInteger(receipt.rowCount) === false || receipt.rowCount < 0) {
+    throw new Error(`QUERY_RECEIPT_ROW_COUNT_MISMATCH: ${metric.metricId} rowCount ${String(receipt.rowCount)} is invalid for ${metric.query?.queryId}.`);
+  }
+  const actualRowCount = queryExecutionReceipt.result?.value?.rowCount;
+  if (typeof actualRowCount !== "number" || Number.isInteger(actualRowCount) === false || actualRowCount < 0) {
+    throw new Error(`QUERY_RECEIPT_ROW_COUNT_MISMATCH: ${metric.metricId} executed rowCount ${String(actualRowCount)} is invalid for ${metric.query?.queryId}.`);
+  }
+  if (actualRowCount !== receipt.rowCount) {
+    throw new Error(`QUERY_RECEIPT_ROW_COUNT_MISMATCH: ${metric.metricId} rowCount ${String(receipt.rowCount)} does not match executed result ${String(actualRowCount)} for ${metric.query?.queryId}.`);
+  }
+  if (typeof receipt.resultHash !== "string" || receipt.resultHash.length === 0) {
+    throw new Error(`QUERY_RECEIPT_RESULT_HASH_MISSING: ${metric.metricId} for ${metric.query?.queryId}.`);
+  }
+  if (receipt.resultHash !== queryExecutionReceipt.resultHash) {
+    throw new Error(`QUERY_RECEIPT_RESULT_HASH_MISMATCH: ${metric.metricId} result hash ${receipt.resultHash} does not match expected value for ${metric.query?.queryId}.`);
   }
 }
 

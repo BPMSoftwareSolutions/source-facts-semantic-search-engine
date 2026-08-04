@@ -10,6 +10,20 @@ import { projectsGallerySelection } from "../src/gallery/projects-gallery-select
 import { plansSurfacePreviews } from "../src/gallery/plans-surface-previews.js";
 import { materializesStaticPreviews } from "../src/gallery/materializes-static-preview.js";
 
+function removesDirectoryAtExit(directoryPath) {
+  if (directoryPath === undefined) return;
+  try {
+    fs.rmSync(directoryPath, {
+      recursive: true,
+      force: true,
+      maxRetries: 6,
+      retryDelay: 100,
+    });
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+}
+
 function basePolicy(workspaceRoot) {
   return {
     policyType: "web-know-workspace.v1",
@@ -70,8 +84,8 @@ test("materializes a static page with its stylesheet and never touches the sourc
     assert.ok(stylesheetFile, "the local stylesheet must be copied into the preview bundle");
     assert.equal(fs.readFileSync(path.join(outputDirectory, stylesheetFile.path), "utf8"), "body { color: red; }");
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
-    fs.rmSync(outputDirectory, { recursive: true, force: true });
+    removesDirectoryAtExit(workspaceRoot);
+    removesDirectoryAtExit(outputDirectory);
   }
 });
 
@@ -99,8 +113,8 @@ test("materializes and rewrites root-relative stylesheets for browser previews",
     assert.match(materializedHtml, /href="\.\/files\/[0-9a-f]{64}\/styles\.css"/);
     assert.ok(result.emittedFiles.some((file) => file.path.endsWith("styles.css")));
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
-    fs.rmSync(outputDirectory, { recursive: true, force: true });
+    removesDirectoryAtExit(workspaceRoot);
+    removesDirectoryAtExit(outputDirectory);
   }
 });
 
@@ -128,8 +142,8 @@ test("materializes a generated page with its nearest ancestor stylesheet", async
     assert.match(materializedHtml, /href="\.\/files\/[0-9a-f]{64}\/style\.css"/);
     assert.ok(result.emittedFiles.some((file) => file.path.endsWith("style.css")));
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
-    fs.rmSync(outputDirectory, { recursive: true, force: true });
+    removesDirectoryAtExit(workspaceRoot);
+    removesDirectoryAtExit(outputDirectory);
   }
 });
 
@@ -169,8 +183,8 @@ test("strips source scripts and inline event handlers as a defense-in-depth mate
     assert.equal(materializedHtml.includes("onclick"), false);
     assert.ok(result.transformationsByItem[0].transformations.some((item) => item.kind === "script-removed"));
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
-    fs.rmSync(outputDirectory, { recursive: true, force: true });
+    removesDirectoryAtExit(workspaceRoot);
+    removesDirectoryAtExit(outputDirectory);
   }
 });
 
@@ -188,8 +202,8 @@ test("fails closed when the entry changes after planning", async () => {
       outputDirectory,
     }), /changed after planning/);
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
-    fs.rmSync(outputDirectory, { recursive: true, force: true });
+    removesDirectoryAtExit(workspaceRoot);
+    removesDirectoryAtExit(outputDirectory);
   }
 });
 

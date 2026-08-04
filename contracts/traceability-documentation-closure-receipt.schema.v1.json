@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Traceability Documentation Closure Receipt",
+  "type": "object",
+  "required": [
+    "receiptType",
+    "generatedAtUtc",
+    "disposition",
+    "reportBinding",
+    "indexBinding",
+    "graphBinding",
+    "catalogBinding",
+    "queryReceiptBundle",
+    "metricRows",
+    "document",
+    "queryReceiptCount",
+    "renderedMetricCount",
+    "queryReceiptBundleHash",
+    "metricRowsHash",
+    "deterministicReceiptHash",
+    "failedConditionCount",
+    "failedConditions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "receiptType": { "const": "traceability-documentation-closure-receipt.v1" },
+    "generatedAtUtc": { "type": "string", "format": "date-time" },
+    "disposition": { "const": "CLOSED" },
+    "reportBinding": {
+      "type": "object",
+      "required": [
+        "repositoryId",
+        "reportIndexId",
+        "reportScanId",
+        "reportType",
+        "schemaVersion",
+        "contentHash"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "repositoryId": { "type": ["string", "null"] },
+        "reportIndexId": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+        "reportScanId": { "type": ["string", "null"], "minLength": 1 },
+        "reportType": { "type": ["string", "null"], "minLength": 1 },
+        "schemaVersion": { "type": ["string", "null"], "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "generatedAtUtc": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "indexBinding": {
+      "type": "object",
+      "required": ["sourceIndexId", "sourceScanId", "workspaceId", "indexType", "schemaVersion", "contentHash"],
+      "additionalProperties": false,
+      "properties": {
+        "sourceIndexId": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+        "sourceScanId": { "type": ["string", "null"], "minLength": 1 },
+        "workspaceId": { "type": ["string", "null"], "minLength": 1 },
+        "indexType": { "type": ["string", "null"], "minLength": 1 },
+        "schemaVersion": { "type": ["string", "null"], "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "graphBinding": {
+      "type": "object",
+      "required": ["graphType", "graphIndexId", "contentHash"],
+      "additionalProperties": false,
+      "properties": {
+        "graphType": { "type": ["string", "null"], "minLength": 1 },
+        "graphIndexId": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+        "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "catalogBinding": {
+      "type": "object",
+      "required": ["catalogType", "catalogVersion", "catalogSchemaVersion", "catalogFingerprint", "contentHash"],
+      "additionalProperties": false,
+      "properties": {
+        "catalogType": { "type": "string", "minLength": 1 },
+        "catalogVersion": { "type": ["string", "null"], "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "catalogSchemaVersion": { "type": ["string", "null"], "minLength": 1 },
+        "catalogFingerprint": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "queryReceiptBundle": {
+      "type": "object",
+      "required": ["receiptType", "queryReceiptCount", "queryReceiptRows"],
+      "additionalProperties": false,
+      "properties": {
+        "receiptType": { "type": "string", "const": "traceability-query-receipts.v1" },
+        "queryReceiptCount": { "type": "integer", "minimum": 0 },
+        "queryReceiptRows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "queryId",
+              "queryTextHash",
+              "inputHash",
+              "resultHash",
+              "rowCount",
+              "disposition"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "queryId": { "type": "string", "minLength": 1 },
+              "queryTextHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+              "inputHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+              "resultHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+              "rowCount": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "metricRows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["metricId", "value", "section", "resultType", "metricDisposition", "queryId"],
+        "additionalProperties": false,
+        "properties": {
+          "metricId": { "type": "string", "minLength": 1 },
+          "value": { "type": ["number", "integer"] },
+          "section": { "type": "string", "minLength": 1 },
+          "resultType": { "type": "string", "enum": ["integer", "number", "percentage"] },
+          "metricDisposition": { "type": "string", "minLength": 1 },
+          "queryId": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "document": {
+      "type": "object",
+      "required": ["path", "hash"],
+      "additionalProperties": false,
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+      }
+    },
+    "queryReceiptCount": { "type": "integer", "minimum": 0 },
+    "renderedMetricCount": { "type": "integer", "minimum": 0 },
+    "queryReceiptBundleHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "metricRowsHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "deterministicReceiptHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "failedConditionCount": { "type": "integer", "minimum": 0 },
+    "failedConditions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    }
+  }
+}

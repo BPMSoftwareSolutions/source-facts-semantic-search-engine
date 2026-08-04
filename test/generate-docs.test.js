@@ -6,34 +6,57 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { executeRelationalQuery } from "../src/query.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cliPath = path.join(repoRoot, "src", "cli.js");
+const FIXTURE_INDEX_ID = `sha256:${"0".repeat(64)}`;
+const FIXTURE_SCAN_ID = `${"1".repeat(64)}`;
+const FIXTURE_ROOT_HASH = `sha256:${"2".repeat(64)}`;
+const FIXTURE_DOCUMENT_ROOT_HASH = `sha256:${"3".repeat(64)}`;
 
 function buildsMinimalIndex() {
   return {
     indexType: "source-fact-index.v1",
-    indexId: "sha256:fixture-index-id",
-    manifest: { scanId: "scan-index", scanRequest: { workspaceId: "generate-docs-cli-fixture" } },
+    indexId: FIXTURE_INDEX_ID,
+    manifest: {
+      schemaVersion: "1.0.0",
+      engine: "traceability-docs-tests",
+      engineVersion: "1.0.0",
+      scanId: FIXTURE_SCAN_ID,
+      documentRootHash: FIXTURE_DOCUMENT_ROOT_HASH,
+      scanRequest: {
+        workspaceId: "generate-docs-cli-fixture",
+        workspaceRoot: "/tmp/generate-docs-cli-fixture",
+      },
+    },
     workspace: {
       workspaceId: "generate-docs-cli-fixture",
-      rootHash: "sha256:workspace",
+      rootHash: FIXTURE_ROOT_HASH,
       languageId: "typescript",
       languageProfileVersion: "1.0.0",
     },
     files: [],
-    symbols: [
-      { kind: "function", name: "run" },
-      { kind: "variable", name: "cache" },
-      { kind: "class", name: "Writer" },
-      { kind: "parameter", name: "input" },
-    ],
+    symbols: [],
     relationships: [],
     dataflows: [],
     sourceReferences: [],
     documents: [],
     governanceRules: [],
     bodyMechanics: [],
+    coverage: {
+      filesObserved: 0,
+      declarations: 0,
+      relationships: 0,
+      controlFlow: 0,
+      syntax: 0,
+      unknownSyntax: 0,
+      documentFacts: 0,
+      governanceRules: 0,
+      bodyMechanics: 0,
+      dataflows: 0,
+      unknownSyntaxRatio: 0,
+    },
   };
 }
 
@@ -42,8 +65,8 @@ function buildsMinimalReport() {
     reportType: "source-facts-self-governance-report.v1",
     generatedAtUtc: "2026-01-01T00:00:00Z",
     index: {
-      indexId: "sha256:fixture-index-id",
-      scanId: "scan-report",
+      indexId: FIXTURE_INDEX_ID,
+      scanId: FIXTURE_SCAN_ID,
     },
     repository: {
       repositoryId: "generate-docs-cli-fixture",
@@ -166,7 +189,7 @@ function buildsMinimalReport() {
 
 function buildsMinimalGraph() {
   return {
-    indexId: "sha256:fixture-index-id",
+    indexId: FIXTURE_INDEX_ID,
     summary: {
       commandRootCount: 1,
       exportedFunctionRootCount: 1,
@@ -199,7 +222,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.call-graph.command-root-count",
-          queryText: "SELECT COUNT(*) FROM call_graph WHERE root_type = 'command';",
+          queryText: "SELECT COUNT(*) AS rowCount FROM relationships;",
         },
         source: {
           artifactKind: "call-graph",
@@ -217,7 +240,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.feature.canonical-feature-count",
-          queryText: "SELECT COUNT(*) FROM features WHERE posture = 'canonical';",
+          queryText: "SELECT COUNT(*) AS rowCount FROM symbols;",
         },
         source: {
           artifactKind: "governance-report",
@@ -235,7 +258,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.scenario.canonical-scenario-count",
-          queryText: "SELECT COUNT(*) FROM scenarios WHERE posture = 'canonical';",
+          queryText: "SELECT COUNT(*) AS rowCount FROM sourceReferences;",
         },
         source: {
           artifactKind: "governance-report",
@@ -253,7 +276,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.entry.reachable-callable-count",
-          queryText: "SELECT COUNT(*) FROM summary WHERE metric = 'reachable_callable_count';",
+          queryText: "SELECT COUNT(*) AS rowCount FROM dataflows;",
         },
         source: {
           artifactKind: "call-graph",
@@ -271,7 +294,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.entry.runtime-callable-count",
-          queryText: "SELECT COUNT(*) FROM summary WHERE metric = 'runtime_callable_count';",
+          queryText: "SELECT COUNT(*) AS rowCount FROM documents;",
         },
         source: {
           artifactKind: "call-graph",
@@ -289,7 +312,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "ZERO_DENOMINATOR",
         query: {
           queryId: "traceability.query.rate.reachability-coverage",
-          queryText: "SELECT reachable_callable_count / runtime_callable_count FROM summary;",
+          queryText: "SELECT COUNT(*) AS rowCount FROM bodyMechanics;",
         },
         source: {
           artifactKind: "derived",
@@ -302,7 +325,7 @@ function buildsMinimalMetricCatalog() {
   };
 }
 
-function buildsMinimalQueryReceipts(metricCatalog) {
+async function buildsMinimalQueryReceipts(metricCatalog) {
   const report = buildsMinimalReport();
   const index = buildsMinimalIndex();
   const graph = buildsMinimalGraph();
@@ -318,35 +341,40 @@ function buildsMinimalQueryReceipts(metricCatalog) {
   };
   const graphBinding = { indexId: graph.indexId };
 
-  const makesDeterministicHash = (seed) => {
-    const payload = Number(seed).toString(16).padStart(64, "0");
-    return `sha256:${payload}`;
-  };
+  const queryReceipts = [];
+  const catalogType = metricCatalog.catalogType ?? "traceability-metric-catalog.v1";
+  const catalogVersion = metricCatalog.catalogVersion ?? "1.0.0";
 
-  const queryReceipts = metricCatalog.metrics
-    .filter((metric) => metric.query?.queryId !== undefined)
-    .map((metric, offset) => {
-      const queryText = metric.query.queryText ?? "";
-      return {
-        queryId: metric.query.queryId,
-        disposition: "RELATIONAL_QUERY_EXECUTED",
-        queryText,
-        queryTextHash: hashesQueryText(queryText),
-        artifactBinding: resolvesExpectedArtifactBinding(metric.source.artifactKind, {
-          reportBinding,
-          indexBinding,
-          graphBinding,
-        }),
-        catalogBinding: {
-          catalogType: metricCatalog.catalogType ?? "traceability-metric-catalog.v1",
-          catalogVersion: metricCatalog.catalogVersion ?? "1.0.0",
-          catalogFingerprint,
-        },
-        inputHash: makesDeterministicHash(offset),
-        resultHash: makesDeterministicHash(offset + 16),
-        rowCount: 2,
-      };
+  for (const metric of metricCatalog.metrics) {
+    if (metric.query?.queryId === undefined) continue;
+    const queryText = metric.query.queryText ?? "";
+    const queryReceipt = await executeRelationalQuery(index, queryText);
+    if (queryReceipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
+      throw new Error(`Cannot build test receipt for ${metric.query.queryId}: ${queryReceipt.disposition}`);
+    }
+    const rowCount = queryReceipt.result?.value?.rowCount ?? 0;
+    const queryTextHash = hashesQueryText(queryText);
+    const artifactBinding = resolvesExpectedArtifactBinding(metric.source.artifactKind, {
+      reportBinding,
+      indexBinding,
+      graphBinding,
     });
+    queryReceipts.push({
+      queryId: metric.query.queryId,
+      disposition: queryReceipt.disposition,
+      queryText,
+      queryTextHash,
+      artifactBinding,
+      catalogBinding: {
+        catalogType,
+        catalogVersion,
+        catalogFingerprint,
+      },
+      inputHash: queryReceipt.inputHash,
+      resultHash: queryReceipt.resultHash,
+      rowCount,
+    });
+  }
 
   return {
     receiptType: "traceability-query-receipts.v1",
@@ -355,7 +383,7 @@ function buildsMinimalQueryReceipts(metricCatalog) {
   };
 }
 
-test("generate-docs CLI accepts report, graph, metric catalog and query receipts overrides", () => {
+test("generate-docs CLI accepts report, graph, metric catalog and query receipts overrides", async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
   try {
     const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
@@ -366,7 +394,7 @@ test("generate-docs CLI accepts report, graph, metric catalog and query receipts
     const queryReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
 
     const metricCatalog = buildsMinimalMetricCatalog();
-    const queryReceipts = buildsMinimalQueryReceipts(metricCatalog);
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
     fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
     fs.writeFileSync(queryReceiptsPath, JSON.stringify(queryReceipts), "utf8");
     fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
@@ -410,7 +438,7 @@ test("generate-docs CLI accepts report, graph, metric catalog and query receipts
   }
 });
 
-test("generate-docs rejects missing query receipts", () => {
+test("generate-docs rejects missing query receipts", async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
   try {
     const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
@@ -421,7 +449,7 @@ test("generate-docs rejects missing query receipts", () => {
     const missingQueryReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
 
     const metricCatalog = buildsMinimalMetricCatalog();
-    const queryReceipts = buildsMinimalQueryReceipts(metricCatalog).queryReceipts.slice(0, 2);
+    const queryReceipts = (await buildsMinimalQueryReceipts(metricCatalog)).queryReceipts.slice(0, 2);
     const truncatedReceipts = { receiptType: "traceability-query-receipts.v1", queryReceipts };
 
     fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
@@ -458,7 +486,7 @@ test("generate-docs rejects missing query receipts", () => {
   }
 });
 
-test("generate-docs rejects stale query receipts", () => {
+test("generate-docs rejects stale query receipts", async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
   try {
     const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
@@ -469,7 +497,7 @@ test("generate-docs rejects stale query receipts", () => {
     const staleQueryReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
 
     const metricCatalog = buildsMinimalMetricCatalog();
-    const queryReceipts = buildsMinimalQueryReceipts(metricCatalog);
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
     queryReceipts.queryReceipts[0].disposition = "RELATIONAL_QUERY_FAILED";
     fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
     fs.writeFileSync(staleQueryReceiptsPath, JSON.stringify(queryReceipts), "utf8");
@@ -505,7 +533,202 @@ test("generate-docs rejects stale query receipts", () => {
   }
 });
 
-test("generate-docs writes closure receipt", () => {
+test("generate-docs rejects forged query-input hashes", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
+    const graphPath = path.join(tempDir, "call-graph.json");
+    const indexPath = path.join(tempDir, "source-fact-index.json");
+    const outputPath = path.join(tempDir, "traceability-metrics.md");
+    const metricCatalogPath = path.join(tempDir, "traceability-metric-catalog.json");
+    const forgedReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
+
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const firstReceipt = queryReceipts.queryReceipts[0];
+    firstReceipt.inputHash = firstReceipt.resultHash;
+
+    fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
+    fs.writeFileSync(forgedReceiptsPath, JSON.stringify(queryReceipts), "utf8");
+    fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
+    fs.writeFileSync(graphPath, JSON.stringify(buildsMinimalGraph()), "utf8");
+    fs.writeFileSync(indexPath, JSON.stringify(buildsMinimalIndex()), "utf8");
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        cliPath,
+        "generate-docs",
+        "--report",
+        reportPath,
+        "--graph",
+        graphPath,
+        "--index",
+        indexPath,
+        "--metric-catalog",
+        metricCatalogPath,
+        "--query-receipts",
+        forgedReceiptsPath,
+        "--output",
+        outputPath,
+      ],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+
+    assert.notEqual(result.status, 0);
+    assert.ok(result.stderr.includes("QUERY_RECEIPT_INPUT_HASH_MISMATCH") || result.stdout.includes("QUERY_RECEIPT_INPUT_HASH_MISMATCH"));
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("generate-docs rejects forged query-result hashes", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
+    const graphPath = path.join(tempDir, "call-graph.json");
+    const indexPath = path.join(tempDir, "source-fact-index.json");
+    const outputPath = path.join(tempDir, "traceability-metrics.md");
+    const metricCatalogPath = path.join(tempDir, "traceability-metric-catalog.json");
+    const forgedReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
+
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const firstReceipt = queryReceipts.queryReceipts[1];
+    firstReceipt.resultHash = firstReceipt.inputHash;
+
+    fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
+    fs.writeFileSync(forgedReceiptsPath, JSON.stringify(queryReceipts), "utf8");
+    fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
+    fs.writeFileSync(graphPath, JSON.stringify(buildsMinimalGraph()), "utf8");
+    fs.writeFileSync(indexPath, JSON.stringify(buildsMinimalIndex()), "utf8");
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        cliPath,
+        "generate-docs",
+        "--report",
+        reportPath,
+        "--graph",
+        graphPath,
+        "--index",
+        indexPath,
+        "--metric-catalog",
+        metricCatalogPath,
+        "--query-receipts",
+        forgedReceiptsPath,
+        "--output",
+        outputPath,
+      ],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+
+    assert.notEqual(result.status, 0);
+    assert.ok(result.stderr.includes("QUERY_RECEIPT_RESULT_HASH_MISMATCH") || result.stdout.includes("QUERY_RECEIPT_RESULT_HASH_MISMATCH"));
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("generate-docs rejects wrong query row counts", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
+    const graphPath = path.join(tempDir, "call-graph.json");
+    const indexPath = path.join(tempDir, "source-fact-index.json");
+    const outputPath = path.join(tempDir, "traceability-metrics.md");
+    const metricCatalogPath = path.join(tempDir, "traceability-metric-catalog.json");
+    const forgedReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
+
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const firstReceipt = queryReceipts.queryReceipts[2];
+    firstReceipt.rowCount += 3;
+
+    fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
+    fs.writeFileSync(forgedReceiptsPath, JSON.stringify(queryReceipts), "utf8");
+    fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
+    fs.writeFileSync(graphPath, JSON.stringify(buildsMinimalGraph()), "utf8");
+    fs.writeFileSync(indexPath, JSON.stringify(buildsMinimalIndex()), "utf8");
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        cliPath,
+        "generate-docs",
+        "--report",
+        reportPath,
+        "--graph",
+        graphPath,
+        "--index",
+        indexPath,
+        "--metric-catalog",
+        metricCatalogPath,
+        "--query-receipts",
+        forgedReceiptsPath,
+        "--output",
+        outputPath,
+      ],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+
+    assert.notEqual(result.status, 0);
+    assert.ok(result.stderr.includes("QUERY_RECEIPT_ROW_COUNT_MISMATCH") || result.stdout.includes("QUERY_RECEIPT_ROW_COUNT_MISMATCH"));
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("generate-docs rejects query-receipts with mismatched catalog fingerprint", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
+    const graphPath = path.join(tempDir, "call-graph.json");
+    const indexPath = path.join(tempDir, "source-fact-index.json");
+    const outputPath = path.join(tempDir, "traceability-metrics.md");
+    const metricCatalogPath = path.join(tempDir, "traceability-metric-catalog.json");
+    const forgedReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
+
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    queryReceipts.queryReceipts[0].catalogBinding.catalogFingerprint = "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+    fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
+    fs.writeFileSync(forgedReceiptsPath, JSON.stringify(queryReceipts), "utf8");
+    fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
+    fs.writeFileSync(graphPath, JSON.stringify(buildsMinimalGraph()), "utf8");
+    fs.writeFileSync(indexPath, JSON.stringify(buildsMinimalIndex()), "utf8");
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        cliPath,
+        "generate-docs",
+        "--report",
+        reportPath,
+        "--graph",
+        graphPath,
+        "--index",
+        indexPath,
+        "--metric-catalog",
+        metricCatalogPath,
+        "--query-receipts",
+        forgedReceiptsPath,
+        "--output",
+        outputPath,
+      ],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+
+    assert.notEqual(result.status, 0);
+    assert.ok(result.stderr.includes("QUERY_RECEIPT_CATALOG_BINDING_MISMATCH") || result.stdout.includes("QUERY_RECEIPT_CATALOG_BINDING_MISMATCH"));
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("generate-docs writes closure receipt", async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
   try {
     const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
@@ -517,7 +740,7 @@ test("generate-docs writes closure receipt", () => {
     const queryReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
 
     const metricCatalog = buildsMinimalMetricCatalog();
-    const queryReceipts = buildsMinimalQueryReceipts(metricCatalog);
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
     fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
     fs.writeFileSync(queryReceiptsPath, JSON.stringify(queryReceipts), "utf8");
     fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
