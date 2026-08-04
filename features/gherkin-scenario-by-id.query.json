@@ -1,0 +1,81 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "gherkin",
+  "queryId": "gherkin.scenario-by-id.v1",
+  "purpose": "Resolve scenario by canonical scenario ID from .feature file",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "scenarioId",
+      "type": "string",
+      "description": "Canonical scenario ID (e.g., 'source-facts.cli-query.from-command-line')",
+      "required": true,
+      "example": "source-facts.cli-query.from-command-line"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per scenario ID",
+    "fields": [
+      {
+        "name": "scenarioId",
+        "type": "string",
+        "description": "Canonical scenario ID from &scenario: anchor"
+      },
+      {
+        "name": "featureId",
+        "type": "string",
+        "description": "Parent feature ID"
+      },
+      {
+        "name": "featureFile",
+        "type": "string",
+        "description": "Path to containing .feature file"
+      },
+      {
+        "name": "scenarioAnchor",
+        "type": "string",
+        "description": "Full anchor identifier &scenario:..."
+      },
+      {
+        "name": "purpose",
+        "type": "string",
+        "description": "Scenario description from Scenario: line"
+      },
+      {
+        "name": "steps",
+        "type": "array",
+        "description": "Array of step IDs (given, when, then, and)"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "file-based-index",
+    "indexPath": "features/**/*.feature",
+    "parseStrategy": "parse Gherkin and extract &scenario: anchors with their steps",
+    "indexing": "build hierarchical index of features → scenarios → steps"
+  },
+
+  "queryLinearization": "SELECT * FROM gherkinScenarioRegistry WHERE scenarioId = ?",
+
+  "scope": "workspace-prefix:features",
+  "reconciliation": "must match canonical intent document and bind to responsibility/obligation",
+
+  "exampleResult": [
+    {
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "featureId": "source-facts.cli-query",
+      "featureFile": "features/cli-query-command.feature",
+      "scenarioAnchor": "&scenario:source-facts.cli-query.from-command-line",
+      "purpose": "Execute a semantic query from CLI",
+      "steps": [
+        "source-index-available",
+        "query-command-invoked",
+        "matching-facts-returned",
+        "unresolved-symbols-classified"
+      ]
+    }
+  ]
+}

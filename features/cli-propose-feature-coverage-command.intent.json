@@ -1,0 +1,35 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-propose-feature-coverage",
+  "featureFile": "features/cli-propose-feature-coverage-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-propose-feature-coverage",
+  "purpose": "Discover and propose feature candidates from source evidence clusters and evaluate with optional LLM inference",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-propose-feature-coverage.discover-candidate-features",
+      "scenarioAnchor": "&scenario:source-facts.cli-propose-feature-coverage.discover-candidate-features",
+      "responsibilityId": "cli-feature-candidate-discovery",
+      "obligationId": "propose-feature-candidates-from-evidence",
+      "givenId": "source-facts-index-available",
+      "whenId": "propose-feature-coverage-command-invoked",
+      "thenId": "feature-candidates-are-proposed",
+      "andId": "proposals-retain-lineage",
+      "purpose": "User can discover feature coverage proposals from unresolved evidence clusters with complete lineage to source mechanics"
+    },
+    {
+      "scenarioId": "source-facts.cli-propose-feature-coverage.evaluate-with-llm-inference",
+      "scenarioAnchor": "&scenario:source-facts.cli-propose-feature-coverage.evaluate-with-llm-inference",
+      "responsibilityId": "cli-inference-evaluation",
+      "obligationId": "evaluate-proposals-with-live-inference",
+      "givenId": "feature-candidates-proposed",
+      "whenId": "inference-evaluation-requested",
+      "thenId": "llm-evaluations-are-recorded",
+      "andId": "inference-does-not-admit-features",
+      "purpose": "User can evaluate proposed features with live model inference for discovery purposes while maintaining observational disposition"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runProposeFeatureCoverage",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-04T00:00:00Z"
+}

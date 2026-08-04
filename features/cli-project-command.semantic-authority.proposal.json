@@ -1,0 +1,96 @@
+{
+  "documentKind": "semantic-authority.proposal.v1",
+  "featureId": "source-facts.cli-project",
+  "responsibilityId": "cli-artifact-projection",
+  "obligationId": "project-executable-from-authority",
+  "proposalDate": "2026-08-04T00:00:00Z",
+  "lifecycle": "INFERRED_NOT_ADMITTED",
+  "purpose": "Proposed semantic decisions for artifact projection from authority",
+
+  "decisions": [
+    {
+      "decisionId": "authority-completeness-requirement",
+      "statement": "Projection requires all mandatory authority layers (semantic, ontology, context, data); missing layers block projection with explicit AUTHORITY_INCOMPLETE error",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "authority.missing-by-responsibility.v1",
+          "sourceReferenceId": "src/governance/projects-feature-coverage.js"
+        }
+      ]
+    },
+    {
+      "decisionId": "partial-authority-handling",
+      "statement": "If optional authority layers are missing, projection proceeds with defaults; defaults are explicit in the output",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "projection-atomicity",
+      "statement": "Projection is atomic: either all artifacts are generated or none; partial projection is not returned",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "artifact-versioning",
+      "statement": "Each projected artifact includes the source authority version and projection timestamp for traceability",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "projection-idempotence",
+      "statement": "Running projection twice on the same authority and inputs must produce byte-for-byte identical artifacts",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    }
+  ],
+
+  "projectionStrategy": {
+    "targetFormats": "JSON (contracts), JavaScript (code bodies), Markdown (documentation)",
+    "schemaValidation": "Validate projected artifact against authority-defined JSON schema",
+    "defaultGeneration": "Generate sensible defaults for unspecified optional fields",
+    "conflictResolution": "Explicit conflicts fail projection; implicit choices are documented"
+  },
+
+  "failureHandling": [
+    {
+      "failureMode": "authority-not-found",
+      "handlingStrategy": "Report which authority document is missing; list available authorities",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "authority-validation-failure",
+      "handlingStrategy": "Report validation errors; do not attempt recovery; require manual authority correction",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "missing-mandatory-layer",
+      "handlingStrategy": "Report which authority layer is missing; list what is required for projection",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "projection-target-conflict",
+      "handlingStrategy": "Report conflicting projections; require explicit choice or authority revision",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    }
+  ],
+
+  "projectionReceipt": {
+    "includes": [
+      "source authority version",
+      "projection timestamp",
+      "generated artifacts with file paths",
+      "defaults applied",
+      "proof vector (if applicable)",
+      "projection success/failure status"
+    ]
+  },
+
+  "nextSteps": [
+    "Analyze existing projectors to extract projection semantics",
+    "Formalize what each projector does",
+    "Identify default strategies for optional fields",
+    "Design projection receipt format",
+    "Connect to existing code"
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "intent",
+  "queryId": "intent.scenario-lineage.v1",
+  "purpose": "Resolve scenario intent and trace lineage through responsibility and obligation",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "scenarioId",
+      "type": "string",
+      "description": "Canonical scenario ID",
+      "required": true,
+      "example": "source-facts.cli-query.from-command-line"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per scenario",
+    "fields": [
+      {
+        "name": "scenarioId",
+        "type": "string",
+        "description": "Canonical scenario ID"
+      },
+      {
+        "name": "featureId",
+        "type": "string",
+        "description": "Parent feature ID"
+      },
+      {
+        "name": "responsibilityId",
+        "type": "string",
+        "description": "Responsibility this scenario exercises"
+      },
+      {
+        "name": "obligationId",
+        "type": "string",
+        "description": "Obligation this scenario fulfills"
+      },
+      {
+        "name": "purpose",
+        "type": "string",
+        "description": "Scenario purpose from intent"
+      },
+      {
+        "name": "stepIds",
+        "type": "array",
+        "description": "Array of step IDs (given, when, then, and) in order"
+      },
+      {
+        "name": "lifecycle",
+        "type": "string",
+        "description": "Scenario maturity state"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "file-based-index",
+    "indexPath": "features/**/*.intent.json",
+    "parseStrategy": "extract scenario from intent document; resolve Gherkin anchors",
+    "indexing": "build index keyed by scenarioId with cross-references to responsibility/obligation"
+  },
+
+  "queryLinearization": "SELECT * FROM intentScenarioRegistry WHERE scenarioId = ?",
+
+  "scope": "workspace-prefix:features",
+  "reconciliation": [
+    "scenario.featureId must match parent feature",
+    "scenario.stepIds must match gherkin.step-identities results",
+    "responsibility and obligation must exist (at least as proposed)",
+    "each step ID must resolve through gherkin.step-identities"
+  ],
+
+  "typedFailures": [
+    "SCENARIO_ANCHOR_UNRESOLVED (scenario has no corresponding Gherkin anchor)",
+    "RESPONSIBILITY_CARDINALITY_INVALID (scenario bound to multiple responsibilities)",
+    "OBLIGATION_CARDINALITY_INVALID (scenario bound to multiple obligations)",
+    "GHERKIN_STEP_INTENT_MISMATCH (Gherkin has more/fewer steps than intent)"
+  ],
+
+  "exampleResult": [
+    {
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "featureId": "source-facts.cli-query",
+      "responsibilityId": "cli-query-entrypoint-execution",
+      "obligationId": "execute-semantic-search-query",
+      "purpose": "User can search SourceFacts index semantically from command line and receive canonical results",
+      "stepIds": [
+        "source-index-available",
+        "query-command-invoked",
+        "matching-facts-returned",
+        "unresolved-symbols-classified"
+      ],
+      "lifecycle": "SCENARIO_INTENT_PROPOSED"
+    }
+  ]
+}

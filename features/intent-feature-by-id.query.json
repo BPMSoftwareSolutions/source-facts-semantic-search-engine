@@ -1,0 +1,109 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "intent",
+  "queryId": "intent.feature-by-id.v1",
+  "purpose": "Resolve canonical intent document by feature ID",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "featureId",
+      "type": "string",
+      "description": "Canonical feature ID",
+      "required": true,
+      "example": "source-facts.cli-query"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per feature ID",
+    "fields": [
+      {
+        "name": "featureId",
+        "type": "string",
+        "description": "Canonical feature ID"
+      },
+      {
+        "name": "featureFile",
+        "type": "string",
+        "description": "Path to .feature file"
+      },
+      {
+        "name": "intentFile",
+        "type": "string",
+        "description": "Path to .intent.json file"
+      },
+      {
+        "name": "purpose",
+        "type": "string",
+        "description": "Feature purpose from intent document"
+      },
+      {
+        "name": "scenarios",
+        "type": "array",
+        "description": "Array of scenario intent objects"
+      },
+      {
+        "name": "lifecycle",
+        "type": "string",
+        "enum": [
+          "FEATURE_INTENT_PROPOSED",
+          "FEATURE_INTENT_CANONICAL",
+          "SCENARIO_LINEAGE_COMPLETE"
+        ],
+        "description": "Feature maturity state"
+      },
+      {
+        "name": "authorityStatus",
+        "type": "string",
+        "description": "Authority coverage status (MISSING, PARTIAL, COMPLETE)"
+      },
+      {
+        "name": "interfaceRoot",
+        "type": "string",
+        "description": "Code entry point (file#function)"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "file-based-index",
+    "indexPath": "features/**/*.intent.json",
+    "parseStrategy": "load and parse intent.json documents",
+    "indexing": "build index keyed by featureId"
+  },
+
+  "queryLinearization": "SELECT * FROM intentFeatureRegistry WHERE featureId = ?",
+
+  "scope": "workspace-prefix:features",
+  "reconciliation": [
+    "intent.featureId must match corresponding .feature file featureId",
+    "intent.interfaceRoot must be valid code reference",
+    "intent.scenarios must match gherkin.scenario-by-id results"
+  ],
+
+  "typedFailures": [
+    "INTENT_FEATURE_FILE_MISMATCH (featureId in intent doesn't match .feature)",
+    "INTENT_FEATURE_NOT_FOUND (intent.json has no matching .feature)",
+    "FEATURE_INTENT_NOT_FOUND (feature has no intent.json)"
+  ],
+
+  "exampleResult": [
+    {
+      "featureId": "source-facts.cli-query",
+      "featureFile": "features/cli-query-command.feature",
+      "intentFile": "features/cli-query-command.intent.json",
+      "purpose": "Execute semantic queries against SourceFacts index from command line interface",
+      "scenarios": [
+        {
+          "scenarioId": "source-facts.cli-query.from-command-line",
+          "responsibilityId": "cli-query-entrypoint-execution",
+          "obligationId": "execute-semantic-search-query"
+        }
+      ],
+      "lifecycle": "FEATURE_INTENT_PROPOSED",
+      "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+      "interfaceRoot": "src/cli.js#runQuery"
+    }
+  ]
+}

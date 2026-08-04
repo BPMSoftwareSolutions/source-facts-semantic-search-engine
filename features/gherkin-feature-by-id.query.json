@@ -1,0 +1,70 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "gherkin",
+  "queryId": "gherkin.feature-by-id.v1",
+  "purpose": "Resolve feature by canonical feature ID from .feature file",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "featureId",
+      "type": "string",
+      "description": "Canonical feature ID (e.g., 'source-facts.cli-query')",
+      "required": true,
+      "example": "source-facts.cli-query"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per feature ID",
+    "fields": [
+      {
+        "name": "featureId",
+        "type": "string",
+        "description": "Canonical feature ID from &feature: anchor"
+      },
+      {
+        "name": "featureFile",
+        "type": "string",
+        "description": "Path to .feature file"
+      },
+      {
+        "name": "featureAnchor",
+        "type": "string",
+        "description": "Full anchor identifier &feature:..."
+      },
+      {
+        "name": "purpose",
+        "type": "string",
+        "description": "Feature description from Feature: line"
+      },
+      {
+        "name": "scenarios",
+        "type": "array",
+        "description": "Array of scenario IDs for this feature"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "file-based-index",
+    "indexPath": "features/**/*.feature",
+    "parseStrategy": "extract &feature: anchors and parse Gherkin structure",
+    "indexing": "build in-memory index of all feature files on first scan"
+  },
+
+  "queryLinearization": "SELECT * FROM gherkinFeatureRegistry WHERE featureId = ?",
+
+  "scope": "workspace-prefix:features",
+  "reconciliation": "must match canonical intent document",
+
+  "exampleResult": [
+    {
+      "featureId": "source-facts.cli-query",
+      "featureFile": "features/cli-query-command.feature",
+      "featureAnchor": "&feature:source-facts.cli-query",
+      "purpose": "Query SourceFacts semantic search console",
+      "scenarios": ["source-facts.cli-query.from-command-line"]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "gherkin",
+  "queryId": "gherkin.step-identities.v1",
+  "purpose": "Resolve step identities and text from .feature files",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "scenarioId",
+      "type": "string",
+      "description": "Canonical scenario ID",
+      "required": true,
+      "example": "source-facts.cli-query.from-command-line"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per step in scenario",
+    "fields": [
+      {
+        "name": "stepId",
+        "type": "string",
+        "description": "Canonical step ID from &given:, &when:, &then:, &and: anchor"
+      },
+      {
+        "name": "stepType",
+        "type": "string",
+        "enum": ["Given", "When", "Then", "And"],
+        "description": "Step keyword type"
+      },
+      {
+        "name": "stepText",
+        "type": "string",
+        "description": "Readable step text after keyword"
+      },
+      {
+        "name": "scenarioId",
+        "type": "string",
+        "description": "Parent scenario ID"
+      },
+      {
+        "name": "featureId",
+        "type": "string",
+        "description": "Grandparent feature ID"
+      },
+      {
+        "name": "lineNumber",
+        "type": "integer",
+        "description": "Line in .feature file"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "file-based-index",
+    "indexPath": "features/**/*.feature",
+    "parseStrategy": "extract step anchors and text from Gherkin Given/When/Then/And lines",
+    "indexing": "build flat list indexed by (scenarioId, stepType, stepId)"
+  },
+
+  "queryLinearization": "SELECT * FROM gherkinStepRegistry WHERE scenarioId = ? ORDER BY stepType, lineNumber",
+
+  "scope": "workspace-prefix:features",
+  "reconciliation": "all steps in scenario must have anchors; no orphaned steps",
+
+  "typedFailures": [
+    "STEP_ANCHOR_UNRESOLVED (step has no &id: anchor)",
+    "STEP_ID_DUPLICATED (same step ID in different scenarios)",
+    "ORPHANED_STEP (step text exists but no anchor)"
+  ],
+
+  "exampleResult": [
+    {
+      "stepId": "source-index-available",
+      "stepType": "Given",
+      "stepText": "a validated SourceFacts index is available",
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "featureId": "source-facts.cli-query",
+      "lineNumber": 8
+    },
+    {
+      "stepId": "query-command-invoked",
+      "stepType": "When",
+      "stepText": "the user invokes the query command with a search expression",
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "featureId": "source-facts.cli-query",
+      "lineNumber": 11
+    }
+  ]
+}

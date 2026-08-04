@@ -1,0 +1,83 @@
+{
+  "documentKind": "semantic-authority.proposal.v1",
+  "featureId": "source-facts.cli-query",
+  "responsibilityId": "cli-query-entrypoint-execution",
+  "obligationId": "execute-semantic-search-query",
+  "proposalDate": "2026-08-04T00:00:00Z",
+  "lifecycle": "INFERRED_NOT_ADMITTED",
+  "purpose": "Proposed semantic decisions for CLI query command execution",
+
+  "decisions": [
+    {
+      "decisionId": "query-expression-validity",
+      "statement": "A query expression is valid if it matches the semantic query syntax and contains no invalid escape sequences",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "cli.entry-point-reachability.v1",
+          "sourceReferenceId": "src/cli.js#parseArgs"
+        }
+      ]
+    },
+    {
+      "decisionId": "empty-results-handling",
+      "statement": "When a query returns zero results, the output is a canonical empty result set, not a failure",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "cli.reachable-source-facts.v1",
+          "sourceReferenceId": "src/web/project-web-surfaces.js"
+        }
+      ]
+    },
+    {
+      "decisionId": "ambiguous-symbol-classification",
+      "statement": "When a symbol reference could resolve to multiple entities, all candidates are returned with an AMBIGUOUS classification",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "cli.entry-point-reachability.v1",
+          "sourceReferenceId": "src/governance/proposes-semantic-overlap.js"
+        }
+      ]
+    },
+    {
+      "decisionId": "result-ordering",
+      "statement": "Results are ordered by (sourceFile ASC, lineNumber ASC, symbolName ASC) as the canonical ordering",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    }
+  ],
+
+  "failureHandling": [
+    {
+      "failureMode": "invalid-query-syntax",
+      "handlingStrategy": "Return error message describing syntax requirements; do not attempt parse recovery",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "index-load-failure",
+      "handlingStrategy": "Report index version mismatch or corruption; fail fast without partial results",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "query-timeout",
+      "handlingStrategy": "Return partial results with explicit timeout notification and next-token for resumption",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    }
+  ],
+
+  "defaultBehavior": {
+    "result-limit": "10000 (configurable via context)",
+    "output-format": "JSON lines (one result per line)",
+    "ordering": "canonical (source file, line, symbol name)",
+    "ambiguity-handling": "classify, do not filter"
+  },
+
+  "nextSteps": [
+    "Review with domain experts for accuracy",
+    "Admit or revise each decision",
+    "Build formal validation policies",
+    "Connect to execution code"
+  ]
+}

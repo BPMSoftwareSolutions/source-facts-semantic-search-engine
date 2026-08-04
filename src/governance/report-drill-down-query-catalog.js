@@ -189,8 +189,8 @@ function subjectItemRows(context) {
 const parameter = (name, type = "string", nullable = true) => ({ name, type, required: false, nullable });
 const next = (queryId, label, parameterBindings = {}) => ({ queryId, label, parameterBindings });
 
-export function buildsReportQueryContext(view, index) {
-  const context = { ...view, sourceIndex: index, callGraph: safelyBuildsCallGraph(index) };
+export function buildsReportQueryContext(view, index, canonicalFeatureQueryPlane = {}) {
+  const context = { ...view, ...canonicalFeatureQueryPlane, sourceIndex: index, callGraph: safelyBuildsCallGraph(index) };
   context.occurrenceEvidence = buildsOccurrenceEvidence(context);
   context.callPathRows = buildsCallPathRows(context);
   context.invocationRows = buildsInvocationRows(context);

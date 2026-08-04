@@ -1,0 +1,173 @@
+{
+  "documentKind": "query-family-registry.v1",
+  "registryDate": "2026-08-04T00:00:00Z",
+  "purpose": "Central registry of semantic query families for canonical identity resolution",
+
+  "queryFamilies": [
+    {
+      "family": "gherkin",
+      "purpose": "Access canonical feature identities from .feature files",
+      "queries": [
+        {
+          "queryId": "gherkin.feature-by-id.v1",
+          "file": "features/gherkin-feature-by-id.query.json",
+          "purpose": "Resolve feature by canonical feature ID",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "gherkin.scenario-by-id.v1",
+          "file": "features/gherkin-scenario-by-id.query.json",
+          "purpose": "Resolve scenario by canonical scenario ID",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "gherkin.step-identities.v1",
+          "file": "features/gherkin-step-identities.query.json",
+          "purpose": "Resolve step identities and text",
+          "status": "REGISTERED"
+        }
+      ]
+    },
+    {
+      "family": "intent",
+      "purpose": "Access canonical feature intent documents",
+      "queries": [
+        {
+          "queryId": "intent.feature-by-id.v1",
+          "file": "features/intent-feature-by-id.query.json",
+          "purpose": "Resolve canonical intent document by feature ID",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "intent.scenario-lineage.v1",
+          "file": "features/intent-scenario-lineage.query.json",
+          "purpose": "Resolve scenario intent and lineage",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "intent.responsibility-obligation.v1",
+          "file": "features/intent-responsibility-obligation.query.json",
+          "purpose": "Resolve responsibility and obligation from scenario",
+          "status": "REGISTERED"
+        }
+      ]
+    },
+    {
+      "family": "trace",
+      "purpose": "Trace from canonical intent to code and mechanics",
+      "queries": [
+        {
+          "queryId": "trace.feature-to-interface.v1",
+          "file": "features/trace-feature-to-interface.query.json",
+          "purpose": "Trace from feature to code interface entry point",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "trace.feature-to-callgraph.v1",
+          "file": "features/trace-feature-to-callgraph.query.json",
+          "purpose": "Trace from feature to reachable call graph",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "trace.scenario-to-source-facts.v1",
+          "file": "features/trace-scenario-to-source-facts.query.json",
+          "purpose": "Trace from scenario obligation to observable mechanics",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "trace.obligation-to-mechanics.v1",
+          "file": "features/trace-obligation-to-mechanics.query.json",
+          "purpose": "Trace from obligation to exact implementing mechanics",
+          "status": "REGISTERED"
+        }
+      ]
+    },
+    {
+      "family": "cli",
+      "purpose": "CLI-specific queries for entry point and reachability analysis",
+      "queries": [
+        {
+          "queryId": "cli.entry-points.v1",
+          "purpose": "Locate CLI command entry points",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "cli.entry-point-reachability.v1",
+          "purpose": "Identify callables reachable from CLI entry point",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "cli.reachable-source-facts.v1",
+          "purpose": "Show which source fact categories are accessible from CLI",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "cli.unreachable-callables.v1",
+          "purpose": "Show callables unreachable from CLI entry point",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "cli.unreachable-source-facts.v1",
+          "purpose": "Show unreachable source fact categories",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "cli.symbol-originating-commands.v1",
+          "purpose": "Show which CLI commands originate each symbol",
+          "status": "REGISTERED"
+        },
+        {
+          "queryId": "cli.unreachable-removal-impact.v1",
+          "purpose": "Show impact of removing unreachable callables",
+          "status": "REGISTERED"
+        }
+      ]
+    }
+  ],
+
+  "projectionPlaneCapability": {
+    "totalQueryFamilies": 4,
+    "totalQueries": 18,
+    "registeredStatus": "18 REGISTERED (gherkin, intent, trace, cli)",
+    "proposedStatus": "0 PROPOSED",
+    "capabilities": [
+      "Resolve canonical feature identities from .feature files",
+      "Resolve feature intent documents from canonical IDs",
+      "Trace from canonical intent to code interfaces",
+      "Trace from features to reachable call graphs",
+      "Trace from scenarios to observable source mechanics",
+      "Trace from obligations to exact implementing code",
+      "Analyze CLI entry point reachability",
+      "Identify unreachable code and removal impact"
+    ]
+  },
+
+  "completeCanonicialChain": {
+    "startingPoint": "feature file (.feature with &feature: anchor)",
+    "chain": [
+      "gherkin.feature-by-id → resolve feature identity",
+      "intent.feature-by-id → resolve feature intent and interface",
+      "trace.feature-to-interface → locate code entry point",
+      "trace.feature-to-callgraph → enumerate reachable callables",
+      "trace.scenario-to-source-facts → find observable mechanics",
+      "trace.obligation-to-mechanics → exact implementation details"
+    ],
+    "result": "Complete traceability from feature statement to source code mechanics",
+    "validation": "Every link is queryable; missing links are explicit"
+  },
+
+  "nextSteps": [
+    "Review the three proposed feature intents whose interfaceRoot does not resolve to a current source symbol",
+    "Admit responsibility types and obligation statements in canonical authority",
+    "Replace observational mechanic semantics with admitted semantic authority",
+    "Regenerate the self-governance report with canonical query receipts"
+  ],
+
+  "reconciliationRequirements": [
+    "All gherkin.* results must match intent.* documents",
+    "All trace.* results must be valid and consistent",
+    "No missing or orphaned canonical identities",
+    "All entry points must be resolvable",
+    "All mechanics must be observable in source"
+  ]
+}

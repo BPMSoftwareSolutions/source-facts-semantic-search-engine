@@ -30,6 +30,8 @@ import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from
 import { discoversAuthorityAuthoringContractMap } from "../src/governance/discovers-authority-authoring-contract-map.js";
 import { projectSourceFactsWorkspace } from "../src/project.js";
 import { projectsInterfaceGovernance } from "../src/governance/projects-interface-governance.js";
+import { discoversCanonicalFeatureIntents } from "../src/governance/canonical-feature-intent.js";
+import { fileURLToPath } from "node:url";
 
 function buildsAuthorityDocument() {
   return {
@@ -262,6 +264,30 @@ test("projectsSelfGovernanceReport binds rendered facts to inspectable registere
   assert.equal(artifact.fileName, "feature-coverage-summary-v1.json");
   assert.equal(artifact.document.registeredQuery.queryText, "SELECT * FROM reportFeatureCoverageSummary");
   assert.deepEqual(artifact.document.queryReceipt.result.rows, receipt.result.rows);
+});
+
+test("canonical Gherkin and intent queries resolve the supplied CLI identities through receipt-backed drill-downs", async () => {
+  const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
+  const canonicalFeatureIntents = await discoversCanonicalFeatureIntents(path.join(repositoryRoot, "features"), { relativeTo: repositoryRoot });
+  const report = await projectsSelfGovernanceReport({
+    index: buildsSyntheticIndex(),
+    repositoryId: "canonical-feature-query-test",
+    canonicalFeatureIntents,
+  });
+
+  const feature = rerunsRegisteredReportQuery(report, "gherkin.feature-by-id.v1", { featureId: "source-facts.cli-query" });
+  assert.equal(feature.rowCount, 1);
+  assert.equal(feature.rows[0].featureFile, "features/cli-query-command.feature");
+  assert.ok(feature.rows[0].drillDowns.some((entry) => entry.queryId === "intent.feature-by-id.v1"));
+
+  const scenario = rerunsRegisteredReportQuery(report, "intent.scenario-lineage.v1", { scenarioId: "source-facts.cli-query.from-command-line" });
+  assert.equal(scenario.rowCount, 1);
+  assert.equal(scenario.rows[0].responsibilityId, "cli-query-entrypoint-execution");
+  assert.equal(scenario.rows[0].obligationId, "execute-semantic-search-query");
+
+  const steps = rerunsRegisteredReportQuery(report, "gherkin.step-identities.v1", { scenarioId: "source-facts.cli-query.from-command-line" });
+  assert.deepEqual(steps.rows.map((row) => row.stepType), ["Given", "When", "Then", "And"]);
+  assert.ok(report.queryLineage.registeredQueries.find((entry) => entry.queryId === "trace.obligation-to-mechanics.v1").terminal);
 });
 
 test("authority authoring bundles bind every healing candidate to contract maps, source evidence, and explicit readiness", async () => {

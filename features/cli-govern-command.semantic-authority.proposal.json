@@ -1,0 +1,111 @@
+{
+  "documentKind": "semantic-authority.proposal.v1",
+  "featureId": "source-facts.cli-govern",
+  "responsibilityId": "cli-governance-report-generation",
+  "obligationId": "produce-self-governance-report",
+  "proposalDate": "2026-08-04T00:00:00Z",
+  "lifecycle": "INFERRED_NOT_ADMITTED",
+  "purpose": "Proposed semantic decisions for governance report generation",
+
+  "decisions": [
+    {
+      "decisionId": "query-execution-order",
+      "statement": "Queries execute in catalog order; results are collected into receipts before rendering any section of the report",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "cli.entry-point-reachability.v1",
+          "sourceReferenceId": "src/governance/projects-self-governance-report.js#projectsSelfGovernanceReport"
+        }
+      ]
+    },
+    {
+      "decisionId": "reconciliation-required",
+      "statement": "Reconciliation must PASS before report is finalized; a report with RECONCILIATION_FAILED is not emitted",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "claim-pointer-validity",
+      "statement": "Every claim in the rendered report must have a valid pointer to a query result; missing pointers cause reconciliation failure",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "deterministic-rerun",
+      "statement": "Running the report again on the same inputs must produce identical hashes and claim values; mismatches indicate data corruption",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "stale-receipt-detection",
+      "statement": "A receipt is stale if its scan ID does not match the current source index; stale receipts must be rerun",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    }
+  ],
+
+  "reportStructure": {
+    "metadata-section": "Report type, generated date, workspace, index ID, scan ID, query catalog, disposition",
+    "executive-summary": "Summary statistics from feature-coverage and scenario-conformance queries",
+    "feature-drill-down": "Per-feature analysis with scenarios, responsibilities, obligations",
+    "evidence-without-lineage": "Inventory of unclassified mechanics and authority",
+    "subject-boundary": "Scope definition and excluded evidence",
+    "reconciliation-section": "Validation checks and claim pointer coverage",
+    "query-appendix": "Full receipt artifacts with query, result, claim pointers"
+  },
+
+  "failureHandling": [
+    {
+      "failureMode": "query-execution-failure",
+      "handlingStrategy": "Stop execution; report which query failed and why; do not attempt partial recovery",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "reconciliation-check-failure",
+      "handlingStrategy": "Set reconciliation disposition to FAILED; include failure details in report; do not finalize",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "missing-claim-pointer",
+      "handlingStrategy": "Increment missing-pointers count; flag in reconciliation; mark claim as unsupported",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "deterministic-mismatch",
+      "handlingStrategy": "Fail reconciliation; report which value mismatched and hash mismatch",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    }
+  ],
+
+  "reconciliationChecks": [
+    {
+      "checkId": "registered-claim-count",
+      "assertion": "Total registered claims equals sum of claims in all receipts"
+    },
+    {
+      "checkId": "claim-pointer-coverage",
+      "assertion": "Every rendered claim has a valid pointer to a query result row"
+    },
+    {
+      "checkId": "query-pointer-uniqueness",
+      "assertion": "No query pointer is rendered twice for different claims"
+    },
+    {
+      "checkId": "result-hash-determinism",
+      "assertion": "Result hash must match the deterministic serialization of the result"
+    },
+    {
+      "checkId": "no-stale-receipts",
+      "assertion": "All receipts must reference the same scan ID as the current index"
+    }
+  ],
+
+  "nextSteps": [
+    "Review existing governance code and validate inferred decisions",
+    "Formalize reconciliation check implementations",
+    "Connect report sections to their query sources",
+    "Document claim rendering from result rows",
+    "Admit or refine each decision"
+  ]
+}

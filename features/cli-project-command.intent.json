@@ -1,0 +1,24 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-project",
+  "featureFile": "features/cli-project-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-project",
+  "purpose": "Project executable artifacts and contracts from canonical authority documents",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-project.from-authority-declarations",
+      "scenarioAnchor": "&scenario:source-facts.cli-project.from-authority-declarations",
+      "responsibilityId": "cli-artifact-projection",
+      "obligationId": "project-executable-from-authority",
+      "givenId": "canonical-authority-exists",
+      "whenId": "project-command-invoked",
+      "thenId": "artifacts-are-projected",
+      "andId": "projection-status-is-recorded",
+      "purpose": "User can generate projected executable bodies and contracts from canonical authority without hand-authoring bytes"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runProjectGovernedConsoleContract",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-04T00:00:00Z"
+}

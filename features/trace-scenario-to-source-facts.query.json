@@ -1,0 +1,117 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "trace",
+  "queryId": "trace.scenario-to-source-facts.v1",
+  "purpose": "Trace from scenario obligation to observable mechanics in source code",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "scenarioId",
+      "type": "string",
+      "description": "Canonical scenario ID",
+      "required": true,
+      "example": "source-facts.cli-query.from-command-line"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per mechanic observed in scenario's callable graph",
+    "fields": [
+      {
+        "name": "scenarioId",
+        "type": "string",
+        "description": "Source scenario ID"
+      },
+      {
+        "name": "obligationId",
+        "type": "string",
+        "description": "Obligation this scenario exercises"
+      },
+      {
+        "name": "callableId",
+        "type": "string",
+        "description": "Callable containing mechanic (file#symbol)"
+      },
+      {
+        "name": "mechanicType",
+        "type": "string",
+        "enum": [
+          "branch",
+          "fallback",
+          "iteration",
+          "object-construction",
+          "serialization",
+          "validation",
+          "exception-handling",
+          "state-mutation",
+          "throw",
+          "normalization",
+          "retry"
+        ],
+        "description": "Type of mechanic observed"
+      },
+      {
+        "name": "mechanicCount",
+        "type": "integer",
+        "description": "Number of times this mechanic occurs in callable"
+      },
+      {
+        "name": "sourceReferences",
+        "type": "array",
+        "description": "File, line, column of mechanic occurrences"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "derived-trace",
+    "sourceQueries": [
+      "intent.responsibility-obligation.v1 (get obligation)",
+      "trace.feature-to-callgraph.v1 (get callables in scenario's entry point)",
+      "source-facts.mechanics-by-callable.v1 (get mechanics)"
+    ],
+    "joinKey": "callableId",
+    "traceStrategy": "find all callables reachable from scenario's responsibility, extract all mechanics"
+  },
+
+  "queryLinearization": "SELECT s.scenarioId, r.obligationId, c.callableId, m.mechanicType, COUNT(*) as mechanicCount, ARRAY_AGG(STRUCT(m.file, m.line, m.column)) as sourceReferences FROM intent.responsibility-obligation(?) AS r JOIN trace.feature-to-callgraph(r.featureId) AS c JOIN source-facts.mechanics-by-callable(c.callableId) AS m GROUP BY s.scenarioId, r.obligationId, c.callableId, m.mechanicType",
+
+  "scope": "workspace-prefix:src",
+  "reconciliation": [
+    "all callables must be in scenario's reachable graph",
+    "mechanics must be observable in actual source code",
+    "source references must be valid lines"
+  ],
+
+  "typedFailures": [
+    "OBLIGATION_NOT_FOUND (obligation ID not resolvable)",
+    "MECHANIC_NOT_OBSERVABLE (mechanic claimed but not found in code)"
+  ],
+
+  "exampleResult": [
+    {
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "obligationId": "execute-semantic-search-query",
+      "callableId": "src/cli.js#runQuery",
+      "mechanicType": "branch",
+      "mechanicCount": 3,
+      "sourceReferences": [
+        { "file": "src/cli.js", "line": 145, "column": 4 },
+        { "file": "src/cli.js", "line": 152, "column": 6 },
+        { "file": "src/cli.js", "line": 159, "column": 8 }
+      ]
+    },
+    {
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "obligationId": "execute-semantic-search-query",
+      "callableId": "src/cli.js#runQuery",
+      "mechanicType": "validation",
+      "mechanicCount": 2,
+      "sourceReferences": [
+        { "file": "src/cli.js", "line": 148, "column": 6 },
+        { "file": "src/cli.js", "line": 155, "column": 8 }
+      ]
+    }
+  ]
+}

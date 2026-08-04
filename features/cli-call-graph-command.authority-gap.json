@@ -1,0 +1,110 @@
+{
+  "documentKind": "authority-gap-analysis.v1",
+  "featureId": "source-facts.cli-call-graph",
+  "analysisDate": "2026-08-04T00:00:00Z",
+  "purpose": "Identify missing semantic layers for CLI call graph projection",
+
+  "queryBindings": [
+    {
+      "queryId": "cli.entry-points.v1",
+      "purpose": "Locate call-graph command entry point",
+      "expectedResult": "src/cli.js#runProjectCallGraph"
+    },
+    {
+      "queryId": "cli.entry-point-reachability.v1",
+      "purpose": "Identify all callables reachable from call-graph entry point",
+      "parameterBindings": {
+        "entryPointId": "cli-call-graph-entrypoint"
+      }
+    },
+    {
+      "queryId": "cli.unreachable-callables.v1",
+      "purpose": "Show callables unreachable from call-graph command",
+      "parameterBindings": {
+        "excludeFrom": "cli-call-graph-entrypoint"
+      }
+    }
+  ],
+
+  "authorityStatus": {
+    "SEMANTIC_AUTHORITY_MISSING": true,
+    "ONTOLOGY_AUTHORITY_MISSING": true,
+    "CONTEXT_AUTHORITY_MISSING": true,
+    "DATA_AUTHORITY_MISSING": true,
+    "EXECUTION_BINDING_MISSING": true
+  },
+
+  "missingLayers": [
+    {
+      "layer": "SEMANTIC_AUTHORITY",
+      "description": "Call graph projection decisions and resolution policy",
+      "requiredDecisions": [
+        "which entry points are valid",
+        "how to handle runtime-sensitive edges",
+        "how to classify unresolved references",
+        "what constitutes a complete slice",
+        "how to handle cycles"
+      ],
+      "proposalTarget": "call-graph-semantic-authority.json"
+    },
+    {
+      "layer": "ONTOLOGY_AUTHORITY",
+      "description": "Call graph entities and relationships",
+      "requiredEntities": [
+        "EntryPoint (CLI or code entry surface)",
+        "Callable (function, method, module)",
+        "CallEdge (relationship between callables)",
+        "ReachabilitySlice (set of reachable callables)",
+        "UnresolvedEdge (edge classification when resolution fails)",
+        "StaticResolution (deterministic call)",
+        "RuntimeResolution (requires execution context)"
+      ],
+      "proposalTarget": "call-graph-ontology.json"
+    },
+    {
+      "layer": "CONTEXT_AUTHORITY",
+      "description": "Call graph analysis context and boundaries",
+      "requiredContexts": [
+        "which workspace or module",
+        "which entry points to analyze",
+        "traversal depth limit",
+        "inclusion/exclusion patterns for dependencies",
+        "runtime resolution strategy"
+      ],
+      "proposalTarget": "call-graph-context-authority.json"
+    },
+    {
+      "layer": "DATA_AUTHORITY",
+      "description": "Call graph input and projection contracts",
+      "requiredSchemas": [
+        "EntryPointIdentifier (input: which callable to start from)",
+        "CallGraphInput (input: analysis parameters)",
+        "CallGraphNode (output: callable with metadata)",
+        "CallGraphEdge (output: edge with classification)",
+        "CallGraphProjection (output: complete result)"
+      ],
+      "proposalTarget": "call-graph-result-contract.json"
+    },
+    {
+      "layer": "EXECUTION_BINDING",
+      "description": "How code mechanics implement call graph projection",
+      "mechanicsObserved": [
+        "entry point resolution",
+        "call graph traversal",
+        "cycle detection",
+        "edge classification",
+        "result serialization"
+      ],
+      "proposalTarget": "call-graph-execution-binding.json"
+    }
+  ],
+
+  "nextSteps": [
+    "Run cli.entry-point-reachability query to extract observable call graph",
+    "Analyze traversal mechanics in src/call-graph.js",
+    "Project semantic authority for resolution and edge classification",
+    "Define call graph ontology entities",
+    "Author context authority for analysis boundaries",
+    "Create result contract for projection output"
+  ]
+}

@@ -15,6 +15,7 @@ import { projectsScenarioConformance, resolvesOccurrenceScenarioLineage } from "
 import { projectsFeatureCoverage } from "./projects-feature-coverage.js";
 import { projectsReportQueryLineage, reconcilesReportQueryLineage } from "./projects-report-query-lineage.js";
 import { projectsInterfaceGovernance } from "./projects-interface-governance.js";
+import { projectsCanonicalFeatureQueryPlane } from "./canonical-feature-intent.js";
 
 function compareOccurrences(left, right) {
   return left.modulePath.localeCompare(right.modulePath)
@@ -101,7 +102,7 @@ function fileBreakdownKey(mechanic, modulePath) {
  * Still observational only -- no gap remediation records or projection
  * actions are produced yet.
  */
-export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, workspaceRelativePrefix = "" }) {
+export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, canonicalFeatureIntents = { pairs: [], findings: [], disposition: "CANONICAL_FEATURE_INTENTS_NOT_DISCOVERED" }, workspaceRelativePrefix = "" }) {
   const subject = scopesSelfGovernanceSubject({
     index,
     workspaceRelativePrefix,
@@ -349,9 +350,10 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     occurrences: featureCoverageProjection.occurrences,
     disposition: "OBSERVATIONAL_NO_GATE_APPLIED",
   };
+  const canonicalFeatureQueryPlane = projectsCanonicalFeatureQueryPlane(canonicalFeatureIntents, index);
   const report = Object.freeze({
     ...reportView,
-    queryLineage: projectsReportQueryLineage(reportView, index),
+    queryLineage: projectsReportQueryLineage(reportView, index, canonicalFeatureQueryPlane),
   });
   reconcilesReportQueryLineage(report);
   return report;

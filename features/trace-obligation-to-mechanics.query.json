@@ -1,0 +1,139 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "trace",
+  "queryId": "trace.obligation-to-mechanics.v1",
+  "purpose": "Trace from obligation to the exact mechanics that implement it",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "obligationId",
+      "type": "string",
+      "description": "Canonical obligation ID",
+      "required": true,
+      "example": "execute-semantic-search-query"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per mechanic implementing obligation",
+    "fields": [
+      {
+        "name": "obligationId",
+        "type": "string",
+        "description": "The obligation being implemented"
+      },
+      {
+        "name": "responsibilityId",
+        "type": "string",
+        "description": "Responsibility carrying this obligation"
+      },
+      {
+        "name": "scenarioId",
+        "type": "string",
+        "description": "Scenario requiring this obligation"
+      },
+      {
+        "name": "callableId",
+        "type": "string",
+        "description": "Callable implementing obligation"
+      },
+      {
+        "name": "mechanicType",
+        "type": "string",
+        "description": "Type of mechanic"
+      },
+      {
+        "name": "mechanicLocation",
+        "type": "object",
+        "fields": [
+          { "name": "file", "type": "string" },
+          { "name": "line", "type": "integer" },
+          { "name": "column", "type": "integer" },
+          { "name": "snippet", "type": "string", "description": "Code snippet containing mechanic" }
+        ],
+        "description": "Exact location of mechanic in code"
+      },
+      {
+        "name": "mechanicSemantic",
+        "type": "string",
+        "description": "What the mechanic does (inferred from context)"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "derived-trace",
+    "sourceQueries": [
+      "intent.responsibility-obligation.v1 (get obligation→responsibility→scenario)",
+      "trace.scenario-to-source-facts.v1 (get mechanics)"
+    ],
+    "joinKey": "obligationId",
+    "traceStrategy": "starting from obligation, find responsible callables and all mechanics therein"
+  },
+
+  "queryLinearization": "SELECT o.obligationId, o.responsibilityId, s.scenarioId, m.callableId, m.mechanicType, STRUCT(m.file, m.line, m.column, m.snippet) as mechanicLocation, m.inferredSemantic as mechanicSemantic FROM obligations o JOIN responsibilities r ON o.obligationId = r.obligationId JOIN scenarios s ON r.responsibilityId = s.responsibilityId JOIN trace.scenario-to-source-facts(s.scenarioId) m WHERE o.obligationId = ?",
+
+  "scope": "workspace-prefix:src",
+  "reconciliation": [
+    "obligation must be declared (in intent or authority)",
+    "responsibility must bind obligation",
+    "scenario must contain responsibility",
+    "callables must be reachable from scenario entry",
+    "mechanics must be observable in code"
+  ],
+
+  "typedFailures": [
+    "OBLIGATION_NOT_ADMITTED (obligation not yet canonical)",
+    "RESPONSIBILITY_UNBOUND (obligation not in any responsibility)",
+    "SCENARIO_NOT_FOUND (responsibility not in any scenario)",
+    "MECHANIC_UNDECLARED (mechanic in code but not listed in mechanics)"
+  ],
+
+  "declarativeForm": "obligation.obligationId describes the required behavior; the result shows what mechanics collectively implement it",
+
+  "exampleResult": [
+    {
+      "obligationId": "execute-semantic-search-query",
+      "responsibilityId": "cli-query-entrypoint-execution",
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "callableId": "src/cli.js#runQuery",
+      "mechanicType": "branch",
+      "mechanicLocation": {
+        "file": "src/cli.js",
+        "line": 145,
+        "column": 4,
+        "snippet": "if (expression && expression.length > 0) {"
+      },
+      "mechanicSemantic": "Routes execution based on query expression validity"
+    },
+    {
+      "obligationId": "execute-semantic-search-query",
+      "responsibilityId": "cli-query-entrypoint-execution",
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "callableId": "src/cli.js#runQuery",
+      "mechanicType": "validation",
+      "mechanicLocation": {
+        "file": "src/cli.js",
+        "line": 148,
+        "column": 6,
+        "snippet": "if (!validateExpression(expression)) throw new Error('Invalid syntax');"
+      },
+      "mechanicSemantic": "Validates query expression follows grammar rules"
+    },
+    {
+      "obligationId": "execute-semantic-search-query",
+      "responsibilityId": "cli-query-entrypoint-execution",
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "callableId": "src/cli.js#runQuery",
+      "mechanicType": "serialization",
+      "mechanicLocation": {
+        "file": "src/cli.js",
+        "line": 161,
+        "column": 2,
+        "snippet": "return JSON.stringify(results, null, 2);"
+      },
+      "mechanicSemantic": "Serializes results for command line output"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "documentKind": "semantic-authority.proposal.v1",
+  "featureId": "source-facts.cli-propose-feature-coverage",
+  "responsibilityId": "cli-feature-candidate-discovery",
+  "obligationId": "propose-feature-candidates-from-evidence",
+  "proposalDate": "2026-08-04T00:00:00Z",
+  "lifecycle": "INFERRED_NOT_ADMITTED",
+  "purpose": "Proposed semantic decisions for feature candidate discovery and proposal",
+
+  "decisions": [
+    {
+      "decisionId": "evidence-cluster-identification",
+      "statement": "An evidence cluster is a bounded set of source mechanics (functions, modules) with coherent responsibility semantics",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "feature-coverage.unresolved-clusters.v1",
+          "sourceReferenceId": "src/governance/proposes-feature-coverage.js#proposesFeatureCoverage"
+        }
+      ]
+    },
+    {
+      "decisionId": "proposal-evidence-lineage",
+      "statement": "Every proposal retains complete lineage to its source facts: file, line, symbol, mechanic type",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "duplicate-prevention",
+      "statement": "Identical proposals from different evidence paths are deduplicated; the deduplication is explicit",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "proposal-lifecycle-observational",
+      "statement": "All proposals begin with lifecycle PROPOSED; they never automatically advance to ADMITTED without explicit review",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "inference-observational-only",
+      "statement": "LLM inference results are recorded as INFERRED_NOT_ADMITTED; inference never admits features or changes proposal lifecycle",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    }
+  ],
+
+  "proposalStrategy": {
+    "clusterSourceTypes": [
+      "RESPONSIBILITY_EVIDENCE_CLUSTER (code with coherent purpose)",
+      "SUPPORTING_IMPLEMENTATION_CLUSTER (helper code patterns)"
+    ],
+    "minimumEvidenceThreshold": "At least one responsibility evidence cluster",
+    "rankingStrategy": "Cluster size (number of mechanics), clustering cohesion, reachability from CLI",
+    "deduplicationScope": "Within same workspace; proposals from different workspaces are distinct"
+  },
+
+  "failureHandling": [
+    {
+      "failureMode": "no-evidence-clusters",
+      "handlingStrategy": "Report that no candidates were found; suggest running analysis on larger scope",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "inference-service-unavailable",
+      "handlingStrategy": "Proposals are still generated from static evidence; inference step is optional and skipped",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "inference-timeout",
+      "handlingStrategy": "Record which proposals were evaluated; skip remaining and output partial results",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "duplicate-detection-failure",
+      "handlingStrategy": "Include both duplicates; flag in proposal metadata for manual deduplication",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    }
+  ],
+
+  "inferenceEvaluation": {
+    "purpose": "Observational discovery only; does not change proposal lifecycle or admit features",
+    "modelSelection": "Current Claude model as configured",
+    "evaluationQuestions": [
+      "Does this evidence cluster represent a coherent feature?",
+      "What is the user-facing behavior?",
+      "What are the key responsibilities?",
+      "Are there hidden assumptions?"
+    ],
+    "resultDisposition": "INFERRED_NOT_ADMITTED (always)",
+    "confidenceTracking": "Record model confidence but do not use for filtering"
+  },
+
+  "proposalOutput": {
+    "structure": [
+      "feature ID (inferred from cluster)",
+      "feature purpose (inferred from mechanics)",
+      "scenario proposals (one per likely scenario)",
+      "responsibility and obligation mapping",
+      "evidence lineage (complete chain)",
+      "inference evaluation (if performed)",
+      "lifecycle: PROPOSED",
+      "reviewed-by: (pending human review)"
+    ]
+  },
+
+  "nextSteps": [
+    "Run feature-coverage.unresolved-clusters query to extract evidence",
+    "Formalize cluster identification algorithm",
+    "Design proposal ranking strategy",
+    "Implement deduplication logic",
+    "Set up optional inference evaluation",
+    "Design review workflow for admission"
+  ]
+}

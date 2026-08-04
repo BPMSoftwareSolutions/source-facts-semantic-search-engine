@@ -1,0 +1,95 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "trace",
+  "queryId": "trace.feature-to-interface.v1",
+  "purpose": "Trace from feature through intent to code interface entry point",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "featureId",
+      "type": "string",
+      "description": "Canonical feature ID",
+      "required": true,
+      "example": "source-facts.cli-query"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per feature-to-interface trace",
+    "fields": [
+      {
+        "name": "featureId",
+        "type": "string",
+        "description": "Starting feature ID"
+      },
+      {
+        "name": "featureFile",
+        "type": "string",
+        "description": "Feature definition file"
+      },
+      {
+        "name": "intentFile",
+        "type": "string",
+        "description": "Intent document file"
+      },
+      {
+        "name": "interfaceRoot",
+        "type": "string",
+        "description": "Code entry point (file#function)"
+      },
+      {
+        "name": "interfaceFile",
+        "type": "string",
+        "description": "Code file containing entry point"
+      },
+      {
+        "name": "interfaceSymbol",
+        "type": "string",
+        "description": "Function/export name at entry"
+      },
+      {
+        "name": "lineNumber",
+        "type": "integer",
+        "description": "Line where interface starts"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "derived-trace",
+    "sourceQueries": [
+      "intent.feature-by-id.v1 (get interfaceRoot)",
+      "source-facts.symbol-definition.v1 (resolve symbol)"
+    ],
+    "joinKey": "featureId",
+    "traceStrategy": "follow from feature → intent → interfaceRoot → symbol location"
+  },
+
+  "queryLinearization": "SELECT f.featureId, f.featureFile, i.intentFile, i.interfaceRoot, s.file AS interfaceFile, s.symbol AS interfaceSymbol, s.line FROM intentFeatureRegistry i JOIN gherkinFeatureRegistry f ON i.featureId = f.featureId JOIN sourceSymbolRegistry s ON i.interfaceRoot LIKE CONCAT(s.file, '%')",
+
+  "scope": "workspace-prefix:features + workspace-prefix:src",
+  "reconciliation": [
+    "interfaceRoot must be valid and resolvable",
+    "interfaceFile must exist in workspace",
+    "interfaceSymbol must be exported or callable"
+  ],
+
+  "typedFailures": [
+    "INTERFACE_NOT_FOUND (interfaceRoot doesn't resolve)",
+    "INTERFACE_OUTSIDE_WORKSPACE (entry point in external dependency)",
+    "SYMBOL_NOT_EXPORTED (entry point not callable)"
+  ],
+
+  "exampleResult": [
+    {
+      "featureId": "source-facts.cli-query",
+      "featureFile": "features/cli-query-command.feature",
+      "intentFile": "features/cli-query-command.intent.json",
+      "interfaceRoot": "src/cli.js#runQuery",
+      "interfaceFile": "src/cli.js",
+      "interfaceSymbol": "runQuery",
+      "lineNumber": 142
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "intent",
+  "queryId": "intent.responsibility-obligation.v1",
+  "purpose": "Resolve responsibility and obligation from scenario intent",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "scenarioId",
+      "type": "string",
+      "description": "Canonical scenario ID",
+      "required": true,
+      "example": "source-facts.cli-query.from-command-line"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per responsibility (scenarios may have multiple)",
+    "fields": [
+      {
+        "name": "responsibilityId",
+        "type": "string",
+        "description": "Responsibility canonical ID"
+      },
+      {
+        "name": "obligationId",
+        "type": "string",
+        "description": "Obligation this responsibility fulfills"
+      },
+      {
+        "name": "scenarioId",
+        "type": "string",
+        "description": "Scenario containing this responsibility"
+      },
+      {
+        "name": "obligationStatement",
+        "type": "string",
+        "description": "What must be true when obligation is fulfilled"
+      },
+      {
+        "name": "responsibilityType",
+        "type": "string",
+        "description": "Type of responsibility (e.g., semantic-execution, command-entry)"
+      },
+      {
+        "name": "lifecycle",
+        "type": "string",
+        "description": "Responsibility maturity state"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "derived-index",
+    "sourceQueries": [
+      "intent.scenario-lineage.v1",
+      "authority.obligations-by-scenario.v1 (proposed)"
+    ],
+    "joinKey": "scenarioId",
+    "parseStrategy": "resolve scenario intent and extract responsibility/obligation bindings"
+  },
+
+  "queryLinearization": "SELECT * FROM intentResponsibilityRegistry WHERE scenarioId = ?",
+
+  "scope": "workspace-prefix:features",
+  "reconciliation": [
+    "each responsibility belongs to exactly one scenario",
+    "each obligation belongs to exactly one responsibility",
+    "responsibility type must be admitted (e.g., semantic-execution)"
+  ],
+
+  "typedFailures": [
+    "RESPONSIBILITY_CARDINALITY_INVALID (responsibility in multiple scenarios)",
+    "OBLIGATION_CARDINALITY_INVALID (obligation in multiple responsibilities)",
+    "RESPONSIBILITY_TYPE_UNKNOWN (undeclared responsibility type)"
+  ],
+
+  "exampleResult": [
+    {
+      "responsibilityId": "cli-query-entrypoint-execution",
+      "obligationId": "execute-semantic-search-query",
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "obligationStatement": "The CLI query command must execute a semantic search and return results",
+      "responsibilityType": "semantic-execution",
+      "lifecycle": "RESPONSIBILITY_DECLARED"
+    }
+  ]
+}

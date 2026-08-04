@@ -1,0 +1,24 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-call-graph",
+  "featureFile": "features/cli-call-graph-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-call-graph",
+  "purpose": "Project complete call graph reachability from CLI entry points through SourceFacts relationships",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-call-graph.from-entry-point",
+      "scenarioAnchor": "&scenario:source-facts.cli-call-graph.from-entry-point",
+      "responsibilityId": "cli-call-graph-projection",
+      "obligationId": "project-all-resolvable-cli-reachability",
+      "givenId": "validated-source-index",
+      "whenId": "call-graph-projection-requested",
+      "thenId": "reachable-callables-returned",
+      "andId": "unresolved-edges-classified",
+      "purpose": "User can project complete reachable call graph from a CLI entry point and observe runtime-sensitive edge classifications"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runProjectCallGraph",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-04T00:00:00Z"
+}

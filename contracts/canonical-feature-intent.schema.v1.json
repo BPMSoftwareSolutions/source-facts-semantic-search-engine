@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "canonical-feature-intent.schema.v1.json",
+  "title": "Canonical Feature Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["documentKind", "featureId", "featureFile", "featureAnchor", "purpose", "scenarios"],
+  "properties": {
+    "documentKind": { "const": "canonical-feature-intent.v1" },
+    "featureId": { "$ref": "#/$defs/id" },
+    "featureFile": { "type": "string", "pattern": "\\.feature$" },
+    "featureAnchor": { "type": "string", "pattern": "^&feature:[a-z0-9][a-z0-9._-]*$" },
+    "purpose": { "type": "string", "minLength": 1 },
+    "scenarios": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/scenario" } },
+    "interfaceRoot": { "type": "string", "minLength": 1 },
+    "lifecycle": { "type": "string", "minLength": 1 },
+    "authorityStatus": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenarioId", "scenarioAnchor", "responsibilityId", "obligationId", "givenId", "whenId", "thenId", "purpose"],
+      "properties": {
+        "scenarioId": { "$ref": "#/$defs/id" },
+        "scenarioAnchor": { "type": "string", "pattern": "^&scenario:[a-z0-9][a-z0-9._-]*$" },
+        "responsibilityId": { "$ref": "#/$defs/id" },
+        "obligationId": { "$ref": "#/$defs/id" },
+        "givenId": { "$ref": "#/$defs/id" },
+        "whenId": { "$ref": "#/$defs/id" },
+        "thenId": { "$ref": "#/$defs/id" },
+        "andId": { "$ref": "#/$defs/id" },
+        "purpose": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

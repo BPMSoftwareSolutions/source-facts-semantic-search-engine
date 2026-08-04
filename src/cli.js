@@ -48,6 +48,7 @@ import { projectsSelfGovernanceReport } from "./governance/projects-self-governa
 import { projectsReportQueryReceiptArtifacts } from "./governance/projects-report-query-lineage.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
+import { discoversCanonicalFeatureIntents } from "./governance/canonical-feature-intent.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -391,6 +392,7 @@ async function runGovern(rawArgs) {
   const authoringContractMapRoot = path.resolve(flags.contractMapRoot
     ?? path.join(repositoryRoot, "..", "contract-driven-artifact-governance-engine"));
   const authoringContractMap = await discoversAuthorityAuthoringContractMap(authoringContractMapRoot);
+  const canonicalFeatureIntents = await discoversCanonicalFeatureIntents(path.join(repositoryRoot, "features"), { relativeTo: repositoryRoot });
 
   const report = await projectsSelfGovernanceReport({
     index,
@@ -402,6 +404,7 @@ async function runGovern(rawArgs) {
     knowHowRegistry,
     healingDraftBatches,
     authoringContractMap,
+    canonicalFeatureIntents,
     workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
   });
   await validatesSelfGovernanceReport(report);

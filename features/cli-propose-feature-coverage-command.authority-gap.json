@@ -1,0 +1,141 @@
+{
+  "documentKind": "authority-gap-analysis.v1",
+  "featureId": "source-facts.cli-propose-feature-coverage",
+  "analysisDate": "2026-08-04T00:00:00Z",
+  "purpose": "Identify missing semantic layers for CLI feature proposal generation",
+
+  "queryBindings": [
+    {
+      "queryId": "cli.entry-points.v1",
+      "purpose": "Locate propose-feature-coverage command entry point",
+      "expectedResult": "src/cli.js#runProposeFeatureCoverage"
+    },
+    {
+      "queryId": "cli.entry-point-reachability.v1",
+      "purpose": "Identify proposal generation pipeline callables",
+      "parameterBindings": {
+        "entryPointId": "cli-propose-entrypoint"
+      }
+    },
+    {
+      "queryId": "cli.unreachable-callables.v1",
+      "purpose": "Show what evidence clusters remain unproposed",
+      "parameterBindings": {
+        "excludeFrom": "cli-propose-entrypoint"
+      }
+    },
+    {
+      "queryId": "feature-coverage.unresolved-clusters.v1",
+      "purpose": "Access source evidence for proposals",
+      "parameterBindings": {}
+    }
+  ],
+
+  "authorityStatus": {
+    "SEMANTIC_AUTHORITY_MISSING": true,
+    "ONTOLOGY_AUTHORITY_MISSING": true,
+    "CONTEXT_AUTHORITY_MISSING": true,
+    "DATA_AUTHORITY_MISSING": true,
+    "EXECUTION_BINDING_PARTIAL": true,
+    "INFERENCE_AUTHORITY_MISSING": true
+  },
+
+  "partialAuthority": {
+    "note": "Discovery and inference code exists but lacks semantic documentation",
+    "existingArtifacts": [
+      "src/governance/proposes-feature-coverage.js",
+      "src/governance/proposes-semantic-overlap.js"
+    ]
+  },
+
+  "missingLayers": [
+    {
+      "layer": "SEMANTIC_AUTHORITY",
+      "description": "Feature proposal discovery and evaluation decisions",
+      "requiredDecisions": [
+        "what constitutes a valid evidence cluster",
+        "minimum evidence threshold for proposal",
+        "how to rank candidate features",
+        "how to detect and prevent duplicate proposals",
+        "how to handle conflicting proposals",
+        "when inference changes proposal lifecycle",
+        "how observational remains distinct from admitted"
+      ],
+      "proposalTarget": "propose-semantic-authority.json"
+    },
+    {
+      "layer": "ONTOLOGY_AUTHORITY",
+      "description": "Feature proposal entities and relationships",
+      "requiredEntities": [
+        "EvidenceCluster (source evidence for a feature)",
+        "ResponsibilityCluster (responsibility evidence)",
+        "SupportingImplementationCluster (implementation evidence)",
+        "FeatureProposal (proposed feature candidate)",
+        "ProposalEvidenceBundle (evidence justifying proposal)",
+        "LLMInferenceEvaluation (observational evaluation result)",
+        "ProposalLifecycle (PROPOSED, INFERRED_NOT_ADMITTED, ADMITTED)"
+      ],
+      "proposalTarget": "propose-ontology.json"
+    },
+    {
+      "layer": "CONTEXT_AUTHORITY",
+      "description": "Proposal discovery context and scope",
+      "requiredContexts": [
+        "which workspace to analyze",
+        "which evidence clusters to consider",
+        "inference availability (optional LLM evaluation)",
+        "proposal admission criteria",
+        "output format and disposition"
+      ],
+      "proposalTarget": "propose-context-authority.json"
+    },
+    {
+      "layer": "INFERENCE_AUTHORITY",
+      "description": "LLM inference evaluation rules for proposals",
+      "requiredInferenceRules": [
+        "which LLM model to use",
+        "what questions to ask about feature candidate",
+        "how to interpret inference results",
+        "confidence thresholds",
+        "observational disposition (never automatic admission)"
+      ],
+      "proposalTarget": "propose-inference-authority.json"
+    },
+    {
+      "layer": "DATA_AUTHORITY",
+      "description": "Proposal input and output contracts",
+      "requiredSchemas": [
+        "ProposalInput (workspace, cluster selection, inference options)",
+        "EvidenceBundleInput (cluster data for proposal generation)",
+        "FeatureProposalOutput (proposed feature with evidence)",
+        "InferenceInput (proposal data for model evaluation)",
+        "InferenceResult (model evaluation receipt)"
+      ],
+      "proposalTarget": "propose-result-contract.json"
+    },
+    {
+      "layer": "EXECUTION_BINDING",
+      "description": "How code implements feature proposal discovery",
+      "mechanicsObserved": [
+        "evidence cluster identification",
+        "cluster deduplication",
+        "proposal generation from mechanics",
+        "confidence scoring",
+        "duplicate detection",
+        "optional LLM inference",
+        "result serialization"
+      ],
+      "proposalTarget": "propose-execution-binding.json"
+    }
+  ],
+
+  "nextSteps": [
+    "Run feature-coverage.unresolved-clusters query to extract evidence for analysis",
+    "Document evidence cluster detection algorithm",
+    "Formalize what makes a valid feature proposal",
+    "Design inference evaluation semantics (observational only)",
+    "Define proposal lifecycle and admission criteria",
+    "Create evidence bundle schema for proposals",
+    "Author input/output contracts"
+  ]
+}

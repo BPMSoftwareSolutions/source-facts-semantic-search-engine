@@ -1,0 +1,24 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-govern",
+  "featureFile": "features/cli-govern-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-govern",
+  "purpose": "Generate comprehensive self-governance report documenting feature coverage, scenario conformance, and lineage quality",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-govern.scan-and-report",
+      "scenarioAnchor": "&scenario:source-facts.cli-govern.scan-and-report",
+      "responsibilityId": "cli-governance-report-generation",
+      "obligationId": "produce-self-governance-report",
+      "givenId": "workspace-contains-authority",
+      "whenId": "govern-command-invoked",
+      "thenId": "report-is-generated",
+      "andId": "lineage-quality-findings-identified",
+      "purpose": "User can scan a workspace and receive deterministic governance report with validated claims, query receipts, and reconciliation status"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runGovernance",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-04T00:00:00Z"
+}

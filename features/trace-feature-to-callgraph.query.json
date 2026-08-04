@@ -1,0 +1,110 @@
+{
+  "documentKind": "semantic-query-definition.v1",
+  "queryFamily": "trace",
+  "queryId": "trace.feature-to-callgraph.v1",
+  "purpose": "Trace from feature to reachable call graph from its interface entry point",
+  "version": "1.0.0",
+
+  "inputParameters": [
+    {
+      "name": "featureId",
+      "type": "string",
+      "description": "Canonical feature ID",
+      "required": true,
+      "example": "source-facts.cli-call-graph"
+    }
+  ],
+
+  "expectedResult": {
+    "structure": "one row per callable in reachable graph (hierarchical)",
+    "fields": [
+      {
+        "name": "featureId",
+        "type": "string",
+        "description": "Feature containing this call"
+      },
+      {
+        "name": "interfaceRoot",
+        "type": "string",
+        "description": "Entry point for graph"
+      },
+      {
+        "name": "callableId",
+        "type": "string",
+        "description": "Callable node in graph (file#symbol)"
+      },
+      {
+        "name": "callableFile",
+        "type": "string",
+        "description": "File containing callable"
+      },
+      {
+        "name": "callableSymbol",
+        "type": "string",
+        "description": "Function/export name"
+      },
+      {
+        "name": "depth",
+        "type": "integer",
+        "description": "Distance from entry point"
+      },
+      {
+        "name": "incomingEdges",
+        "type": "integer",
+        "description": "Number of callables that call this"
+      },
+      {
+        "name": "outgoingEdges",
+        "type": "integer",
+        "description": "Number of callables this calls"
+      }
+    ]
+  },
+
+  "implementation": {
+    "type": "derived-trace",
+    "sourceQueries": [
+      "trace.feature-to-interface.v1 (get interfaceRoot)",
+      "cli.entry-point-reachability.v1 (get reachable callables)"
+    ],
+    "joinKey": "interfaceRoot",
+    "traceStrategy": "start from entry point, traverse call graph depth-first, record all reachable"
+  },
+
+  "queryLinearization": "SELECT f.featureId, f.interfaceRoot, g.callableId, g.file AS callableFile, g.symbol AS callableSymbol, g.depth, g.incomingEdges, g.outgoingEdges FROM trace.feature-to-interface(?) AS f JOIN callGraphRegistry g ON f.interfaceRoot = g.entryPoint",
+
+  "scope": "workspace-prefix:src",
+  "reconciliation": [
+    "all callables in result must be reachable from entry point",
+    "depths must be consistent with call chain",
+    "edge counts must match observed call sites"
+  ],
+
+  "typedFailures": [
+    "CALLGRAPH_NOT_COMPUTABLE (cyclic imports prevent full analysis)",
+    "ENTRY_POINT_NOT_FOUND (interfaceRoot not in index)"
+  ],
+
+  "exampleResult": [
+    {
+      "featureId": "source-facts.cli-call-graph",
+      "interfaceRoot": "src/cli.js#runProjectCallGraph",
+      "callableId": "src/cli.js#runProjectCallGraph",
+      "callableFile": "src/cli.js",
+      "callableSymbol": "runProjectCallGraph",
+      "depth": 0,
+      "incomingEdges": 1,
+      "outgoingEdges": 3
+    },
+    {
+      "featureId": "source-facts.cli-call-graph",
+      "interfaceRoot": "src/cli.js#runProjectCallGraph",
+      "callableId": "src/call-graph.js#projectsCliEntryPointCallGraph",
+      "callableFile": "src/call-graph.js",
+      "callableSymbol": "projectsCliEntryPointCallGraph",
+      "depth": 1,
+      "incomingEdges": 1,
+      "outgoingEdges": 5
+    }
+  ]
+}

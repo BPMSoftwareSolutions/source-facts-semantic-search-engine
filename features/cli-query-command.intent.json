@@ -1,0 +1,24 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-query",
+  "featureFile": "features/cli-query-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-query",
+  "purpose": "Execute semantic queries against SourceFacts index from command line interface",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-query.from-command-line",
+      "scenarioAnchor": "&scenario:source-facts.cli-query.from-command-line",
+      "responsibilityId": "cli-query-entrypoint-execution",
+      "obligationId": "execute-semantic-search-query",
+      "givenId": "source-index-available",
+      "whenId": "query-command-invoked",
+      "thenId": "matching-facts-returned",
+      "andId": "unresolved-symbols-classified",
+      "purpose": "User can search SourceFacts index semantically from command line and receive canonical results"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runQuery",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-04T00:00:00Z"
+}

@@ -11,7 +11,7 @@
     "rootAllowList": ["LICENSE", "README.md", "package.json", "package-lock.json", ".gitignore"],
     "scope": {
       "scopeType": "declared-workspace-paths.v1",
-      "governedDirectories": ["artifacts", "contracts", "docs", "evidence", "scripts", "source-facts-query-console", "src", "test"],
+      "governedDirectories": ["artifacts", "contracts", "docs", "evidence", "features", "scripts", "source-facts-query-console", "src", "test"],
       "outsideScopePosture": "outside-authority"
     },
     "unexpectedPaths": { "policy": "reject" }
@@ -24,9 +24,12 @@
     { "directoryId": "contracts-gallery-projectors-directory", "relativePath": "contracts/gallery-projectors", "required": true },
     { "directoryId": "contracts-gallery-queries-directory", "relativePath": "contracts/gallery-queries", "required": true },
     { "directoryId": "contracts-sessions-directory", "relativePath": "contracts/sessions", "required": true },
+    { "directoryId": "contracts-canonical-feature-intents-directory", "relativePath": "contracts/canonical-feature-intents", "required": false },
 
     { "directoryId": "docs-directory", "relativePath": "docs", "required": true },
+    { "directoryId": "features-directory", "relativePath": "features", "required": false },
     { "directoryId": "docs-design-directory", "relativePath": "docs/design", "required": true },
+    { "directoryId": "docs-features-directory", "relativePath": "docs/features", "required": false },
     { "directoryId": "docs-generated-directory", "relativePath": "docs/generated", "required": false },
     { "directoryId": "docs-skills-directory", "relativePath": "docs/skills", "required": true },
     { "directoryId": "docs-skills-generate-authority-candidates-detailed-report-directory", "relativePath": "docs/skills/generate-authority-candidates-detailed-report", "required": true },
@@ -88,6 +91,7 @@
     { "familyId": "evidence-review-files", "pathPattern": "evidence/reviews/**/*", "artifactKind": "review-artifact", "cardinality": { "min": 0 } },
     { "familyId": "contracts-files", "pathPattern": "contracts/**/*", "artifactKind": "contract-artifact", "cardinality": { "min": 1 } },
     { "familyId": "docs-files", "pathPattern": "docs/**/*", "artifactKind": "documentation", "cardinality": { "min": 1 } },
+    { "familyId": "features-files", "pathPattern": "features/**/*", "artifactKind": "canonical-feature-intent", "cardinality": { "min": 0 } },
     { "familyId": "scripts-files", "pathPattern": "scripts/**/*", "artifactKind": "script", "cardinality": { "min": 1 } },
     { "familyId": "source-facts-query-console-files", "pathPattern": "source-facts-query-console/**/*", "artifactKind": "console-source", "cardinality": { "min": 1 } },
     { "familyId": "src-files", "pathPattern": "src/**/*", "artifactKind": "engine-source", "cardinality": { "min": 1 } },

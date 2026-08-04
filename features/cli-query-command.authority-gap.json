@@ -1,0 +1,101 @@
+{
+  "documentKind": "authority-gap-analysis.v1",
+  "featureId": "source-facts.cli-query",
+  "analysisDate": "2026-08-04T00:00:00Z",
+  "purpose": "Identify missing semantic layers for CLI query command",
+
+  "queryBindings": [
+    {
+      "queryId": "cli.entry-points.v1",
+      "purpose": "Locate query command entry point",
+      "expectedResult": "src/cli.js#runQuery"
+    },
+    {
+      "queryId": "cli.entry-point-reachability.v1",
+      "purpose": "Identify all callables reachable from query entry point",
+      "parameterBindings": {
+        "entryPointId": "cli-query-entrypoint"
+      }
+    },
+    {
+      "queryId": "cli.reachable-source-facts.v1",
+      "purpose": "Show which source fact categories are accessible",
+      "parameterBindings": {
+        "entryPointId": "cli-query-entrypoint"
+      }
+    }
+  ],
+
+  "authorityStatus": {
+    "SEMANTIC_AUTHORITY_MISSING": true,
+    "ONTOLOGY_AUTHORITY_MISSING": true,
+    "CONTEXT_AUTHORITY_MISSING": true,
+    "DATA_AUTHORITY_MISSING": true,
+    "EXECUTION_BINDING_MISSING": true
+  },
+
+  "missingLayers": [
+    {
+      "layer": "SEMANTIC_AUTHORITY",
+      "description": "Query execution decisions and failure handling",
+      "requiredDecisions": [
+        "what search expressions are valid",
+        "how to handle empty results",
+        "how to handle ambiguous symbol references",
+        "what default ordering is canonical"
+      ],
+      "proposalTarget": "query-semantic-authority.json"
+    },
+    {
+      "layer": "ONTOLOGY_AUTHORITY",
+      "description": "SourceFacts entity definitions relevant to search",
+      "requiredEntities": [
+        "Query (search expression)",
+        "SourceFact (result item)",
+        "SearchResult (ordered collection)",
+        "AmbiguityClassification (how unresolved symbols are typed)"
+      ],
+      "proposalTarget": "query-ontology.json"
+    },
+    {
+      "layer": "CONTEXT_AUTHORITY",
+      "description": "Binding context for this CLI command",
+      "requiredContexts": [
+        "which workspace",
+        "which index version",
+        "which result limit",
+        "which output format"
+      ],
+      "proposalTarget": "query-context-authority.json"
+    },
+    {
+      "layer": "DATA_AUTHORITY",
+      "description": "Query input and result contracts",
+      "requiredSchemas": [
+        "SearchExpression (input contract)",
+        "QueryResult (output contract)",
+        "ResultItem (result element schema)"
+      ],
+      "proposalTarget": "query-result-contract.json"
+    },
+    {
+      "layer": "EXECUTION_BINDING",
+      "description": "How code mechanics implement the obligations",
+      "mechanicsObserved": [
+        "index lookup",
+        "pattern matching",
+        "result ordering",
+        "error handling"
+      ],
+      "proposalTarget": "query-execution-binding.json"
+    }
+  ],
+
+  "nextSteps": [
+    "Run cli.entry-point-reachability query to extract reachability evidence",
+    "Analyze observed mechanics in reachable code",
+    "Project semantic authority for query execution",
+    "Author ontology definitions for query concepts",
+    "Define context bindings for workspace and output"
+  ]
+}

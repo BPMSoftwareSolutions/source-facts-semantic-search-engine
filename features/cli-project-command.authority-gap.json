@@ -1,0 +1,131 @@
+{
+  "documentKind": "authority-gap-analysis.v1",
+  "featureId": "source-facts.cli-project",
+  "analysisDate": "2026-08-04T00:00:00Z",
+  "purpose": "Identify missing semantic layers for CLI artifact projection",
+
+  "queryBindings": [
+    {
+      "queryId": "cli.entry-points.v1",
+      "purpose": "Locate project command entry point",
+      "expectedResult": "src/cli.js#runProjectGovernedConsoleContract"
+    },
+    {
+      "queryId": "cli.entry-point-reachability.v1",
+      "purpose": "Identify projection pipeline callables",
+      "parameterBindings": {
+        "entryPointId": "cli-project-entrypoint"
+      }
+    },
+    {
+      "queryId": "authority.missing-by-responsibility.v1",
+      "purpose": "Show which authorities are needed for projection",
+      "parameterBindings": {
+        "forFeature": "source-facts.cli-project"
+      }
+    }
+  ],
+
+  "authorityStatus": {
+    "SEMANTIC_AUTHORITY_MISSING": true,
+    "ONTOLOGY_AUTHORITY_PARTIAL": true,
+    "CONTEXT_AUTHORITY_MISSING": true,
+    "DATA_AUTHORITY_PARTIAL": true,
+    "EXECUTION_BINDING_PARTIAL": true,
+    "PROJECTION_AUTHORITY_MISSING": true
+  },
+
+  "partialAuthority": {
+    "note": "Projector code exists but lacks semantic documentation of projection rules",
+    "existingArtifacts": [
+      "src/governance/projects-feature-coverage.js",
+      "src/governance/projects-scenario-conformance.js",
+      "contracts/serves-query-console.governed.contract.json"
+    ]
+  },
+
+  "missingLayers": [
+    {
+      "layer": "SEMANTIC_AUTHORITY",
+      "description": "Projection decisions and generation rules",
+      "requiredDecisions": [
+        "what constitutes a valid projection target",
+        "how to handle partial authority",
+        "how to handle circular dependencies",
+        "when to generate vs. when to fail",
+        "default values for unspecified fields"
+      ],
+      "proposalTarget": "project-semantic-authority.json"
+    },
+    {
+      "layer": "ONTOLOGY_AUTHORITY",
+      "description": "Projection entities and relationships",
+      "requiredEntities": [
+        "AuthorityDocument (input: canonical authority)",
+        "ProjectionTarget (output artifact type)",
+        "ProjectedBody (generated executable)",
+        "ProjectionMechanic (code generation rule)",
+        "ProjectionGap (missing input for generation)",
+        "EquivalenceProof (validation that projection matches authority)"
+      ],
+      "proposalTarget": "project-ontology.json"
+    },
+    {
+      "layer": "CONTEXT_AUTHORITY",
+      "description": "Projection context and artifact scope",
+      "requiredContexts": [
+        "which authority document to project from",
+        "which output format (JSON, code, contract)",
+        "which workspace for artifact placement",
+        "which features to include in projection",
+        "versioning strategy"
+      ],
+      "proposalTarget": "project-context-authority.json"
+    },
+    {
+      "layer": "PROJECTION_AUTHORITY",
+      "description": "Rules for projecting specific artifact types",
+      "requiredProjectors": [
+        "feature → scenario",
+        "responsibility → obligation",
+        "obligation → execution binding",
+        "semantic authority → validation rules",
+        "data authority → JSON schema"
+      ],
+      "proposalTarget": "project-projector-authority.json"
+    },
+    {
+      "layer": "DATA_AUTHORITY",
+      "description": "Projection input and output contracts",
+      "requiredSchemas": [
+        "ProjectionInput (which authority and options)",
+        "ProjectionOutput (generated artifacts)",
+        "GeneratedArtifact (one output item with metadata)",
+        "ProjectionReceipt (proof of generation)"
+      ],
+      "proposalTarget": "project-result-contract.json"
+    },
+    {
+      "layer": "EXECUTION_BINDING",
+      "description": "How code implements artifact projection",
+      "mechanicsObserved": [
+        "authority document loading",
+        "schema validation",
+        "projection plan generation",
+        "code/JSON generation",
+        "artifact serialization",
+        "proof vector generation"
+      ],
+      "proposalTarget": "project-execution-binding.json"
+    }
+  ],
+
+  "nextSteps": [
+    "Run cli.entry-point-reachability to extract projector mechanics",
+    "Analyze existing projectors and infer projection rules",
+    "Document what authority is required for each projection type",
+    "Create semantic authority for projection decisions",
+    "Define projector ontology",
+    "Author output contracts for each artifact type"
+  ]
+}

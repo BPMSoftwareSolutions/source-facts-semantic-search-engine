@@ -1,0 +1,134 @@
+{
+  "documentKind": "authority-gap-analysis.v1",
+  "featureId": "source-facts.cli-govern",
+  "analysisDate": "2026-08-04T00:00:00Z",
+  "purpose": "Identify missing semantic layers for CLI governance report generation",
+
+  "queryBindings": [
+    {
+      "queryId": "cli.entry-points.v1",
+      "purpose": "Locate govern command entry point",
+      "expectedResult": "src/cli.js#runGovernance"
+    },
+    {
+      "queryId": "cli.entry-point-reachability.v1",
+      "purpose": "Identify report generation pipeline callables",
+      "parameterBindings": {
+        "entryPointId": "cli-govern-entrypoint"
+      }
+    },
+    {
+      "queryId": "authority.coverage-by-obligation.v1",
+      "purpose": "Show which obligations are covered by authority",
+      "parameterBindings": {
+        "forFeature": "source-facts.cli-govern"
+      }
+    }
+  ],
+
+  "authorityStatus": {
+    "SEMANTIC_AUTHORITY_PARTIAL": true,
+    "ONTOLOGY_AUTHORITY_PARTIAL": true,
+    "CONTEXT_AUTHORITY_MISSING": true,
+    "DATA_AUTHORITY_PARTIAL": true,
+    "EXECUTION_BINDING_PARTIAL": true,
+    "VALIDATION_AUTHORITY_MISSING": true
+  },
+
+  "partialAuthority": {
+    "note": "Governance queries and report schema exist but lack semantic layer documentation",
+    "existingArtifacts": [
+      "self-governance-query-catalog.v1",
+      "9 registered report queries",
+      "source-facts-self-governance-report.md template"
+    ]
+  },
+
+  "missingLayers": [
+    {
+      "layer": "SEMANTIC_AUTHORITY",
+      "description": "Report generation decisions and validation rules",
+      "requiredDecisions": [
+        "which query families to execute",
+        "how to handle query failures",
+        "when to fail report generation vs. warn",
+        "reconciliation strategies",
+        "claim validation rules"
+      ],
+      "proposalTarget": "govern-semantic-authority.json"
+    },
+    {
+      "layer": "ONTOLOGY_AUTHORITY",
+      "description": "Governance report entities and relationships",
+      "requiredEntities": [
+        "GovernanceReport (complete report document)",
+        "QueryReceipt (executed query result)",
+        "FactualClaim (report assertion)",
+        "ClaimPointer (linkage from claim to evidence)",
+        "ReconciliationCheck (validation step)",
+        "LineageQualityFinding (identified gap or inconsistency)",
+        "EvaluationLimit (scope constraint)"
+      ],
+      "proposalTarget": "govern-ontology.json"
+    },
+    {
+      "layer": "CONTEXT_AUTHORITY",
+      "description": "Governance context and report scope",
+      "requiredContexts": [
+        "which workspace or repository",
+        "which feature set to evaluate",
+        "reconciliation disposition criteria",
+        "report format and sections",
+        "timestamp and version tracking"
+      ],
+      "proposalTarget": "govern-context-authority.json"
+    },
+    {
+      "layer": "VALIDATION_AUTHORITY",
+      "description": "Report validation and reconciliation rules",
+      "requiredValidations": [
+        "all claims must have query pointers",
+        "all query results must be deterministic",
+        "reconciliation checks must all pass or report FAILED",
+        "hashes must match on rerun",
+        "no stale receipts"
+      ],
+      "proposalTarget": "govern-validation-authority.json"
+    },
+    {
+      "layer": "DATA_AUTHORITY",
+      "description": "Report input and output contracts",
+      "requiredSchemas": [
+        "GovernanceInput (workspace, features, options)",
+        "QueryCatalogBinding (which queries to run)",
+        "ReportMetadata (timestamp, version, hashes)",
+        "ReportSection (major report division)",
+        "ReconciliationResult (validation outcome)"
+      ],
+      "proposalTarget": "govern-result-contract.json"
+    },
+    {
+      "layer": "EXECUTION_BINDING",
+      "description": "How code implements governance report generation",
+      "mechanicsObserved": [
+        "query catalog loading",
+        "query execution and receipt collection",
+        "claim extraction from results",
+        "pointer resolution and validation",
+        "markdown rendering",
+        "reconciliation checking",
+        "report serialization"
+      ],
+      "proposalTarget": "govern-execution-binding.json"
+    }
+  ],
+
+  "nextSteps": [
+    "Document existing query catalog and why each query is necessary",
+    "Formalize reconciliation check semantics",
+    "Author validation authority for claim pointers",
+    "Define report section ontology",
+    "Create input/output contracts for report generation",
+    "Connect existing code mechanics to authority bindings"
+  ]
+}

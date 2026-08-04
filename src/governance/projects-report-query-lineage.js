@@ -131,6 +131,113 @@ const catalog = Object.freeze([
     expectedResultSchema: "one subject-boundary row",
     rows: (view) => [view.subjectScope],
   },
+  {
+    queryId: "gherkin.feature-by-id.v1",
+    section: "Canonical Identity Resolution",
+    queryText: "SELECT * FROM gherkinFeatureRegistry WHERE featureId = ?",
+    inputCollections: ["gherkinFeatureRegistry"],
+    expectedResultSchema: "one feature row",
+    parameters: [{ name: "featureId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalFeatures?.features ?? [],
+    drillDowns: [{ queryId: "intent.feature-by-id.v1", label: "Resolve canonical feature intent", parameterBindings: { featureId: ":featureId" } }],
+    rowDrillDowns: (row) => [{ queryId: "intent.feature-by-id.v1", label: "Resolve canonical feature intent", parameterBindings: { featureId: row.featureId } }],
+  },
+  {
+    queryId: "gherkin.scenario-by-id.v1",
+    section: "Canonical Identity Resolution",
+    queryText: "SELECT * FROM gherkinScenarioRegistry WHERE scenarioId = ?",
+    inputCollections: ["gherkinScenarioRegistry"],
+    expectedResultSchema: "one scenario row",
+    parameters: [{ name: "scenarioId", type: "string", required: false, nullable: true }, { name: "featureId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalFeatures?.scenarios ?? [],
+    drillDowns: [{ queryId: "gherkin.step-identities.v1", label: "Inspect scenario step identities", parameterBindings: { scenarioId: ":scenarioId" } }],
+    rowDrillDowns: (row) => [{ queryId: "gherkin.step-identities.v1", label: "Inspect scenario step identities", parameterBindings: { scenarioId: row.scenarioId } }],
+  },
+  {
+    queryId: "gherkin.step-identities.v1",
+    section: "Canonical Identity Resolution",
+    queryText: "SELECT * FROM gherkinStepRegistry WHERE scenarioId = ? ORDER BY stepType, lineNumber",
+    inputCollections: ["gherkinStepRegistry"],
+    expectedResultSchema: "zero or more step rows",
+    parameters: [{ name: "scenarioId", type: "string", required: false, nullable: true }, { name: "stepId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalFeatures?.steps ?? [],
+    terminal: true,
+  },
+  {
+    queryId: "intent.feature-by-id.v1",
+    section: "Canonical Intent",
+    queryText: "SELECT * FROM intentFeatureRegistry WHERE featureId = ?",
+    inputCollections: ["intentFeatureRegistry"],
+    expectedResultSchema: "one canonical feature intent row",
+    parameters: [{ name: "featureId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalIntents?.features ?? [],
+    drillDowns: [{ queryId: "trace.feature-to-interface.v1", label: "Resolve feature interface root", parameterBindings: { featureId: ":featureId" } }],
+    rowDrillDowns: (row) => [{ queryId: "trace.feature-to-interface.v1", label: "Resolve feature interface root", parameterBindings: { featureId: row.featureId } }],
+  },
+  {
+    queryId: "intent.scenario-lineage.v1",
+    section: "Canonical Intent",
+    queryText: "SELECT * FROM intentScenarioRegistry WHERE scenarioId = ?",
+    inputCollections: ["intentScenarioRegistry"],
+    expectedResultSchema: "one scenario lineage row",
+    parameters: [{ name: "scenarioId", type: "string", required: false, nullable: true }, { name: "featureId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalIntents?.scenarios ?? [],
+    drillDowns: [{ queryId: "intent.responsibility-obligation.v1", label: "Resolve responsibility and obligation", parameterBindings: { scenarioId: ":scenarioId" } }],
+    rowDrillDowns: (row) => [{ queryId: "intent.responsibility-obligation.v1", label: "Resolve responsibility and obligation", parameterBindings: { scenarioId: row.scenarioId } }],
+  },
+  {
+    queryId: "intent.responsibility-obligation.v1",
+    section: "Canonical Intent",
+    queryText: "SELECT * FROM intentResponsibilityRegistry WHERE scenarioId = ?",
+    inputCollections: ["intentResponsibilityRegistry"],
+    expectedResultSchema: "zero or more responsibility rows",
+    parameters: [{ name: "scenarioId", type: "string", required: false, nullable: true }, { name: "responsibilityId", type: "string", required: false, nullable: true }, { name: "obligationId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalIntents?.responsibilities ?? [],
+    drillDowns: [{ queryId: "trace.scenario-to-source-facts.v1", label: "Resolve scenario source facts", parameterBindings: { scenarioId: ":scenarioId" } }],
+    rowDrillDowns: (row) => [{ queryId: "trace.scenario-to-source-facts.v1", label: "Resolve scenario source facts", parameterBindings: { scenarioId: row.scenarioId } }],
+  },
+  {
+    queryId: "trace.feature-to-interface.v1",
+    section: "Canonical Trace",
+    queryText: "SELECT f.featureId, f.featureFile, i.intentFile, i.interfaceRoot, s.file AS interfaceFile, s.symbol AS interfaceSymbol FROM intentFeatureRegistry i JOIN gherkinFeatureRegistry f ON i.featureId = f.featureId",
+    inputCollections: ["intentFeatureRegistry", "gherkinFeatureRegistry"],
+    expectedResultSchema: "one feature-to-interface trace row",
+    parameters: [{ name: "featureId", type: "string", required: false, nullable: true }, { name: "interfaceDisposition", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalTraces?.featureToInterface ?? [],
+    drillDowns: [{ queryId: "trace.feature-to-callgraph.v1", label: "Inspect interface call graph", parameterBindings: { featureId: ":featureId" } }],
+    rowDrillDowns: (row) => [{ queryId: "trace.feature-to-callgraph.v1", label: "Inspect interface call graph", parameterBindings: { featureId: row.featureId } }],
+  },
+  {
+    queryId: "trace.feature-to-callgraph.v1",
+    section: "Canonical Trace",
+    queryText: "SELECT f.featureId, f.interfaceRoot, c.callableId, c.file AS callableFile, c.symbol AS callableSymbol, c.depth FROM trace.feature-to-interface(?) f JOIN callGraphRegistry c ON f.interfaceRoot = c.entryPoint",
+    inputCollections: ["callGraphRegistry"],
+    expectedResultSchema: "zero or more callable rows in feature reachability",
+    parameters: [{ name: "featureId", type: "string", required: false, nullable: true }, { name: "callableId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalTraces?.featureToCallgraph ?? [],
+    terminal: true,
+  },
+  {
+    queryId: "trace.scenario-to-source-facts.v1",
+    section: "Canonical Trace",
+    queryText: "SELECT s.scenarioId, r.obligationId, c.callableId, m.mechanicType, COUNT(*) as mechanicCount FROM intentScenarioRegistry s JOIN intentResponsibilityRegistry r ON s.scenarioId = r.scenarioId JOIN callGraphRegistry c ON r.responsibilityId = c.responsibilityId JOIN sourceMechanics m ON c.callableId = m.callableId GROUP BY s.scenarioId, r.obligationId, c.callableId, m.mechanicType",
+    inputCollections: ["callGraphRegistry", "sourceMechanics"],
+    expectedResultSchema: "zero or more mechanic rows implementing scenario",
+    parameters: [{ name: "scenarioId", type: "string", required: false, nullable: true }, { name: "responsibilityId", type: "string", required: false, nullable: true }, { name: "obligationId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalTraces?.scenarioToSourceFacts ?? [],
+    drillDowns: [{ queryId: "trace.obligation-to-mechanics.v1", label: "Inspect exact obligation mechanics", parameterBindings: { obligationId: ":obligationId" } }],
+    rowDrillDowns: (row) => [{ queryId: "trace.obligation-to-mechanics.v1", label: "Inspect exact obligation mechanics", parameterBindings: { obligationId: row.obligationId } }],
+  },
+  {
+    queryId: "trace.obligation-to-mechanics.v1",
+    section: "Canonical Trace",
+    queryText: "SELECT o.obligationId, o.responsibilityId, s.scenarioId, m.callableId, m.mechanicType, m.file, m.line, m.column, m.snippet FROM obligations o JOIN responsibilities r ON o.obligationId = r.obligationId JOIN scenarios s ON r.responsibilityId = s.responsibilityId JOIN sourceMechanics m ON s.scenarioId = m.scenarioId",
+    inputCollections: ["sourceMechanics"],
+    expectedResultSchema: "zero or more mechanic rows implementing obligation",
+    parameters: [{ name: "obligationId", type: "string", required: false, nullable: true }, { name: "scenarioId", type: "string", required: false, nullable: true }, { name: "callableId", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalTraces?.obligationToMechanics ?? [],
+    terminal: true,
+  },
   ...reportDrillDownQueries,
 ]);
 
@@ -451,11 +558,11 @@ export function reconcilesReportQueryLineage(report) {
   return report;
 }
 
-export function projectsReportQueryLineage(view, index) {
+export function projectsReportQueryLineage(view, index, canonicalFeatureQueryPlane = {}) {
   const indexId = index.indexId ?? null;
   const scanId = index.manifest?.scanId ?? null;
   const scopePolicy = `workspace-prefix:${view.subjectScope.workspaceRelativePrefix || "(repository-root)"}`;
-  const context = buildsReportQueryContext(view, index);
+  const context = buildsReportQueryContext(view, index, canonicalFeatureQueryPlane);
   const registeredQueries = catalog.map(({ rows: _rows, rowDrillDowns: _rowDrillDowns, ...query }) => freezes({
     queryId: query.queryId,
     section: query.section,

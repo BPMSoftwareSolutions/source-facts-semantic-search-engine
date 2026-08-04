@@ -1,0 +1,92 @@
+{
+  "documentKind": "semantic-authority.proposal.v1",
+  "featureId": "source-facts.cli-call-graph",
+  "responsibilityId": "cli-call-graph-projection",
+  "obligationId": "project-all-resolvable-cli-reachability",
+  "proposalDate": "2026-08-04T00:00:00Z",
+  "lifecycle": "INFERRED_NOT_ADMITTED",
+  "purpose": "Proposed semantic decisions for call graph projection",
+
+  "decisions": [
+    {
+      "decisionId": "static-edge-resolution",
+      "statement": "An edge is STATIC_RESOLUTION if the target callable is deterministically resolvable from source code syntax (direct imports, named references)",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "cli.entry-point-reachability.v1",
+          "sourceReferenceId": "src/call-graph.js#projectsCliEntryPointCallGraph"
+        }
+      ]
+    },
+    {
+      "decisionId": "runtime-edge-classification",
+      "statement": "An edge is RUNTIME_RESOLUTION if the target requires execution context (callbacks, factory results, dynamic requires)",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": [
+        {
+          "queryId": "cli.entry-point-reachability.v1",
+          "sourceReferenceId": "src/call-graph.js"
+        }
+      ]
+    },
+    {
+      "decisionId": "unresolved-edge-handling",
+      "statement": "An edge is UNRESOLVED if it cannot be classified as static or runtime; it receives an explicit UNRESOLVED_EDGE disposition",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "cycle-handling",
+      "statement": "Cycles are permitted in the result; each edge appears once with its forward direction; bidirectional edges appear twice",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    },
+    {
+      "decisionId": "reachability-slice-definition",
+      "statement": "A reachability slice includes all nodes reachable from the entry point via zero or more edges, recursively",
+      "lifecycle": "INFERRED_NOT_ADMITTED",
+      "evidence": []
+    }
+  ],
+
+  "resolutionStrategy": {
+    "maxDepth": "unlimited (can be bounded by context)",
+    "dependencyHandling": "include external dependencies at module boundary",
+    "cycleBehavior": "traverse cycles, record edge once per direction",
+    "runtimeResolutionDefault": "include with explicit classification"
+  },
+
+  "failureHandling": [
+    {
+      "failureMode": "invalid-entry-point",
+      "handlingStrategy": "Report entry point not found; list available CLI entry points",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "circular-import-detection",
+      "handlingStrategy": "Detect at traversal time; mark edges as cycle participants; continue traversal",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    },
+    {
+      "failureMode": "large-graph-depth-limit",
+      "handlingStrategy": "Respect optional depth limit; mark deeper nodes as DEPTH_LIMIT_REACHED",
+      "lifecycle": "INFERRED_NOT_ADMITTED"
+    }
+  ],
+
+  "edgeClassifications": {
+    "STATIC_RESOLUTION": "Deterministically resolvable from code syntax",
+    "RUNTIME_RESOLUTION": "Requires execution context to resolve",
+    "UNRESOLVED_EDGE": "Cannot be classified; explicit disposition recorded",
+    "EXTERNAL_BOUNDARY": "Crosses module or dependency boundary",
+    "CYCLE_PARTICIPANT": "Part of circular dependency"
+  },
+
+  "nextSteps": [
+    "Review resolution strategy with team",
+    "Validate against existing call-graph.js implementation",
+    "Admit or refine each decision",
+    "Connect to execution binding"
+  ]
+}
