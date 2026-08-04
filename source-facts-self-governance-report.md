@@ -5,10 +5,10 @@ Honest Feature Coverage and Scenario Evaluation View
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-04T11:58:47.260Z |
-| **Repository** | source-facts-semantic-search-engine |
+| **Generated** | 2026-08-04T13:29:35.600Z |
+| **Repository** | self |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Scan ID** | 64baee2a2d0b348497225d12367e6d50265aee1fbacbd12aa11cafac19cf6726 |
+| **Scan ID** | 49c9632b050e44f8fc3910aa3497458ebf8a8b186ff4d660892ac69d741a373a |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
 ## Executive Summary
@@ -34,12 +34,12 @@ a runtime execution receipt for a scenario.
 | Mechanics with canonical scenario lineage | 0 |
 | Mechanics with proposed scenario lineage | 158 |
 | Mechanics with ambiguous scenario lineage | 0 |
-| Mechanics without scenario lineage | 4,940 |
+| Mechanics without scenario lineage | 5,154 |
 | Authority documents with canonical scenario lineage | 2 |
 | Authority documents with proposed scenario lineage | 2 |
 | Authority documents with ambiguous scenario lineage | 0 |
 | Authority documents without scenario lineage | 8 |
-| Unresolved responsibility-evidence clusters | 574 |
+| Unresolved responsibility-evidence clusters | 592 |
 | Clusters confirmed as feature candidates | 0 |
 | Live LLM inference evaluations | 1 |
 | Optional capability relations proposed from evidence | 0 |
@@ -106,10 +106,11 @@ These are bounded static-evidence clusters, not feature candidates. A function o
 | `src/governance/generates-connective-tissue.js#generatesConnectiveTissue` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, normalization, object-construction, serialization, state-mutation, throw, validation | 221 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/web/html-projector.js#projectsHtmlDocument` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | 101 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/governance/projects-feature-coverage.js#projectsFeatureCoverage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation, throw, validation | 86 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/cli.js#parseArgs` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, iteration, normalization, object-construction, state-mutation | 84 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/projects-governed-console-contract.js#buildsConsoleGovernedContract` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, normalization, object-construction, state-mutation | 83 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
-| `src/cli.js#parseArgs` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, iteration, normalization, object-construction, state-mutation | 82 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/governance/projects-self-governance-report.js#projectsSelfGovernanceReport` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | 74 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/gallery/plans-surface-previews.js#plansOneItem` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, object-construction, state-mutation | 65 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/call-graph.js#projectsCliEntryPointCallGraph` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, normalization, object-construction, serialization, throw | 59 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/governance/generates-connective-tissue.js#validatesGroundedDraft` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, throw, validation | 57 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/governance/proposes-feature-coverage.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | object-construction | 55 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/governance/generates-connective-tissue.js#buildsConditionalSectionSchema` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | object-construction | 54 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
@@ -131,9 +132,8 @@ These are bounded static-evidence clusters, not feature candidates. A function o
 | `src/governance/formats-self-governance-report-summary.js#formatsSelfGovernanceReportSummary` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | 29 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/cli.js#runProjectAuthorityViolations` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, serialization, throw, validation | 28 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
 | `src/gallery/materializes-static-preview.js#materializesStaticPreviews` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, iteration, object-construction, state-mutation, throw | 28 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
-| `src/cli.js#runGovern` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, state-mutation, validation | 27 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
-| `src/web/inventory.js#walksRoot` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, object-construction, state-mutation | 27 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
-| … |  | 544 additional cluster(s) in JSON |  |  |  |
+| `src/generate-traceability-docs.js#generatesTraceabilityDocs` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | fallback, object-construction | 28 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| … |  | 562 additional cluster(s) in JSON |  |  |  |
 
 ## Canonical Feature Drill-Down
 
@@ -287,7 +287,7 @@ shown as proposed coverage; it is never counted as canonical coverage.
 
 | Inventory | Count | Disposition |
 |---|---:|---|
-| Static mechanics without canonical or proposed lineage | 4,940 | `NO_SCENARIO_LINEAGE` |
+| Static mechanics without canonical or proposed lineage | 5,154 | `NO_SCENARIO_LINEAGE` |
 | Authority documents without canonical scenario lineage | 10 | inspect per-item posture below |
 | Admitted know-how without canonical obligation lineage | 3 | inspect per-item posture below |
 | Healing drafts without a canonical scenario target | 1 | `HEALING_WITHOUT_CANONICAL_SCENARIO_TARGET` |
@@ -296,16 +296,16 @@ shown as proposed coverage; it is never counted as canonical coverage.
 
 | Mechanic | Occurrences | Files |
 |---|---:|---:|
-| object-construction | 1,773 | 79 |
-| fallback | 1,082 | 69 |
-| branch | 1,014 | 71 |
-| iteration | 319 | 58 |
+| object-construction | 1,823 | 81 |
+| fallback | 1,185 | 71 |
+| branch | 1,052 | 73 |
+| iteration | 328 | 60 |
 | state-mutation | 243 | 50 |
-| validation | 127 | 20 |
-| throw | 117 | 37 |
+| validation | 128 | 20 |
+| throw | 120 | 38 |
+| normalization | 112 | 25 |
 | exception-handling | 99 | 24 |
-| normalization | 103 | 24 |
-| serialization | 62 | 22 |
+| serialization | 63 | 23 |
 | retry | 1 | 1 |
 
 ### Authority without canonical scenario lineage

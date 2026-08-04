@@ -1,6 +1,6 @@
 const callableKinds = new Set(["function", "method", "constructor", "class"]);
-const defaultRootModulePath = "src/cli.js";
-const defaultRuntimeModulePrefix = "src/";
+const defaultRootModulePath = "cli.js";
+const defaultRuntimeModulePrefix = "";
 const defaultRootNamePattern = /^(?:run|runs)[A-Z]/u;
 
 export function projectsCliEntryPointCallGraph(index, options = {}) {

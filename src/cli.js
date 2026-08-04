@@ -8,6 +8,7 @@ import { projectSourceFactsWorkspace } from "./project.js";
 import { executeRelationalQuery } from "./query.js";
 import { validatesSourceFactIndex } from "./validate-index.js";
 import { formatsCallGraphSummary, projectsCliEntryPointCallGraph } from "./call-graph.js";
+import { generatesTraceabilityDocs } from "./generate-traceability-docs.js";
 import { projectsWebSurfaceInventory } from "./web/inventory.js";
 import { projectsWebSurfaceIndex } from "./web/project-web-surfaces.js";
 import { validatesWebSurfaceInventory, validatesWebSurfaceIndex, validatesWebKnowWorkspace } from "./web/validate-web-index.js";
@@ -73,6 +74,8 @@ if (command === "project") {
   await runQuery(args.slice(1));
 } else if (command === "call-graph") {
   await runCallGraph(args.slice(1));
+} else if (command === "generate-docs") {
+  await runGenerateDocs(args.slice(1));
 } else if (command === "project-authority") {
   await runProjectAuthority(args.slice(1));
 } else if (command === "project-authority-violations") {
@@ -150,6 +153,20 @@ async function runCallGraph(rawArgs) {
   process.stdout.write(`${outputPath}\n`);
   if (flags.summary === true) {
     process.stdout.write(formatsCallGraphSummary(callGraph));
+  }
+}
+
+async function runGenerateDocs(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const reportPath = path.resolve(flags.report ?? path.join(process.cwd(), "source-facts-self-governance-report.json"));
+  const graphPath = path.resolve(flags.graph ?? path.join(process.cwd(), "call-graph.json"));
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "docs", "generated", "traceability-metrics.md"));
+
+  const docPath = await generatesTraceabilityDocs(reportPath, graphPath, indexPath, outputPath);
+  process.stdout.write(`${docPath}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Generated traceability metrics documentation.\n`);
   }
 }
 

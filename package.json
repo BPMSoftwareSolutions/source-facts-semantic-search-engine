@@ -14,6 +14,7 @@
     "project": "node src/cli.js project",
     "query": "node src/cli.js query",
     "call-graph": "node src/cli.js call-graph",
+    "generate-docs": "node src/cli.js generate-docs",
     "govern": "node src/cli.js govern",
     "start": "node src/cli.js",
     "check:deps": "node ./scripts/check-deps.mjs",

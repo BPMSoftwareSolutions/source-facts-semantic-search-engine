@@ -15,7 +15,7 @@ test("projectsCliEntryPointCallGraph builds a rooted transitive graph and report
   const index = buildsFixtureIndex();
   await validatesSourceFactIndex(index);
 
-  const graph = projectsCliEntryPointCallGraph(index);
+  const graph = projectsCliEntryPointCallGraph(index, { rootModulePath: "src/cli.js", runtimeModulePrefix: "src/" });
   assert.equal(graph.callGraphType, "cli-entry-point-call-graph.v1");
   assert.equal(graph.summary.commandRootCount, 1);
   assert.equal(graph.summary.runtimeCallableCount, 5);
