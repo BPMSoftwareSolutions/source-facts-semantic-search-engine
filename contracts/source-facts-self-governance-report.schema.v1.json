@@ -8,6 +8,7 @@
     "repository",
     "index",
     "subjectScope",
+    "interfaceGovernance",
     "scenarioConformance",
     "featureCoverage",
     "unclassifiedInventory",
@@ -175,6 +176,99 @@
         "projectors": { "type": "array", "items": { "type": "object" } },
         "verifiers": { "type": "array", "items": { "type": "object" } },
         "inputs": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "interfaceGovernance": {
+      "type": "object",
+      "required": [
+        "summary", "commands", "callableInventory", "reachability", "sharedReachability",
+        "runtimeResolutionDebt", "reachableSourceFacts", "unreachableCallables",
+        "unreachableSourceFacts", "originatingCommands", "removalImpact"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "object",
+          "required": [
+            "interfacePortfolioDisposition", "cliDispatchEvidenceDisposition", "cliDispatchSourceHash",
+            "observedCliCommandHandlers", "observedCliCommandTokens", "observedHttpEntryPoints",
+            "commandsWithCanonicalFeature", "commandsWithoutCanonicalFeature",
+            "canonicalFeaturesAccessibleViaCli", "canonicalFeatureIdsAccessibleViaCli",
+            "cliInterfaceAuthorityDocuments", "cliInterfaceAuthorityDisposition",
+            "admittedCliCommands", "runtimeCallables", "cliReachableCallables", "sharedCliInfrastructure",
+            "runtimeResolutionRequired", "noCliReachabilityCallables", "reachableMechanicOccurrences",
+            "unreachableMechanicOccurrences"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "interfacePortfolioDisposition": { "enum": ["CLI_IS_FIRST_CLASS_OBSERVED_INTERFACE", "CLI_INTERFACE_NOT_OBSERVED"] },
+            "cliDispatchEvidenceDisposition": { "enum": ["CLI_DISPATCH_SOURCE_PARSED", "CLI_DISPATCH_SOURCE_UNAVAILABLE"] },
+            "cliDispatchSourceHash": { "type": ["string", "null"], "pattern": "^sha256:" },
+            "observedCliCommandHandlers": { "type": "integer", "minimum": 0 },
+            "observedCliCommandTokens": { "type": "integer", "minimum": 0 },
+            "observedHttpEntryPoints": { "type": "integer", "minimum": 0 },
+            "commandsWithCanonicalFeature": { "type": "integer", "minimum": 0 },
+            "commandsWithoutCanonicalFeature": { "type": "integer", "minimum": 0 },
+            "canonicalFeaturesAccessibleViaCli": { "type": "integer", "minimum": 0 },
+            "canonicalFeatureIdsAccessibleViaCli": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+            "cliInterfaceAuthorityDocuments": { "type": "integer", "minimum": 0 },
+            "cliInterfaceAuthorityDisposition": { "enum": ["CLI_INTERFACE_AUTHORITY_BOUND", "CLI_INTERFACE_AUTHORITY_MISSING"] },
+            "admittedCliCommands": { "type": "integer", "minimum": 0 },
+            "runtimeCallables": { "type": "integer", "minimum": 0 },
+            "cliReachableCallables": { "type": "integer", "minimum": 0 },
+            "sharedCliInfrastructure": { "type": "integer", "minimum": 0 },
+            "runtimeResolutionRequired": { "type": "integer", "minimum": 0 },
+            "noCliReachabilityCallables": { "type": "integer", "minimum": 0 },
+            "reachableMechanicOccurrences": { "type": "integer", "minimum": 0 },
+            "unreachableMechanicOccurrences": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "commandName", "subcommandName", "handlerName", "entryPointId", "interfaceKind", "interfaceStatus",
+              "productDisposition", "admissionDisposition",
+              "modulePath", "sourceReferenceId", "declarationLine", "reachableCallableCount",
+              "canonicalFeatureIds", "canonicalScenarioIds", "canonicalResponsibilityIds",
+              "canonicalAuthorityFiles", "cliInterfaceAuthorityFiles", "featureAccessDisposition",
+              "interfaceAuthorityDisposition", "governanceGapDisposition"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "commandName": { "type": ["string", "null"] },
+              "subcommandName": { "type": ["string", "null"] },
+              "handlerName": { "type": "string", "minLength": 1 },
+              "entryPointId": { "type": "string", "minLength": 1 },
+              "interfaceKind": { "const": "CLI_COMMAND" },
+              "interfaceStatus": { "const": "FIRST_CLASS_OBSERVED_INTERFACE" },
+              "productDisposition": { "const": "PRODUCT_ENTRY_POINT" },
+              "admissionDisposition": { "enum": ["ADMITTED_CLI_SURFACE", "OBSERVED_NOT_ADMITTED"] },
+              "modulePath": { "type": "string", "minLength": 1 },
+              "sourceReferenceId": { "type": ["string", "null"] },
+              "declarationLine": { "type": ["integer", "null"], "minimum": 1 },
+              "reachableCallableCount": { "type": "integer", "minimum": 0 },
+              "canonicalFeatureIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "canonicalScenarioIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "canonicalResponsibilityIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "canonicalAuthorityFiles": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "cliInterfaceAuthorityFiles": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "featureAccessDisposition": { "enum": ["CANONICAL_FEATURE_ACCESS_OBSERVED", "CANONICAL_FEATURE_LINK_MISSING"] },
+              "interfaceAuthorityDisposition": { "enum": ["CLI_INTERFACE_AUTHORITY_BOUND", "CLI_INTERFACE_AUTHORITY_MISSING"] },
+              "governanceGapDisposition": { "enum": ["CLI_INTERFACE_GOVERNED", "CLI_INTERFACE_AUTHORITY_MISSING", "CANONICAL_FEATURE_LINK_MISSING", "FEATURE_AND_INTERFACE_AUTHORITY_MISSING"] }
+            }
+          }
+        },
+        "callableInventory": { "type": "array", "items": { "type": "object" } },
+        "reachability": { "type": "array", "items": { "type": "object" } },
+        "sharedReachability": { "type": "array", "items": { "type": "object" } },
+        "runtimeResolutionDebt": { "type": "array", "items": { "type": "object" } },
+        "reachableSourceFacts": { "type": "array", "items": { "type": "object" } },
+        "unreachableCallables": { "type": "array", "items": { "type": "object" } },
+        "unreachableSourceFacts": { "type": "array", "items": { "type": "object" } },
+        "originatingCommands": { "type": "array", "items": { "type": "object" } },
+        "removalImpact": { "type": "array", "items": { "type": "object" } }
       }
     },
     "scenarioConformance": {

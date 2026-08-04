@@ -342,6 +342,60 @@ function formatsAuthorityAuthoringReadiness(report) {
   ];
 }
 
+function formatsInterfaceGovernance(report) {
+  const summary = queryRows(report, "cli.traceability-summary.v1")[0];
+  const commands = queryRows(report, "cli.entry-points.v1");
+  const unreachable = queryRows(report, "cli.unreachable-callables.v1");
+  const queryId = "cli.traceability-summary.v1";
+  const lines = [
+    "## CLI Traceability Summary",
+    "",
+    "This is the primary closure circuit: enumerate CLI roots, union their complete reachable graph slices, join them to exact source facts, and classify the unexplained executable remainder.",
+    "A command can be physically observed while still not admitted by direct CLI authority; those states remain separate.",
+    "",
+    `Portfolio posture: ${formatsFactLink(summary.interfacePortfolioDisposition, queryId, { code: true })}`,
+    `CLI authority posture: ${formatsFactLink(summary.cliInterfaceAuthorityDisposition, queryId, { code: true })}`,
+    "",
+    "| Metric | Count | Proving query |",
+    "|---|---:|---|",
+    `| Observed CLI command handlers | ${formatsFactLink(summary.observedCliCommandHandlers, queryId)} | ${formatsQueryLink("cli.entry-points.v1")} |`,
+    `| Admitted CLI commands | ${formatsFactLink(summary.admittedCliCommands, queryId)} | ${formatsQueryLink("cli.entry-points.v1")} |`,
+    `| Runtime callables | ${formatsFactLink(summary.runtimeCallables, queryId)} | ${formatsQueryLink("cli.callable-inventory.v1")} |`,
+    `| CLI-reachable callables | ${formatsFactLink(summary.cliReachableCallables, queryId)} | ${formatsQueryLink("cli.entry-point-reachability.v1")} |`,
+    `| Shared CLI infrastructure | ${formatsFactLink(summary.sharedCliInfrastructure, queryId)} | ${formatsQueryLink("cli.shared-reachability.v1")} |`,
+    `| Runtime-resolution-required | ${formatsFactLink(summary.runtimeResolutionRequired, queryId)} | ${formatsQueryLink("cli.runtime-resolution-debt.v1")} |`,
+    `| No CLI reachability | ${formatsFactLink(summary.noCliReachabilityCallables, queryId)} | ${formatsQueryLink("cli.unreachable-callables.v1")} |`,
+    `| CLI-reachable mechanic occurrences | ${formatsFactLink(summary.reachableMechanicOccurrences, queryId)} | ${formatsQueryLink("cli.reachable-source-facts.v1")} |`,
+    `| Unreachable mechanic occurrences | ${formatsFactLink(summary.unreachableMechanicOccurrences, queryId)} | ${formatsQueryLink("cli.unreachable-source-facts.v1")} |`,
+    "",
+    "## CLI Feature Coverage",
+    "",
+    "| CLI surface | Handler | Reachable symbols | Canonical features | Scenarios | Status | Evidence |",
+    "|---|---|---:|---|---:|---|---|",
+  ];
+  for (const command of commands) {
+    const commandName = command.commandName ?? "(dispatch token unavailable)";
+    const features = command.canonicalFeatureIds.length > 0 ? command.canonicalFeatureIds.map((featureId) => `\`${featureId}\``).join("<br>") : "none";
+    lines.push(`| \`${commandName}\` | \`${command.handlerName}\` | ${formatsFactLink(command.reachableCallableCount, "cli.entry-points.v1")} | ${features} | ${command.canonicalScenarioIds.length} | \`${command.governanceGapDisposition}\` | ${formatsQueryLink("cli.entry-points.v1")} |`);
+  }
+  lines.push("");
+  lines.push("## Fat and Waste Inventory");
+  lines.push("");
+  lines.push("Only `NO_CLI_REACHABILITY` appears here. Test/proof, generated, runtime-sensitive, and explicitly reachable classes have already been subtracted.");
+  lines.push("");
+  lines.push("| Symbol | File | Why classified as waste | Callers | Exported | Authority | Action | Evidence |");
+  lines.push("|---|---|---|---:|---|---|---|---|");
+  for (const row of unreachable.slice(0, 50)) {
+    const impact = report.interfaceGovernance.removalImpact.find((item) => item.symbolId === row.symbolId);
+    lines.push(`| \`${row.name}\` | \`${row.modulePath}\` | \`NO_CLI_REACHABILITY\` | ${impact?.callerInvocationCount ?? 0} | ${row.isExported ? "yes" : "no"} | ${impact?.canonicalAuthorityFiles.length ? impact.canonicalAuthorityFiles.join("<br>") : "none"} | \`${impact?.removalDisposition ?? "REVIEW_BEFORE_REMOVAL"}\` | ${formatsQueryLink("cli.unreachable-removal-impact.v1")} |`);
+  }
+  if (unreachable.length > 50) lines.push(`| ... | ... | ${unreachable.length - 50} additional rows | ... | ... | ... | Open full receipt | ${formatsQueryLink("cli.unreachable-callables.v1")} |`);
+  lines.push("");
+  lines.push(`Reverse justification: ${formatsQueryLink("cli.symbol-originating-commands.v1")}. Removal impact: ${formatsQueryLink("cli.unreachable-removal-impact.v1")}.`);
+  lines.push("");
+  return lines;
+}
+
 export function formatsScenarioConformanceReportMarkdown(report, { receiptDirectory = "source-facts-self-governance-report.receipts" } = {}) {
   const { repository, index, disposition, generatedAtUtc } = report;
   const summary = queryRows(report, "scenario-conformance.summary.v1")[0];
@@ -359,9 +413,9 @@ export function formatsScenarioConformanceReportMarkdown(report, { receiptDirect
   };
   const { catalog, reconciliation } = report.queryLineage;
   const lines = [
-    "# Source Facts Self-Governance Report",
+    "# Source Facts CLI-First Closure Report",
     "",
-    "Honest Feature Coverage and Scenario Evaluation View",
+    "CLI reachability, canonical feature access, and deterministic cleanup inventory",
     "",
     "| | |",
     "|---|---|",
@@ -378,7 +432,8 @@ export function formatsScenarioConformanceReportMarkdown(report, { receiptDirect
     `| **Unsupported factual claims** | ${reconciliation.unsupportedFactualClaims} |`,
     `| **Disposition** | \`${disposition}\` |`,
     "",
-    "## Executive Summary",
+    ...formatsInterfaceGovernance(report),
+    "## Secondary Governance Summary",
     "",
     "This report keeps four independent questions separate: whether lineage is canonical or proposed,",
     "whether the declared structure is closed, whether execution was evaluated, and whether a proof",
@@ -575,10 +630,14 @@ export function formatsScenarioConformanceReportMarkdown(report, { receiptDirect
 export function formatsScenarioConformanceReportSummary(report) {
   const { summary } = report.scenarioConformance;
   const featureSummary = report.featureCoverage.summary;
+  const cliSummary = report.interfaceGovernance.summary;
   const lines = [
-    "Source Facts Self-Governance — Honest Scenario Evaluation",
+    "Source Facts CLI-First Closure Report",
     `Repository: ${report.repository.repositoryId}`,
     `Workspace: ${report.repository.workspaceRoot ?? "(unknown)"}`,
+    `CLI: ${cliSummary.observedCliCommandHandlers} observed handlers, ${cliSummary.admittedCliCommands} admitted commands`,
+    `CLI closure: ${cliSummary.cliReachableCallables}/${cliSummary.runtimeCallables} callables reachable; ${cliSummary.noCliReachabilityCallables} unexplained`,
+    `CLI source facts: ${cliSummary.reachableMechanicOccurrences} reachable; ${cliSummary.unreachableMechanicOccurrences} unreachable`,
     `Features: ${featureSummary.canonicalFeatures} canonical, ${featureSummary.proposedFeatures} proposed`,
     `Scenarios: ${featureSummary.canonicalScenarios} canonical, ${featureSummary.proposedScenarios} proposed`,
     `Structural: ${featureSummary.scenariosStructurallyClosed} closed, ${featureSummary.scenariosStructurallyIncomplete} incomplete, ${featureSummary.scenariosStructuralStatusNotEvaluated} not evaluated`,

@@ -1,23 +1,124 @@
-# Source Facts Self-Governance Report
+# Source Facts CLI-First Closure Report
 
-Honest Feature Coverage and Scenario Evaluation View
+CLI reachability, canonical feature access, and deterministic cleanup inventory
 
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-04T18:05:20.456Z |
+| **Generated** | 2026-08-04T18:24:23.254Z |
 | **Repository** | source-facts-semantic-search-engine |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Source index ID** | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| **Scan ID** | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| **Source index ID** | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| **Scan ID** | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | **Query catalog** | `self-governance-query-catalog.v1` |
-| **Query catalog hash** | `sha256:a06ef7954106d4736dbb3d98f3b361635cea2e38901452e81fcbead55fb25c42` |
-| **Query receipts** | 53 executed / 53 valid |
+| **Query catalog hash** | `sha256:33d89aeb3a2f7e8304dd18655b2f9616c024b55762d05c3140634585767f9425` |
+| **Query receipts** | 67 executed / 67 valid |
 | **Render reconciliation** | `PASSED` |
 | **Unsupported factual claims** | 0 |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
-## Executive Summary
+## CLI Traceability Summary
+
+This is the primary closure circuit: enumerate CLI roots, union their complete reachable graph slices, join them to exact source facts, and classify the unexplained executable remainder.
+A command can be physically observed while still not admitted by direct CLI authority; those states remain separate.
+
+Portfolio posture: [`CLI_IS_FIRST_CLASS_OBSERVED_INTERFACE`](#query-result-cli-traceability-summary-v1)
+CLI authority posture: [`CLI_INTERFACE_AUTHORITY_MISSING`](#query-result-cli-traceability-summary-v1)
+
+| Metric | Count | Proving query |
+|---|---:|---|
+| Observed CLI command handlers | [15](#query-result-cli-traceability-summary-v1) | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| Admitted CLI commands | [0](#query-result-cli-traceability-summary-v1) | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| Runtime callables | [788](#query-result-cli-traceability-summary-v1) | [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) |
+| CLI-reachable callables | [640](#query-result-cli-traceability-summary-v1) | [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) |
+| Shared CLI infrastructure | [131](#query-result-cli-traceability-summary-v1) | [`cli.shared-reachability.v1`](#query-result-cli-shared-reachability-v1) |
+| Runtime-resolution-required | [6](#query-result-cli-traceability-summary-v1) | [`cli.runtime-resolution-debt.v1`](#query-result-cli-runtime-resolution-debt-v1) |
+| No CLI reachability | [142](#query-result-cli-traceability-summary-v1) | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) |
+| CLI-reachable mechanic occurrences | [5517](#query-result-cli-traceability-summary-v1) | [`cli.reachable-source-facts.v1`](#query-result-cli-reachable-source-facts-v1) |
+| Unreachable mechanic occurrences | [989](#query-result-cli-traceability-summary-v1) | [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) |
+
+## CLI Feature Coverage
+
+| CLI surface | Handler | Reachable symbols | Canonical features | Scenarios | Status | Evidence |
+|---|---|---:|---|---:|---|---|
+| `call-graph` | `runCallGraph` | [41](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `console` | `runConsole` | [28](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `generate-connective-tissue` | `runGenerateConnectiveTissue` | [14](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `generate-docs` | `runGenerateDocs` | [52](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `govern` | `runGovern` | [274](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `ingest` | `runIngest` | [78](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `load-sqlserver` | `runLoadSqlServer` | [25](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `project` | `runProject` | [61](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `project-authority` | `runProjectAuthority` | [13](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `project-authority-violations` | `runProjectAuthorityViolations` | [63](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `project-console-contract` | `runProjectConsoleContract` | [35](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `project-governed-console-contract` | `runProjectConsoleContract` | [35](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `propose-feature-coverage` | `runProposeFeatureCoverage` | [32](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `propose-semantic-overlap` | `runProposeSemanticOverlap` | [15](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `query` | `runQuery` | [14](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+| `web` | `runWeb` | [251](#query-result-cli-entry-points-v1) | none | 0 | `FEATURE_AND_INTERFACE_AUTHORITY_MISSING` | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) |
+
+## Fat and Waste Inventory
+
+Only `NO_CLI_REACHABILITY` appears here. Test/proof, generated, runtime-sensitive, and explicitly reachable classes have already been subtracted.
+
+| Symbol | File | Why classified as waste | Callers | Exported | Authority | Action | Evidence |
+|---|---|---|---:|---|---|---|---|
+| `projectMessage` | `src/console/governed-message-artifact-family/src/project-message.mjs` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `projectsCard` | `src/gallery/projects-gallery-host.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `extractsReviewedKnowHow` | `src/governance/extracts-reviewed-know-how.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `slugify` | `src/governance/extracts-reviewed-know-how.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `formatsDrillDownLink` | `src/governance/formats-scenario-conformance-report.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsConditionalSectionSchema` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 5 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsGroundingManifest` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsUserPrompt` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `formatsEvidenceFiles` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 5 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `formatsGroundingManifest` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `parsesCodeSymbols` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `parsesJsonEvidence` | `src/governance/generates-connective-tissue.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `rerunsRegisteredReportQuery` | `src/governance/projects-report-query-lineage.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `filtersRowsByParameters` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `groups` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 3 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `scenarioResponsibilityRows` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `subjectItemRows` | `src/governance/report-drill-down-query-catalog.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildAuthorityMechanicDraft` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsNormalizedSourceCodeMap` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `collectMechanicsViaQuery` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `deduplicateMechanics` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `enrichMechanic` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `extractSourceSnippet` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `extractsSnippetFromText` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `joinsSourceLocation` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `matchesFilter` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `normalizesPathKey` | `src/projects-authority-candidates.js` | `NO_CLI_REACHABILITY` | 32 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsBindingSuggestion` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsCoverageSummary` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsProjector` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsPseudoIndex` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `loadsAuthorityMechanics` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `normalizesPathKey` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 32 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `normalizesViolation` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `normalizeViolations` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `parsesAuthoritySourceLocations` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `parseViolationLocation` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `projectCandidatesFromViolations` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `resolvesDefaultWorkspaceRoot` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 3 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `resolvesRelativeModulePath` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `sourceLocationsOverlap` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `suggestsAuthorityMechanicId` | `src/projects-authority-from-violations.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildArtifactReferenceEdge` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 7 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildDecisionAuthority` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 8 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildFailurePolicy` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 6 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildIterationAuthority` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 2 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildProjectionMapping` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 9 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildResponsibilityAuthorityReference` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 1 | no | none | `REVIEW_BEFORE_REMOVAL` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsConsoleAuthorityBundlesSourceAuthority` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| `buildsConsoleServerSourceAuthority` | `src/projects-governed-console-contract.js` | `NO_CLI_REACHABILITY` | 0 | no | none | `REMOVE_CANDIDATE` | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) |
+| ... | ... | 92 additional rows | ... | ... | ... | Open full receipt | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) |
+
+Reverse justification: [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1). Removal impact: [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1).
+
+## Secondary Governance Summary
 
 This report keeps four independent questions separate: whether lineage is canonical or proposed,
 whether the declared structure is closed, whether execution was evaluated, and whether a proof
@@ -40,12 +141,12 @@ a runtime execution receipt for a scenario.
 | Mechanics with canonical scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Mechanics with proposed scenario lineage | [158](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Mechanics with ambiguous scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
-| Mechanics without scenario lineage | [6,652](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
+| Mechanics without scenario lineage | [6,860](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents with canonical scenario lineage | [2](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents with proposed scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents with ambiguous scenario lineage | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Authority documents without scenario lineage | [10](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
-| Unresolved responsibility-evidence clusters | [694](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
+| Unresolved responsibility-evidence clusters | [701](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Clusters confirmed as feature candidates | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Live LLM inference evaluations | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
 | Optional capability relations proposed from evidence | [0](#query-result-feature-coverage-summary-v1) | [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | [`Inspect canonical features`](#query-result-feature-coverage-features-v1) · [`Inspect canonical scenarios`](#query-result-scenario-conformance-scenarios-v1) · [`Group mechanics without lineage`](#query-result-feature-coverage-unlined-mechanics-v1) `posture=FEATURE_COVERAGE_MISSING` · [`Inspect unresolved responsibility clusters`](#query-result-responsibility-evidence-cluster-by-id-v1) · [`Inspect authority lineage`](#query-result-authority-documents-v1) |
@@ -59,9 +160,9 @@ a runtime execution receipt for a scenario.
 
 **Query evidence**
 
-- [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) — 1 row(s), result `sha256:fa7c52974b965abf5c5bac2709949696b14dd2abfabb8fe775248d218713a573`
+- [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) — 1 row(s), result `sha256:639a627077574b6d019020d1b42389fea5a176484a9113a77093a7437be558eb`
 - [`scenario-conformance.summary.v1`](#query-result-scenario-conformance-summary-v1) — 1 row(s), result `sha256:c3fcd087e881750d3cf83381a22ecf525fd0d50f4503a448d5883df1ad902f1a`
-- [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 694 row(s), result `sha256:2366c89d50c657ab883db6e06384e9a77c1fb681d0d1c129762e98c7464c030e`
+- [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 701 row(s), result `sha256:d5b1cb3199c241da8e1ad57307c0e4fa588e4f49dc80d4014dfec4da718b4d62`
 
 ## Feature Coverage Proposals
 
@@ -87,22 +188,23 @@ Claim type: `QUERYED_GAP_FACT`
 
 These are bounded static-evidence clusters, not feature candidates. A function or module scope becomes eligible for feature inference only after a separate feature-shaping review establishes an actor, outcome, scenario boundary, responsibility, and obligation.
 
-Query result: [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 694 row(s), result `sha256:2366c89d50c657ab883db6e06384e9a77c1fb681d0d1c129762e98c7464c030e`
+Query result: [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) — 701 row(s), result `sha256:d5b1cb3199c241da8e1ad57307c0e4fa588e4f49dc80d4014dfec4da718b4d62`
 
 | Evidence cluster | Cluster kind | Mechanics | Occurrences | Feature candidacy | Inference eligibility | Query result |
 |---|---|---|---:|---|---|---|
 | `src/governance/authoring-evidence-query-catalog.js#buildsAuthoringCollections` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, serialization, state-mutation, validation | [278](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/governance/generates-connective-tissue.js#generatesConnectiveTissue` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, normalization, object-construction, serialization, state-mutation, throw, validation | [221](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
-| `src/governance/projects-report-query-lineage.js#reconcilesReportQueryLineage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, normalization, object-construction, serialization, throw, validation | [129](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
+| `src/governance/report-drill-down-query-catalog.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | branch, fallback, object-construction | [156](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
+| `src/governance/projects-report-query-lineage.js#reconcilesReportQueryLineage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, normalization, object-construction, serialization, throw, validation | [141](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
+| `src/governance/projects-report-query-lineage.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | [107](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/web/html-projector.js#projectsHtmlDocument` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | [101](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
-| `src/governance/report-drill-down-query-catalog.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | branch, fallback, object-construction | [99](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/governance/projects-feature-coverage.js#projectsFeatureCoverage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation, throw, validation | [86](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/call-graph.js#projectsCliEntryPointCallGraph` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, normalization, object-construction, serialization, state-mutation, throw | [83](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/projects-governed-console-contract.js#buildsConsoleGovernedContract` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, normalization, object-construction, state-mutation | [83](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/generate-traceability-docs.js#validatesQueryReceiptBinding` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, serialization, throw | [80](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
-| `src/governance/projects-self-governance-report.js#projectsSelfGovernanceReport` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | [76](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
+| `src/governance/projects-self-governance-report.js#projectsSelfGovernanceReport` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | [77](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/generate-traceability-docs.js#resolveMetric` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation, throw, validation | [74](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
-| `src/governance/projects-report-query-lineage.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | [67](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
+| `src/governance/projects-interface-governance.js#projectsInterfaceGovernance` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, object-construction, state-mutation | [68](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/call-graph.js#registersEntryPoint` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, normalization, object-construction, state-mutation | [65](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/gallery/plans-surface-previews.js#plansOneItem` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, object-construction, state-mutation | [65](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/call-graph.js#buildsEntryPointInventory` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction | [57](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
@@ -120,7 +222,6 @@ Query result: [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-
 | `src/governance/formats-scenario-conformance-report.js#formatsScenarioConformanceReportMarkdown` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction | [38](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/governance/projects-scenario-conformance.js#projectsFeatureSet` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction | [35](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | `src/cli.js#runProposeFeatureCoverage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, serialization, state-mutation, throw | [34](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
-| `src/governance/report-drill-down-query-catalog.js#buildsOccurrenceEvidence` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | fallback, iteration, object-construction | [33](#query-result-feature-coverage-unresolved-clusters-v1) | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 | … |  | Full result continues in the cited query receipt |  |  |  | [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) |
 
 ## Canonical Feature Drill-Down
@@ -291,7 +392,7 @@ shown as proposed coverage; it is never counted as canonical coverage.
 
 | Inventory | Count | Disposition | Query |
 |---|---:|---|---|
-| Static mechanics without canonical or proposed lineage | [6,652](#query-result-feature-coverage-unclassified-inventory-v1) | [`NO_SCENARIO_LINEAGE`](#query-result-feature-coverage-unclassified-inventory-v1) | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
+| Static mechanics without canonical or proposed lineage | [6,860](#query-result-feature-coverage-unclassified-inventory-v1) | [`NO_SCENARIO_LINEAGE`](#query-result-feature-coverage-unclassified-inventory-v1) | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
 | Authority documents without canonical scenario lineage | [10](#query-result-feature-coverage-unclassified-inventory-v1) | inspect per-item posture below | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
 | Admitted know-how without canonical obligation lineage | [0](#query-result-feature-coverage-unclassified-inventory-v1) | inspect per-item posture below | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
 | Healing drafts without a canonical scenario target | [0](#query-result-feature-coverage-unclassified-inventory-v1) | [`HEALING_WITHOUT_CANONICAL_SCENARIO_TARGET`](#query-result-feature-coverage-unclassified-inventory-v1) | [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) |
@@ -300,16 +401,16 @@ shown as proposed coverage; it is never counted as canonical coverage.
 
 | Mechanic | Occurrences | Files | Query |
 |---|---:|---:|---|
-| branch | [1,241](#query-result-feature-coverage-unlined-mechanics-v1) | [78](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| exception-handling | [103](#query-result-feature-coverage-unlined-mechanics-v1) | [26](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| fallback | [1,593](#query-result-feature-coverage-unlined-mechanics-v1) | [76](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| iteration | [393](#query-result-feature-coverage-unlined-mechanics-v1) | [64](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| branch | [1,255](#query-result-feature-coverage-unlined-mechanics-v1) | [79](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| exception-handling | [105](#query-result-feature-coverage-unlined-mechanics-v1) | [27](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| fallback | [1,638](#query-result-feature-coverage-unlined-mechanics-v1) | [77](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| iteration | [401](#query-result-feature-coverage-unlined-mechanics-v1) | [65](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | normalization | [136](#query-result-feature-coverage-unlined-mechanics-v1) | [29](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| object-construction | [2,404](#query-result-feature-coverage-unlined-mechanics-v1) | [86](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| object-construction | [2,538](#query-result-feature-coverage-unlined-mechanics-v1) | [87](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | retry | [1](#query-result-feature-coverage-unlined-mechanics-v1) | [1](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | serialization | [87](#query-result-feature-coverage-unlined-mechanics-v1) | [28](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| state-mutation | [312](#query-result-feature-coverage-unlined-mechanics-v1) | [56](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
-| throw | [221](#query-result-feature-coverage-unlined-mechanics-v1) | [42](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| state-mutation | [315](#query-result-feature-coverage-unlined-mechanics-v1) | [57](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
+| throw | [223](#query-result-feature-coverage-unlined-mechanics-v1) | [42](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 | validation | [161](#query-result-feature-coverage-unlined-mechanics-v1) | [24](#query-result-feature-coverage-unlined-mechanics-v1) | [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) |
 
 ### Authority without canonical scenario lineage
@@ -352,12 +453,12 @@ Reconciliation query: [`authoring.reconciliation.v1`](#query-result-authoring-re
 
 | Check | Result | Proving query |
 |---|---:|---|
-| Healing candidates | [6652](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates with authoring evidence bundle | [6652](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates with complete query provenance | [6652](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates with unresolved required evidence | [6652](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Healing candidates | [6860](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates with authoring evidence bundle | [6860](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates with complete query provenance | [6860](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates with unresolved required evidence | [6860](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Candidates ready for semantic authority authoring | [0](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
-| Candidates ready for projection | [6258](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
+| Candidates ready for projection | [6369](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Declared responsibilities with authoring bundles | [10](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Declared responsibilities awaiting interface evidence for authoring | [7](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
 | Declared responsibilities ready for projection | [7](#query-result-authoring-reconciliation-v1) | [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) |
@@ -383,9 +484,9 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 
 | Check | Result |
 |---|---:|
-| Registered factual claim values | 8929 |
-| Claims with query pointers | 8929 |
-| Claims with required drill-down path | 8929 |
+| Registered factual claim values | 164394 |
+| Claims with query pointers | 164394 |
+| Claims with required drill-down path | 164394 |
 | Claims lacking drill-down path | 0 |
 | Broken drill-down query references | 0 |
 | Invalid parameter bindings | 0 |
@@ -408,59 +509,73 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 
 | Query ID | Purpose | Rows | Query hash | Result hash | Status |
 |---|---|---:|---|---|---|
-| [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | Executive Summary | 1 | `sha256:dfa7d56d37bdd8ca458d537b1a511f32562eb95c05dd19157d705a4617b0056b` | `sha256:fa7c52974b965abf5c5bac2709949696b14dd2abfabb8fe775248d218713a573` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.summary.v1`](#query-result-feature-coverage-summary-v1) | Executive Summary | 1 | `sha256:dfa7d56d37bdd8ca458d537b1a511f32562eb95c05dd19157d705a4617b0056b` | `sha256:639a627077574b6d019020d1b42389fea5a176484a9113a77093a7437be558eb` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.summary.v1`](#query-result-scenario-conformance-summary-v1) | Executive Summary | 1 | `sha256:b230d306d1b6235c356f228a8fbe154b94ded15c1d017b8459b2c4db455fc944` | `sha256:c3fcd087e881750d3cf83381a22ecf525fd0d50f4503a448d5883df1ad902f1a` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.proposal-evidence.v1`](#query-result-feature-coverage-proposal-evidence-v1) | Feature Coverage Proposals | 0 | `sha256:24a7bd5de2d4710e8917e12ac89f18418667b3ed56690d4a93dcc04c09b11411` | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.live-inference.v1`](#query-result-feature-coverage-live-inference-v1) | Live LLM Feature-Inference Evaluations | 0 | `sha256:6d426be0037939f720654e271d2debfe3737345106909d22a6ef600b792c0bbc` | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) | Unresolved Responsibility Evidence | 694 | `sha256:f0194dd8100b3ee64d528a4253968fe48f0b7212badf2575b852c5b948cb780b` | `sha256:2366c89d50c657ab883db6e06384e9a77c1fb681d0d1c129762e98c7464c030e` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unresolved-clusters.v1`](#query-result-feature-coverage-unresolved-clusters-v1) | Unresolved Responsibility Evidence | 701 | `sha256:f0194dd8100b3ee64d528a4253968fe48f0b7212badf2575b852c5b948cb780b` | `sha256:d5b1cb3199c241da8e1ad57307c0e4fa588e4f49dc80d4014dfec4da718b4d62` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.drilldown.v1`](#query-result-scenario-conformance-drilldown-v1) | Canonical Feature Drill-Down | 4 | `sha256:63140f2c93dfaff428cf1792965fca681c1dc8459b409af57bac1ed680df6edb` | `sha256:58df4b2b1d73dcede8c618b2deea032b3a8ccdecc9dcb35882724a9b6d75afbf` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) | Evidence Without Canonical Lineage | 1 | `sha256:1aafa4839d6a214e6acc0be187c500279ab27a67382b4bbe5160a099c2a0e6a0` | `sha256:a0d34ae85d5448ebb5dffb1d5e5efa95f4a4f83a365b83ae648abe8e9b62ab73` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) | Evidence Without Canonical Lineage | 11 | `sha256:8d95fc7d5b7dc91ad64e723c18eaf7f43aec31da133f1ec9eb82ca6423d987ef` | `sha256:6f8290a9545debd248c722fba2651b3208a1bfa0ce1354b681955ccfd4042948` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unclassified-inventory.v1`](#query-result-feature-coverage-unclassified-inventory-v1) | Evidence Without Canonical Lineage | 1 | `sha256:1aafa4839d6a214e6acc0be187c500279ab27a67382b4bbe5160a099c2a0e6a0` | `sha256:27bac21b1887ed1eed6be6c16e284e079c9c49e99eeaa4dcc94b37b3c06c11ca` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics.v1`](#query-result-feature-coverage-unlined-mechanics-v1) | Evidence Without Canonical Lineage | 11 | `sha256:8d95fc7d5b7dc91ad64e723c18eaf7f43aec31da133f1ec9eb82ca6423d987ef` | `sha256:d9da9dfcefb667361f4f959d2c820f9a1c6f1434e2fbbbfdf8e19838311fc487` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.evidence.v1`](#query-result-subject-boundary-evidence-v1) | Subject Boundary | 1 | `sha256:bb62a3b13d996b599f8ff93979338026e619914bc0972f42c77d1211de60d3bb` | `sha256:593f3a0d4ba5545debcc6a1739061dd7618401ffe7c489256e16a16ed6e1a615` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.traceability-summary.v1`](#query-result-cli-traceability-summary-v1) | CLI Traceability | 1 | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` | `sha256:64e1e2c89c121c163cbcd7494baeacc1ed832e5227ad6ec0c0a8db7b3010cb29` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) | CLI Traceability | 16 | `sha256:6d63d220b5df0ae523d1ff1bae9742a3d6a400ec59564d56f5a8f3147303212f` | `sha256:828b9dd612c211d7c5b267d4f4d4937cf0c54ba2511300d2d602579e8833586a` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) | CLI Traceability | 788 | `sha256:9a9868803ac90ade1ac49f7fcc41a520e88f19150efd87435c0333c7f34b3be4` | `sha256:02336c9e4d52b474d479366b126a7ad31f20cf0e4b3c0d57634b59b5798bf960` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) | CLI Reachability | 996 | `sha256:5a68b386bc943e7983c3e20e6f2afd468d25a89683b0cfe2abeddffd3cea9e6a` | `sha256:cfab047f4f95d375f460332b88563006c4255cd303abe242fcbb6e0ed4af0fb2` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.shared-reachability.v1`](#query-result-cli-shared-reachability-v1) | CLI Reachability | 131 | `sha256:49a77e977b9941a90b7e7d9ee847c286c1322508bc70f195aa16834ad43b1e25` | `sha256:77010d8f9da60f6db55ebd17882194fef5cddf0b64970b2a016a4a1d8b4b5ac1` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.runtime-resolution-debt.v1`](#query-result-cli-runtime-resolution-debt-v1) | CLI Reachability | 6 | `sha256:5dd66999c648686e342b1d7e7847cca6bc2d6aba3b46a83eca08b9f639612160` | `sha256:33ba6b41de07bb934b92a5c2660fa88b4f8da8d7c121fff4849b75f2df0173b1` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.reachable-source-facts.v1`](#query-result-cli-reachable-source-facts-v1) | CLI Reachable Source Facts | 5517 | `sha256:9a90cc569a898443ff2911aa820c437abfd1e09df76cb8fc97f9af450eca4cbb` | `sha256:8058e224f11b62a837bb29b36a9b223927f11f91cbc3470ea9b3c24202712730` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) | Fat and Waste Inventory | 142 | `sha256:b9685d65ca5e3116ff73e36a4fcc75bcde6ee74d27ae1c53571b27e806caeb3d` | `sha256:6aa059110b72ca84003c58efaeca5054a85baa6b15be48bbca1dc36ac13cd304` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) | Fat and Waste Inventory | 989 | `sha256:94440b0342c83f2f7820cda1a4e12a1b41e3b294c43be109c2cae564636110de` | `sha256:1df8818b575000b741ae9bd641c0a0ace3428b2485167feaecea385892c8e544` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1) | Reverse CLI Justification | 996 | `sha256:414642febefcfb3b5cb7888a130f5c1d578619fc38e661aef67ec6b8e797e853` | `sha256:8965cb72c7b03bc6a6bb6ecd865118d9fdf58a7cbc73b93837e41bf67a240f84` | `RELATIONAL_QUERY_EXECUTED` |
+| [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | Removal Impact | 142 | `sha256:d01ecae4d4e7adc553ea633a4bf509d430835ac4495d2f338a454cea8a152027` | `sha256:2f6664d4fcea683b3b5252b79acaef2410c06342a100ba038a8ae0fe4b1d7465` | `RELATIONAL_QUERY_EXECUTED` |
+| [`interface.summary.v1`](#query-result-interface-summary-v1) | Interface Governance | 1 | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` | `sha256:64e1e2c89c121c163cbcd7494baeacc1ed832e5227ad6ec0c0a8db7b3010cb29` | `RELATIONAL_QUERY_EXECUTED` |
+| [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | CLI Command Inventory | 16 | `sha256:1cb099fc098a9301e59dae42cf27ab6c5b78a9e37cd5f5e5b21ead9785ee0454` | `sha256:48fae04fdb40427fe2ea2c213ced4e0b4dc7be4dbd8daeabec4c2de7a5ff4035` | `RELATIONAL_QUERY_EXECUTED` |
+| [`interface.authority-gaps.v1`](#query-result-interface-authority-gaps-v1) | CLI Authority Gaps | 16 | `sha256:9489a56fb6b3fd0b380f95572d062b54e7c1a0e641832c581d4b02e214d6b38a` | `sha256:c09032f566ad186d3d428deca6b2279cf3e26606f7df59546616fcf94d40dfd9` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.features.v1`](#query-result-feature-coverage-features-v1) | Canonical Features | 4 | `sha256:b507b9960f74168182112bb151a954844379cf125b19fe84166cbc25a5b68de3` | `sha256:063171974f526756fb724236ea5b36ef9e0966af52c3e7bb29acd8a1133f5701` | `RELATIONAL_QUERY_EXECUTED` |
 | [`feature-coverage.feature-scenarios.v1`](#query-result-feature-coverage-feature-scenarios-v1) | Feature Scenarios | 6 | `sha256:6971565a6037b39edde137eb108803f4360451bbffe1c34b9ed28dccb3e45f7b` | `sha256:3fb54aaf62148af47a5ced46cdd37fc624036b0648beb5061fd1c55389f839a9` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.scenarios.v1`](#query-result-scenario-conformance-scenarios-v1) | Canonical Scenarios | 6 | `sha256:713f34d346172b89a6d2641cabe6b68b4cdcfab36d97ef84c6aacebaec1ea8d9` | `sha256:3a98900c82bacbbcbb9465b913bb85114c4522861d5fed8059724415fd5fa91d` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.by-structural-status.v1`](#query-result-scenario-conformance-by-structural-status-v1) | Structural Status | 6 | `sha256:c57d1e34cc94400a0112b0f630664f25d804b761ccfce4d6203ef63e1a1838be` | `sha256:9dda679bcce7505b7e4c07910fb3d137b021030e23ea5f6b216b6d335d3630e9` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.scenario-responsibilities.v1`](#query-result-scenario-conformance-scenario-responsibilities-v1) | Scenario Responsibilities | 10 | `sha256:4ebd6c77ccdbd9cb5424de261939db79c47da42a230c2b08f309a9682eb18cc1` | `sha256:d27ae627cf1fe9610ffeb16a31979828fd9dde280261e4e991cf637f792f9343` | `RELATIONAL_QUERY_EXECUTED` |
 | [`scenario-conformance.scenario-call-paths.v1`](#query-result-scenario-conformance-scenario-call-paths-v1) | Scenario Call Paths | 10 | `sha256:fbd7a1a7480a478232d79b077bc2dc1ee7820e72195339b31c479e06046150f6` | `sha256:4ef4a19f76ee643e261cbe4cc173494cd45c07a7d5910e76bbe2c4d42c16ece5` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics-by-file.v1`](#query-result-feature-coverage-unlined-mechanics-by-file-v1) | Unlined Mechanics by File | 510 | `sha256:2582f0c7032aea45ac90c9cd28622ae599c2c68977459483704a6754173c67e6` | `sha256:739a21b0103deab9950ffe15a4724072a8383f7aff9cee5943f4f2e2134bd962` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics-by-responsibility.v1`](#query-result-feature-coverage-unlined-mechanics-by-responsibility-v1) | Unlined Mechanics by Responsibility | 1877 | `sha256:b5006477e6033f0ad57959635500ba21c302cf5b3acd8bc23f5d7a8d30273e3c` | `sha256:5621546d3c72f409fe1340fca5355a4fce25d036aea22ae0d2a943e85aa80e85` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-mechanics-by-symbol.v1`](#query-result-feature-coverage-unlined-mechanics-by-symbol-v1) | Unlined Mechanics by Symbol | 1878 | `sha256:830653ecd0f8d113685176d29b42361210d2240d15ccfec633e72aa6ec8c2f9a` | `sha256:5f1dd5259d9a1b439a3af38684fd792ee3084c1dc5a4cd1fb1e97f42dc1eb187` | `RELATIONAL_QUERY_EXECUTED` |
-| [`feature-coverage.unlined-occurrences.v1`](#query-result-feature-coverage-unlined-occurrences-v1) | Exact Unlined Occurrences | 6652 | `sha256:6a0a84598e1e351c5002c0680a73855cdb8f3e7312d18638005b291d2e84a624` | `sha256:9052c5ba1b7594150dbc6fba2ca3a562695b5fcc27534b58aa94e0f76574748e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`source-facts.occurrence-source-references.v1`](#query-result-source-facts-occurrence-source-references-v1) | Physical Source Evidence | 6810 | `sha256:0b89b4d3e3751396bfc0ab6b67462c9374f1ee659e070472b22a92b38d378860` | `sha256:ee51eaebbe9ddc9cdae1df1f2aecd9f8b2ca763274904281acc6bfa26ad5fd68` | `RELATIONAL_QUERY_EXECUTED` |
-| [`reachability.symbol-originating-entrypoints.v1`](#query-result-reachability-symbol-originating-entrypoints-v1) | Interface Reachability | 989 | `sha256:242009af849c0ffd1b366b4a1f3738d9a0096d6ef97a55affcfe10e30122b742` | `sha256:c9e18ccb231680f556128df835cd10d39bc39bddf7c96510ae5cf22b12fc82d3` | `RELATIONAL_QUERY_EXECUTED` |
-| [`reachability.symbol-callers.v1`](#query-result-reachability-symbol-callers-v1) | Reverse Callers | 6682 | `sha256:3072ae466d3c8d6933062458482de3c8922d3c2dfbaacae932d61b69cbb6a540` | `sha256:1351033960a7411fb09e6372e15045cafdcbd0cdc977941fe66575c7a72f3ac9` | `RELATIONAL_QUERY_EXECUTED` |
-| [`reachability.symbol-callees.v1`](#query-result-reachability-symbol-callees-v1) | Forward Callees | 6682 | `sha256:f0078a6d8c0e4e7617a1f3d24415bc84b9c011a179710cfa5306510d8985ad66` | `sha256:502cf1d181c40a3128d781ff6925b0b83fe3271ef06771e019a24d380803d303` | `RELATIONAL_QUERY_EXECUTED` |
-| [`responsibility-evidence.cluster-by-id.v1`](#query-result-responsibility-evidence-cluster-by-id-v1) | Responsibility Cluster | 694 | `sha256:efd390e1804079a28babb8ed8caf90f3075b0a093be587f663ad2ae9320b5068` | `sha256:2383702e6dfe68dd8a74e23794b464879e4c8dbbd4d645a8b7fbdd3f6e8478ca` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics-by-file.v1`](#query-result-feature-coverage-unlined-mechanics-by-file-v1) | Unlined Mechanics by File | 516 | `sha256:2582f0c7032aea45ac90c9cd28622ae599c2c68977459483704a6754173c67e6` | `sha256:610558d23a39157d6f30d7b7d7348eaaf2eeb578bb977527cdc2c57bfcf26c9e` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics-by-responsibility.v1`](#query-result-feature-coverage-unlined-mechanics-by-responsibility-v1) | Unlined Mechanics by Responsibility | 1899 | `sha256:b5006477e6033f0ad57959635500ba21c302cf5b3acd8bc23f5d7a8d30273e3c` | `sha256:569f58628b28689eb554e154e65630bfa0dd5ab8fcabcba29b520964ba782b08` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-mechanics-by-symbol.v1`](#query-result-feature-coverage-unlined-mechanics-by-symbol-v1) | Unlined Mechanics by Symbol | 1900 | `sha256:830653ecd0f8d113685176d29b42361210d2240d15ccfec633e72aa6ec8c2f9a` | `sha256:0824dc7829a9f1c92890d5823c651f286e2478a76c20e437d154459ca0d8bcca` | `RELATIONAL_QUERY_EXECUTED` |
+| [`feature-coverage.unlined-occurrences.v1`](#query-result-feature-coverage-unlined-occurrences-v1) | Exact Unlined Occurrences | 6860 | `sha256:6a0a84598e1e351c5002c0680a73855cdb8f3e7312d18638005b291d2e84a624` | `sha256:809d91200faaaa55f8070272057c93076f446347f1c19bf407e0cf0dd0dbff3a` | `RELATIONAL_QUERY_EXECUTED` |
+| [`source-facts.occurrence-source-references.v1`](#query-result-source-facts-occurrence-source-references-v1) | Physical Source Evidence | 7018 | `sha256:0b89b4d3e3751396bfc0ab6b67462c9374f1ee659e070472b22a92b38d378860` | `sha256:d827a8c7a2b5e7d24442cda4b635e8e65051f19e85813c9a0cd6996b358eb797` | `RELATIONAL_QUERY_EXECUTED` |
+| [`reachability.symbol-originating-entrypoints.v1`](#query-result-reachability-symbol-originating-entrypoints-v1) | Interface Reachability | 996 | `sha256:242009af849c0ffd1b366b4a1f3738d9a0096d6ef97a55affcfe10e30122b742` | `sha256:8a06804f11a1ba1204d34534011464a0709b8b3613a0e5444bc6c4a35814af5d` | `RELATIONAL_QUERY_EXECUTED` |
+| [`reachability.symbol-callers.v1`](#query-result-reachability-symbol-callers-v1) | Reverse Callers | 6891 | `sha256:3072ae466d3c8d6933062458482de3c8922d3c2dfbaacae932d61b69cbb6a540` | `sha256:908a85992edbddab81e369c95990153874aaa6288ead97bdf8c9dcc16bb024b4` | `RELATIONAL_QUERY_EXECUTED` |
+| [`reachability.symbol-callees.v1`](#query-result-reachability-symbol-callees-v1) | Forward Callees | 6891 | `sha256:f0078a6d8c0e4e7617a1f3d24415bc84b9c011a179710cfa5306510d8985ad66` | `sha256:3713b2cdf9df8231b08b9ca273fb52a1a5f3f93854c5f811fabe9d9ec822b20d` | `RELATIONAL_QUERY_EXECUTED` |
+| [`responsibility-evidence.cluster-by-id.v1`](#query-result-responsibility-evidence-cluster-by-id-v1) | Responsibility Cluster | 701 | `sha256:efd390e1804079a28babb8ed8caf90f3075b0a093be587f663ad2ae9320b5068` | `sha256:284a228e61e5e016bf992f63b7dab7a52741f9d1960dde899366d105554f6b3c` | `RELATIONAL_QUERY_EXECUTED` |
 | [`authority.documents.v1`](#query-result-authority-documents-v1) | Authority Lineage | 12 | `sha256:aa543b2c7ab5577f034bd1257164fc69ec434efa54926c34f63bc305255f5c31` | `sha256:1292556b29e7ad54fc5555e8ed6c07d425cbc6c6c0b5292a27c025de41fa4d0f` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authority.authority-near-symbol.v1`](#query-result-authority-authority-near-symbol-v1) | Authority Near Symbol | 6810 | `sha256:c1f34de65cd661e85cc9c07f9d950251c8fa4dc8ee743b395907a337116df88c` | `sha256:a795bbd80bb28727e91e1857a7cc699b799272f7fbdb6a24f1b2af2149164257` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authority.authority-near-symbol.v1`](#query-result-authority-authority-near-symbol-v1) | Authority Near Symbol | 7018 | `sha256:c1f34de65cd661e85cc9c07f9d950251c8fa4dc8ee743b395907a337116df88c` | `sha256:738ff1925172699e5e165dcbed4b6e5a98948c87f8135961af702ce19f9f8e54` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.items-by-disposition.v1`](#query-result-subject-boundary-items-by-disposition-v1) | Subject Boundary Items | 18 | `sha256:3ddeefdb2493e00e7021c129748933e87fa6fe5c7fa1b140e1538d8af86f6ede` | `sha256:df6183da0e000c80d3dfa9abbdda95a2dc3d2817e28267989529a2c85769d969` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.included-items.v1`](#query-result-subject-boundary-included-items-v1) | Included Subject Items | 12 | `sha256:86ccec9fb998fd3f4ef516f0cbe33beb7c2b636d6ecd330ec487db7f7bf6f5ab` | `sha256:cd5c1b08b0deec4eb5847b548b0bff3acf8ff2022be6f81216a2a59ac6b960c7` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.excluded-items.v1`](#query-result-subject-boundary-excluded-items-v1) | Excluded Subject Items | 6 | `sha256:afafdb3b9d69acd6c8a1d16c0247e29e22d25e96ccf54c0133cce6cc22d4f08c` | `sha256:cd96c3ad8b9374dbccbc0e4a68319ba5b23dbda63c871e9baef49debad679788` | `RELATIONAL_QUERY_EXECUTED` |
 | [`subject-boundary.item-scope-reason.v1`](#query-result-subject-boundary-item-scope-reason-v1) | Subject Item Scope Reason | 18 | `sha256:a3933b1341b539303541191b403c8cc9d2b6e51e484de9e49583c0852b34e435` | `sha256:40f693882dd30b2a4526da2ae692795d3c51180d95e5c7907826260df09710bc` | `RELATIONAL_QUERY_EXECUTED` |
-| [`impact.source-reference-reverse-impact.v1`](#query-result-impact-source-reference-reverse-impact-v1) | Reverse Impact | 6810 | `sha256:11fee5b05392548326dff3dfaf80ffbb726ed06e182cda40a7f5cdfd81133bf3` | `sha256:040ae4bfd51b4b3d9043d383c5981b5886ebc4e57334b01de94816bd70a97016` | `RELATIONAL_QUERY_EXECUTED` |
-| [`healing.source-fact-candidates.v1`](#query-result-healing-source-fact-candidates-v1) | Change and Healing | 6652 | `sha256:80ff9ca4e23a4da9a8312b08ba3e148f67675ef5c8c56d3a2d48c6991b2cfdbf` | `sha256:0e89226a87483404d555ccfd76e21708e98081881d214de34b5ced605ea6db16` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.interface-execution-slice.v1`](#query-result-authoring-interface-execution-slice-v1) | Interface-to-Responsibility Slice | 1347 | `sha256:c3366a48fc90431e4874916dba2eb03d7eb73d2b6fda23b841c87da63917debb` | `sha256:0e4a4c536d5391956ec06df01d897a6bfa0d7c6feb2a050e61447dcad0b3301c` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.responsibility-body-evidence.v1`](#query-result-authoring-responsibility-body-evidence-v1) | Responsibility Body Evidence | 686 | `sha256:798add784465cc049ae5fafd026257b873551da34655e12252477cdc6ff57240` | `sha256:f0ca28b4f74fa0505bce0372142396520ace6404fc08cb78bad2b5adb256600e` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.decision-evidence.v1`](#query-result-authoring-decision-evidence-v1) | Decision Semantics | 1241 | `sha256:1b742701efaeeecc5ca8f85fb4db7d8d1fc0b16c6692e41e1298393b848d5487` | `sha256:aa4763c25d453f3e79a37ff498d30004f08305330eca3283021cc39effd53ac4` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.fallback-evidence.v1`](#query-result-authoring-fallback-evidence-v1) | Fallback and Missing-Value Policy | 1593 | `sha256:d4bcb3099a71a172a1d26e52f782473bd1a877fa57833757a02b38ec136c2039` | `sha256:747ae1cec0fe23a4604e1bb1558d6359849dc3ed4cf80868de2291b211015afc` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.validation-evidence.v1`](#query-result-authoring-validation-evidence-v1) | Validation and Rejection Semantics | 161 | `sha256:987e66b52ca7bcefd1c09b4a721f188302f1708c91bbf61e28c7de0e944ea807` | `sha256:b924f38661719fe186ee084762b311b02e8aaf9d5bf065f04f39ed4275983db9` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.failure-policy-evidence.v1`](#query-result-authoring-failure-policy-evidence-v1) | Exception and Failure Policy | 325 | `sha256:8a66c42dfc3fa269b39827bd1fa2c0f6a64008dfd8c668e36d764b270f8e68b5` | `sha256:262c8b7c3970a7fbfe509cc573c0e6833f2caa0a8298c9577d707247f3284879` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.object-shape-evidence.v1`](#query-result-authoring-object-shape-evidence-v1) | Object Shape Evidence | 2404 | `sha256:322a74e7fd1f1bbfaf8e014194ceaafd06dc283e624a96aa398afec32ba04621` | `sha256:e9b24652b504e67d96ae9dadec267a75e994354ad353b745410ee926c43f3cc1` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.result-contract-evidence.v1`](#query-result-authoring-result-contract-evidence-v1) | Result Contract Evidence | 1033 | `sha256:e295e5c199b8e405f479624723ee975cc1a4ab89bb1f8f9a2a309a4e183dd0c3` | `sha256:1ff23a8677a4c4c54722ed9c05a67ea935c19eac8cf0ca9852ef484b41164c31` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.serialization-evidence.v1`](#query-result-authoring-serialization-evidence-v1) | Serialization Profile | 87 | `sha256:66d9960a07465b5af9e5c49cbadb38dc781b1664bae8f38f2a729a69b8c957f0` | `sha256:f4e26563121d542e197da183d2636ffa8467c039b1b48274c40663a2a400fb13` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.normalization-evidence.v1`](#query-result-authoring-normalization-evidence-v1) | Normalization and Translation | 136 | `sha256:e19f5b592048026bb385df580778f608c57c298fd8aea8cc7ae0b90637bd8dc8` | `sha256:80319d590c661e70f3dbf3c8b70929fd5f3a80094d1b5f9174f9dd6216ad0dbd` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.iteration-evidence.v1`](#query-result-authoring-iteration-evidence-v1) | Iteration Semantics | 393 | `sha256:1b7b1d5154de8375af5dc76f91ec87f46affe2bbe4ff7af27599261f1684bcef` | `sha256:233f2ef7ce7549ce9936920b5ff7707b6e1f489cbdc392a0e85de85028591840` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.state-transition-evidence.v1`](#query-result-authoring-state-transition-evidence-v1) | State-Transition Semantics | 312 | `sha256:ead8095a81ee48e74190abe6541bf069075d94dbb900d5dce6a1755cc18fcd7f` | `sha256:3bf2c4f273477522d7d49cf1a17ef45dfad3e4902e282de314c944d72bf30509` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.data-flow-slice.v1`](#query-result-authoring-data-flow-slice-v1) | Data-Flow Slice | 686 | `sha256:93b7ed049ac305c55e6cd12a887b18f5a594e603c2b930996db52058b54a29bb` | `sha256:2a9e6fabb6b0a92bc374f3ff733f52efc2b8eb8fd167e8407ea87bc6a91e45ba` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.authority-overlap.v1`](#query-result-authoring-authority-overlap-v1) | Existing Authority Overlap | 6662 | `sha256:9be4fb88b4dc0cc75eea562b505a03ab159223bacb14d98809a9c74086e70397` | `sha256:0bb6353d16d85276905281a978aafdad60de66dbc8c54f4050a4dafa12d65611` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.scenario-context.v1`](#query-result-authoring-scenario-context-v1) | Feature and Scenario Context | 6662 | `sha256:97b4eb2ae7b3a88a110536b2a42857be7834f14e5efe6f2386f330e85c461f36` | `sha256:aec07161003b46984f79e2ecd7f86adb049f7c89662af83388ce2bd3459826de` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.projection-target.v1`](#query-result-authoring-projection-target-v1) | Projection Target Evidence | 686 | `sha256:10dd92a9a30e97cac4ed07f7bdc5c501de66ced1d0e732a86e659e7d1dcf1505` | `sha256:c702946c3665be5394f2f52fe1ac7e4e4099f47c021f9874b9a6424acc4cfb8f` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.proof-vector-candidates.v1`](#query-result-authoring-proof-vector-candidates-v1) | Equivalence and Proof Candidates | 686 | `sha256:3116890ff31c7b4c5a80c14a67253c9f6312b023eecb25ea3fff8f9382ca4308` | `sha256:7c4da6fd1a7abd136a3f3926ae85936cc809745a031ec036bdb4ee0a9de99280` | `RELATIONAL_QUERY_EXECUTED` |
+| [`impact.source-reference-reverse-impact.v1`](#query-result-impact-source-reference-reverse-impact-v1) | Reverse Impact | 7018 | `sha256:11fee5b05392548326dff3dfaf80ffbb726ed06e182cda40a7f5cdfd81133bf3` | `sha256:cb665978faaddad663457faec1c69043a98a68d11ad787cc1b0233ed872f5f92` | `RELATIONAL_QUERY_EXECUTED` |
+| [`healing.source-fact-candidates.v1`](#query-result-healing-source-fact-candidates-v1) | Change and Healing | 6860 | `sha256:80ff9ca4e23a4da9a8312b08ba3e148f67675ef5c8c56d3a2d48c6991b2cfdbf` | `sha256:6c5f966f9a8ce6ea91455807b749fdf14e1f971f8fb2115ec4f2079a90b119a3` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.interface-execution-slice.v1`](#query-result-authoring-interface-execution-slice-v1) | Interface-to-Responsibility Slice | 1451 | `sha256:c3366a48fc90431e4874916dba2eb03d7eb73d2b6fda23b841c87da63917debb` | `sha256:057c4ab5a07afb6b87231b89297fccc64a2b32797c35c6e1641d48bf47b3a527` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.responsibility-body-evidence.v1`](#query-result-authoring-responsibility-body-evidence-v1) | Responsibility Body Evidence | 693 | `sha256:798add784465cc049ae5fafd026257b873551da34655e12252477cdc6ff57240` | `sha256:4305d35c133a0d82ba8a1620b47bdba7ff051ac41d4a20d4769b85d2e73ebe37` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.decision-evidence.v1`](#query-result-authoring-decision-evidence-v1) | Decision Semantics | 1255 | `sha256:1b742701efaeeecc5ca8f85fb4db7d8d1fc0b16c6692e41e1298393b848d5487` | `sha256:85766697236a1eedeaf27e8f6fae8c522e37c9820af0005b5c5e9329a9fe7578` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.fallback-evidence.v1`](#query-result-authoring-fallback-evidence-v1) | Fallback and Missing-Value Policy | 1638 | `sha256:d4bcb3099a71a172a1d26e52f782473bd1a877fa57833757a02b38ec136c2039` | `sha256:d067696995b9487ad14057560f7713e21df697468801e86f423d8cc54c3d0830` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.validation-evidence.v1`](#query-result-authoring-validation-evidence-v1) | Validation and Rejection Semantics | 161 | `sha256:987e66b52ca7bcefd1c09b4a721f188302f1708c91bbf61e28c7de0e944ea807` | `sha256:fa28de0704d3e318acfbe2674b647f1393eb1dd685cd945555db92ee91240fca` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.failure-policy-evidence.v1`](#query-result-authoring-failure-policy-evidence-v1) | Exception and Failure Policy | 329 | `sha256:8a66c42dfc3fa269b39827bd1fa2c0f6a64008dfd8c668e36d764b270f8e68b5` | `sha256:fc188a783865b711b538f9e34e1d6b34e3763f40f2bead588cbb8bd3690881ac` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.object-shape-evidence.v1`](#query-result-authoring-object-shape-evidence-v1) | Object Shape Evidence | 2538 | `sha256:322a74e7fd1f1bbfaf8e014194ceaafd06dc283e624a96aa398afec32ba04621` | `sha256:e6aaf54cec3cc6f468db2d52b7e7d5a3ad95d375eec8666cbc17b9f9b3532fd4` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.result-contract-evidence.v1`](#query-result-authoring-result-contract-evidence-v1) | Result Contract Evidence | 1053 | `sha256:e295e5c199b8e405f479624723ee975cc1a4ab89bb1f8f9a2a309a4e183dd0c3` | `sha256:6f2ed725555ed62d210188aad4147594c14e7d0ad88a218f7060c0176323580a` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.serialization-evidence.v1`](#query-result-authoring-serialization-evidence-v1) | Serialization Profile | 87 | `sha256:66d9960a07465b5af9e5c49cbadb38dc781b1664bae8f38f2a729a69b8c957f0` | `sha256:c6874f84db0b4e85b3d88db74db1bf05cf77382f0ffffe9b0f36c8bb98570ce3` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.normalization-evidence.v1`](#query-result-authoring-normalization-evidence-v1) | Normalization and Translation | 136 | `sha256:e19f5b592048026bb385df580778f608c57c298fd8aea8cc7ae0b90637bd8dc8` | `sha256:1c1e8cf2652b7968410a274ef78705a92e8ba68eca5e35b37b4f658ba062d5ae` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.iteration-evidence.v1`](#query-result-authoring-iteration-evidence-v1) | Iteration Semantics | 401 | `sha256:1b7b1d5154de8375af5dc76f91ec87f46affe2bbe4ff7af27599261f1684bcef` | `sha256:2cdbe49ee9646cfc9bf91bd5cb60a8b63c073df2a3f4a9fac83806a129410c52` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.state-transition-evidence.v1`](#query-result-authoring-state-transition-evidence-v1) | State-Transition Semantics | 315 | `sha256:ead8095a81ee48e74190abe6541bf069075d94dbb900d5dce6a1755cc18fcd7f` | `sha256:ab4c82a55c0bb146168cd5c3e06ed2437036cc484f696da129f2d937d402fa33` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.data-flow-slice.v1`](#query-result-authoring-data-flow-slice-v1) | Data-Flow Slice | 693 | `sha256:93b7ed049ac305c55e6cd12a887b18f5a594e603c2b930996db52058b54a29bb` | `sha256:eef7c78e95de10d9ae44392513b2aa58dd8deaa8ef2070ac429fa022732fc5e4` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.authority-overlap.v1`](#query-result-authoring-authority-overlap-v1) | Existing Authority Overlap | 6870 | `sha256:9be4fb88b4dc0cc75eea562b505a03ab159223bacb14d98809a9c74086e70397` | `sha256:53487eb859ef187e496e92b417aa0ddaf91bb55a7113c988e886628a3dca2cf7` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.scenario-context.v1`](#query-result-authoring-scenario-context-v1) | Feature and Scenario Context | 6870 | `sha256:97b4eb2ae7b3a88a110536b2a42857be7834f14e5efe6f2386f330e85c461f36` | `sha256:596fcf09846f061532ff0b23ab7ed40ad4b6aeb0f159bbb81671841288b11e7e` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.projection-target.v1`](#query-result-authoring-projection-target-v1) | Projection Target Evidence | 693 | `sha256:10dd92a9a30e97cac4ed07f7bdc5c501de66ced1d0e732a86e659e7d1dcf1505` | `sha256:0f8c770f5e2d848b12fc957e364e5a984364caa29ee8727bb3c3f075231d60ba` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.proof-vector-candidates.v1`](#query-result-authoring-proof-vector-candidates-v1) | Equivalence and Proof Candidates | 693 | `sha256:3116890ff31c7b4c5a80c14a67253c9f6312b023eecb25ea3fff8f9382ca4308` | `sha256:587907fcfac7cea8fcee0676833af09cd82dabaa1c9e7e18b1135af237d09f96` | `RELATIONAL_QUERY_EXECUTED` |
 | [`authoring.contract-map.v1`](#query-result-authoring-contract-map-v1) | Authority Contract Map | 23 | `sha256:2cab84afc1cf2e4d424570646d118218f21b67d5012f16f5c50afde84898a08a` | `sha256:c937a111b29f531e9648da3292d3cadc4534582833828b93e2f9d70e388f50c5` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.semantic-authority-evidence-bundle.v1`](#query-result-authoring-semantic-authority-evidence-bundle-v1) | Semantic Authority Evidence Bundle | 6662 | `sha256:3348a52e9913d17e1a2b1e9b9020c60a879e3d9107aa5673643cb49b3e9260ca` | `sha256:3c8aa52c047ea6dbefcdff133b9317f1dfd06c2528c28fcf0361683011bdd5d2` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.readiness.v1`](#query-result-authoring-readiness-v1) | Authoring Readiness | 6662 | `sha256:3be2d3d609c7431f172b6d174112f5f225fe9471c92b5cb96099181c51471470` | `sha256:3876577dbc2c5db400e724e66c1283bc4f1ba29e69804db3983aaa4b347f5146` | `RELATIONAL_QUERY_EXECUTED` |
-| [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) | Authority Authoring Reconciliation | 1 | `sha256:326068c7279d28afe22f7ed87720a096fc7d1e1d0cd70604e89a034a56185dfd` | `sha256:a3813dd48d6188bd9c1fc39ff75819cff594ce0c850ff7d56c206dc6c5702219` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.semantic-authority-evidence-bundle.v1`](#query-result-authoring-semantic-authority-evidence-bundle-v1) | Semantic Authority Evidence Bundle | 6870 | `sha256:3348a52e9913d17e1a2b1e9b9020c60a879e3d9107aa5673643cb49b3e9260ca` | `sha256:c0d8a8c82eed6854b2d4297504b1394c8d4afe1a26ecc569574b59545d5491df` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.readiness.v1`](#query-result-authoring-readiness-v1) | Authoring Readiness | 6870 | `sha256:3be2d3d609c7431f172b6d174112f5f225fe9471c92b5cb96099181c51471470` | `sha256:b3a8d0e3f1019924369a1b2381ea26357842d756023057a86f3812b793eb61a0` | `RELATIONAL_QUERY_EXECUTED` |
+| [`authoring.reconciliation.v1`](#query-result-authoring-reconciliation-v1) | Authority Authoring Reconciliation | 1 | `sha256:326068c7279d28afe22f7ed87720a096fc7d1e1d0cd70604e89a034a56185dfd` | `sha256:6f7010d848ccc2ed1b803da9dcd33e646a15c0df66271b5a409cc7f323d145ee` | `RELATIONAL_QUERY_EXECUTED` |
 
 ### Drill-Down Query Register
 
@@ -486,6 +601,29 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 | [`subject-boundary.evidence.v1`](#query-result-subject-boundary-evidence-v1) | 0 | [`subject-boundary.items-by-disposition.v1`](#query-result-subject-boundary-items-by-disposition-v1) | none | Inspect included and excluded items |
 | [`subject-boundary.evidence.v1`](#query-result-subject-boundary-evidence-v1) | 0 | [`subject-boundary.included-items.v1`](#query-result-subject-boundary-included-items-v1) | none | Inspect included items |
 | [`subject-boundary.evidence.v1`](#query-result-subject-boundary-evidence-v1) | 0 | [`subject-boundary.excluded-items.v1`](#query-result-subject-boundary-excluded-items-v1) | none | Inspect excluded items |
+| [`cli.traceability-summary.v1`](#query-result-cli-traceability-summary-v1) | 0 | [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) | none | Inspect CLI roots |
+| [`cli.traceability-summary.v1`](#query-result-cli-traceability-summary-v1) | 0 | [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) | none | Inspect classified runtime callables |
+| [`cli.traceability-summary.v1`](#query-result-cli-traceability-summary-v1) | 0 | [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) | none | Inspect NO_CLI_REACHABILITY remainder |
+| [`cli.entry-points.v1`](#query-result-cli-entry-points-v1) | 0 | [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) | `entryPointId=:entryPointId` | Inspect complete reachable graph slice |
+| [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) | 0 | [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1) | `symbolId=:symbolId` | Inspect justifying CLI commands |
+| [`cli.callable-inventory.v1`](#query-result-cli-callable-inventory-v1) | 0 | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | `symbolId=:symbolId` | Inspect removal impact |
+| [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) | 1 | [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1) | `symbolId=:symbolId` | Invert reachability to originating commands |
+| [`cli.shared-reachability.v1`](#query-result-cli-shared-reachability-v1) | 1 | [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1) | `symbolId=:symbolId` | Inspect sharing CLI commands |
+| [`cli.runtime-resolution-debt.v1`](#query-result-cli-runtime-resolution-debt-v1) | 1 | [`reachability.symbol-callers.v1`](#query-result-reachability-symbol-callers-v1) | `symbolId=:symbolId` | Inspect candidate callers |
+| [`cli.reachable-source-facts.v1`](#query-result-cli-reachable-source-facts-v1) | 2 | [`source-facts.occurrence-source-references.v1`](#query-result-source-facts-occurrence-source-references-v1) | `occurrenceId=:occurrenceId` | Inspect exact physical source |
+| [`cli.unreachable-callables.v1`](#query-result-cli-unreachable-callables-v1) | 1 | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | `symbolId=:symbolId` | Inspect deterministic removal impact |
+| [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) | 2 | [`source-facts.occurrence-source-references.v1`](#query-result-source-facts-occurrence-source-references-v1) | `occurrenceId=:occurrenceId` | Inspect exact physical source |
+| [`cli.unreachable-source-facts.v1`](#query-result-cli-unreachable-source-facts-v1) | 2 | [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | `symbolId=:symbolId` | Inspect owner removal impact |
+| [`cli.symbol-originating-commands.v1`](#query-result-cli-symbol-originating-commands-v1) | 2 | [`cli.entry-point-reachability.v1`](#query-result-cli-entry-point-reachability-v1) | `entryPointId=:entryPointId`, `symbolId=:symbolId` | Inspect complete path |
+| [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | 3 | [`reachability.symbol-callers.v1`](#query-result-reachability-symbol-callers-v1) | `symbolId=:symbolId` | Inspect callers |
+| [`cli.unreachable-removal-impact.v1`](#query-result-cli-unreachable-removal-impact-v1) | 3 | [`reachability.symbol-callees.v1`](#query-result-reachability-symbol-callees-v1) | `symbolId=:symbolId` | Inspect callees |
+| [`interface.summary.v1`](#query-result-interface-summary-v1) | 0 | [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | none | Inspect CLI commands and feature access |
+| [`interface.summary.v1`](#query-result-interface-summary-v1) | 0 | [`interface.authority-gaps.v1`](#query-result-interface-authority-gaps-v1) | none | Inspect CLI governance gaps |
+| [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | 1 | [`reachability.symbol-originating-entrypoints.v1`](#query-result-reachability-symbol-originating-entrypoints-v1) | `symbolId=:entryPointId` | Inspect command execution paths |
+| [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | 1 | [`feature-coverage.features.v1`](#query-result-feature-coverage-features-v1) | `featureId=:featureId` | Inspect accessible canonical features |
+| [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | 1 | [`interface.authority-gaps.v1`](#query-result-interface-authority-gaps-v1) | `commandName=:commandName` | Inspect interface authority gaps |
+| [`interface.authority-gaps.v1`](#query-result-interface-authority-gaps-v1) | 2 | [`interface.cli-commands.v1`](#query-result-interface-cli-commands-v1) | `commandName=:commandName` | Inspect command evidence |
+| [`interface.authority-gaps.v1`](#query-result-interface-authority-gaps-v1) | 2 | [`authority.documents.v1`](#query-result-authority-documents-v1) | none | Inspect canonical authority |
 | [`feature-coverage.features.v1`](#query-result-feature-coverage-features-v1) | 1 | [`feature-coverage.feature-scenarios.v1`](#query-result-feature-coverage-feature-scenarios-v1) | `featureId=:featureId` | Inspect feature scenarios |
 | [`feature-coverage.features.v1`](#query-result-feature-coverage-features-v1) | 1 | [`authority.documents.v1`](#query-result-authority-documents-v1) | `featureId=:featureId` | Inspect feature authority |
 | [`feature-coverage.feature-scenarios.v1`](#query-result-feature-coverage-feature-scenarios-v1) | 2 | [`scenario-conformance.scenario-responsibilities.v1`](#query-result-scenario-conformance-scenario-responsibilities-v1) | `featureId=:featureId` | Inspect responsibilities |
@@ -552,11 +690,11 @@ Lifecycle: `OBSERVED_EVIDENCE` â†’ `INFERRED_AUTHORITY_DRAFT` â†’ `REV
 |---|---|
 | Purpose | Executive Summary |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:dfa7d56d37bdd8ca458d537b1a511f32562eb95c05dd19157d705a4617b0056b` |
-| Result hash | `sha256:fa7c52974b965abf5c5bac2709949696b14dd2abfabb8fe775248d218713a573` |
+| Result hash | `sha256:639a627077574b6d019020d1b42389fea5a176484a9113a77093a7437be558eb` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-summary-v1.json) |
@@ -584,9 +722,9 @@ SELECT * FROM reportFeatureCoverageSummary
     "scenariosRuntimeNotEvaluated": 6,
     "scenariosWithLineageQualityFindings": 2,
     "featureProposalsPendingReview": 0,
-    "unresolvedEvidenceClusters": 694,
+    "unresolvedEvidenceClusters": 701,
     "supportingImplementationClusters": 47,
-    "responsibilityEvidenceClusters": 647,
+    "responsibilityEvidenceClusters": 654,
     "confirmedFeatureCandidateClusters": 0,
     "capabilityRelationsProposed": 0,
     "liveInferenceEvaluations": 0,
@@ -594,14 +732,14 @@ SELECT * FROM reportFeatureCoverageSummary
     "mechanicsWithCanonicalLineage": 0,
     "mechanicsWithProposedLineage": 158,
     "mechanicsWithAmbiguousLineage": 0,
-    "mechanicsWithoutLineage": 6652,
+    "mechanicsWithoutLineage": 6860,
     "authorityWithCanonicalLineage": 2,
     "authorityWithProposedLineage": 0,
     "authorityWithAmbiguousLineage": 0,
     "authorityWithoutLineage": 10,
-    "unclassifiedMechanics": 6652,
+    "unclassifiedMechanics": 6860,
     "byPosture": {
-      "FEATURE_COVERAGE_MISSING": 6652,
+      "FEATURE_COVERAGE_MISSING": 6860,
       "FEATURE_COVERAGE_PROPOSED": 158
     },
     "authorityByPosture": {
@@ -660,8 +798,8 @@ SELECT * FROM reportFeatureCoverageSummary
 |---|---|
 | Purpose | Executive Summary |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b230d306d1b6235c356f228a8fbe154b94ded15c1d017b8459b2c4db455fc944` |
 | Result hash | `sha256:c3fcd087e881750d3cf83381a22ecf525fd0d50f4503a448d5883df1ad902f1a` |
@@ -747,8 +885,8 @@ SELECT * FROM reportScenarioConformanceSummary
 |---|---|
 | Purpose | Feature Coverage Proposals |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:24a7bd5de2d4710e8917e12ac89f18418667b3ed56690d4a93dcc04c09b11411` |
 | Result hash | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` |
@@ -783,8 +921,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Live LLM Feature-Inference Evaluations |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:6d426be0037939f720654e271d2debfe3737345106909d22a6ef600b792c0bbc` |
 | Result hash | `sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945` |
@@ -819,12 +957,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unresolved Responsibility Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:f0194dd8100b3ee64d528a4253968fe48f0b7212badf2575b852c5b948cb780b` |
-| Result hash | `sha256:2366c89d50c657ab883db6e06384e9a77c1fb681d0d1c129762e98c7464c030e` |
-| Rows | 694 |
+| Result hash | `sha256:d5b1cb3199c241da8e1ad57307c0e4fa588e4f49dc80d4014dfec4da718b4d62` |
+| Rows | 701 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json) |
 | Next queries | [`Inspect individual cluster`](#query-result-responsibility-evidence-cluster-by-id-v1) |
@@ -833,9 +971,9 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportUnresolvedEvidenceClusters ORDER BY modulePath, responsibility
 ```
 
-Full 694-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
+Full 701-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
 
-Full 8612-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
+Full 8705-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unresolved-clusters-v1.json).
 
 <a id="query-result-scenario-conformance-drilldown-v1"></a>
 
@@ -845,8 +983,8 @@ Full 8612-pointer claim map: [open the bound receipt artifact](source-facts-self
 |---|---|
 | Purpose | Canonical Feature Drill-Down |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:63140f2c93dfaff428cf1792965fca681c1dc8459b409af57bac1ed680df6edb` |
 | Result hash | `sha256:58df4b2b1d73dcede8c618b2deea032b3a8ccdecc9dcb35882724a9b6d75afbf` |
@@ -1333,11 +1471,11 @@ Full 197-pointer claim map: [open the bound receipt artifact](source-facts-self-
 |---|---|
 | Purpose | Evidence Without Canonical Lineage |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1aafa4839d6a214e6acc0be187c500279ab27a67382b4bbe5160a099c2a0e6a0` |
-| Result hash | `sha256:a0d34ae85d5448ebb5dffb1d5e5efa95f4a4f83a365b83ae648abe8e9b62ab73` |
+| Result hash | `sha256:27bac21b1887ed1eed6be6c16e284e079c9c49e99eeaa4dcc94b37b3c06c11ca` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unclassified-inventory-v1.json) |
@@ -1389,11 +1527,11 @@ Full 1-row result: [open the bound receipt artifact](source-facts-self-governanc
 |---|---|
 | Purpose | Evidence Without Canonical Lineage |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:8d95fc7d5b7dc91ad64e723c18eaf7f43aec31da133f1ec9eb82ca6423d987ef` |
-| Result hash | `sha256:6f8290a9545debd248c722fba2651b3208a1bfa0ce1354b681955ccfd4042948` |
+| Result hash | `sha256:d9da9dfcefb667361f4f959d2c820f9a1c6f1434e2fbbbfdf8e19838311fc487` |
 | Rows | 11 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-v1.json) |
@@ -1409,8 +1547,8 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
 [
   {
     "mechanic": "branch",
-    "occurrenceCount": 1241,
-    "fileCount": 78,
+    "occurrenceCount": 1255,
+    "fileCount": 79,
     "drillDowns": [
       {
         "queryId": "feature-coverage.unlined-mechanics-by-file.v1",
@@ -1437,8 +1575,8 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "exception-handling",
-    "occurrenceCount": 103,
-    "fileCount": 26,
+    "occurrenceCount": 105,
+    "fileCount": 27,
     "drillDowns": [
       {
         "queryId": "feature-coverage.unlined-mechanics-by-file.v1",
@@ -1465,8 +1603,8 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "fallback",
-    "occurrenceCount": 1593,
-    "fileCount": 76,
+    "occurrenceCount": 1638,
+    "fileCount": 77,
     "drillDowns": [
       {
         "queryId": "feature-coverage.unlined-mechanics-by-file.v1",
@@ -1493,8 +1631,8 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "iteration",
-    "occurrenceCount": 393,
-    "fileCount": 64,
+    "occurrenceCount": 401,
+    "fileCount": 65,
     "drillDowns": [
       {
         "queryId": "feature-coverage.unlined-mechanics-by-file.v1",
@@ -1549,8 +1687,8 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "object-construction",
-    "occurrenceCount": 2404,
-    "fileCount": 86,
+    "occurrenceCount": 2538,
+    "fileCount": 87,
     "drillDowns": [
       {
         "queryId": "feature-coverage.unlined-mechanics-by-file.v1",
@@ -1633,8 +1771,8 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "state-mutation",
-    "occurrenceCount": 312,
-    "fileCount": 56,
+    "occurrenceCount": 315,
+    "fileCount": 57,
     "drillDowns": [
       {
         "queryId": "feature-coverage.unlined-mechanics-by-file.v1",
@@ -1661,7 +1799,7 @@ SELECT mechanic, COUNT(*) AS occurrenceCount, COUNT(DISTINCT modulePath) AS file
   },
   {
     "mechanic": "throw",
-    "occurrenceCount": 221,
+    "occurrenceCount": 223,
     "fileCount": 42,
     "drillDowns": [
       {
@@ -1734,8 +1872,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Subject Boundary |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:bb62a3b13d996b599f8ff93979338026e619914bc0972f42c77d1211de60d3bb` |
 | Result hash | `sha256:593f3a0d4ba5545debcc6a1739061dd7618401ffe7c489256e16a16ed6e1a615` |
@@ -1804,6 +1942,1212 @@ SELECT * FROM reportSubjectBoundary
 
 </details>
 
+<a id="query-result-cli-traceability-summary-v1"></a>
+
+#### `cli.traceability-summary.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Traceability |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` |
+| Result hash | `sha256:64e1e2c89c121c163cbcd7494baeacc1ed832e5227ad6ec0c0a8db7b3010cb29` |
+| Rows | 1 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-traceability-summary-v1.json) |
+| Next queries | [`Inspect CLI roots`](#query-result-cli-entry-points-v1)<br>[`Inspect classified runtime callables`](#query-result-cli-callable-inventory-v1)<br>[`Inspect NO_CLI_REACHABILITY remainder`](#query-result-cli-unreachable-callables-v1) |
+
+```sql
+SELECT * FROM reportInterfaceGovernanceSummary
+```
+
+<details><summary>Inspect 1 result row(s) inline</summary>
+
+```json
+[
+  {
+    "interfacePortfolioDisposition": "CLI_IS_FIRST_CLASS_OBSERVED_INTERFACE",
+    "cliDispatchEvidenceDisposition": "CLI_DISPATCH_SOURCE_PARSED",
+    "cliDispatchSourceHash": "sha256:09dd4e9b1480712de3722544236329732c30d10e7f9057c8c1b6fec75c4e428c",
+    "observedCliCommandHandlers": 15,
+    "observedCliCommandTokens": 16,
+    "observedHttpEntryPoints": 8,
+    "commandsWithCanonicalFeature": 0,
+    "commandsWithoutCanonicalFeature": 16,
+    "canonicalFeaturesAccessibleViaCli": 0,
+    "canonicalFeatureIdsAccessibleViaCli": [],
+    "cliInterfaceAuthorityDocuments": 0,
+    "cliInterfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "admittedCliCommands": 0,
+    "runtimeCallables": 788,
+    "cliReachableCallables": 640,
+    "sharedCliInfrastructure": 131,
+    "runtimeResolutionRequired": 6,
+    "noCliReachabilityCallables": 142,
+    "reachableMechanicOccurrences": 5517,
+    "unreachableMechanicOccurrences": 989
+  }
+]
+```
+
+</details>
+
+<details><summary>Inspect 19 rendered claim pointer(s) inline</summary>
+
+- `/interfaceGovernance/summary/interfacePortfolioDisposition` ← `/rows/0/interfacePortfolioDisposition` (CLASSIFICATION)
+- `/interfaceGovernance/summary/cliDispatchEvidenceDisposition` ← `/rows/0/cliDispatchEvidenceDisposition` (CLASSIFICATION)
+- `/interfaceGovernance/summary/cliDispatchSourceHash` ← `/rows/0/cliDispatchSourceHash` (CLASSIFICATION)
+- `/interfaceGovernance/summary/observedCliCommandHandlers` ← `/rows/0/observedCliCommandHandlers` (CLASSIFICATION)
+- `/interfaceGovernance/summary/observedCliCommandTokens` ← `/rows/0/observedCliCommandTokens` (CLASSIFICATION)
+- `/interfaceGovernance/summary/observedHttpEntryPoints` ← `/rows/0/observedHttpEntryPoints` (CLASSIFICATION)
+- `/interfaceGovernance/summary/commandsWithCanonicalFeature` ← `/rows/0/commandsWithCanonicalFeature` (CLASSIFICATION)
+- `/interfaceGovernance/summary/commandsWithoutCanonicalFeature` ← `/rows/0/commandsWithoutCanonicalFeature` (CLASSIFICATION)
+- `/interfaceGovernance/summary/canonicalFeaturesAccessibleViaCli` ← `/rows/0/canonicalFeaturesAccessibleViaCli` (CLASSIFICATION)
+- `/interfaceGovernance/summary/cliInterfaceAuthorityDocuments` ← `/rows/0/cliInterfaceAuthorityDocuments` (CLASSIFICATION)
+- `/interfaceGovernance/summary/cliInterfaceAuthorityDisposition` ← `/rows/0/cliInterfaceAuthorityDisposition` (CLASSIFICATION)
+- `/interfaceGovernance/summary/admittedCliCommands` ← `/rows/0/admittedCliCommands` (CLASSIFICATION)
+- `/interfaceGovernance/summary/runtimeCallables` ← `/rows/0/runtimeCallables` (CLASSIFICATION)
+- `/interfaceGovernance/summary/cliReachableCallables` ← `/rows/0/cliReachableCallables` (CLASSIFICATION)
+- `/interfaceGovernance/summary/sharedCliInfrastructure` ← `/rows/0/sharedCliInfrastructure` (CLASSIFICATION)
+- `/interfaceGovernance/summary/runtimeResolutionRequired` ← `/rows/0/runtimeResolutionRequired` (CLASSIFICATION)
+- `/interfaceGovernance/summary/noCliReachabilityCallables` ← `/rows/0/noCliReachabilityCallables` (CLASSIFICATION)
+- `/interfaceGovernance/summary/reachableMechanicOccurrences` ← `/rows/0/reachableMechanicOccurrences` (CLASSIFICATION)
+- `/interfaceGovernance/summary/unreachableMechanicOccurrences` ← `/rows/0/unreachableMechanicOccurrences` (CLASSIFICATION)
+
+</details>
+
+<a id="query-result-cli-entry-points-v1"></a>
+
+#### `cli.entry-points.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Traceability |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:6d63d220b5df0ae523d1ff1bae9742a3d6a400ec59564d56f5a8f3147303212f` |
+| Result hash | `sha256:828b9dd612c211d7c5b267d4f4d4937cf0c54ba2511300d2d602579e8833586a` |
+| Rows | 16 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-entry-points-v1.json) |
+| Next queries | [`Inspect complete reachable graph slice`](#query-result-cli-entry-point-reachability-v1) `entryPointId=:entryPointId` |
+
+```sql
+SELECT * FROM reportCliCommands WHERE (:commandName IS NULL OR commandName = :commandName) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY commandName
+```
+
+<details><summary>Inspect 16 result row(s) inline</summary>
+
+```json
+[
+  {
+    "commandName": "call-graph",
+    "subcommandName": null,
+    "handlerName": "runCallGraph",
+    "entryPointId": "cli.js#function:runCallGraph",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:5859:27",
+    "declarationLine": 99,
+    "reachableCallableCount": 41,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runCallGraph"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "console",
+    "subcommandName": null,
+    "handlerName": "runConsole",
+    "entryPointId": "cli.js#function:runConsole",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6814:25",
+    "declarationLine": 119,
+    "reachableCallableCount": 28,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runConsole"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "generate-connective-tissue",
+    "subcommandName": null,
+    "handlerName": "runGenerateConnectiveTissue",
+    "entryPointId": "cli.js#function:runGenerateConnectiveTissue",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6663:42",
+    "declarationLine": 115,
+    "reachableCallableCount": 14,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runGenerateConnectiveTissue"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "generate-docs",
+    "subcommandName": null,
+    "handlerName": "runGenerateDocs",
+    "entryPointId": "cli.js#function:runGenerateDocs",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:5938:30",
+    "declarationLine": 101,
+    "reachableCallableCount": 52,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runGenerateDocs"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "govern",
+    "subcommandName": null,
+    "handlerName": "runGovern",
+    "entryPointId": "cli.js#function:runGovern",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6368:24",
+    "declarationLine": 109,
+    "reachableCallableCount": 274,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runGovern"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "ingest",
+    "subcommandName": null,
+    "handlerName": "runIngest",
+    "entryPointId": "cli.js#function:runIngest",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6968:24",
+    "declarationLine": 123,
+    "reachableCallableCount": 78,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runIngest"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "load-sqlserver",
+    "subcommandName": null,
+    "handlerName": "runLoadSqlServer",
+    "entryPointId": "cli.js#function:runLoadSqlServer",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6892:31",
+    "declarationLine": 121,
+    "reachableCallableCount": 25,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runLoadSqlServer"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "project",
+    "subcommandName": null,
+    "handlerName": "runProject",
+    "entryPointId": "cli.js#function:runProject",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:5718:25",
+    "declarationLine": 95,
+    "reachableCallableCount": 61,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runProject"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "project-authority",
+    "subcommandName": null,
+    "handlerName": "runProjectAuthority",
+    "entryPointId": "cli.js#function:runProjectAuthority",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6024:34",
+    "declarationLine": 103,
+    "reachableCallableCount": 13,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runProjectAuthority"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "project-authority-violations",
+    "subcommandName": null,
+    "handlerName": "runProjectAuthorityViolations",
+    "entryPointId": "cli.js#function:runProjectAuthorityViolations",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6125:44",
+    "declarationLine": 105,
+    "reachableCallableCount": 63,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runProjectAuthorityViolations"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "project-console-contract",
+    "subcommandName": null,
+    "handlerName": "runProjectConsoleContract",
+    "entryPointId": "cli.js#function:runProjectConsoleContract",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6283:40",
+    "declarationLine": 107,
+    "reachableCallableCount": 35,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runProjectConsoleContract"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "project-governed-console-contract",
+    "subcommandName": null,
+    "handlerName": "runProjectConsoleContract",
+    "entryPointId": "cli.js#function:runProjectConsoleContract",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6283:40",
+    "declarationLine": 107,
+    "reachableCallableCount": 35,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runProjectConsoleContract"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "propose-feature-coverage",
+    "subcommandName": null,
+    "handlerName": "runProposeFeatureCoverage",
+    "entryPointId": "cli.js#function:runProposeFeatureCoverage",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6558:40",
+    "declarationLine": 113,
+    "reachableCallableCount": 32,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runProposeFeatureCoverage"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "propose-semantic-overlap",
+    "subcommandName": null,
+    "handlerName": "runProposeSemanticOverlap",
+    "entryPointId": "cli.js#function:runProposeSemanticOverlap",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6455:40",
+    "declarationLine": 111,
+    "reachableCallableCount": 15,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runProposeSemanticOverlap"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "query",
+    "subcommandName": null,
+    "handlerName": "runQuery",
+    "entryPointId": "cli.js#function:runQuery",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:5787:23",
+    "declarationLine": 97,
+    "reachableCallableCount": 14,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runQuery"
+        }
+      }
+    ]
+  },
+  {
+    "commandName": "web",
+    "subcommandName": null,
+    "handlerName": "runWeb",
+    "entryPointId": "cli.js#function:runWeb",
+    "interfaceKind": "CLI_COMMAND",
+    "interfaceStatus": "FIRST_CLASS_OBSERVED_INTERFACE",
+    "productDisposition": "PRODUCT_ENTRY_POINT",
+    "admissionDisposition": "OBSERVED_NOT_ADMITTED",
+    "modulePath": "src/cli.js",
+    "sourceReferenceId": "cli.js:6747:21",
+    "declarationLine": 117,
+    "reachableCallableCount": 251,
+    "canonicalFeatureIds": [],
+    "canonicalScenarioIds": [],
+    "canonicalResponsibilityIds": [],
+    "canonicalAuthorityFiles": [],
+    "cliInterfaceAuthorityFiles": [],
+    "featureAccessDisposition": "CANONICAL_FEATURE_LINK_MISSING",
+    "interfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "governanceGapDisposition": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+    "drillDowns": [
+      {
+        "queryId": "cli.entry-point-reachability.v1",
+        "label": "Inspect complete reachable graph slice",
+        "parameterBindings": {
+          "entryPointId": "cli.js#function:runWeb"
+        }
+      }
+    ]
+  }
+]
+```
+
+</details>
+
+Full 240-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-points-v1.json).
+
+<a id="query-result-cli-callable-inventory-v1"></a>
+
+#### `cli.callable-inventory.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Traceability |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:9a9868803ac90ade1ac49f7fcc41a520e88f19150efd87435c0333c7f34b3be4` |
+| Result hash | `sha256:02336c9e4d52b474d479366b126a7ad31f20cf0e4b3c0d57634b59b5798bf960` |
+| Rows | 788 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json) |
+| Next queries | [`Inspect justifying CLI commands`](#query-result-cli-symbol-originating-commands-v1) `symbolId=:symbolId`<br>[`Inspect removal impact`](#query-result-cli-unreachable-removal-impact-v1) `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportCallableInventory WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:classification IS NULL OR cliClosureClassification = :classification) ORDER BY modulePath, declarationLine
+```
+
+Full 788-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json).
+
+Full 21988-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-callable-inventory-v1.json).
+
+<a id="query-result-cli-entry-point-reachability-v1"></a>
+
+#### `cli.entry-point-reachability.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Reachability |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:5a68b386bc943e7983c3e20e6f2afd468d25a89683b0cfe2abeddffd3cea9e6a` |
+| Result hash | `sha256:cfab047f4f95d375f460332b88563006c4255cd303abe242fcbb6e0ed4af0fb2` |
+| Rows | 996 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json) |
+| Next queries | [`Invert reachability to originating commands`](#query-result-cli-symbol-originating-commands-v1) `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportCliReachability WHERE (:entryPointId IS NULL OR entryPointId = :entryPointId) AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY entryPointId, depth, symbolId
+```
+
+Full 996-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json).
+
+Full 16547-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-entry-point-reachability-v1.json).
+
+<a id="query-result-cli-shared-reachability-v1"></a>
+
+#### `cli.shared-reachability.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Reachability |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:49a77e977b9941a90b7e7d9ee847c286c1322508bc70f195aa16834ad43b1e25` |
+| Result hash | `sha256:77010d8f9da60f6db55ebd17882194fef5cddf0b64970b2a016a4a1d8b4b5ac1` |
+| Rows | 131 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json) |
+| Next queries | [`Inspect sharing CLI commands`](#query-result-cli-symbol-originating-commands-v1) `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportCallableInventory WHERE cliClosureClassification = 'SHARED_CLI_INFRASTRUCTURE' AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, declarationLine
+```
+
+Full 131-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json).
+
+Full 4024-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-shared-reachability-v1.json).
+
+<a id="query-result-cli-runtime-resolution-debt-v1"></a>
+
+#### `cli.runtime-resolution-debt.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Reachability |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:5dd66999c648686e342b1d7e7847cca6bc2d6aba3b46a83eca08b9f639612160` |
+| Result hash | `sha256:33ba6b41de07bb934b92a5c2660fa88b4f8da8d7c121fff4849b75f2df0173b1` |
+| Rows | 6 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-runtime-resolution-debt-v1.json) |
+| Next queries | [`Inspect candidate callers`](#query-result-reachability-symbol-callers-v1) `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportCallableInventory WHERE cliClosureClassification = 'RUNTIME_RESOLUTION_REQUIRED' AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, declarationLine
+```
+
+<details><summary>Inspect 6 result row(s) inline</summary>
+
+```json
+[
+  {
+    "symbolId": "console/console-authority-runtime.mjs#function:extractsSnippetLines",
+    "symbolVersionId": "sha256:09cb9a4888c6362938ec5a00b1cecc4da0c737b6e4189c704aeae3a69a8ed5c7",
+    "kind": "function",
+    "name": "extractsSnippetLines",
+    "modulePath": "src/console/console-authority-runtime.mjs",
+    "sourceReferenceId": "console/console-authority-runtime.mjs:3687:853",
+    "declarationLine": 111,
+    "declarationColumn": 1,
+    "isExported": false,
+    "entryPointId": null,
+    "entryPointKinds": [],
+    "entryPointDisposition": null,
+    "reachableFromCliRootIds": [],
+    "cliReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "cliMinDepth": null,
+    "inventoryReachableFromEntryPointIds": [],
+    "reachableFromEntryPointKinds": [],
+    "inventoryReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "inventoryMinDepth": null,
+    "justificationDisposition": "PLATFORM_PRIMITIVE",
+    "callableDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "incomingInvocationCount": 0,
+    "resolvedIncomingInvocationCount": 0,
+    "ambiguousIncomingInvocationCount": 1,
+    "sameModuleIncomingInvocationCount": 0,
+    "externalIncomingInvocationCount": 0,
+    "outgoingInvocationCount": 9,
+    "sameModuleOutgoingInvocationCount": 0,
+    "cliClosureClassification": "RUNTIME_RESOLUTION_REQUIRED",
+    "drillDowns": [
+      {
+        "queryId": "reachability.symbol-callers.v1",
+        "label": "Inspect candidate callers",
+        "parameterBindings": {
+          "symbolId": "console/console-authority-runtime.mjs#function:extractsSnippetLines"
+        }
+      }
+    ]
+  },
+  {
+    "symbolId": "console/console-authority-runtime.mjs#function:validatesConsoleParameters",
+    "symbolVersionId": "sha256:b08b89ecbc53abb6ca8d9c68dbfe237492d0541d3bf36d1f1a3ed6944469a4a4",
+    "kind": "function",
+    "name": "validatesConsoleParameters",
+    "modulePath": "src/console/console-authority-runtime.mjs",
+    "sourceReferenceId": "console/console-authority-runtime.mjs:6281:118",
+    "declarationLine": 188,
+    "declarationColumn": 1,
+    "isExported": false,
+    "entryPointId": null,
+    "entryPointKinds": [],
+    "entryPointDisposition": null,
+    "reachableFromCliRootIds": [],
+    "cliReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "cliMinDepth": null,
+    "inventoryReachableFromEntryPointIds": [],
+    "reachableFromEntryPointKinds": [],
+    "inventoryReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "inventoryMinDepth": null,
+    "justificationDisposition": "PLATFORM_PRIMITIVE",
+    "callableDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "incomingInvocationCount": 0,
+    "resolvedIncomingInvocationCount": 0,
+    "ambiguousIncomingInvocationCount": 1,
+    "sameModuleIncomingInvocationCount": 0,
+    "externalIncomingInvocationCount": 0,
+    "outgoingInvocationCount": 1,
+    "sameModuleOutgoingInvocationCount": 0,
+    "cliClosureClassification": "RUNTIME_RESOLUTION_REQUIRED",
+    "drillDowns": [
+      {
+        "queryId": "reachability.symbol-callers.v1",
+        "label": "Inspect candidate callers",
+        "parameterBindings": {
+          "symbolId": "console/console-authority-runtime.mjs#function:validatesConsoleParameters"
+        }
+      }
+    ]
+  },
+  {
+    "symbolId": "console/console-snippet-adapter.mjs#function:extractsSnippetLines",
+    "symbolVersionId": "sha256:54b019093a802202821b02af7de93886a349067b3ad84b010bfa5adc49f70106",
+    "kind": "function",
+    "name": "extractsSnippetLines",
+    "modulePath": "src/console/console-snippet-adapter.mjs",
+    "sourceReferenceId": "console/console-snippet-adapter.mjs:1634:129",
+    "declarationLine": 40,
+    "declarationColumn": 1,
+    "isExported": false,
+    "entryPointId": null,
+    "entryPointKinds": [],
+    "entryPointDisposition": null,
+    "reachableFromCliRootIds": [],
+    "cliReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "cliMinDepth": null,
+    "inventoryReachableFromEntryPointIds": [],
+    "reachableFromEntryPointKinds": [],
+    "inventoryReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "inventoryMinDepth": null,
+    "justificationDisposition": "PLATFORM_PRIMITIVE",
+    "callableDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "incomingInvocationCount": 0,
+    "resolvedIncomingInvocationCount": 0,
+    "ambiguousIncomingInvocationCount": 1,
+    "sameModuleIncomingInvocationCount": 0,
+    "externalIncomingInvocationCount": 0,
+    "outgoingInvocationCount": 1,
+    "sameModuleOutgoingInvocationCount": 0,
+    "cliClosureClassification": "RUNTIME_RESOLUTION_REQUIRED",
+    "drillDowns": [
+      {
+        "queryId": "reachability.symbol-callers.v1",
+        "label": "Inspect candidate callers",
+        "parameterBindings": {
+          "symbolId": "console/console-snippet-adapter.mjs#function:extractsSnippetLines"
+        }
+      }
+    ]
+  },
+  {
+    "symbolId": "console/console-validation-adapter.runtime.mjs#function:validatesConsoleParameters",
+    "symbolVersionId": "sha256:b4e2b8df34c87d0554b2781e7df8ddff76d20afba8388b62f5a9b66ed5495dfc",
+    "kind": "function",
+    "name": "validatesConsoleParameters",
+    "modulePath": "src/console/console-validation-adapter.runtime.mjs",
+    "sourceReferenceId": "console/console-validation-adapter.runtime.mjs:985:173",
+    "declarationLine": 18,
+    "declarationColumn": 1,
+    "isExported": false,
+    "entryPointId": null,
+    "entryPointKinds": [],
+    "entryPointDisposition": null,
+    "reachableFromCliRootIds": [],
+    "cliReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "cliMinDepth": null,
+    "inventoryReachableFromEntryPointIds": [],
+    "reachableFromEntryPointKinds": [],
+    "inventoryReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "inventoryMinDepth": null,
+    "justificationDisposition": "PLATFORM_PRIMITIVE",
+    "callableDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "incomingInvocationCount": 0,
+    "resolvedIncomingInvocationCount": 0,
+    "ambiguousIncomingInvocationCount": 1,
+    "sameModuleIncomingInvocationCount": 0,
+    "externalIncomingInvocationCount": 0,
+    "outgoingInvocationCount": 1,
+    "sameModuleOutgoingInvocationCount": 0,
+    "cliClosureClassification": "RUNTIME_RESOLUTION_REQUIRED",
+    "drillDowns": [
+      {
+        "queryId": "reachability.symbol-callers.v1",
+        "label": "Inspect candidate callers",
+        "parameterBindings": {
+          "symbolId": "console/console-validation-adapter.runtime.mjs#function:validatesConsoleParameters"
+        }
+      }
+    ]
+  },
+  {
+    "symbolId": "projects-authority-from-violations.js#function:buildsSourceCodeMap",
+    "symbolVersionId": "sha256:671c150137256aa8b4c0c8c929306492a905c1e01f987b706c8ffe6fcf2f303f",
+    "kind": "function",
+    "name": "buildsSourceCodeMap",
+    "modulePath": "src/projects-authority-from-violations.js",
+    "sourceReferenceId": "projects-authority-from-violations.js:2191:1497",
+    "declarationLine": 71,
+    "declarationColumn": 1,
+    "isExported": false,
+    "entryPointId": null,
+    "entryPointKinds": [],
+    "entryPointDisposition": null,
+    "reachableFromCliRootIds": [],
+    "cliReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "cliMinDepth": null,
+    "inventoryReachableFromEntryPointIds": [],
+    "reachableFromEntryPointKinds": [],
+    "inventoryReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "inventoryMinDepth": null,
+    "justificationDisposition": "SHARED_SUPPORT",
+    "callableDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "incomingInvocationCount": 0,
+    "resolvedIncomingInvocationCount": 0,
+    "ambiguousIncomingInvocationCount": 1,
+    "sameModuleIncomingInvocationCount": 0,
+    "externalIncomingInvocationCount": 0,
+    "outgoingInvocationCount": 20,
+    "sameModuleOutgoingInvocationCount": 3,
+    "cliClosureClassification": "RUNTIME_RESOLUTION_REQUIRED",
+    "drillDowns": [
+      {
+        "queryId": "reachability.symbol-callers.v1",
+        "label": "Inspect candidate callers",
+        "parameterBindings": {
+          "symbolId": "projects-authority-from-violations.js#function:buildsSourceCodeMap"
+        }
+      }
+    ]
+  },
+  {
+    "symbolId": "projects-authority-from-violations.js#method:class:AuthorityProjectorFromViolations/buildsSourceCodeMap",
+    "symbolVersionId": "sha256:5f4485abbc5daded5abdb6b795d7b0f88b201fd27c1f0183105cd9b3d7b162fb",
+    "kind": "method",
+    "name": "buildsSourceCodeMap",
+    "modulePath": "src/projects-authority-from-violations.js",
+    "sourceReferenceId": "projects-authority-from-violations.js:13063:288",
+    "declarationLine": 348,
+    "declarationColumn": 3,
+    "isExported": false,
+    "entryPointId": null,
+    "entryPointKinds": [],
+    "entryPointDisposition": null,
+    "reachableFromCliRootIds": [],
+    "cliReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "cliMinDepth": null,
+    "inventoryReachableFromEntryPointIds": [],
+    "reachableFromEntryPointKinds": [],
+    "inventoryReachabilityDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "inventoryMinDepth": null,
+    "justificationDisposition": "SHARED_SUPPORT",
+    "callableDisposition": "RUNTIME_RESOLUTION_REQUIRED",
+    "incomingInvocationCount": 0,
+    "resolvedIncomingInvocationCount": 0,
+    "ambiguousIncomingInvocationCount": 1,
+    "sameModuleIncomingInvocationCount": 0,
+    "externalIncomingInvocationCount": 0,
+    "outgoingInvocationCount": 2,
+    "sameModuleOutgoingInvocationCount": 1,
+    "cliClosureClassification": "RUNTIME_RESOLUTION_REQUIRED",
+    "drillDowns": [
+      {
+        "queryId": "reachability.symbol-callers.v1",
+        "label": "Inspect candidate callers",
+        "parameterBindings": {
+          "symbolId": "projects-authority-from-violations.js#method:class:AuthorityProjectorFromViolations/buildsSourceCodeMap"
+        }
+      }
+    ]
+  }
+]
+```
+
+</details>
+
+Full 150-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-runtime-resolution-debt-v1.json).
+
+<a id="query-result-cli-reachable-source-facts-v1"></a>
+
+#### `cli.reachable-source-facts.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Reachable Source Facts |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:9a90cc569a898443ff2911aa820c437abfd1e09df76cb8fc97f9af450eca4cbb` |
+| Result hash | `sha256:8058e224f11b62a837bb29b36a9b223927f11f91cbc3470ea9b3c24202712730` |
+| Rows | 5517 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json) |
+| Next queries | [`Inspect exact physical source`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId` |
+
+```sql
+SELECT * FROM reportSourceFacts WHERE cliClosureClassification IN ('CLI_FEATURE_ROOT','CLI_FEATURE_REACHABLE','SHARED_CLI_INFRASTRUCTURE') AND (:entryPointId IS NULL OR :entryPointId IN originatingEntryPointIds) AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, startLine
+```
+
+Full 5517-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json).
+
+Full 79917-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-reachable-source-facts-v1.json).
+
+<a id="query-result-cli-unreachable-callables-v1"></a>
+
+#### `cli.unreachable-callables.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | Fat and Waste Inventory |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:b9685d65ca5e3116ff73e36a4fcc75bcde6ee74d27ae1c53571b27e806caeb3d` |
+| Result hash | `sha256:6aa059110b72ca84003c58efaeca5054a85baa6b15be48bbca1dc36ac13cd304` |
+| Rows | 142 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json) |
+| Next queries | [`Inspect deterministic removal impact`](#query-result-cli-unreachable-removal-impact-v1) `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportCallableInventory WHERE cliClosureClassification = 'NO_CLI_REACHABILITY' AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, declarationLine
+```
+
+Full 142-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json).
+
+Full 3562-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-callables-v1.json).
+
+<a id="query-result-cli-unreachable-source-facts-v1"></a>
+
+#### `cli.unreachable-source-facts.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | Fat and Waste Inventory |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:94440b0342c83f2f7820cda1a4e12a1b41e3b294c43be109c2cae564636110de` |
+| Result hash | `sha256:1df8818b575000b741ae9bd641c0a0ace3428b2485167feaecea385892c8e544` |
+| Rows | 989 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json) |
+| Next queries | [`Inspect exact physical source`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId`<br>[`Inspect owner removal impact`](#query-result-cli-unreachable-removal-impact-v1) `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportSourceFacts WHERE cliClosureClassification = 'NO_CLI_REACHABILITY' AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, startLine
+```
+
+Full 989-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json).
+
+Full 12857-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-source-facts-v1.json).
+
+<a id="query-result-cli-symbol-originating-commands-v1"></a>
+
+#### `cli.symbol-originating-commands.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | Reverse CLI Justification |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:414642febefcfb3b5cb7888a130f5c1d578619fc38e661aef67ec6b8e797e853` |
+| Result hash | `sha256:8965cb72c7b03bc6a6bb6ecd865118d9fdf58a7cbc73b93837e41bf67a240f84` |
+| Rows | 996 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json) |
+| Next queries | [`Inspect complete path`](#query-result-cli-entry-point-reachability-v1) `entryPointId=:entryPointId` `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportCliOriginatingCommands WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY symbolId, depth, entryPointId
+```
+
+Full 996-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json).
+
+Full 13559-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-symbol-originating-commands-v1.json).
+
+<a id="query-result-cli-unreachable-removal-impact-v1"></a>
+
+#### `cli.unreachable-removal-impact.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | Removal Impact |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:d01ecae4d4e7adc553ea633a4bf509d430835ac4495d2f338a454cea8a152027` |
+| Result hash | `sha256:2f6664d4fcea683b3b5252b79acaef2410c06342a100ba038a8ae0fe4b1d7465` |
+| Rows | 142 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json) |
+| Next queries | [`Inspect callers`](#query-result-reachability-symbol-callers-v1) `symbolId=:symbolId`<br>[`Inspect callees`](#query-result-reachability-symbol-callees-v1) `symbolId=:symbolId` |
+
+```sql
+SELECT * FROM reportCliRemovalImpact WHERE (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, symbolName
+```
+
+Full 142-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json).
+
+Full 2509-pointer claim map: [open the bound receipt artifact](source-facts-self-governance-report.receipts/cli-unreachable-removal-impact-v1.json).
+
+<a id="query-result-interface-summary-v1"></a>
+
+#### `interface.summary.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | Interface Governance |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:167954990db828bda5b3a5f828280f6e21e26397b49e31c2d1b70d0c19d23966` |
+| Result hash | `sha256:64e1e2c89c121c163cbcd7494baeacc1ed832e5227ad6ec0c0a8db7b3010cb29` |
+| Rows | 1 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/interface-summary-v1.json) |
+| Next queries | [`Inspect CLI commands and feature access`](#query-result-interface-cli-commands-v1)<br>[`Inspect CLI governance gaps`](#query-result-interface-authority-gaps-v1) |
+
+```sql
+SELECT * FROM reportInterfaceGovernanceSummary
+```
+
+<details><summary>Inspect 1 result row(s) inline</summary>
+
+```json
+[
+  {
+    "interfacePortfolioDisposition": "CLI_IS_FIRST_CLASS_OBSERVED_INTERFACE",
+    "cliDispatchEvidenceDisposition": "CLI_DISPATCH_SOURCE_PARSED",
+    "cliDispatchSourceHash": "sha256:09dd4e9b1480712de3722544236329732c30d10e7f9057c8c1b6fec75c4e428c",
+    "observedCliCommandHandlers": 15,
+    "observedCliCommandTokens": 16,
+    "observedHttpEntryPoints": 8,
+    "commandsWithCanonicalFeature": 0,
+    "commandsWithoutCanonicalFeature": 16,
+    "canonicalFeaturesAccessibleViaCli": 0,
+    "canonicalFeatureIdsAccessibleViaCli": [],
+    "cliInterfaceAuthorityDocuments": 0,
+    "cliInterfaceAuthorityDisposition": "CLI_INTERFACE_AUTHORITY_MISSING",
+    "admittedCliCommands": 0,
+    "runtimeCallables": 788,
+    "cliReachableCallables": 640,
+    "sharedCliInfrastructure": 131,
+    "runtimeResolutionRequired": 6,
+    "noCliReachabilityCallables": 142,
+    "reachableMechanicOccurrences": 5517,
+    "unreachableMechanicOccurrences": 989
+  }
+]
+```
+
+</details>
+
+<details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
+
+No scalar claims were rendered from this empty result.
+
+</details>
+
+<a id="query-result-interface-cli-commands-v1"></a>
+
+#### `interface.cli-commands.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Command Inventory |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:1cb099fc098a9301e59dae42cf27ab6c5b78a9e37cd5f5e5b21ead9785ee0454` |
+| Result hash | `sha256:48fae04fdb40427fe2ea2c213ced4e0b4dc7be4dbd8daeabec4c2de7a5ff4035` |
+| Rows | 16 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/interface-cli-commands-v1.json) |
+| Next queries | [`Inspect command execution paths`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolId=:entryPointId`<br>[`Inspect accessible canonical features`](#query-result-feature-coverage-features-v1) `featureId=:featureId`<br>[`Inspect interface authority gaps`](#query-result-interface-authority-gaps-v1) `commandName=:commandName` |
+
+```sql
+SELECT * FROM reportCliCommands WHERE (:commandName IS NULL OR commandName = :commandName) AND (:handlerName IS NULL OR handlerName = :handlerName) AND (:featureId IS NULL OR :featureId IN canonicalFeatureIds) ORDER BY commandName, handlerName
+```
+
+Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/interface-cli-commands-v1.json).
+
+<details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
+
+No scalar claims were rendered from this empty result.
+
+</details>
+
+<a id="query-result-interface-authority-gaps-v1"></a>
+
+#### `interface.authority-gaps.v1`
+
+| Binding | Value |
+|---|---|
+| Purpose | CLI Authority Gaps |
+| Version | `1.0.0` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
+| Scope | `workspace-prefix:src` |
+| Query hash | `sha256:9489a56fb6b3fd0b380f95572d062b54e7c1a0e641832c581d4b02e214d6b38a` |
+| Result hash | `sha256:c09032f566ad186d3d428deca6b2279cf3e26606f7df59546616fcf94d40dfd9` |
+| Rows | 16 |
+| Execution | `RELATIONAL_QUERY_EXECUTED` |
+| Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/interface-authority-gaps-v1.json) |
+| Next queries | [`Inspect command evidence`](#query-result-interface-cli-commands-v1) `commandName=:commandName`<br>[`Inspect canonical authority`](#query-result-authority-documents-v1) |
+
+```sql
+SELECT * FROM reportCliCommands WHERE governanceGapDisposition <> 'CLI_INTERFACE_GOVERNED' AND (:commandName IS NULL OR commandName = :commandName) AND (:gapDisposition IS NULL OR governanceGapDisposition = :gapDisposition) ORDER BY governanceGapDisposition, commandName
+```
+
+Full 16-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/interface-authority-gaps-v1.json).
+
+<details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
+
+No scalar claims were rendered from this empty result.
+
+</details>
+
 <a id="query-result-feature-coverage-features-v1"></a>
 
 #### `feature-coverage.features.v1`
@@ -1812,8 +3156,8 @@ SELECT * FROM reportSubjectBoundary
 |---|---|
 | Purpose | Canonical Features |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b507b9960f74168182112bb151a954844379cf125b19fe84166cbc25a5b68de3` |
 | Result hash | `sha256:063171974f526756fb724236ea5b36ef9e0966af52c3e7bb29acd8a1133f5701` |
@@ -1968,8 +3312,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Feature Scenarios |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:6971565a6037b39edde137eb108803f4360451bbffe1c34b9ed28dccb3e45f7b` |
 | Result hash | `sha256:3fb54aaf62148af47a5ced46cdd37fc624036b0648beb5061fd1c55389f839a9` |
@@ -2156,8 +3500,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Canonical Scenarios |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:713f34d346172b89a6d2641cabe6b68b4cdcfab36d97ef84c6aacebaec1ea8d9` |
 | Result hash | `sha256:3a98900c82bacbbcbb9465b913bb85114c4522861d5fed8059724415fd5fa91d` |
@@ -2386,8 +3730,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Structural Status |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c57d1e34cc94400a0112b0f630664f25d804b761ccfce4d6203ef63e1a1838be` |
 | Result hash | `sha256:9dda679bcce7505b7e4c07910fb3d137b021030e23ea5f6b216b6d335d3630e9` |
@@ -2574,8 +3918,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Scenario Responsibilities |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:4ebd6c77ccdbd9cb5424de261939db79c47da42a230c2b08f309a9682eb18cc1` |
 | Result hash | `sha256:d27ae627cf1fe9610ffeb16a31979828fd9dde280261e4e991cf637f792f9343` |
@@ -2971,8 +4315,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Scenario Call Paths |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:fbd7a1a7480a478232d79b077bc2dc1ee7820e72195339b31c479e06046150f6` |
 | Result hash | `sha256:4ef4a19f76ee643e261cbe4cc173494cd45c07a7d5910e76bbe2c4d42c16ece5` |
@@ -3258,12 +4602,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unlined Mechanics by File |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:2582f0c7032aea45ac90c9cd28622ae599c2c68977459483704a6754173c67e6` |
-| Result hash | `sha256:739a21b0103deab9950ffe15a4724072a8383f7aff9cee5943f4f2e2134bd962` |
-| Rows | 510 |
+| Result hash | `sha256:610558d23a39157d6f30d7b7d7348eaaf2eeb578bb977527cdc2c57bfcf26c9e` |
+| Rows | 516 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-file-v1.json) |
 | Next queries | [`Inspect responsibilities`](#query-result-feature-coverage-unlined-mechanics-by-responsibility-v1) `mechanic=:mechanic` `modulePath=:modulePath` |
@@ -3272,7 +4616,7 @@ No scalar claims were rendered from this empty result.
 SELECT modulePath, mechanic, COUNT(*) AS occurrenceCount FROM reportOccurrences WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:mechanic IS NULL OR mechanic = :mechanic) GROUP BY modulePath, mechanic ORDER BY occurrenceCount DESC, modulePath
 ```
 
-Full 510-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-file-v1.json).
+Full 516-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-file-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3288,12 +4632,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unlined Mechanics by Responsibility |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:b5006477e6033f0ad57959635500ba21c302cf5b3acd8bc23f5d7a8d30273e3c` |
-| Result hash | `sha256:5621546d3c72f409fe1340fca5355a4fce25d036aea22ae0d2a943e85aa80e85` |
-| Rows | 1877 |
+| Result hash | `sha256:569f58628b28689eb554e154e65630bfa0dd5ab8fcabcba29b520964ba782b08` |
+| Rows | 1899 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-responsibility-v1.json) |
 | Next queries | [`Inspect interface reachability`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolName=:responsibility`<br>[`Inspect occurrences`](#query-result-feature-coverage-unlined-occurrences-v1) `responsibility=:responsibility` |
@@ -3302,7 +4646,7 @@ No scalar claims were rendered from this empty result.
 SELECT modulePath, responsibility, mechanic, COUNT(*) AS occurrenceCount FROM reportOccurrences WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:mechanic IS NULL OR mechanic = :mechanic) AND (:modulePath IS NULL OR modulePath = :modulePath) GROUP BY modulePath, responsibility, mechanic ORDER BY occurrenceCount DESC
 ```
 
-Full 1877-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-responsibility-v1.json).
+Full 1899-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-responsibility-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3318,12 +4662,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Unlined Mechanics by Symbol |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:830653ecd0f8d113685176d29b42361210d2240d15ccfec633e72aa6ec8c2f9a` |
-| Result hash | `sha256:5f1dd5259d9a1b439a3af38684fd792ee3084c1dc5a4cd1fb1e97f42dc1eb187` |
-| Rows | 1878 |
+| Result hash | `sha256:0824dc7829a9f1c92890d5823c651f286e2478a76c20e437d154459ca0d8bcca` |
+| Rows | 1900 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-symbol-v1.json) |
 | Next queries | [`Inspect entry surfaces`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolId=:symbolId` |
@@ -3332,7 +4676,7 @@ No scalar claims were rendered from this empty result.
 SELECT symbolId, symbolName, modulePath, mechanic, COUNT(*) AS occurrenceCount FROM reportOccurrences WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' GROUP BY symbolId, symbolName, modulePath, mechanic ORDER BY occurrenceCount DESC
 ```
 
-Full 1878-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-symbol-v1.json).
+Full 1900-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-mechanics-by-symbol-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3348,12 +4692,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Exact Unlined Occurrences |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:6a0a84598e1e351c5002c0680a73855cdb8f3e7312d18638005b291d2e84a624` |
-| Result hash | `sha256:9052c5ba1b7594150dbc6fba2ca3a562695b5fcc27534b58aa94e0f76574748e` |
-| Rows | 6652 |
+| Result hash | `sha256:809d91200faaaa55f8070272057c93076f446347f1c19bf407e0cf0dd0dbff3a` |
+| Rows | 6860 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/feature-coverage-unlined-occurrences-v1.json) |
 | Next queries | [`Inspect physical source references`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId` |
@@ -3362,7 +4706,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportOccurrenceEvidence WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:mechanic IS NULL OR mechanic = :mechanic) AND (:modulePath IS NULL OR modulePath = :modulePath) AND (:responsibility IS NULL OR responsibility = :responsibility) ORDER BY modulePath, startLine
 ```
 
-Full 6652-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-occurrences-v1.json).
+Full 6860-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/feature-coverage-unlined-occurrences-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3378,12 +4722,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Physical Source Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:0b89b4d3e3751396bfc0ab6b67462c9374f1ee659e070472b22a92b38d378860` |
-| Result hash | `sha256:ee51eaebbe9ddc9cdae1df1f2aecd9f8b2ca763274904281acc6bfa26ad5fd68` |
-| Rows | 6810 |
+| Result hash | `sha256:d827a8c7a2b5e7d24442cda4b635e8e65051f19e85813c9a0cd6996b358eb797` |
+| Rows | 7018 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/source-facts-occurrence-source-references-v1.json) |
 | Next queries | [`Inspect reverse semantic impact`](#query-result-impact-source-reference-reverse-impact-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -3392,7 +4736,7 @@ No scalar claims were rendered from this empty result.
 SELECT occurrenceId, sourceReferenceId, modulePath, startLine, startColumn, endLine, endColumn, mechanic, symbolId, symbolName FROM reportOccurrenceEvidence WHERE (:occurrenceId IS NULL OR occurrenceId = :occurrenceId) AND (:symbolId IS NULL OR symbolId = :symbolId) ORDER BY modulePath, startLine, startColumn
 ```
 
-Full 6810-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/source-facts-occurrence-source-references-v1.json).
+Full 7018-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/source-facts-occurrence-source-references-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3408,12 +4752,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Interface Reachability |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:242009af849c0ffd1b366b4a1f3738d9a0096d6ef97a55affcfe10e30122b742` |
-| Result hash | `sha256:c9e18ccb231680f556128df835cd10d39bc39bddf7c96510ae5cf22b12fc82d3` |
-| Rows | 989 |
+| Result hash | `sha256:8a06804f11a1ba1204d34534011464a0709b8b3613a0e5444bc6c4a35814af5d` |
+| Rows | 996 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/reachability-symbol-originating-entrypoints-v1.json) |
 | Next queries | [`Inspect callers`](#query-result-reachability-symbol-callers-v1) `symbolId=:symbolId`<br>[`Inspect callees`](#query-result-reachability-symbol-callees-v1) `symbolId=:symbolId`<br>[`Inspect semantic context`](#query-result-authority-authority-near-symbol-v1) `symbolId=:symbolId` |
@@ -3422,7 +4766,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportCallPaths WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:symbolName IS NULL OR symbolName = :symbolName) ORDER BY symbolId, depth, entryPointId
 ```
 
-Full 989-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-originating-entrypoints-v1.json).
+Full 996-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-originating-entrypoints-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3438,12 +4782,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Reverse Callers |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3072ae466d3c8d6933062458482de3c8922d3c2dfbaacae932d61b69cbb6a540` |
-| Result hash | `sha256:1351033960a7411fb09e6372e15045cafdcbd0cdc977941fe66575c7a72f3ac9` |
-| Rows | 6682 |
+| Result hash | `sha256:908a85992edbddab81e369c95990153874aaa6288ead97bdf8c9dcc16bb024b4` |
+| Rows | 6891 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/reachability-symbol-callers-v1.json) |
 | Next queries | [`Inspect call-site source`](#query-result-source-facts-occurrence-source-references-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -3452,7 +4796,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportInvocationEdges WHERE (:symbolId IS NULL OR calleeSymbolId = :symbolId) ORDER BY relationshipId
 ```
 
-Full 6682-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callers-v1.json).
+Full 6891-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callers-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3468,12 +4812,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Forward Callees |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:f0078a6d8c0e4e7617a1f3d24415bc84b9c011a179710cfa5306510d8985ad66` |
-| Result hash | `sha256:502cf1d181c40a3128d781ff6925b0b83fe3271ef06771e019a24d380803d303` |
-| Rows | 6682 |
+| Result hash | `sha256:3713b2cdf9df8231b08b9ca273fb52a1a5f3f93854c5f811fabe9d9ec822b20d` |
+| Rows | 6891 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/reachability-symbol-callees-v1.json) |
 | Next queries | [`Inspect call-site source`](#query-result-source-facts-occurrence-source-references-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -3482,7 +4826,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportInvocationEdges WHERE (:symbolId IS NULL OR callerSymbolId = :symbolId) ORDER BY relationshipId
 ```
 
-Full 6682-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callees-v1.json).
+Full 6891-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/reachability-symbol-callees-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3498,12 +4842,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Responsibility Cluster |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:efd390e1804079a28babb8ed8caf90f3075b0a093be587f663ad2ae9320b5068` |
-| Result hash | `sha256:2383702e6dfe68dd8a74e23794b464879e4c8dbbd4d645a8b7fbdd3f6e8478ca` |
-| Rows | 694 |
+| Result hash | `sha256:284a228e61e5e016bf992f63b7dab7a52741f9d1960dde899366d105554f6b3c` |
+| Rows | 701 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/responsibility-evidence-cluster-by-id-v1.json) |
 | Next queries | [`Inspect entry surfaces`](#query-result-reachability-symbol-originating-entrypoints-v1) `symbolName=:responsibility`<br>[`Inspect nearby authority`](#query-result-authority-authority-near-symbol-v1) `symbolName=:responsibility` |
@@ -3512,7 +4856,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportUnresolvedEvidenceClusters WHERE (:clusterId IS NULL OR clusterId = :clusterId)
 ```
 
-Full 694-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/responsibility-evidence-cluster-by-id-v1.json).
+Full 701-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/responsibility-evidence-cluster-by-id-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3528,8 +4872,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Lineage |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:aa543b2c7ab5577f034bd1257164fc69ec434efa54926c34f63bc305255f5c31` |
 | Result hash | `sha256:1292556b29e7ad54fc5555e8ed6c07d425cbc6c6c0b5292a27c025de41fa4d0f` |
@@ -3828,12 +5172,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Near Symbol |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c1f34de65cd661e85cc9c07f9d950251c8fa4dc8ee743b395907a337116df88c` |
-| Result hash | `sha256:a795bbd80bb28727e91e1857a7cc699b799272f7fbdb6a24f1b2af2149164257` |
-| Rows | 6810 |
+| Result hash | `sha256:738ff1925172699e5e165dcbed4b6e5a98948c87f8135961af702ce19f9f8e54` |
+| Rows | 7018 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authority-authority-near-symbol-v1.json) |
 | Next queries | [`Inspect physical evidence`](#query-result-source-facts-occurrence-source-references-v1) `occurrenceId=:occurrenceId` |
@@ -3842,7 +5186,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM reportOccurrenceEvidence WHERE (:symbolId IS NULL OR symbolId = :symbolId) AND (:symbolName IS NULL OR symbolName = :symbolName) AND (:authorityFile IS NULL OR authorityHomeFile = :authorityFile)
 ```
 
-Full 6810-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authority-authority-near-symbol-v1.json).
+Full 7018-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authority-authority-near-symbol-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -3858,8 +5202,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Subject Boundary Items |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3ddeefdb2493e00e7021c129748933e87fa6fe5c7fa1b140e1538d8af86f6ede` |
 | Result hash | `sha256:df6183da0e000c80d3dfa9abbdda95a2dc3d2817e28267989529a2c85769d969` |
@@ -4249,8 +5593,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Included Subject Items |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:86ccec9fb998fd3f4ef516f0cbe33beb7c2b636d6ecd330ec487db7f7bf6f5ab` |
 | Result hash | `sha256:cd5c1b08b0deec4eb5847b548b0bff3acf8ff2022be6f81216a2a59ac6b960c7` |
@@ -4466,8 +5810,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Excluded Subject Items |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:afafdb3b9d69acd6c8a1d16c0247e29e22d25e96ccf54c0133cce6cc22d4f08c` |
 | Result hash | `sha256:cd96c3ad8b9374dbccbc0e4a68319ba5b23dbda63c871e9baef49debad679788` |
@@ -4593,8 +5937,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Subject Item Scope Reason |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:a3933b1341b539303541191b403c8cc9d2b6e51e484de9e49583c0852b34e435` |
 | Result hash | `sha256:40f693882dd30b2a4526da2ae692795d3c51180d95e5c7907826260df09710bc` |
@@ -4756,12 +6100,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Reverse Impact |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:11fee5b05392548326dff3dfaf80ffbb726ed06e182cda40a7f5cdfd81133bf3` |
-| Result hash | `sha256:040ae4bfd51b4b3d9043d383c5981b5886ebc4e57334b01de94816bd70a97016` |
-| Rows | 6810 |
+| Result hash | `sha256:cb665978faaddad663457faec1c69043a98a68d11ad787cc1b0233ed872f5f92` |
+| Rows | 7018 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/impact-source-reference-reverse-impact-v1.json) |
 | Next queries | [`Inspect missing lineage and healing candidates`](#query-result-healing-source-fact-candidates-v1) `sourceReferenceId=:sourceReferenceId` |
@@ -4770,7 +6114,7 @@ No scalar claims were rendered from this empty result.
 SELECT sourceReferenceId, symbolId, authorityHomeFile, featureIds, scenarioIds, obligationIds, featureCoveragePosture FROM reportOccurrenceEvidence WHERE (:sourceReferenceId IS NULL OR sourceReferenceId = :sourceReferenceId) AND (:symbolId IS NULL OR symbolId = :symbolId)
 ```
 
-Full 6810-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/impact-source-reference-reverse-impact-v1.json).
+Full 7018-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/impact-source-reference-reverse-impact-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -4786,12 +6130,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Change and Healing |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:80ff9ca4e23a4da9a8312b08ba3e148f67675ef5c8c56d3a2d48c6991b2cfdbf` |
-| Result hash | `sha256:0e89226a87483404d555ccfd76e21708e98081881d214de34b5ced605ea6db16` |
-| Rows | 6652 |
+| Result hash | `sha256:6c5f966f9a8ce6ea91455807b749fdf14e1f971f8fb2115ec4f2079a90b119a3` |
+| Rows | 6860 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/healing-source-fact-candidates-v1.json) |
 | Next queries | [`Build authority evidence bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect inferred feature/scenario context`](#query-result-authoring-scenario-context-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect decision policy`](#query-result-authoring-decision-evidence-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect data shapes`](#query-result-authoring-object-shape-evidence-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect failure behavior`](#query-result-authoring-failure-policy-evidence-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Inspect existing authority overlap`](#query-result-authoring-authority-overlap-v1) `occurrenceId=:occurrenceId` `symbolId=:symbolId`<br>[`Build projection target`](#query-result-authoring-projection-target-v1) `symbolId=:symbolId`<br>[`Build proof vectors`](#query-result-authoring-proof-vector-candidates-v1) `symbolId=:symbolId` |
@@ -4800,7 +6144,7 @@ No scalar claims were rendered from this empty result.
 SELECT occurrenceId, sourceReferenceId, modulePath, symbolId, mechanic, featureCoveragePosture, authorityHomeFile FROM reportOccurrenceEvidence WHERE featureCoveragePosture = 'FEATURE_COVERAGE_MISSING' AND (:sourceReferenceId IS NULL OR sourceReferenceId = :sourceReferenceId)
 ```
 
-Full 6652-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/healing-source-fact-candidates-v1.json).
+Full 6860-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/healing-source-fact-candidates-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -4816,12 +6160,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Interface-to-Responsibility Slice |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:c3366a48fc90431e4874916dba2eb03d7eb73d2b6fda23b841c87da63917debb` |
-| Result hash | `sha256:0e4a4c536d5391956ec06df01d897a6bfa0d7c6feb2a050e61447dcad0b3301c` |
-| Rows | 1347 |
+| Result hash | `sha256:057c4ab5a07afb6b87231b89297fccc64a2b32797c35c6e1641d48bf47b3a527` |
+| Rows | 1451 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-interface-execution-slice-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -4830,7 +6174,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM interfaceRows WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1347-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-interface-execution-slice-v1.json).
+Full 1451-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-interface-execution-slice-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -4846,12 +6190,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Responsibility Body Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:798add784465cc049ae5fafd026257b873551da34655e12252477cdc6ff57240` |
-| Result hash | `sha256:f0ca28b4f74fa0505bce0372142396520ace6404fc08cb78bad2b5adb256600e` |
-| Rows | 686 |
+| Result hash | `sha256:4305d35c133a0d82ba8a1620b47bdba7ff051ac41d4a20d4769b85d2e73ebe37` |
+| Rows | 693 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-responsibility-body-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -4860,7 +6204,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM bodyRows WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 686-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-responsibility-body-evidence-v1.json).
+Full 693-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-responsibility-body-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -4876,12 +6220,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Decision Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1b742701efaeeecc5ca8f85fb4db7d8d1fc0b16c6692e41e1298393b848d5487` |
-| Result hash | `sha256:aa4763c25d453f3e79a37ff498d30004f08305330eca3283021cc39effd53ac4` |
-| Rows | 1241 |
+| Result hash | `sha256:85766697236a1eedeaf27e8f6fae8c522e37c9820af0005b5c5e9329a9fe7578` |
+| Rows | 1255 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-decision-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -4890,7 +6234,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM decisions WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1241-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-decision-evidence-v1.json).
+Full 1255-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-decision-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -4906,12 +6250,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Fallback and Missing-Value Policy |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:d4bcb3099a71a172a1d26e52f782473bd1a877fa57833757a02b38ec136c2039` |
-| Result hash | `sha256:747ae1cec0fe23a4604e1bb1558d6359849dc3ed4cf80868de2291b211015afc` |
-| Rows | 1593 |
+| Result hash | `sha256:d067696995b9487ad14057560f7713e21df697468801e86f423d8cc54c3d0830` |
+| Rows | 1638 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-fallback-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -4920,7 +6264,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM fallbacks WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1593-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-fallback-evidence-v1.json).
+Full 1638-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-fallback-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -4936,11 +6280,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Validation and Rejection Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:987e66b52ca7bcefd1c09b4a721f188302f1708c91bbf61e28c7de0e944ea807` |
-| Result hash | `sha256:b924f38661719fe186ee084762b311b02e8aaf9d5bf065f04f39ed4275983db9` |
+| Result hash | `sha256:fa28de0704d3e318acfbe2674b647f1393eb1dd685cd945555db92ee91240fca` |
 | Rows | 161 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-validation-evidence-v1.json) |
@@ -4966,12 +6310,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Exception and Failure Policy |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:8a66c42dfc3fa269b39827bd1fa2c0f6a64008dfd8c668e36d764b270f8e68b5` |
-| Result hash | `sha256:262c8b7c3970a7fbfe509cc573c0e6833f2caa0a8298c9577d707247f3284879` |
-| Rows | 325 |
+| Result hash | `sha256:fc188a783865b711b538f9e34e1d6b34e3763f40f2bead588cbb8bd3690881ac` |
+| Rows | 329 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-failure-policy-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -4980,7 +6324,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM failures WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 325-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-failure-policy-evidence-v1.json).
+Full 329-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-failure-policy-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -4996,12 +6340,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Object Shape Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:322a74e7fd1f1bbfaf8e014194ceaafd06dc283e624a96aa398afec32ba04621` |
-| Result hash | `sha256:e9b24652b504e67d96ae9dadec267a75e994354ad353b745410ee926c43f3cc1` |
-| Rows | 2404 |
+| Result hash | `sha256:e6aaf54cec3cc6f468db2d52b7e7d5a3ad95d375eec8666cbc17b9f9b3532fd4` |
+| Rows | 2538 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-object-shape-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5010,7 +6354,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM objectShapes WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 2404-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-object-shape-evidence-v1.json).
+Full 2538-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-object-shape-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5026,12 +6370,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Result Contract Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:e295e5c199b8e405f479624723ee975cc1a4ab89bb1f8f9a2a309a4e183dd0c3` |
-| Result hash | `sha256:1ff23a8677a4c4c54722ed9c05a67ea935c19eac8cf0ca9852ef484b41164c31` |
-| Rows | 1033 |
+| Result hash | `sha256:6f2ed725555ed62d210188aad4147594c14e7d0ad88a218f7060c0176323580a` |
+| Rows | 1053 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-result-contract-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5040,7 +6384,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM resultContracts WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 1033-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-result-contract-evidence-v1.json).
+Full 1053-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-result-contract-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5056,11 +6400,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Serialization Profile |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:66d9960a07465b5af9e5c49cbadb38dc781b1664bae8f38f2a729a69b8c957f0` |
-| Result hash | `sha256:f4e26563121d542e197da183d2636ffa8467c039b1b48274c40663a2a400fb13` |
+| Result hash | `sha256:c6874f84db0b4e85b3d88db74db1bf05cf77382f0ffffe9b0f36c8bb98570ce3` |
 | Rows | 87 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-serialization-evidence-v1.json) |
@@ -5086,11 +6430,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Normalization and Translation |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:e19f5b592048026bb385df580778f608c57c298fd8aea8cc7ae0b90637bd8dc8` |
-| Result hash | `sha256:80319d590c661e70f3dbf3c8b70929fd5f3a80094d1b5f9174f9dd6216ad0dbd` |
+| Result hash | `sha256:1c1e8cf2652b7968410a274ef78705a92e8ba68eca5e35b37b4f658ba062d5ae` |
 | Rows | 136 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-normalization-evidence-v1.json) |
@@ -5116,12 +6460,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Iteration Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:1b7b1d5154de8375af5dc76f91ec87f46affe2bbe4ff7af27599261f1684bcef` |
-| Result hash | `sha256:233f2ef7ce7549ce9936920b5ff7707b6e1f489cbdc392a0e85de85028591840` |
-| Rows | 393 |
+| Result hash | `sha256:2cdbe49ee9646cfc9bf91bd5cb60a8b63c073df2a3f4a9fac83806a129410c52` |
+| Rows | 401 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-iteration-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5130,7 +6474,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM iterations WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 393-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-iteration-evidence-v1.json).
+Full 401-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-iteration-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5146,12 +6490,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | State-Transition Semantics |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:ead8095a81ee48e74190abe6541bf069075d94dbb900d5dce6a1755cc18fcd7f` |
-| Result hash | `sha256:3bf2c4f273477522d7d49cf1a17ef45dfad3e4902e282de314c944d72bf30509` |
-| Rows | 312 |
+| Result hash | `sha256:ab4c82a55c0bb146168cd5c3e06ed2437036cc484f696da129f2d937d402fa33` |
+| Rows | 315 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-state-transition-evidence-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5160,7 +6504,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM stateTransitions WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 312-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-state-transition-evidence-v1.json).
+Full 315-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-state-transition-evidence-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5176,12 +6520,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Data-Flow Slice |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:93b7ed049ac305c55e6cd12a887b18f5a594e603c2b930996db52058b54a29bb` |
-| Result hash | `sha256:2a9e6fabb6b0a92bc374f3ff733f52efc2b8eb8fd167e8407ea87bc6a91e45ba` |
-| Rows | 686 |
+| Result hash | `sha256:eef7c78e95de10d9ae44392513b2aa58dd8deaa8ef2070ac429fa022732fc5e4` |
+| Rows | 693 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-data-flow-slice-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5190,7 +6534,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM dataFlowSlices WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 686-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-data-flow-slice-v1.json).
+Full 693-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-data-flow-slice-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5206,12 +6550,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Existing Authority Overlap |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:9be4fb88b4dc0cc75eea562b505a03ab159223bacb14d98809a9c74086e70397` |
-| Result hash | `sha256:0bb6353d16d85276905281a978aafdad60de66dbc8c54f4050a4dafa12d65611` |
-| Rows | 6662 |
+| Result hash | `sha256:53487eb859ef187e496e92b417aa0ddaf91bb55a7113c988e886628a3dca2cf7` |
+| Rows | 6870 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-authority-overlap-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5220,7 +6564,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM overlaps WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 6662-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-authority-overlap-v1.json).
+Full 6870-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-authority-overlap-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5236,12 +6580,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Feature and Scenario Context |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:97b4eb2ae7b3a88a110536b2a42857be7834f14e5efe6f2386f330e85c461f36` |
-| Result hash | `sha256:aec07161003b46984f79e2ecd7f86adb049f7c89662af83388ce2bd3459826de` |
-| Rows | 6662 |
+| Result hash | `sha256:596fcf09846f061532ff0b23ab7ed40ad4b6aeb0f159bbb81671841288b11e7e` |
+| Rows | 6870 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-scenario-context-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5250,7 +6594,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM scenarioContexts WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 6662-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-scenario-context-v1.json).
+Full 6870-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-scenario-context-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5266,12 +6610,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Projection Target Evidence |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:10dd92a9a30e97cac4ed07f7bdc5c501de66ced1d0e732a86e659e7d1dcf1505` |
-| Result hash | `sha256:c702946c3665be5394f2f52fe1ac7e4e4099f47c021f9874b9a6424acc4cfb8f` |
-| Rows | 686 |
+| Result hash | `sha256:0f8c770f5e2d848b12fc957e364e5a984364caa29ee8727bb3c3f075231d60ba` |
+| Rows | 693 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-projection-target-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5280,7 +6624,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM projectionTargets WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 686-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-projection-target-v1.json).
+Full 693-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-projection-target-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5296,12 +6640,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Equivalence and Proof Candidates |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3116890ff31c7b4c5a80c14a67253c9f6312b023eecb25ea3fff8f9382ca4308` |
-| Result hash | `sha256:7c4da6fd1a7abd136a3f3926ae85936cc809745a031ec036bdb4ee0a9de99280` |
-| Rows | 686 |
+| Result hash | `sha256:587907fcfac7cea8fcee0676833af09cd82dabaa1c9e7e18b1135af237d09f96` |
+| Rows | 693 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-proof-vector-candidates-v1.json) |
 | Next queries | [`Build complete authority-authoring bundle`](#query-result-authoring-semantic-authority-evidence-bundle-v1) `symbolId=:symbolId` `occurrenceId=:occurrenceId` |
@@ -5310,7 +6654,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM proofVectors WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 686-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-proof-vector-candidates-v1.json).
+Full 693-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-proof-vector-candidates-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5326,8 +6670,8 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Contract Map |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:2cab84afc1cf2e4d424570646d118218f21b67d5012f16f5c50afde84898a08a` |
 | Result hash | `sha256:c937a111b29f531e9648da3292d3cadc4534582833828b93e2f9d70e388f50c5` |
@@ -5356,12 +6700,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Semantic Authority Evidence Bundle |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3348a52e9913d17e1a2b1e9b9020c60a879e3d9107aa5673643cb49b3e9260ca` |
-| Result hash | `sha256:3c8aa52c047ea6dbefcdff133b9317f1dfd06c2528c28fcf0361683011bdd5d2` |
-| Rows | 6662 |
+| Result hash | `sha256:c0d8a8c82eed6854b2d4297504b1394c8d4afe1a26ecc569574b59545d5491df` |
+| Rows | 6870 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-semantic-authority-evidence-bundle-v1.json) |
 | Next queries | [`Inspect deterministic readiness`](#query-result-authoring-readiness-v1) `occurrenceId=:occurrenceId` |
@@ -5370,7 +6714,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM bundles WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 6662-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-semantic-authority-evidence-bundle-v1.json).
+Full 6870-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-semantic-authority-evidence-bundle-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5386,12 +6730,12 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authoring Readiness |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:3be2d3d609c7431f172b6d174112f5f225fe9471c92b5cb96099181c51471470` |
-| Result hash | `sha256:3876577dbc2c5db400e724e66c1283bc4f1ba29e69804db3983aaa4b347f5146` |
-| Rows | 6662 |
+| Result hash | `sha256:b3a8d0e3f1019924369a1b2381ea26357842d756023057a86f3812b793eb61a0` |
+| Rows | 6870 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-readiness-v1.json) |
 | Next queries | terminal physical/healing evidence |
@@ -5400,7 +6744,7 @@ No scalar claims were rendered from this empty result.
 SELECT * FROM readinessRows WHERE registered optional parameters match the bounded authoring subject
 ```
 
-Full 6662-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-readiness-v1.json).
+Full 6870-row result: [open the bound receipt artifact](source-facts-self-governance-report.receipts/authoring-readiness-v1.json).
 
 <details><summary>Inspect 0 rendered claim pointer(s) inline</summary>
 
@@ -5416,11 +6760,11 @@ No scalar claims were rendered from this empty result.
 |---|---|
 | Purpose | Authority Authoring Reconciliation |
 | Version | `1.0.0` |
-| Index ID | `sha256:183896b73af600e74b5155a3bc63a5f7e4c341aacc5572725de8454b6ef330d8` |
-| Scan ID | `f48810a90b260d386d6a48a48128c802d0b71182c4b08ccb04a557d325ff78f6` |
+| Index ID | `sha256:1ad73b53cc6765676ffa894e270fb3829a5cd0b51ca31ae52c7f9697d58b2c73` |
+| Scan ID | `5a48d105b6b3326d0a15f9beadfdfed63efbbbb9c41d8fd4ec48e05aea9e8c29` |
 | Scope | `workspace-prefix:src` |
 | Query hash | `sha256:326068c7279d28afe22f7ed87720a096fc7d1e1d0cd70604e89a034a56185dfd` |
-| Result hash | `sha256:a3813dd48d6188bd9c1fc39ff75819cff594ce0c850ff7d56c206dc6c5702219` |
+| Result hash | `sha256:6f7010d848ccc2ed1b803da9dcd33e646a15c0df66271b5a409cc7f323d145ee` |
 | Rows | 1 |
 | Execution | `RELATIONAL_QUERY_EXECUTED` |
 | Full receipt artifact | [Open query, rows, and claim pointers](source-facts-self-governance-report.receipts/authoring-reconciliation-v1.json) |
@@ -5436,12 +6780,12 @@ SELECT * FROM authoringReconciliation
 [
   {
     "disposition": "PASSED",
-    "healingCandidates": 6652,
-    "candidatesWithAuthoringEvidenceBundle": 6652,
-    "candidatesWithCompleteQueryProvenance": 6652,
-    "candidatesWithUnresolvedRequiredEvidence": 6652,
+    "healingCandidates": 6860,
+    "candidatesWithAuthoringEvidenceBundle": 6860,
+    "candidatesWithCompleteQueryProvenance": 6860,
+    "candidatesWithUnresolvedRequiredEvidence": 6860,
     "candidatesReadyForSemanticAuthorityAuthoring": 0,
-    "candidatesReadyForProjection": 6258,
+    "candidatesReadyForProjection": 6369,
     "declaredResponsibilities": 10,
     "declaredResponsibilityBundles": 10,
     "declaredResponsibilitiesBlockedByInterface": 7,
@@ -5450,10 +6794,10 @@ SELECT * FROM authoringReconciliation
     "missingAuthoringQueries": 0,
     "incompleteEvidenceBundles": 0,
     "missingSourceReferences": 0,
-    "unresolvedCallPaths": 1404,
-    "missingScenarioContexts": 6652,
+    "unresolvedCallPaths": 1501,
+    "missingScenarioContexts": 6860,
     "authorityOverlapNotEvaluated": 0,
-    "proofVectorMissing": 394,
+    "proofVectorMissing": 491,
     "contractMapMissing": 0,
     "drillDowns": [
       {

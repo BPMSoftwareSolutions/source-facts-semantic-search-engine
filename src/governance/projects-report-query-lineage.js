@@ -135,6 +135,52 @@ const catalog = Object.freeze([
 ]);
 
 const baseQueryDrillDowns = Object.freeze({
+  "cli.traceability-summary.v1": [
+    { queryId: "cli.entry-points.v1", label: "Inspect CLI roots", parameterBindings: {} },
+    { queryId: "cli.callable-inventory.v1", label: "Inspect classified runtime callables", parameterBindings: {} },
+    { queryId: "cli.unreachable-callables.v1", label: "Inspect NO_CLI_REACHABILITY remainder", parameterBindings: {} },
+  ],
+  "cli.entry-points.v1": [
+    { queryId: "cli.entry-point-reachability.v1", label: "Inspect complete reachable graph slices", parameterBindings: {} },
+  ],
+  "cli.callable-inventory.v1": [
+    { queryId: "cli.symbol-originating-commands.v1", label: "Inspect justifying CLI commands", parameterBindings: {} },
+    { queryId: "cli.unreachable-removal-impact.v1", label: "Inspect unreachable removal impact", parameterBindings: {} },
+  ],
+  "cli.entry-point-reachability.v1": [
+    { queryId: "cli.symbol-originating-commands.v1", label: "Invert to originating CLI commands", parameterBindings: {} },
+  ],
+  "cli.shared-reachability.v1": [
+    { queryId: "cli.symbol-originating-commands.v1", label: "Inspect sharing CLI commands", parameterBindings: {} },
+  ],
+  "cli.runtime-resolution-debt.v1": [
+    { queryId: "reachability.symbol-callers.v1", label: "Inspect candidate callers", parameterBindings: {} },
+  ],
+  "cli.reachable-source-facts.v1": [
+    { queryId: "source-facts.occurrence-source-references.v1", label: "Inspect exact physical source", parameterBindings: {} },
+  ],
+  "cli.unreachable-callables.v1": [
+    { queryId: "cli.unreachable-removal-impact.v1", label: "Inspect deterministic removal impact", parameterBindings: {} },
+  ],
+  "cli.unreachable-source-facts.v1": [
+    { queryId: "source-facts.occurrence-source-references.v1", label: "Inspect exact physical source", parameterBindings: {} },
+    { queryId: "cli.unreachable-removal-impact.v1", label: "Inspect owner removal impact", parameterBindings: {} },
+  ],
+  "cli.symbol-originating-commands.v1": [
+    { queryId: "cli.entry-point-reachability.v1", label: "Inspect complete CLI path", parameterBindings: {} },
+  ],
+  "cli.unreachable-removal-impact.v1": [
+    { queryId: "reachability.symbol-callers.v1", label: "Inspect callers", parameterBindings: {} },
+    { queryId: "reachability.symbol-callees.v1", label: "Inspect callees", parameterBindings: {} },
+  ],
+  "interface.summary.v1": [
+    { queryId: "interface.cli-commands.v1", label: "Inspect CLI commands and feature access", parameterBindings: {} },
+    { queryId: "interface.authority-gaps.v1", label: "Inspect CLI governance gaps", parameterBindings: {} },
+  ],
+  "interface.cli-commands.v1": [
+    { queryId: "reachability.symbol-originating-entrypoints.v1", label: "Inspect command execution paths", parameterBindings: {} },
+    { queryId: "interface.authority-gaps.v1", label: "Inspect CLI governance gaps", parameterBindings: {} },
+  ],
   "feature-coverage.summary.v1": [
     { queryId: "feature-coverage.features.v1", label: "Inspect canonical features", parameterBindings: {} },
     { queryId: "scenario-conformance.scenarios.v1", label: "Inspect canonical scenarios", parameterBindings: {} },
@@ -307,6 +353,26 @@ export function reconcilesReportQueryLineage(report) {
   for (const queryId of requiredAuthoringQueries) {
     if (!registrations.has(queryId) || !receipts.has(queryId)) throw new FactQueryLineageError("AUTHORING_QUERY_MISSING", queryId);
   }
+  const requiredCliQueries = [
+    "cli.traceability-summary.v1", "cli.entry-points.v1", "cli.callable-inventory.v1",
+    "cli.entry-point-reachability.v1", "cli.shared-reachability.v1", "cli.runtime-resolution-debt.v1",
+    "cli.reachable-source-facts.v1", "cli.unreachable-callables.v1", "cli.unreachable-source-facts.v1",
+    "cli.symbol-originating-commands.v1", "cli.unreachable-removal-impact.v1",
+  ];
+  for (const queryId of requiredCliQueries) {
+    if (!registrations.has(queryId) || !receipts.has(queryId)) throw new FactQueryLineageError("CLI_QUERY_MISSING", queryId);
+  }
+  const cliSummary = receipts.get("cli.traceability-summary.v1").result.rows[0];
+  const callableRows = receipts.get("cli.callable-inventory.v1").result.rows;
+  const unreachableCallableRows = receipts.get("cli.unreachable-callables.v1").result.rows;
+  const unreachableFactRows = receipts.get("cli.unreachable-source-facts.v1").result.rows;
+  if (cliSummary.runtimeCallables !== callableRows.length
+    || cliSummary.noCliReachabilityCallables !== unreachableCallableRows.length
+    || cliSummary.unreachableMechanicOccurrences !== unreachableFactRows.length
+    || unreachableCallableRows.some((row) => row.cliClosureClassification !== "NO_CLI_REACHABILITY")
+    || unreachableFactRows.some((row) => row.cliClosureClassification !== "NO_CLI_REACHABILITY")) {
+    throw new FactQueryLineageError("CLI_CLOSURE_RECONCILIATION_FAILED", "callable/source-fact subtraction");
+  }
   const healingRows = receipts.get("healing.source-fact-candidates.v1")?.result.rows ?? [];
   const bundleRows = receipts.get("authoring.semantic-authority-evidence-bundle.v1")?.result.rows ?? [];
   const sourceBundleRows = bundleRows.filter((row) => row.subjectKind === "SOURCE_OCCURRENCE");
@@ -437,6 +503,17 @@ export function projectsReportQueryLineage(view, index) {
   const { drillDowns: _authoringDrillDowns, ...authoringReconciliation } = structuredClone(queryReceipts
     .find((receipt) => receipt.queryId === "authoring.reconciliation.v1")?.result.rows[0]);
   const claims = [
+    ...scalarClaims("cli.traceability-summary.v1", view.interfaceGovernance.summary, "/interfaceGovernance/summary", "/rows/0", "CLASSIFICATION"),
+    ...scalarClaims("cli.entry-points.v1", view.interfaceGovernance.commands, "/interfaceGovernance/commands", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.callable-inventory.v1", view.interfaceGovernance.callableInventory, "/interfaceGovernance/callableInventory", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.entry-point-reachability.v1", view.interfaceGovernance.reachability, "/interfaceGovernance/reachability", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.shared-reachability.v1", view.interfaceGovernance.sharedReachability, "/interfaceGovernance/sharedReachability", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.runtime-resolution-debt.v1", view.interfaceGovernance.runtimeResolutionDebt, "/interfaceGovernance/runtimeResolutionDebt", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.reachable-source-facts.v1", view.interfaceGovernance.reachableSourceFacts, "/interfaceGovernance/reachableSourceFacts", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.unreachable-callables.v1", view.interfaceGovernance.unreachableCallables, "/interfaceGovernance/unreachableCallables", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.unreachable-source-facts.v1", view.interfaceGovernance.unreachableSourceFacts, "/interfaceGovernance/unreachableSourceFacts", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.symbol-originating-commands.v1", view.interfaceGovernance.originatingCommands, "/interfaceGovernance/originatingCommands", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("cli.unreachable-removal-impact.v1", view.interfaceGovernance.removalImpact, "/interfaceGovernance/removalImpact", "/rows", "CLASSIFICATION"),
     ...scalarClaims("feature-coverage.summary.v1", view.featureCoverage.summary, "/featureCoverage/summary", "/rows/0"),
     ...scalarClaims("scenario-conformance.summary.v1", view.scenarioConformance.summary, "/scenarioConformance/summary", "/rows/0", "CLASSIFICATION"),
     ...scalarClaims("feature-coverage.proposal-evidence.v1", view.featureCoverage.proposals, "/featureCoverage/proposals", "/rows", "INFERENCE"),

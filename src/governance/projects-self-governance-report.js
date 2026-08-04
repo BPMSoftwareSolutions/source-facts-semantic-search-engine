@@ -14,6 +14,7 @@ import { scopesSelfGovernanceSubject } from "./scopes-self-governance-subject.js
 import { projectsScenarioConformance, resolvesOccurrenceScenarioLineage } from "./projects-scenario-conformance.js";
 import { projectsFeatureCoverage } from "./projects-feature-coverage.js";
 import { projectsReportQueryLineage, reconcilesReportQueryLineage } from "./projects-report-query-lineage.js";
+import { projectsInterfaceGovernance } from "./projects-interface-governance.js";
 
 function compareOccurrences(left, right) {
   return left.modulePath.localeCompare(right.modulePath)
@@ -259,6 +260,15 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     uncoveredClusters: featureCoverageProjection.uncoveredClusters,
     entityCoverage: featureCoverageProjection.entityCoverage,
   });
+  const cliAuthorityFiles = scopedAuthorityDocuments.filter((entry) => (
+    resolvesClaimedFiles(entry.documentKind, entry.document).includes("src/cli.js")
+  )).map((entry) => entry.filePath).sort();
+  const interfaceGovernance = await projectsInterfaceGovernance({
+    index,
+    scenarioConformance,
+    workspaceRelativePrefix: subject.workspaceRelativePrefix,
+    cliAuthorityFiles,
+  });
   const lineageAuthorityFileSet = new Set(projectedScenarioConformance.lineageAuthorityFiles);
   const unclassifiedAuthorityDocuments = scopedAuthorityDocuments
     .filter((entry) => !lineageAuthorityFileSet.has(entry.filePath))
@@ -292,6 +302,7 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     }),
     subjectBoundaryItems: subject.scopeItems,
     authoringContractMap: Object.freeze(authoringContractMap),
+    interfaceGovernance,
     scenarioConformance,
     featureCoverage,
     unclassifiedInventory: Object.freeze({

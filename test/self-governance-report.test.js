@@ -28,6 +28,8 @@ import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageP
 import { createsProposalFeatureFingerprint, validatesFeatureCoverageProposal } from "../src/governance/projects-feature-coverage.js";
 import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "../src/governance/proposes-feature-coverage.js";
 import { discoversAuthorityAuthoringContractMap } from "../src/governance/discovers-authority-authoring-contract-map.js";
+import { projectSourceFactsWorkspace } from "../src/project.js";
+import { projectsInterfaceGovernance } from "../src/governance/projects-interface-governance.js";
 
 function buildsAuthorityDocument() {
   return {
@@ -98,6 +100,32 @@ test("resolvesAuthorityFamily maps known mechanics and falls back for unknown on
   assert.equal(resolvesAuthorityFamily("object-construction"), "projection-mapping");
   assert.equal(resolvesAuthorityFamily("state-mutation"), "state-transition");
   assert.equal(resolvesAuthorityFamily("not-a-real-mechanic"), "unclassified");
+});
+
+test("CLI-first closure inventories every command, classifies every callable, and isolates the unreachable remainder", async () => {
+  const workspaceRoot = path.resolve(process.cwd(), "src");
+  const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: "cli-closure-test", languageId: "typescript" });
+  const projection = await projectsInterfaceGovernance({
+    index,
+    scenarioConformance: { features: [] },
+    workspaceRelativePrefix: "src",
+    cliAuthorityFiles: [],
+  });
+  const commandNames = projection.commands.map((row) => row.commandName);
+  assert.ok(commandNames.includes("govern"));
+  assert.ok(commandNames.includes("propose-feature-coverage"));
+  assert.ok(commandNames.includes("project-governed-console-contract"));
+  assert.equal(projection.summary.observedCliCommandHandlers, 15);
+  assert.equal(projection.summary.observedCliCommandTokens, 16);
+  assert.equal(projection.summary.admittedCliCommands, 0);
+  assert.equal(projection.callableInventory.length, projection.summary.runtimeCallables);
+  assert.ok(projection.callableInventory.every((row) => [
+    "CLI_FEATURE_ROOT", "CLI_FEATURE_REACHABLE", "SHARED_CLI_INFRASTRUCTURE",
+    "RUNTIME_RESOLUTION_REQUIRED", "TEST_OR_PROOF_ONLY", "GENERATED_ARTIFACT", "NO_CLI_REACHABILITY",
+  ].includes(row.cliClosureClassification)));
+  assert.ok(projection.unreachableCallables.every((row) => row.cliClosureClassification === "NO_CLI_REACHABILITY"));
+  assert.ok(projection.unreachableSourceFacts.every((row) => row.cliClosureClassification === "NO_CLI_REACHABILITY"));
+  assert.ok(projection.removalImpact.every((row) => ["REMOVE_CANDIDATE", "REVIEW_BEFORE_REMOVAL"].includes(row.removalDisposition)));
 });
 
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {
@@ -302,6 +330,11 @@ test("self-governance Markdown exposes inline query identities, receipts, exact 
   const markdown = formatsSelfGovernanceReportMarkdown(report);
 
   assert.match(markdown, /Canonical feature declarations.*feature-coverage\.summary\.v1/);
+  assert.match(markdown, /## CLI Traceability Summary/);
+  assert.match(markdown, /## CLI Feature Coverage/);
+  assert.match(markdown, /## Fat and Waste Inventory/);
+  assert.match(markdown, /cli\.unreachable-callables\.v1/);
+  assert.match(markdown, /cli\.unreachable-removal-impact\.v1/);
   assert.match(markdown, /## Report Claim Reconciliation/);
   assert.match(markdown, /## Query Evidence Appendix/);
   assert.match(markdown, /### Query Evidence Register/);
