@@ -1,49 +1,63 @@
 # Source Facts Self-Governance Report
 
-Feature Coverage and Scenario Conformance View
+Honest Feature Coverage and Scenario Evaluation View
 
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-04T02:10:42.736Z |
+| **Generated** | 2026-08-04T11:58:47.260Z |
 | **Repository** | source-facts-semantic-search-engine |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\src` |
-| **Scan ID** | 3914d3c20c5518f7d7cc4576885d31a3d89f09edc20ad619c115e04f8bc6bf6a |
+| **Scan ID** | 64baee2a2d0b348497225d12367e6d50265aee1fbacbd12aa11cafac19cf6726 |
 | **Disposition** | `OBSERVATIONAL_NO_GATE_APPLIED` |
 
 ## Executive Summary
 
-This report is organized around canonical feature coverage and scenario closure. Static
-mechanics, authority documents, wiring, reviews, know-how, and healing drafts are
-supporting evidence only. They cannot establish conformance without an explicit
-feature → scenario → responsibility → obligation → authority → execution → proof lineage and a passing
-execution proof.
+This report keeps four independent questions separate: whether lineage is canonical or proposed,
+whether the declared structure is closed, whether execution was evaluated, and whether a proof
+passed. Static source evidence and live LLM inference calls can support discovery, but neither is
+a runtime execution receipt for a scenario.
 
-| Feature coverage posture | Count |
+| Dimension | Count |
 |---|---:|
-| Canonical features | 4 |
-| Scenarios | 6 |
-| Fully conformant scenarios | 0 |
-| Partially conformant scenarios | 6 |
-| Feature proposals pending review | 1 |
-| Live inference evaluations | 1 |
-| Uncovered feature-inference clusters | 577 |
-| Optional capability relations proposed | 0 |
+| Canonical feature declarations | 4 |
+| Proposed features, not admitted | 1 |
+| Canonical scenarios | 6 |
+| Proposed scenarios, not admitted | 3 |
+| Canonical scenarios structurally closed | 2 |
+| Canonical scenarios structurally incomplete | 0 |
+| Canonical scenarios with structural status not evaluated | 4 |
+| Canonical scenarios with execution evaluated | 0 |
+| Canonical scenarios with runtime conformance `NOT_EVALUATED` | 6 |
+| Canonical scenarios conformant by execution proof | 0 |
+| Canonical scenarios with lineage-quality findings | 2 |
+| Mechanics with canonical scenario lineage | 0 |
+| Mechanics with proposed scenario lineage | 158 |
+| Mechanics with ambiguous scenario lineage | 0 |
+| Mechanics without scenario lineage | 4,940 |
+| Authority documents with canonical scenario lineage | 2 |
+| Authority documents with proposed scenario lineage | 2 |
+| Authority documents with ambiguous scenario lineage | 0 |
+| Authority documents without scenario lineage | 8 |
+| Unresolved responsibility-evidence clusters | 574 |
+| Clusters confirmed as feature candidates | 0 |
+| Live LLM inference evaluations | 1 |
+| Optional capability relations proposed from evidence | 0 |
 | Duplicate proposals prevented | 0 |
-| Unclassified mechanics | 5,042 |
-| Scenarios affected by `BODY_AUTHORITY_UNCONNECTED` | 1 |
-| Scenarios affected by `BODY_NOT_OBSERVED` | 1 |
-| Scenarios affected by `BODY_OUTSIDE_REPORT_SUBJECT` | 2 |
-| Scenarios affected by `EXECUTION_NOT_OBSERVED` | 6 |
-| Scenarios affected by `PROOF_RESULT_NOT_OBSERVED` | 6 |
+| Scenarios with evaluation limit `AUTHORITY_WIRING_NOT_EVALUATED_DEPTH_LIMIT` | 1 |
+| Scenarios with evaluation limit `BODY_NOT_EVALUATED_OUTSIDE_SUBJECT` | 2 |
+| Scenarios with evaluation limit `BODY_NOT_STATICALLY_OBSERVED` | 1 |
+| Scenarios with lineage-quality finding `IMPLEMENTATION_VARIANTS_DECLARED_AS_DISTINCT_RESPONSIBILITIES` | 1 |
+| Scenarios with lineage-quality finding `MULTIPLE_RESPONSIBILITY_OWNERS_REQUIRE_REVIEW` | 1 |
+| Scenarios with lineage-quality finding `PROJECTION_OBLIGATION_HAS_NO_PROJECTING_RELATIONSHIP` | 1 |
 
 ## Feature Coverage Proposals
 
-Proposals are inferred coverage candidates, not canonical feature authority.
+These are inferred candidates. They do not become canonical feature or scenario lineage until admitted into canonical authority.
 
-| Proposed feature | Evidence cluster | Scenarios | Coverage gained | Status | Duplicate check |
+| Proposed feature | Evidence cluster | Scenarios | Responsibilities | Coverage posture | Duplicate check |
 |---|---|---:|---:|---|---|
-| `serialize-successful-responses` — Serialize successful query-console responses | 3 responsibility symbols, 20 targeted serialization mechanics (30 in source file) | 3 | 3 responsibilities | `FEATURE_PROPOSAL_REVIEW_REQUIRED` | `NEW_FEATURE_CANDIDATE` |
+| `serialize-successful-responses` — Serialize successful query-console responses | 3 symbols; 20 matching serialization mechanics | 3 | 3 | `FEATURE_COVERAGE_PROPOSED` | `NEW_FEATURE_CANDIDATE` |
 |  | Fingerprint: `sha256:9ec5470fca11c60808c3dd8f161b7588a3b2bdb95a4af258b1a0bd1d4c4e1970` (verified) |  |  |  |  |
 
 ### Proposed Feature: `serialize-successful-responses`
@@ -72,206 +86,234 @@ Feature: Serialize successful query-console responses
     And the serialization disposition is recorded
 ```
 
-Evidence: `src/console/serves-query-console.runtime.impl.mjs`; symbols `handleIndexInfo`, `handleQuery`, `handleSnippet`; know-how `success-path-serialization-duplicated-inline`.
+Evidence files: `src/console/serves-query-console.runtime.impl.mjs`; symbols: `handleIndexInfo`, `handleQuery`, `handleSnippet`; know-how: `success-path-serialization-duplicated-inline`.
 
-## Live Feature-Inference Evaluations
+## Live LLM Feature-Inference Evaluations
 
-These are real model calls over deterministic query clusters. They are observational test evidence only: they do not establish feature coverage or capability placement.
+These are receipts from real model calls over deterministic query results. They test the inference target, but remain observational discovery evidence: they neither admit a feature nor execute a product scenario.
 
 | Candidate feature | Model call | Query receipt | Candidate comparison | Optional capability relation | Lifecycle |
 |---|---|---|---|---|---|
-| `serialize-successful-responses` — Serialize Successful Query Console Responses | `gemini-flash-latest`; 15,005 tokens; 12,754 ms; request `sha256:ab6531a94a41970e20d2b2e9247b4e8483f53a755bffc14c5acea23adb84ecf9`; response `sha256:d1cf1d60751a856bc0407ff145e5e5e99c724fe53f52037b443d2aa24d38aebf` | 20 rows; input `sha256:1ed906ddfd966245b8940db1927ae1197bae578b75c8865257b5289d53771a9f`; result `sha256:8a5b2ca0c1aa48ae75b0a9f45113f5ea345ba499f518d30027eceead4c124e6d` | `OVERLAPPING_FEATURES_REQUIRE_REVIEW` | `NO_CAPABILITY_RELATION_DETECTED` | `OBSERVATIONAL_NOT_ADMISSIBLE` |
-|  | Evaluation: `reviews/live-evaluations/success-response-serialization.feature-coverage-inference-evaluation.json` | Fingerprint: `sha256:0e223b52b85ebbb5aad093b1f269893c1fc1da6ba924bc32dfcf78c04b5cef7f` |  |  |  |
+| `serialize-successful-query-console-responses` — Serialize Successful Query Console Responses | `gemini-flash-latest`; 14,691 tokens; 16,400 ms; request `sha256:f7777dd22ba87b97eb3b218511ba94303698c06d124eb4b968749957381dd865`; response `sha256:2766777a371aebc8e4440831591a4b7d81d4063b5dd7a0c9a760019a4c848bed` | 20 rows; input `sha256:1ed906ddfd966245b8940db1927ae1197bae578b75c8865257b5289d53771a9f`; result `sha256:8a5b2ca0c1aa48ae75b0a9f45113f5ea345ba499f518d30027eceead4c124e6d` | `OVERLAPPING_FEATURES_REQUIRE_REVIEW` | `NO_CAPABILITY_RELATION_DETECTED` | `OBSERVATIONAL_NOT_ADMISSIBLE` |
+|  | Evaluation: `reviews/live-evaluations/success-response-serialization.feature-coverage-inference-evaluation.json` | Fingerprint: `sha256:d07b8d761a82e57bb53219aae4f85f379b347ddb74118c55b4af730a5a4296ba` |  |  |  |
 
-## Uncovered Feature-Inference Clusters
+## Unresolved Responsibility Evidence
 
-These bounded clusters are eligible inference inputs after deterministic duplicate checking.
+These are bounded static-evidence clusters, not feature candidates. A function or module scope becomes eligible for feature inference only after a separate feature-shaping review establishes an actor, outcome, scenario boundary, responsibility, and obligation.
 
-| Evidence cluster | Mechanics | Occurrences | Coverage posture |
-|---|---|---:|---|
-| `src/governance/generates-connective-tissue.js#generatesConnectiveTissue` | branch, exception-handling, fallback, iteration, normalization, object-construction, serialization, state-mutation, throw, validation | 221 | `FEATURE_COVERAGE_MISSING` |
-| `src/web/html-projector.js#projectsHtmlDocument` | branch, fallback, iteration, object-construction, state-mutation | 101 | `FEATURE_COVERAGE_MISSING` |
-| `src/projects-governed-console-contract.js#buildsConsoleGovernedContract` | branch, fallback, normalization, object-construction, state-mutation | 83 | `FEATURE_COVERAGE_MISSING` |
-| `src/cli.js#parseArgs` | branch, iteration, normalization, object-construction, state-mutation | 82 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/projects-self-governance-report.js#projectsSelfGovernanceReport` | branch, fallback, iteration, object-construction, state-mutation | 74 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/projects-feature-coverage.js#projectsFeatureCoverage` | branch, fallback, iteration, object-construction, state-mutation, throw, validation | 67 | `FEATURE_COVERAGE_MISSING` |
-| `src/gallery/plans-surface-previews.js#plansOneItem` | branch, exception-handling, fallback, iteration, object-construction, state-mutation | 65 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/generates-connective-tissue.js#validatesGroundedDraft` | branch, fallback, iteration, object-construction, throw, validation | 57 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/proposes-feature-coverage.js#(module-scope)` | object-construction | 55 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/generates-connective-tissue.js#buildsConditionalSectionSchema` | object-construction | 54 | `FEATURE_COVERAGE_MISSING` |
-| `src/projects-governed-console-contract.js#buildsConsoleServerSourceAuthority` | fallback, object-construction | 52 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/projects-feature-coverage.js#validatesFeatureCoverageProposal` | branch, fallback, iteration, object-construction | 51 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/proposes-feature-coverage.js#proposesFeatureCoverage` | branch, fallback, object-construction, state-mutation, throw, validation | 48 | `FEATURE_COVERAGE_MISSING` |
-| `src/sqlserver/load-sqlserver.js#loadsSourceFactIndexIntoSqlServer` | branch, fallback, iteration, object-construction, state-mutation, throw, validation | 46 | `FEATURE_COVERAGE_MISSING` |
-| `src/gallery/captures-browser-render.js#capturesOneItem` | branch, exception-handling, fallback, iteration, object-construction, state-mutation, validation | 45 | `FEATURE_COVERAGE_MISSING` |
-| `src/console/serves-query-console.runtime.impl.mjs#handleRequestWithAuthority` | branch, exception-handling, fallback, object-construction, serialization, state-mutation, throw | 40 | `FEATURE_COVERAGE_MISSING` |
-| `src/project.js#projectSourceFactsWorkspace` | branch, fallback, iteration, object-construction, throw | 40 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/proposes-semantic-overlap.js#proposesSemanticOverlap` | branch, fallback, object-construction, throw | 39 | `FEATURE_COVERAGE_MISSING` |
-| `src/console/serves-query-console.runtime.impl.mjs#handleSnippet` | branch, fallback, object-construction, state-mutation | 37 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/projects-scenario-conformance.js#projectsFeatureSet` | branch, fallback, iteration, object-construction | 35 | `FEATURE_COVERAGE_MISSING` |
-| `src/cli.js#runProposeFeatureCoverage` | branch, fallback, object-construction, serialization, state-mutation, throw | 34 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/formats-scenario-conformance-report.js#formatsScenarioConformanceReportMarkdown` | branch, fallback, iteration | 34 | `FEATURE_COVERAGE_MISSING` |
-| `src/web/project-web-surfaces.js#projectsWebSurfaceIndex` | fallback, iteration, object-construction | 31 | `FEATURE_COVERAGE_MISSING` |
-| `src/lib/reads-json-file.js#readsLineDelimitedTopLevelJson` | branch, fallback, iteration, object-construction, state-mutation, throw | 30 | `FEATURE_COVERAGE_MISSING` |
-| `src/web/family-projector.js#expandsOneFamily` | branch, fallback, iteration, object-construction, state-mutation | 30 | `FEATURE_COVERAGE_MISSING` |
-| `src/cli.js#runWebNorthStar` | branch, fallback, object-construction, state-mutation | 29 | `FEATURE_COVERAGE_MISSING` |
-| `src/composition/writes-sign-in-composition.js#writesSignInComposition` | branch, fallback, normalization, object-construction, serialization, validation | 29 | `FEATURE_COVERAGE_MISSING` |
-| `src/governance/formats-self-governance-report-summary.js#formatsSelfGovernanceReportSummary` | branch, fallback, iteration, object-construction, state-mutation | 29 | `FEATURE_COVERAGE_MISSING` |
-| `src/cli.js#runProjectAuthorityViolations` | branch, fallback, object-construction, serialization, throw, validation | 28 | `FEATURE_COVERAGE_MISSING` |
-| `src/gallery/materializes-static-preview.js#materializesStaticPreviews` | branch, iteration, object-construction, state-mutation, throw | 28 | `FEATURE_COVERAGE_MISSING` |
-| … | 547 additional cluster(s) in JSON |  |  |
+| Evidence cluster | Cluster kind | Mechanics | Occurrences | Feature candidacy | Inference eligibility |
+|---|---|---|---:|---|---|
+| `src/governance/generates-connective-tissue.js#generatesConnectiveTissue` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, normalization, object-construction, serialization, state-mutation, throw, validation | 221 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/web/html-projector.js#projectsHtmlDocument` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | 101 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/projects-feature-coverage.js#projectsFeatureCoverage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation, throw, validation | 86 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/projects-governed-console-contract.js#buildsConsoleGovernedContract` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, normalization, object-construction, state-mutation | 83 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/cli.js#parseArgs` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, iteration, normalization, object-construction, state-mutation | 82 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/projects-self-governance-report.js#projectsSelfGovernanceReport` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | 74 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/gallery/plans-surface-previews.js#plansOneItem` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, object-construction, state-mutation | 65 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/generates-connective-tissue.js#validatesGroundedDraft` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, throw, validation | 57 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/proposes-feature-coverage.js#(module-scope)` | `SUPPORTING_IMPLEMENTATION_CLUSTER` | object-construction | 55 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/generates-connective-tissue.js#buildsConditionalSectionSchema` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | object-construction | 54 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/projects-governed-console-contract.js#buildsConsoleServerSourceAuthority` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | fallback, object-construction | 52 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/projects-feature-coverage.js#validatesFeatureCoverageProposal` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction | 51 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/proposes-feature-coverage.js#proposesFeatureCoverage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, state-mutation, throw, validation | 48 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/sqlserver/load-sqlserver.js#loadsSourceFactIndexIntoSqlServer` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation, throw, validation | 46 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/gallery/captures-browser-render.js#capturesOneItem` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, object-construction, state-mutation, validation | 45 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/project.js#projectSourceFactsWorkspace` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, throw | 40 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/proposes-semantic-overlap.js#proposesSemanticOverlap` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, throw | 39 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/projects-scenario-conformance.js#projectsFeatureSet` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction | 35 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/cli.js#runProposeFeatureCoverage` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, serialization, state-mutation, throw | 34 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/formats-scenario-conformance-report.js#formatsScenarioConformanceReportMarkdown` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration | 31 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/web/project-web-surfaces.js#projectsWebSurfaceIndex` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | fallback, iteration, object-construction | 31 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/lib/reads-json-file.js#readsLineDelimitedTopLevelJson` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation, throw | 30 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/web/family-projector.js#expandsOneFamily` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | 30 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/cli.js#runWebNorthStar` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, state-mutation | 29 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/composition/writes-sign-in-composition.js#writesSignInComposition` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, normalization, object-construction, serialization, validation | 29 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/governance/formats-self-governance-report-summary.js#formatsSelfGovernanceReportSummary` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, iteration, object-construction, state-mutation | 29 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/cli.js#runProjectAuthorityViolations` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, serialization, throw, validation | 28 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/gallery/materializes-static-preview.js#materializesStaticPreviews` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, iteration, object-construction, state-mutation, throw | 28 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/cli.js#runGovern` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, fallback, object-construction, state-mutation, validation | 27 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| `src/web/inventory.js#walksRoot` | `RESPONSIBILITY_EVIDENCE_CLUSTER` | branch, exception-handling, fallback, iteration, object-construction, state-mutation | 27 | `FEATURE_CANDIDACY_NOT_EVALUATED` | `REQUIRES_FEATURE_SHAPING_REVIEW` |
+| … |  | 544 additional cluster(s) in JSON |  |  |  |
 
 ## Canonical Feature Drill-Down
 
-| Feature | Optional classifications | Scenarios | Responsibilities | Conformant |
-|---|---|---:|---:|---:|
-| `delegate-console-authority` | `serves-query-console` | 1 | 1 | 0/1 (0.0%) |
-| `project-console-contract` | `serves-query-console` | 1 | 3 | 0/1 (0.0%) |
-| `project-governed-messages` | `governed-message-artifact-family` | 3 | 3 | 0/3 (0.0%) |
-| `serve-query-console` | `serves-query-console` | 1 | 3 | 0/1 (0.0%) |
+| Feature | Source lineage classification | Scenarios | Responsibilities | Structurally closed | Runtime conformant | Lineage-quality findings |
+|---|---|---:|---:|---:|---:|---:|
+| `delegate-console-authority` | `serves-query-console` | 1 | 1 | 1 | 0 | 0 |
+| `project-console-contract` | `serves-query-console` | 1 | 3 | 1 | 0 | 2 |
+| `project-governed-messages` | `governed-message-artifact-family` | 3 | 3 | 0 | 0 | 0 |
+| `serve-query-console` | `serves-query-console` | 1 | 3 | 0 | 0 | 1 |
 
 ## Feature: `delegate-console-authority`
 
 Delegate the admitted console mechanics to helper authorities and runtime dependencies.
 
-Feature authority: `contracts/serves-query-console.governed.contract.json`
+Canonical feature authority: `contracts/serves-query-console.governed.contract.json`
 
-Optional classifications: `FEATURE_CLASSIFIED_UNDER_SOURCE_LINEAGE:serves-query-console`. These are derived labels, not feature parents.
+Source lineage classification: `serves-query-console`. This is source-family metadata, not a capability relation or feature parent.
 
 ### Scenario: `delegate-console-mechanics`
 
 The console body delegates routing, validation, and snippet extraction to admitted authorities.
 
-Closure: `EXECUTION_NOT_OBSERVED`
+Scenario lineage: `SCENARIO_LINEAGE_CANONICAL`; structural status: `STRUCTURALLY_CLOSED`; runtime conformance: `NOT_EVALUATED`.
 
-Blockers: `EXECUTION_NOT_OBSERVED`, `PROOF_RESULT_NOT_OBSERVED`
+Structural blockers: none.
 
-| Responsibility | Obligation | Authority meaning | Binding | Projected body | Connected meaning | Static body evidence | Execution | Proof |
+Evaluation limits: none.
+
+Lineage-quality findings: none.
+
+| Responsibility | Obligation | Authority declaration | Binding | Declared body | Authority execution wiring | Static body evidence | Runtime execution | Proof result |
 |---|---|---|---|---|---|---|---|---|
-| `console-authority-bundles.v1.responsibility.v1` | `console-delegates-mechanics` — The console source body must delegate admitted mechanics to authority surfaces. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-authority-bundles.mjs` (BODY_STATICALLY_OBSERVED) | TRANSITIVE_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
+| `console-authority-bundles.v1.responsibility.v1` | `console-delegates-mechanics` — The console source body must delegate admitted mechanics to authority surfaces. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-authority-bundles.mjs` (BODY_STATICALLY_OBSERVED) | TRANSITIVE_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
 
 ## Feature: `project-console-contract`
 
 Project a governed contract draft from the current authority and source-fact evidence.
 
-Feature authority: `contracts/serves-query-console.governed.contract.json`
+Canonical feature authority: `contracts/serves-query-console.governed.contract.json`
 
-Optional classifications: `FEATURE_CLASSIFIED_UNDER_SOURCE_LINEAGE:serves-query-console`. These are derived labels, not feature parents.
+Source lineage classification: `serves-query-console`. This is source-family metadata, not a capability relation or feature parent.
+
+Feature lineage-quality findings: `MULTIPLE_RESPONSIBILITY_OWNERS_REQUIRE_REVIEW`, `PROJECTION_OBLIGATION_HAS_NO_PROJECTING_RELATIONSHIP`.
 
 ### Scenario: `project-governed-console-contract`
 
 The translator emits a governed contract draft without hand-authoring the contract bytes.
 
-Closure: `EXECUTION_NOT_OBSERVED`
+Scenario lineage: `SCENARIO_LINEAGE_CANONICAL`; structural status: `STRUCTURALLY_CLOSED`; runtime conformance: `NOT_EVALUATED`.
 
-Blockers: `EXECUTION_NOT_OBSERVED`, `PROOF_RESULT_NOT_OBSERVED`
+Structural blockers: none.
 
-| Responsibility | Obligation | Authority meaning | Binding | Projected body | Connected meaning | Static body evidence | Execution | Proof |
+Evaluation limits: none.
+
+Lineage-quality findings: `MULTIPLE_RESPONSIBILITY_OWNERS_REQUIRE_REVIEW`, `PROJECTION_OBLIGATION_HAS_NO_PROJECTING_RELATIONSHIP`.
+
+| Responsibility | Obligation | Authority declaration | Binding | Declared body | Authority execution wiring | Static body evidence | Runtime execution | Proof result |
 |---|---|---|---|---|---|---|---|---|
-| `console-routing-adapter.v1.responsibility.v1` | `console-contract-is-projected` — The console governed contract must be projected from source facts and admitted authority data. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-routing-adapter.mjs` (BODY_STATICALLY_OBSERVED) | DIRECT_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
-| `console-validation-adapter.v1.responsibility.v1` | `console-contract-is-projected` — The console governed contract must be projected from source facts and admitted authority data. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-validation-adapter.mjs` (BODY_STATICALLY_OBSERVED) | TRANSITIVE_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
-| `console-snippet-adapter.v1.responsibility.v1` | `console-contract-is-projected` — The console governed contract must be projected from source facts and admitted authority data. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-snippet-adapter.mjs` (BODY_STATICALLY_OBSERVED) | DIRECT_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
+| `console-routing-adapter.v1.responsibility.v1` | `console-contract-is-projected` — The console governed contract must be projected from source facts and admitted authority data. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-routing-adapter.mjs` (BODY_STATICALLY_OBSERVED) | DIRECT_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
+| `console-validation-adapter.v1.responsibility.v1` | `console-contract-is-projected` — The console governed contract must be projected from source facts and admitted authority data. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-validation-adapter.mjs` (BODY_STATICALLY_OBSERVED) | TRANSITIVE_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
+| `console-snippet-adapter.v1.responsibility.v1` | `console-contract-is-projected` — The console governed contract must be projected from source facts and admitted authority data. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/console-snippet-adapter.mjs` (BODY_STATICALLY_OBSERVED) | DIRECT_DATA_AND_RUNTIME | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
 
 ## Feature: `project-governed-messages`
 
 Render a governed message from declared contract meaning.
 
-Feature authority: `contracts/serves-query-console.contract.json`
+Canonical feature authority: `contracts/serves-query-console.contract.json`
 
-Optional classifications: `FEATURE_CLASSIFIED_UNDER_SOURCE_LINEAGE:governed-message-artifact-family`. These are derived labels, not feature parents.
+Source lineage classification: `governed-message-artifact-family`. This is source-family metadata, not a capability relation or feature parent.
 
 ### Scenario: `project-a-declared-message`
 
 A declared message value is projected into canonical output.
 
-Closure: `BODY_NOT_OBSERVED`
+Scenario lineage: `SCENARIO_LINEAGE_CANONICAL`; structural status: `STRUCTURAL_STATUS_NOT_EVALUATED`; runtime conformance: `NOT_EVALUATED`.
 
-Blockers: `BODY_NOT_OBSERVED`, `EXECUTION_NOT_OBSERVED`, `PROOF_RESULT_NOT_OBSERVED`
+Structural blockers: none.
 
-| Responsibility | Obligation | Authority meaning | Binding | Projected body | Connected meaning | Static body evidence | Execution | Proof |
+Evaluation limits: `BODY_NOT_STATICALLY_OBSERVED`.
+
+Lineage-quality findings: none.
+
+| Responsibility | Obligation | Authority declaration | Binding | Declared body | Authority execution wiring | Static body evidence | Runtime execution | Proof result |
 |---|---|---|---|---|---|---|---|---|
-| `executes-message-projection` | `produce-one-canonical-message` — Exactly one canonical message must be produced from declared semantic authority. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/project-message.mjs` (BODY_NOT_OBSERVED) | NONE_OBSERVED | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
+| `executes-message-projection` | `produce-one-canonical-message` — Exactly one canonical message must be produced from declared semantic authority. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/project-message.mjs` (BODY_NOT_STATICALLY_OBSERVED) | WIRING_NOT_STATICALLY_OBSERVED | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
 
 ### Scenario: `run-the-message-command`
 
 The projected message is emitted through the declared command port.
 
-Closure: `BODY_OUTSIDE_REPORT_SUBJECT`
+Scenario lineage: `SCENARIO_LINEAGE_CANONICAL`; structural status: `STRUCTURAL_STATUS_NOT_EVALUATED`; runtime conformance: `NOT_EVALUATED`.
 
-Blockers: `BODY_OUTSIDE_REPORT_SUBJECT`, `EXECUTION_NOT_OBSERVED`, `PROOF_RESULT_NOT_OBSERVED`
+Structural blockers: none.
 
-| Responsibility | Obligation | Authority meaning | Binding | Projected body | Connected meaning | Static body evidence | Execution | Proof |
+Evaluation limits: `BODY_NOT_EVALUATED_OUTSIDE_SUBJECT`.
+
+Lineage-quality findings: none.
+
+| Responsibility | Obligation | Authority declaration | Binding | Declared body | Authority execution wiring | Static body evidence | Runtime execution | Proof result |
 |---|---|---|---|---|---|---|---|---|
-| `entry-point-for-message-command` | `emit-the-message-once` — The command must emit the projected message exactly once. | AUTHORITY_DECLARED | BINDING_DECLARED | `bin/run-message.mjs` (BODY_OUTSIDE_REPORT_SUBJECT) | NONE_OBSERVED | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
+| `entry-point-for-message-command` | `emit-the-message-once` — The command must emit the projected message exactly once. | AUTHORITY_DECLARED | BINDING_DECLARED | `bin/run-message.mjs` (BODY_OUTSIDE_REPORT_SUBJECT) | WIRING_NOT_STATICALLY_OBSERVED | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
 
 ### Scenario: `verify-the-projected-message`
 
 The projected message is proved against its declared expectation.
 
-Closure: `BODY_OUTSIDE_REPORT_SUBJECT`
+Scenario lineage: `SCENARIO_LINEAGE_CANONICAL`; structural status: `STRUCTURAL_STATUS_NOT_EVALUATED`; runtime conformance: `NOT_EVALUATED`.
 
-Blockers: `BODY_OUTSIDE_REPORT_SUBJECT`, `EXECUTION_NOT_OBSERVED`, `PROOF_RESULT_NOT_OBSERVED`
+Structural blockers: none.
 
-| Responsibility | Obligation | Authority meaning | Binding | Projected body | Connected meaning | Static body evidence | Execution | Proof |
+Evaluation limits: `BODY_NOT_EVALUATED_OUTSIDE_SUBJECT`.
+
+Lineage-quality findings: none.
+
+| Responsibility | Obligation | Authority declaration | Binding | Declared body | Authority execution wiring | Static body evidence | Runtime execution | Proof result |
 |---|---|---|---|---|---|---|---|---|
-| `evaluates-message-proof` | `prove-the-message-conforms` — Verification must prove the projected message conforms. | AUTHORITY_DECLARED | BINDING_DECLARED | `verification/verifies-message.mjs` (BODY_OUTSIDE_REPORT_SUBJECT) | NONE_OBSERVED | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
+| `evaluates-message-proof` | `prove-the-message-conforms` — Verification must prove the projected message conforms. | AUTHORITY_DECLARED | BINDING_DECLARED | `verification/verifies-message.mjs` (BODY_OUTSIDE_REPORT_SUBJECT) | WIRING_NOT_STATICALLY_OBSERVED | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
 
 ## Feature: `serve-query-console`
 
 Serve the query console HTTP entrypoint with authority-backed routing, validation, and snippet retrieval.
 
-Feature authority: `contracts/serves-query-console.governed.contract.json`
+Canonical feature authority: `contracts/serves-query-console.governed.contract.json`
 
-Optional classifications: `FEATURE_CLASSIFIED_UNDER_SOURCE_LINEAGE:serves-query-console`. These are derived labels, not feature parents.
+Source lineage classification: `serves-query-console`. This is source-family metadata, not a capability relation or feature parent.
+
+Feature lineage-quality findings: `IMPLEMENTATION_VARIANTS_DECLARED_AS_DISTINCT_RESPONSIBILITIES`.
 
 ### Scenario: `serve-console-over-loopback`
 
 The console binds only to loopback and serves query, index, and snippet responses.
 
-Closure: `BODY_AUTHORITY_UNCONNECTED`
+Scenario lineage: `SCENARIO_LINEAGE_CANONICAL`; structural status: `STRUCTURAL_STATUS_NOT_EVALUATED`; runtime conformance: `NOT_EVALUATED`.
 
-Blockers: `BODY_AUTHORITY_UNCONNECTED`, `EXECUTION_NOT_OBSERVED`, `PROOF_RESULT_NOT_OBSERVED`
+Structural blockers: none.
 
-| Responsibility | Obligation | Authority meaning | Binding | Projected body | Connected meaning | Static body evidence | Execution | Proof |
+Evaluation limits: `AUTHORITY_WIRING_NOT_EVALUATED_DEPTH_LIMIT`.
+
+Lineage-quality findings: `IMPLEMENTATION_VARIANTS_DECLARED_AS_DISTINCT_RESPONSIBILITIES`.
+
+| Responsibility | Obligation | Authority declaration | Binding | Declared body | Authority execution wiring | Static body evidence | Runtime execution | Proof result |
 |---|---|---|---|---|---|---|---|---|
-| `serves-query-console.v1.responsibility.v1` | `console-serves-loopback-only` — The console server must bind only to the loopback interface. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/serves-query-console.mjs` (BODY_STATICALLY_OBSERVED) | NOT_DETERMINED_BEYOND_MAX_DEPTH | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
-| `serves-query-console-conformant.v1.responsibility.v1` | `console-serves-loopback-only` — The console server must bind only to the loopback interface. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/serves-query-console.conformant.mjs` (BODY_STATICALLY_OBSERVED) | NOT_DETERMINED_BEYOND_MAX_DEPTH | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
-| `serves-query-console-projected.v1.responsibility.v1` | `console-serves-loopback-only` — The console server must bind only to the loopback interface. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/serves-query-console.projected.mjs` (BODY_STATICALLY_OBSERVED) | NOT_DETERMINED_BEYOND_MAX_DEPTH | none statically observed | EXECUTION_NOT_OBSERVED | PROOF_DECLARED_RESULT_NOT_OBSERVED |
+| `serves-query-console.v1.responsibility.v1` | `console-serves-loopback-only` — The console server must bind only to the loopback interface. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/serves-query-console.mjs` (BODY_STATICALLY_OBSERVED) | NOT_DETERMINED_BEYOND_MAX_DEPTH | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
+| `serves-query-console-conformant.v1.responsibility.v1` | `console-serves-loopback-only` — The console server must bind only to the loopback interface. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/serves-query-console.conformant.mjs` (BODY_STATICALLY_OBSERVED) | NOT_DETERMINED_BEYOND_MAX_DEPTH | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
+| `serves-query-console-projected.v1.responsibility.v1` | `console-serves-loopback-only` — The console server must bind only to the loopback interface. | AUTHORITY_DECLARED | BINDING_DECLARED | `src/console/serves-query-console.projected.mjs` (BODY_STATICALLY_OBSERVED) | NOT_DETERMINED_BEYOND_MAX_DEPTH | none statically observed | EXECUTION_NOT_EVALUATED | PROOF_DECLARED_RESULT_NOT_EVALUATED |
 
-## Unclassified Inventory
+## Evidence Without Canonical Lineage
 
-These facts are inside the report subject but are not allowed to influence a
-feature or scenario verdict until explicit lineage places them on the spine.
+These facts are inside the report subject but have no admitted scenario lineage. A proposal is
+shown as proposed coverage; it is never counted as canonical coverage.
 
 | Inventory | Count | Disposition |
 |---|---:|---|
-| Static mechanics without scenario lineage | 5,042 | `NO_SCENARIO_LINEAGE` |
-| Authority documents without canonical scenario lineage | 10 | `AUTHORITY_WITHOUT_SCENARIO_LINEAGE` |
-| Admitted know-how without obligation lineage | 3 | `UNCLASSIFIED_KNOW_HOW` |
-| Healing drafts without a scenario target | 1 | `HEALING_WITHOUT_SCENARIO_TARGET` |
+| Static mechanics without canonical or proposed lineage | 4,940 | `NO_SCENARIO_LINEAGE` |
+| Authority documents without canonical scenario lineage | 10 | inspect per-item posture below |
+| Admitted know-how without canonical obligation lineage | 3 | inspect per-item posture below |
+| Healing drafts without a canonical scenario target | 1 | `HEALING_WITHOUT_CANONICAL_SCENARIO_TARGET` |
 
-### Mechanics without scenario lineage
+### Mechanics without lineage
 
 | Mechanic | Occurrences | Files |
 |---|---:|---:|
-| object-construction | 1,813 | 80 |
-| fallback | 1,090 | 70 |
-| branch | 1,024 | 72 |
-| iteration | 315 | 58 |
-| state-mutation | 266 | 51 |
-| validation | 128 | 21 |
-| throw | 121 | 38 |
-| exception-handling | 109 | 25 |
+| object-construction | 1,773 | 79 |
+| fallback | 1,082 | 69 |
+| branch | 1,014 | 71 |
+| iteration | 319 | 58 |
+| state-mutation | 243 | 50 |
+| validation | 127 | 20 |
+| throw | 117 | 37 |
+| exception-handling | 99 | 24 |
 | normalization | 103 | 24 |
-| serialization | 72 | 23 |
+| serialization | 62 | 22 |
 | retry | 1 | 1 |
 
-### Authority without scenario lineage
+### Authority without canonical scenario lineage
 
 - `contracts/serves-query-console.admitted.contract.json` (governed-artifact-contract) — `FEATURE_COVERAGE_MISSING`
-- `contracts/serves-query-console.authority.complete.json` (authority-declaration-unmarked.v1) — `FEATURE_COVERAGE_MISSING`
+- `contracts/serves-query-console.authority.complete.json` (authority-declaration-unmarked.v1) — `FEATURE_COVERAGE_PROPOSED`
 - `contracts/serves-query-console.authority.draft.json` (authority-declaration.draft.v1) — `FEATURE_COVERAGE_MISSING`
-- `contracts/serves-query-console.authority.json` (authority-declaration.v1) — `FEATURE_COVERAGE_MISSING`
+- `contracts/serves-query-console.authority.json` (authority-declaration.v1) — `FEATURE_COVERAGE_PROPOSED`
 - `contracts/serves-query-console.binding.json` (authority-binding.v1) — `FEATURE_COVERAGE_MISSING`
 - `src/console/.governance/projections/governed-message-artifact-family.ledger.json` (governed-artifact-projection-ledger.v1) — `FEATURE_COVERAGE_MISSING`
 - `src/console/contracts/console-request-routing.bundle.json` (semantic-execution-bundle.v1) — `FEATURE_COVERAGE_MISSING`
@@ -279,15 +321,15 @@ feature or scenario verdict until explicit lineage places them on the spine.
 - `src/console/contracts/console-validation.bundle.json` (semantic-execution-bundle.v1) — `FEATURE_COVERAGE_MISSING`
 - `src/console/governed-message-artifact-family/contracts/project-message.authority.json` (semantic-projection-authority.v1) — `FEATURE_COVERAGE_MISSING`
 
-### Know-how awaiting obligation lineage
+### Know-how without canonical obligation lineage
 
 - `citation-and-live-wiring-are-independent` — `FEATURE_COVERAGE_MISSING` — This repo's generated-bundle convention (@generated header + 'Authority source: <mechanicId>' citation comments) can produce a bundle that is structurally correct and correctly cited but never imported anywhere. Citation correctness and live-wiring correctness are independent properties and must be checked separately -- 5 of 11 bundles in console-authority-runtime.mjs demonstrate this.
 - `mechanic-type-presence-cannot-detect-dead-duplicates` — `FEATURE_COVERAGE_MISSING` — A duplicate inline implementation sitting next to an unused delegated one both register as the same mechanic type in the source index, which can mask that only one of the two is actually live. Mechanic-type-presence alone (as used by resolvesAuthoritySuccession) cannot distinguish 'the real one' from 'a dead twin'.
-- `success-path-serialization-duplicated-inline` — `FEATURE_PROPOSAL_REVIEW_REQUIRED` — Success-path JSON response serialization (handleIndexInfo, handleQuery, handleSnippet) is duplicated inline rather than delegated; only the error path is centralized through serializesErrorResponse(). The codebase clearly intended full centralization -- it just isn't complete yet.
+- `success-path-serialization-duplicated-inline` — `FEATURE_COVERAGE_PROPOSED` — Success-path JSON response serialization (handleIndexInfo, handleQuery, handleSnippet) is duplicated inline rather than delegated; only the error path is centralized through serializesErrorResponse(). The codebase clearly intended full centralization -- it just isn't complete yet.
 
-### Healing drafts awaiting a scenario target
+### Healing drafts without a canonical scenario target
 
-- `healing/success-response-serialization.connective-tissue-draft.json` — `FEATURE_PROPOSAL_REVIEW_REQUIRED` — targets `success-response-serialization`, but declares no canonical feature / scenario / responsibility / obligation tuple.
+- `healing/success-response-serialization.connective-tissue-draft.json` — `FEATURE_COVERAGE_PROPOSED` — targets `success-response-serialization`, but declares no canonical feature / scenario / responsibility / obligation tuple.
 
 ## Subject Boundary
 
@@ -306,5 +348,5 @@ Excluded evidence is not called orphaned: it belongs to a different subject and 
 
 ## Disposition
 
-`OBSERVATIONAL_NO_GATE_APPLIED` — this static run does not execute scenario proofs or gate a build. A scenario remains non-conformant until its declared responsibilities, authority, binding, projected body, live execution, and passing proof all close.
+`OBSERVATIONAL_NO_GATE_APPLIED` — this run statically evaluates declarations and wiring evidence. It does not execute product scenarios or their proof verifiers. Runtime conformance therefore remains `NOT_EVALUATED` unless a separate execution receipt is supplied.
 

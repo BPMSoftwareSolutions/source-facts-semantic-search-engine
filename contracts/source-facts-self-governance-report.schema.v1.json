@@ -754,10 +754,8 @@
             "enum": [
               "FEATURE_COVERED",
               "FEATURE_COVERAGE_PROPOSED",
-              "FEATURE_PROPOSAL_REVIEW_REQUIRED",
               "FEATURE_LINEAGE_AMBIGUOUS",
-              "FEATURE_COVERAGE_MISSING",
-              "NOT_CAPABILITY_MEANING"
+              "FEATURE_COVERAGE_MISSING"
             ]
           }
         }

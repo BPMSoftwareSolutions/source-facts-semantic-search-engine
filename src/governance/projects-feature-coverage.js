@@ -154,6 +154,16 @@ function resolvesDuplicateDisposition(document, fingerprint, canonicalFeatures, 
 function resolvesEvaluationComparison(candidate, fingerprint, canonicalFeatures, proposals) {
   if (canonicalFeatures.some((feature) => feature.fingerprint === fingerprint)) return "EXACT_FEATURE_MATCH";
   if (proposals.some((proposal) => proposal.fingerprint === fingerprint)) return "DUPLICATE_FEATURE_PROPOSAL";
+  const candidateEvidence = candidate.evidence ?? {};
+  const overlaps = (left = [], right = []) => left.some((value) => right.includes(value));
+  const sharesEvidenceCluster = proposals.some((proposal) => (
+    overlaps(candidateEvidence.sourceFiles, proposal.evidence.sourceFiles)
+    && overlaps(candidateEvidence.mechanics, proposal.evidence.mechanics)
+    && (candidateEvidence.symbols?.length === 0
+      || proposal.evidence.symbols.length === 0
+      || overlaps(candidateEvidence.symbols, proposal.evidence.symbols))
+  ));
+  if (sharesEvidenceCluster) return "OVERLAPPING_FEATURES_REQUIRE_REVIEW";
   const featureId = candidate.feature?.candidateFeatureId;
   if (canonicalFeatures.some((feature) => feature.featureId === featureId)
     || proposals.some((proposal) => proposal.featureId === featureId)) {
@@ -178,11 +188,11 @@ function proposalMatchesOccurrence(proposal, occurrence) {
 function classifiesFeatureCoverage(occurrence, proposals) {
   if (occurrence.lineageDisposition === "LINEAGE_CONFIRMED") return "FEATURE_COVERED";
   if (occurrence.lineageDisposition === "MULTIPLE_CANDIDATE_SCENARIOS") return "FEATURE_LINEAGE_AMBIGUOUS";
-  if (["MECHANICAL_ADAPTER_OPERATION", "KERNEL_PRIMITIVE"].includes(occurrence.posture)) return "NOT_CAPABILITY_MEANING";
+  if (occurrence.lineageDisposition === "LINEAGE_INFERRED_PENDING_REVIEW") return "FEATURE_COVERAGE_PROPOSED";
   const matching = proposals.filter((proposal) => proposalMatchesOccurrence(proposal, occurrence));
   if (matching.length > 1) return "FEATURE_LINEAGE_AMBIGUOUS";
   if (matching.length === 1) {
-    return matching[0].lifecycle === "ADMITTED" ? "FEATURE_COVERED" : "FEATURE_PROPOSAL_REVIEW_REQUIRED";
+    return matching[0].lifecycle === "ADMITTED" ? "FEATURE_COVERED" : "FEATURE_COVERAGE_PROPOSED";
   }
   return "FEATURE_COVERAGE_MISSING";
 }
@@ -196,6 +206,11 @@ function clustersUncoveredOccurrences(occurrences) {
       clusterId,
       modulePath: occurrence.modulePath,
       responsibility: occurrence.symbolName ?? null,
+      clusterKind: occurrence.symbolName === null
+        ? "SUPPORTING_IMPLEMENTATION_CLUSTER"
+        : "RESPONSIBILITY_EVIDENCE_CLUSTER",
+      featureCandidateDisposition: "FEATURE_CANDIDACY_NOT_EVALUATED",
+      inferenceEligibility: "REQUIRES_FEATURE_SHAPING_REVIEW",
       occurrences: 0,
       mechanics: new Set(),
       authorityFamilies: new Set(),
@@ -229,7 +244,7 @@ function projectsEntityCoverage({ authorityDocuments, scenarioConformance, propo
   const proposedResponsibilities = proposals.flatMap((proposal) => proposal.responsibilities.map((responsibility) => Object.freeze({
     responsibilityId: responsibility.candidateResponsibilityId,
     source: responsibility.sourceFile ?? null,
-    featureCoveragePosture: proposal.lifecycle === "ADMITTED" ? "FEATURE_COVERED" : "FEATURE_PROPOSAL_REVIEW_REQUIRED",
+    featureCoveragePosture: proposal.lifecycle === "ADMITTED" ? "FEATURE_COVERED" : "FEATURE_COVERAGE_PROPOSED",
   })));
   const uncoveredResponsibilities = uncoveredClusters.map((cluster) => Object.freeze({
     responsibilityId: cluster.responsibility,
@@ -238,25 +253,33 @@ function projectsEntityCoverage({ authorityDocuments, scenarioConformance, propo
   }));
 
   return Object.freeze({
-    authoritySubjects: Object.freeze(authorityDocuments.map((entry) => Object.freeze({
-      authorityFile: entry.filePath,
-      featureCoveragePosture: lineageAuthorityFiles.has(entry.filePath)
-        ? "FEATURE_COVERED"
-        : proposalAuthoritySubjects.has(entry.filePath)
-          ? "FEATURE_PROPOSAL_REVIEW_REQUIRED"
-          : "FEATURE_COVERAGE_MISSING",
-    }))),
+    authoritySubjects: Object.freeze(authorityDocuments.map((entry) => {
+      const authorityIdentities = [
+        entry.filePath,
+        entry.document?.subjectId,
+        entry.document?.subject?.subjectId,
+        ...(entry.document?.authority?.mechanics ?? []).map((mechanic) => mechanic.mechanicId),
+      ].filter(Boolean);
+      return Object.freeze({
+        authorityFile: entry.filePath,
+        featureCoveragePosture: lineageAuthorityFiles.has(entry.filePath)
+          ? "FEATURE_COVERED"
+          : authorityIdentities.some((identity) => proposalAuthoritySubjects.has(identity))
+            ? "FEATURE_COVERAGE_PROPOSED"
+            : "FEATURE_COVERAGE_MISSING",
+      });
+    })),
     responsibilities: Object.freeze([...canonicalResponsibilities, ...proposedResponsibilities, ...uncoveredResponsibilities]),
     knowHow: Object.freeze(knowHowRegistry.knowHowRecords.map((record) => Object.freeze({
       knowHowId: record.knowHowId,
       featureCoveragePosture: proposalKnowHow.has(record.knowHowId)
-        ? "FEATURE_PROPOSAL_REVIEW_REQUIRED"
+        ? "FEATURE_COVERAGE_PROPOSED"
         : "FEATURE_COVERAGE_MISSING",
     }))),
     healingDrafts: Object.freeze(healingDraftRegistry.drafts.map((draft) => Object.freeze({
       draftFile: draft.draftFile,
       featureCoveragePosture: proposalHealingDrafts.has(draft.draftFile)
-        ? "FEATURE_PROPOSAL_REVIEW_REQUIRED"
+        ? "FEATURE_COVERAGE_PROPOSED"
         : "FEATURE_COVERAGE_MISSING",
     }))),
   });
@@ -358,19 +381,48 @@ export function projectsFeatureCoverage({ authorityDocuments, proposalBatches, e
     healingDraftRegistry,
   });
   const scenarioSummary = scenarioConformance.summary;
+  const pendingProposals = proposals.filter((proposal) => proposal.lifecycle !== "ADMITTED");
+  const countsEntityPostures = (entries) => {
+    const counts = {};
+    for (const entry of entries) counts[entry.featureCoveragePosture] = (counts[entry.featureCoveragePosture] ?? 0) + 1;
+    return counts;
+  };
+  const authorityByPosture = countsEntityPostures(entityCoverage.authoritySubjects);
+  const clustersByKind = {};
+  for (const cluster of uncoveredClusters) clustersByKind[cluster.clusterKind] = (clustersByKind[cluster.clusterKind] ?? 0) + 1;
   return Object.freeze({
     summary: Object.freeze({
       canonicalFeatures: scenarioSummary.featuresDiscovered,
+      proposedFeatures: pendingProposals.length,
+      canonicalScenarios: scenarioSummary.scenariosDiscovered,
+      proposedScenarios: pendingProposals.reduce((count, proposal) => count + proposal.scenarios.length, 0),
       scenarios: scenarioSummary.scenariosDiscovered,
       fullyConformantScenarios: scenarioSummary.scenariosConformant,
-      partiallyConformantScenarios: scenarioSummary.scenariosDiscovered - scenarioSummary.scenariosConformant,
-      featureProposalsPendingReview: proposals.filter((proposal) => proposal.lifecycle !== "ADMITTED").length,
-      uncoveredFeatureClusters: uncoveredClusters.length,
+      scenariosStructurallyClosed: scenarioSummary.scenariosStructurallyClosed,
+      scenariosStructurallyIncomplete: scenarioSummary.scenariosStructurallyIncomplete,
+      scenariosStructuralStatusNotEvaluated: scenarioSummary.scenariosStructuralStatusNotEvaluated,
+      scenariosExecutionEvaluated: scenarioSummary.scenariosExecutionEvaluated,
+      scenariosRuntimeNotEvaluated: scenarioSummary.byRuntimeConformance.NOT_EVALUATED ?? 0,
+      scenariosWithLineageQualityFindings: scenarioSummary.scenariosWithLineageQualityFindings,
+      featureProposalsPendingReview: pendingProposals.length,
+      unresolvedEvidenceClusters: uncoveredClusters.length,
+      supportingImplementationClusters: clustersByKind.SUPPORTING_IMPLEMENTATION_CLUSTER ?? 0,
+      responsibilityEvidenceClusters: clustersByKind.RESPONSIBILITY_EVIDENCE_CLUSTER ?? 0,
+      confirmedFeatureCandidateClusters: 0,
       capabilityRelationsProposed: proposals.flatMap((proposal) => proposal.capabilityRelations ?? []).length,
       liveInferenceEvaluations: liveInferenceEvaluations.length,
       duplicateProposalsPrevented: proposals.filter((proposal) => ["EXACT_FEATURE_MATCH", "DUPLICATE_FEATURE_PROPOSAL"].includes(proposal.duplicateDisposition)).length,
+      mechanicsWithCanonicalLineage: byPosture.FEATURE_COVERED ?? 0,
+      mechanicsWithProposedLineage: byPosture.FEATURE_COVERAGE_PROPOSED ?? 0,
+      mechanicsWithAmbiguousLineage: byPosture.FEATURE_LINEAGE_AMBIGUOUS ?? 0,
+      mechanicsWithoutLineage: byPosture.FEATURE_COVERAGE_MISSING ?? 0,
+      authorityWithCanonicalLineage: authorityByPosture.FEATURE_COVERED ?? 0,
+      authorityWithProposedLineage: authorityByPosture.FEATURE_COVERAGE_PROPOSED ?? 0,
+      authorityWithAmbiguousLineage: authorityByPosture.FEATURE_LINEAGE_AMBIGUOUS ?? 0,
+      authorityWithoutLineage: authorityByPosture.FEATURE_COVERAGE_MISSING ?? 0,
       unclassifiedMechanics: byPosture.FEATURE_COVERAGE_MISSING ?? 0,
       byPosture: Object.freeze(byPosture),
+      authorityByPosture: Object.freeze(authorityByPosture),
     }),
     proposals: Object.freeze(proposalsWithObservedCoverage),
     liveInferenceEvaluations: Object.freeze(liveInferenceEvaluations),

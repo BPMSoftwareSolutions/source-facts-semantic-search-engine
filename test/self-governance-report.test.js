@@ -1341,7 +1341,35 @@ test("live feature evaluations are discovered and compared without becoming feat
   }
 });
 
-test("projectsSelfGovernanceReport makes canonical feature coverage primary and keeps inferred coverage review-required", async () => {
+test("live feature comparison detects an overlapping evidence cluster when the model renames the feature", async () => {
+  const admittedProposal = buildsFeatureCoverageProposal();
+  const renamedCandidate = buildsFeatureCoverageProposal();
+  renamedCandidate.feature.candidateFeatureId = "alternate-other-failure";
+  renamedCandidate.scenarios[0].candidateScenarioId = "alternate-other-scenario";
+  renamedCandidate.scenarios[0].primaryObligationId = "alternate-other-obligation";
+  renamedCandidate.obligations[0].candidateObligationId = "alternate-other-obligation";
+  renamedCandidate.obligations[0].scenarioId = "alternate-other-scenario";
+  renamedCandidate.responsibilities[0].candidateResponsibilityId = "alternate-other-responsibility";
+  renamedCandidate.responsibilities[0].scenarioId = "alternate-other-scenario";
+  renamedCandidate.responsibilities[0].obligationId = "alternate-other-obligation";
+  renamedCandidate.featureFingerprint = createsProposalFeatureFingerprint(renamedCandidate);
+  renamedCandidate.inference = { resolvedModel: "gemini-flash-latest", requestId: "renamed-live" };
+  renamedCandidate.queryEvidence = { inputHash: "sha256:q", resultHash: "sha256:r", rowCount: 1 };
+
+  const report = await projectsSelfGovernanceReport({
+    index: buildsSyntheticIndex(),
+    repositoryId: "renamed-live-feature-test",
+    featureCoverageProposalBatches: [{ filePath: "reviews/other.feature.json", document: admittedProposal }],
+    featureCoverageInferenceEvaluationBatches: [{
+      filePath: "reviews/live/renamed.feature.json",
+      document: wrapsFeatureCoverageInferenceEvaluation(renamedCandidate, { evaluationId: "renamed-evaluation" }),
+    }],
+  });
+  await validatesSelfGovernanceReport(report);
+  assert.equal(report.featureCoverage.liveInferenceEvaluations[0].comparisonDisposition, "OVERLAPPING_FEATURES_REQUIRE_REVIEW");
+});
+
+test("projectsSelfGovernanceReport separates canonical, proposed, structural, and runtime status", async () => {
   const index = buildsSyntheticIndex();
   const canonical = buildsCanonicalLineageContract();
   const authorityDocuments = [buildsAuthorityDocumentEntry("contracts/example-capability.json", canonical)];
@@ -1355,11 +1383,56 @@ test("projectsSelfGovernanceReport makes canonical feature coverage primary and 
   await validatesSelfGovernanceReport(report);
 
   assert.equal(report.featureCoverage.summary.canonicalFeatures, 1);
+  assert.equal(report.featureCoverage.summary.proposedFeatures, 1);
+  assert.equal(report.featureCoverage.summary.canonicalScenarios, 1);
+  assert.equal(report.featureCoverage.summary.proposedScenarios, 1);
+  assert.equal(report.featureCoverage.summary.scenariosStructurallyClosed, 1);
+  assert.equal(report.featureCoverage.summary.scenariosExecutionEvaluated, 0);
+  assert.equal(report.featureCoverage.summary.scenariosRuntimeNotEvaluated, 1);
+  assert.equal(report.featureCoverage.summary.fullyConformantScenarios, 0);
+  assert.equal("partiallyConformantScenarios" in report.featureCoverage.summary, false);
   assert.equal(report.featureCoverage.summary.featureProposalsPendingReview, 1);
   assert.equal(report.featureCoverage.proposals[0].fingerprintVerified, true);
   assert.equal(report.featureCoverage.proposals[0].duplicateDisposition, "NEW_FEATURE_CANDIDATE");
   assert.equal(report.occurrences.find((occurrence) => occurrence.modulePath === "src/example.js").featureCoveragePosture, "FEATURE_COVERED");
-  assert.equal(report.occurrences.find((occurrence) => occurrence.modulePath === "src/other.js").featureCoveragePosture, "FEATURE_PROPOSAL_REVIEW_REQUIRED");
+  assert.equal(report.occurrences.find((occurrence) => occurrence.modulePath === "src/other.js").featureCoveragePosture, "FEATURE_COVERAGE_PROPOSED");
+  assert.equal(report.featureCoverage.summary.mechanicsWithProposedLineage, 1);
+  assert.equal(report.featureCoverage.summary.mechanicsWithoutLineage, 0);
+  assert.equal(report.scenarioConformance.features[0].classifications[0].relationship, "SOURCE_LINEAGE_CLASSIFICATION");
+  assert.equal(report.scenarioConformance.features[0].scenarios[0].structuralStatus, "STRUCTURALLY_CLOSED");
+  assert.equal(report.scenarioConformance.features[0].scenarios[0].runtimeConformance, "NOT_EVALUATED");
+});
+
+test("canonical lineage quality findings expose projection mismatches and implementation variants", async () => {
+  const canonical = buildsCanonicalLineageContract();
+  canonical.lineage.obligations[0].statement = "The example must be projected from admitted authority.";
+  canonical.lineage.responsibilities.push({
+    responsibilityId: "resolves-example-projected-variant",
+    obligationId: "produce-example",
+    artifactId: "example-projected-body",
+    responsibilityType: "semantic-execution",
+  });
+  canonical.artifacts.push({
+    artifactId: "example-projected-body",
+    relativePath: "src/other.js",
+    relationships: [{ relationshipType: "derived-from", artifactId: "example-body" }],
+    proof: { verifierIds: ["example-verifier"] },
+  });
+
+  const report = await projectsSelfGovernanceReport({
+    index: buildsSyntheticIndex(),
+    repositoryId: "lineage-quality-test",
+    authorityDocuments: [buildsAuthorityDocumentEntry("contracts/example-lineage.json", canonical)],
+  });
+  await validatesSelfGovernanceReport(report);
+
+  const scenario = report.scenarioConformance.features[0].scenarios[0];
+  assert.deepEqual(scenario.lineageQualityFindings, [
+    "IMPLEMENTATION_VARIANTS_DECLARED_AS_DISTINCT_RESPONSIBILITIES",
+    "PROJECTION_OBLIGATION_HAS_NO_PROJECTING_RELATIONSHIP",
+  ]);
+  assert.equal(scenario.structuralStatus, "STRUCTURALLY_CLOSED");
+  assert.equal(scenario.runtimeConformance, "NOT_EVALUATED");
 });
 
 test("projectsSelfGovernanceReport excludes broader repository authority from a bounded workspace subject", async () => {

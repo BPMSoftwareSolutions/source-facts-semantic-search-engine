@@ -1,11 +1,11 @@
 # Source Facts Self-Governance Report
 
-Feature Coverage and Scenario Conformance View
+Honest Feature Coverage and Scenario Evaluation View
 
 | | |
 |---|---|
 | **Report type** | `source-facts-self-governance-report.v1` |
-| **Generated** | 2026-08-04T02:10:38.313Z |
+| **Generated** | 2026-08-04T11:56:56.233Z |
 | **Repository** | source-facts-query-console |
 | **Workspace** | `C:\lab\repos\source-facts-semantic-search-engine\source-facts-query-console` |
 | **Scan ID** | ea4e3671cdab66ac6953d4d036137e21ea79dec40d0449003f98783e81518827 |
@@ -13,32 +13,45 @@ Feature Coverage and Scenario Conformance View
 
 ## Executive Summary
 
-This report is organized around canonical feature coverage and scenario closure. Static
-mechanics, authority documents, wiring, reviews, know-how, and healing drafts are
-supporting evidence only. They cannot establish conformance without an explicit
-feature → scenario → responsibility → obligation → authority → execution → proof lineage and a passing
-execution proof.
+This report keeps four independent questions separate: whether lineage is canonical or proposed,
+whether the declared structure is closed, whether execution was evaluated, and whether a proof
+passed. Static source evidence and live LLM inference calls can support discovery, but neither is
+a runtime execution receipt for a scenario.
 
-| Feature coverage posture | Count |
+| Dimension | Count |
 |---|---:|
-| Canonical features | 0 |
-| Scenarios | 0 |
-| Fully conformant scenarios | 0 |
-| Partially conformant scenarios | 0 |
-| Feature proposals pending review | 1 |
-| Live inference evaluations | 1 |
-| Uncovered feature-inference clusters | 0 |
-| Optional capability relations proposed | 0 |
+| Canonical feature declarations | 0 |
+| Proposed features, not admitted | 1 |
+| Canonical scenarios | 0 |
+| Proposed scenarios, not admitted | 3 |
+| Canonical scenarios structurally closed | 0 |
+| Canonical scenarios structurally incomplete | 0 |
+| Canonical scenarios with structural status not evaluated | 0 |
+| Canonical scenarios with execution evaluated | 0 |
+| Canonical scenarios with runtime conformance `NOT_EVALUATED` | 0 |
+| Canonical scenarios conformant by execution proof | 0 |
+| Canonical scenarios with lineage-quality findings | 0 |
+| Mechanics with canonical scenario lineage | 0 |
+| Mechanics with proposed scenario lineage | 4 |
+| Mechanics with ambiguous scenario lineage | 0 |
+| Mechanics without scenario lineage | 0 |
+| Authority documents with canonical scenario lineage | 0 |
+| Authority documents with proposed scenario lineage | 3 |
+| Authority documents with ambiguous scenario lineage | 0 |
+| Authority documents without scenario lineage | 4 |
+| Unresolved responsibility-evidence clusters | 0 |
+| Clusters confirmed as feature candidates | 0 |
+| Live LLM inference evaluations | 1 |
+| Optional capability relations proposed from evidence | 0 |
 | Duplicate proposals prevented | 0 |
-| Unclassified mechanics | 0 |
 
 ## Feature Coverage Proposals
 
-Proposals are inferred coverage candidates, not canonical feature authority.
+These are inferred candidates. They do not become canonical feature or scenario lineage until admitted into canonical authority.
 
-| Proposed feature | Evidence cluster | Scenarios | Coverage gained | Status | Duplicate check |
+| Proposed feature | Evidence cluster | Scenarios | Responsibilities | Coverage posture | Duplicate check |
 |---|---|---:|---:|---|---|
-| `apply-query-console-boundary-policies` — Apply query-console boundary policies | 3 responsibility symbols, 4 targeted object-construction mechanics (4 in source file) | 3 | 3 responsibilities | `FEATURE_PROPOSAL_REVIEW_REQUIRED` | `NEW_FEATURE_CANDIDATE` |
+| `apply-query-console-boundary-policies` — Apply query-console boundary policies | 3 symbols; 4 matching object-construction mechanics | 3 | 3 | `FEATURE_COVERAGE_PROPOSED` | `NEW_FEATURE_CANDIDATE` |
 |  | Fingerprint: `sha256:2ecc8b28b9d8df67feea8dad2e9cca4c57faf22659e9c494f3b5412185062c19` (verified) |  |  |  |  |
 
 ### Proposed Feature: `apply-query-console-boundary-policies`
@@ -67,41 +80,41 @@ Feature: Apply query-console boundary policies
     And no undeclared third-party origin is admitted
 ```
 
-Evidence: `source-facts-query-console/src/csp-policy-adapter.mjs`, `source-facts-query-console/src/loopback-bind-adapter.mjs`, `source-facts-query-console/src/route-dispatch-adapter.mjs`; symbols `classifiesLoopbackBind`, `classifiesRoute`, `projectsCspPolicy`; know-how .
+Evidence files: `source-facts-query-console/src/csp-policy-adapter.mjs`, `source-facts-query-console/src/loopback-bind-adapter.mjs`, `source-facts-query-console/src/route-dispatch-adapter.mjs`; symbols: `classifiesLoopbackBind`, `classifiesRoute`, `projectsCspPolicy`; know-how: none.
 
-## Live Feature-Inference Evaluations
+## Live LLM Feature-Inference Evaluations
 
-These are real model calls over deterministic query clusters. They are observational test evidence only: they do not establish feature coverage or capability placement.
+These are receipts from real model calls over deterministic query results. They test the inference target, but remain observational discovery evidence: they neither admit a feature nor execute a product scenario.
 
 | Candidate feature | Model call | Query receipt | Candidate comparison | Optional capability relation | Lifecycle |
 |---|---|---|---|---|---|
-| `apply-query-console-boundary-policies` — Apply Query Console Boundary Policies | `gemini-flash-latest`; 11,158 tokens; 13,043 ms; request `sha256:27f331a72981a11c8eb0b9296c49699ff647e8c399734b06b7e9c8dc974efb20`; response `sha256:de7a3dd2f7f99b0e9949bb983725759ab5812e2fa032a4388c2404d1c3d95896` | 4 rows; input `sha256:04583cc3b4aa375358c0a9c021b94478decb0a9a97f3282e5066b57a07b5c174`; result `sha256:89d0a0a484ca52f313cf70c007c15cac57a5a1417e0fb3dd9ed84daf25df1b3a` | `OVERLAPPING_FEATURES_REQUIRE_REVIEW` | `NO_CAPABILITY_RELATION_DETECTED` | `OBSERVATIONAL_NOT_ADMISSIBLE` |
-|  | Evaluation: `reviews/live-evaluations/query-console-boundary.feature-coverage-inference-evaluation.json` | Fingerprint: `sha256:55c9595d8213f99e4856c2e5f154ef1de021ecbac8b2a58576056f6bf712c0d3` |  |  |  |
+| `apply-query-console-boundary-policies` — Apply Query Console Boundary Policies | `gemini-flash-latest`; 10,485 tokens; 11,076 ms; request `sha256:c1434ae9a6b740bfcaa4497dffe30648c06bc5b90e25d3f149a533e2e385aebc`; response `sha256:2f634a73318dfb286f403ae450fc5e5191aa95dd2ba5b10e67478fc712f05092` | 4 rows; input `sha256:859a25c565c0bc6474427b49c75651460a6ec44132e97dc6f24f7242204d7dad`; result `sha256:ccc3fd6fac15d37eb7bc3121439d471f34425ada0f09b1fa545bf3b30af28cee` | `OVERLAPPING_FEATURES_REQUIRE_REVIEW` | `NO_CAPABILITY_RELATION_DETECTED` | `OBSERVATIONAL_NOT_ADMISSIBLE` |
+|  | Evaluation: `reviews/live-evaluations/query-console-boundary.feature-coverage-inference-evaluation.json` | Fingerprint: `sha256:9eb128922546b3094202025b95d39b0ad6f9581d967b1b192c35aff31688d393` |  |  |  |
 
 ## Canonical Feature Drill-Down
 
-**No canonical feature lineage is declared for this report subject.** The scan can inventory static mechanics, but it cannot make a scenario-conformance claim. The next required authority is a canonical feature declaration for this workspace.
+**No canonical feature lineage is declared for this report subject.** Static mechanics and inference proposals can be inventoried, but no canonical scenario structural or runtime verdict can be made.
 
-## Unclassified Inventory
+## Evidence Without Canonical Lineage
 
-These facts are inside the report subject but are not allowed to influence a
-feature or scenario verdict until explicit lineage places them on the spine.
+These facts are inside the report subject but have no admitted scenario lineage. A proposal is
+shown as proposed coverage; it is never counted as canonical coverage.
 
 | Inventory | Count | Disposition |
 |---|---:|---|
-| Static mechanics without scenario lineage | 0 | `NO_SCENARIO_LINEAGE` |
-| Authority documents without canonical scenario lineage | 7 | `AUTHORITY_WITHOUT_SCENARIO_LINEAGE` |
-| Admitted know-how without obligation lineage | 0 | `UNCLASSIFIED_KNOW_HOW` |
-| Healing drafts without a scenario target | 0 | `HEALING_WITHOUT_SCENARIO_TARGET` |
+| Static mechanics without canonical or proposed lineage | 0 | `NO_SCENARIO_LINEAGE` |
+| Authority documents without canonical scenario lineage | 7 | inspect per-item posture below |
+| Admitted know-how without canonical obligation lineage | 0 | inspect per-item posture below |
+| Healing drafts without a canonical scenario target | 0 | `HEALING_WITHOUT_CANONICAL_SCENARIO_TARGET` |
 
-### Authority without scenario lineage
+### Authority without canonical scenario lineage
 
 - `source-facts-query-console/contracts/body-size-limit.authority.json` (bound-semantic-execution-authority.v1) — `FEATURE_COVERAGE_MISSING`
-- `source-facts-query-console/contracts/loopback-bind.authority.json` (bound-semantic-execution-authority.v1) — `FEATURE_PROPOSAL_REVIEW_REQUIRED`
+- `source-facts-query-console/contracts/loopback-bind.authority.json` (bound-semantic-execution-authority.v1) — `FEATURE_COVERAGE_PROPOSED`
 - `source-facts-query-console/contracts/loopback-bind.bundle.json` (semantic-execution-bundle.v1) — `FEATURE_COVERAGE_MISSING`
-- `source-facts-query-console/contracts/query-console-csp-policy.authority.json` (bound-semantic-execution-authority.v1) — `FEATURE_PROPOSAL_REVIEW_REQUIRED`
+- `source-facts-query-console/contracts/query-console-csp-policy.authority.json` (bound-semantic-execution-authority.v1) — `FEATURE_COVERAGE_PROPOSED`
 - `source-facts-query-console/contracts/query-console-csp-policy.bundle.json` (semantic-execution-bundle.v1) — `FEATURE_COVERAGE_MISSING`
-- `source-facts-query-console/contracts/route-dispatch.authority.json` (bound-semantic-execution-authority.v1) — `FEATURE_PROPOSAL_REVIEW_REQUIRED`
+- `source-facts-query-console/contracts/route-dispatch.authority.json` (bound-semantic-execution-authority.v1) — `FEATURE_COVERAGE_PROPOSED`
 - `source-facts-query-console/contracts/route-dispatch.bundle.json` (semantic-execution-bundle.v1) — `FEATURE_COVERAGE_MISSING`
 
 ## Subject Boundary
@@ -121,5 +134,5 @@ Excluded evidence is not called orphaned: it belongs to a different subject and 
 
 ## Disposition
 
-`OBSERVATIONAL_NO_GATE_APPLIED` — this static run does not execute scenario proofs or gate a build. A scenario remains non-conformant until its declared responsibilities, authority, binding, projected body, live execution, and passing proof all close.
+`OBSERVATIONAL_NO_GATE_APPLIED` — this run statically evaluates declarations and wiring evidence. It does not execute product scenarios or their proof verifiers. Runtime conformance therefore remains `NOT_EVALUATED` unless a separate execution receipt is supplied.
 

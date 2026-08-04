@@ -269,9 +269,9 @@ test("projectsSelfGovernanceReport and its formatters surface the healing draft 
 
   const markdown = formatsSelfGovernanceReportMarkdown(report);
   const summary = formatsSelfGovernanceReportSummary(report);
-  assert.equal(markdown.includes("### Healing drafts awaiting a scenario target"), true);
+  assert.equal(markdown.includes("### Healing drafts without a canonical scenario target"), true);
   assert.equal(markdown.includes("success-response-serialization.connective-tissue-draft.json"), true);
-  assert.equal(summary.includes("Healing drafts without scenario target: 1"), true);
+  assert.equal(summary.includes("Healing drafts without canonical scenario target: 1"), true);
 });
 
 test("cli govern accepts the healing seam directories and repository override", async () => {

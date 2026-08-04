@@ -1,14 +1,3 @@
-const scenarioBlockerOrder = Object.freeze([
-  "OBLIGATION_UNAUTHORED",
-  "RESPONSIBILITY_UNBOUND",
-  "AUTHORITY_UNSEATED",
-  "BODY_OUTSIDE_REPORT_SUBJECT",
-  "BODY_NOT_OBSERVED",
-  "BODY_AUTHORITY_UNCONNECTED",
-  "EXECUTION_NOT_OBSERVED",
-  "PROOF_RESULT_NOT_OBSERVED",
-]);
-
 function normalizesPath(value) {
   return typeof value === "string" ? value.replaceAll("\\", "/").replace(/^\.\//, "") : null;
 }
@@ -26,6 +15,10 @@ function countsMechanics(occurrences) {
 
 function uniqueSorted(values) {
   return [...new Set(values.filter(Boolean))].sort();
+}
+
+function increments(target, key) {
+  target[key] = (target[key] ?? 0) + 1;
 }
 
 function extractsCanonicalLineageDocuments(authorityDocuments) {
@@ -87,25 +80,23 @@ function projectsResponsibility({
   const bodyOccurrences = bodyFile === null ? [] : occurrencesByFile.get(bodyFile) ?? [];
   const wiring = bodyFile === null ? null : wiringByFile.get(bodyFile) ?? null;
   const proofDeclared = Array.isArray(artifact?.proof?.verifierIds) && artifact.proof.verifierIds.length > 0;
-  const blockers = [];
+  const structuralBlockers = [];
+  const evaluationLimits = [];
 
-  if (artifact === null || bodyFile === null) blockers.push("RESPONSIBILITY_UNBOUND");
-  if (bodyFile !== null && !inReportSubject) blockers.push("BODY_OUTSIDE_REPORT_SUBJECT");
-  if (bodyFile !== null && inReportSubject && !bodyObserved) blockers.push("BODY_NOT_OBSERVED");
-  if (bodyObserved && (wiring === null || !["DIRECT_DATA_AND_RUNTIME", "TRANSITIVE_DATA_AND_RUNTIME"].includes(wiring.wiringDisposition))) {
-    blockers.push("BODY_AUTHORITY_UNCONNECTED");
+  if (artifact === null || bodyFile === null) structuralBlockers.push("RESPONSIBILITY_BINDING_MISSING");
+  if (!proofDeclared) structuralBlockers.push("PROOF_UNDECLARED");
+  if (bodyFile !== null && !inReportSubject) evaluationLimits.push("BODY_NOT_EVALUATED_OUTSIDE_SUBJECT");
+  if (bodyFile !== null && inReportSubject && !bodyObserved) evaluationLimits.push("BODY_NOT_STATICALLY_OBSERVED");
+  if (bodyObserved && wiring?.wiringDisposition === "NOT_DETERMINED_BEYOND_MAX_DEPTH") {
+    evaluationLimits.push("AUTHORITY_WIRING_NOT_EVALUATED_DEPTH_LIMIT");
   }
-  // The source-fact index is static evidence. It does not contain a runtime
-  // execution observation or a passing verifier receipt.
-  blockers.push("EXECUTION_NOT_OBSERVED");
-  blockers.push("PROOF_RESULT_NOT_OBSERVED");
 
   return Object.freeze({
     responsibilityId: responsibility.responsibilityId ?? null,
     responsibilityType: responsibility.responsibilityType ?? null,
     artifactId: responsibility.artifactId ?? null,
     authorityFile,
-    bindingStatus: artifact === null ? "BINDING_MISSING" : "BINDING_DECLARED",
+    bindingStatus: artifact === null || bodyFile === null ? "BINDING_MISSING" : "BINDING_DECLARED",
     bodyFile,
     bodyStatus: bodyFile === null
       ? "BODY_UNDECLARED"
@@ -113,14 +104,41 @@ function projectsResponsibility({
         ? "BODY_OUTSIDE_REPORT_SUBJECT"
         : bodyObserved
           ? "BODY_STATICALLY_OBSERVED"
-          : "BODY_NOT_OBSERVED",
-    wiringStatus: wiring?.wiringDisposition ?? "NONE_OBSERVED",
+          : "BODY_NOT_STATICALLY_OBSERVED",
+    wiringStatus: wiring?.wiringDisposition ?? "WIRING_NOT_STATICALLY_OBSERVED",
     observedMechanics: bodyOccurrences.length,
     mechanicsByType: Object.freeze(countsMechanics(bodyOccurrences)),
-    executionStatus: "EXECUTION_NOT_OBSERVED",
-    proofStatus: proofDeclared ? "PROOF_DECLARED_RESULT_NOT_OBSERVED" : "PROOF_NOT_DECLARED",
-    blockers: Object.freeze(uniqueSorted(blockers)),
+    executionStatus: "EXECUTION_NOT_EVALUATED",
+    proofStatus: proofDeclared ? "PROOF_DECLARED_RESULT_NOT_EVALUATED" : "PROOF_NOT_DECLARED",
+    structuralBlockers: Object.freeze(uniqueSorted(structuralBlockers)),
+    evaluationLimits: Object.freeze(uniqueSorted(evaluationLimits)),
   });
+}
+
+function hasRelationship(artifact, relationshipType) {
+  return (artifact?.relationships ?? []).some((relationship) => relationship.relationshipType === relationshipType);
+}
+
+function derivesWithinResponsibilitySet(responsibilities, artifactsById) {
+  const artifactIds = new Set(responsibilities.map((responsibility) => responsibility.artifactId).filter(Boolean));
+  return responsibilities.some((responsibility) => (artifactsById.get(responsibility.artifactId)?.relationships ?? []).some(
+    (relationship) => relationship.relationshipType === "derived-from" && artifactIds.has(relationship.artifactId),
+  ));
+}
+
+function assessesObligationLineageQuality(obligation, declaredResponsibilities, artifactsById) {
+  const findings = [];
+  if (declaredResponsibilities.length > 1) {
+    findings.push(derivesWithinResponsibilitySet(declaredResponsibilities, artifactsById)
+      ? "IMPLEMENTATION_VARIANTS_DECLARED_AS_DISTINCT_RESPONSIBILITIES"
+      : "MULTIPLE_RESPONSIBILITY_OWNERS_REQUIRE_REVIEW");
+  }
+  if (/\b(?:must|shall)\s+be\s+projected\b|\bis\s+projected\b|\bprojects?\b/i.test(obligation.statement ?? "")
+    && declaredResponsibilities.length > 0
+    && declaredResponsibilities.every((responsibility) => !hasRelationship(artifactsById.get(responsibility.artifactId), "projects"))) {
+    findings.push("PROJECTION_OBLIGATION_HAS_NO_PROJECTING_RELATIONSHIP");
+  }
+  return uniqueSorted(findings);
 }
 
 function projectsFeatureSet({ entry, knownModulePaths, occurrences, wiring, workspaceRelativePrefix }) {
@@ -151,11 +169,16 @@ function projectsFeatureSet({ entry, knownModulePaths, occurrences, wiring, work
   const scenariosByFeature = new Map();
   for (const scenario of lineage.scenarios ?? []) {
     const declaredObligations = obligationsByScenario.get(scenario.scenarioId) ?? [];
-    const scenarioBlockers = [];
-    if (declaredObligations.length === 0) scenarioBlockers.push("OBLIGATION_UNAUTHORED");
+    const structuralBlockers = [];
+    const evaluationLimits = [];
+    const lineageQualityFindings = [];
+    if (declaredObligations.length === 0) structuralBlockers.push("OBLIGATION_UNAUTHORED");
+    if (declaredObligations.length > 1) structuralBlockers.push("SCENARIO_PRIMARY_OBLIGATION_NOT_ATOMIC");
     const obligations = declaredObligations.map((obligation) => {
       const declaredResponsibilities = responsibilitiesByObligation.get(obligation.obligationId) ?? [];
-      if (declaredResponsibilities.length === 0) scenarioBlockers.push("RESPONSIBILITY_UNBOUND");
+      if (declaredResponsibilities.length === 0) structuralBlockers.push("RESPONSIBILITY_UNBOUND");
+      const obligationQualityFindings = assessesObligationLineageQuality(obligation, declaredResponsibilities, artifactsById);
+      lineageQualityFindings.push(...obligationQualityFindings);
       const responsibilities = declaredResponsibilities.map((responsibility) => projectsResponsibility({
         responsibility,
         artifactsById,
@@ -165,21 +188,33 @@ function projectsFeatureSet({ entry, knownModulePaths, occurrences, wiring, work
         wiringByFile,
         workspaceRelativePrefix,
       }));
-      for (const responsibility of responsibilities) scenarioBlockers.push(...responsibility.blockers);
+      for (const responsibility of responsibilities) {
+        structuralBlockers.push(...responsibility.structuralBlockers);
+        evaluationLimits.push(...responsibility.evaluationLimits);
+      }
       return Object.freeze({
         obligationId: obligation.obligationId ?? null,
         statement: obligation.statement ?? "(statement not declared)",
         authorityStatus: "AUTHORITY_DECLARED",
+        lineageQualityFindings: Object.freeze(obligationQualityFindings),
         responsibilities: Object.freeze(responsibilities),
       });
     });
-    const blockers = uniqueSorted(scenarioBlockers);
-    const closureDisposition = scenarioBlockerOrder.find((blocker) => blockers.includes(blocker)) ?? "CONFORMANT";
+    const uniqueStructuralBlockers = uniqueSorted(structuralBlockers);
+    const uniqueEvaluationLimits = uniqueSorted(evaluationLimits);
     const projected = Object.freeze({
       scenarioId: scenario.scenarioId,
       purpose: scenario.purpose ?? "(purpose not declared)",
-      closureDisposition,
-      blockers: Object.freeze(blockers),
+      lineageStatus: "SCENARIO_LINEAGE_CANONICAL",
+      structuralStatus: uniqueStructuralBlockers.length > 0
+        ? "STRUCTURALLY_INCOMPLETE"
+        : uniqueEvaluationLimits.length > 0
+          ? "STRUCTURAL_STATUS_NOT_EVALUATED"
+          : "STRUCTURALLY_CLOSED",
+      runtimeConformance: "NOT_EVALUATED",
+      structuralBlockers: Object.freeze(uniqueStructuralBlockers),
+      evaluationLimits: Object.freeze(uniqueEvaluationLimits),
+      lineageQualityFindings: Object.freeze(uniqueSorted(lineageQualityFindings)),
       obligations: Object.freeze(obligations),
     });
     const entries = scenariosByFeature.get(scenario.featureId) ?? [];
@@ -187,27 +222,37 @@ function projectsFeatureSet({ entry, knownModulePaths, occurrences, wiring, work
     scenariosByFeature.set(scenario.featureId, entries);
   }
 
-  return Object.freeze((lineage.features ?? []).map((feature) => Object.freeze({
+  return Object.freeze((lineage.features ?? []).map((feature) => {
+    const scenarios = scenariosByFeature.get(feature.featureId) ?? [];
+    return Object.freeze({
       featureId: feature.featureId,
       purpose: feature.purpose ?? "(feature purpose not declared)",
       authorityFile,
       classifications: Object.freeze(lineage.projectId === undefined ? [] : [Object.freeze({
-        relationship: "FEATURE_CLASSIFIED_UNDER_SOURCE_LINEAGE",
+        relationship: "SOURCE_LINEAGE_CLASSIFICATION",
         classificationId: lineage.projectId,
       })]),
-      scenarios: Object.freeze(scenariosByFeature.get(feature.featureId) ?? []),
-    })));
+      lineageQualityFindings: Object.freeze(uniqueSorted(scenarios.flatMap((scenario) => scenario.lineageQualityFindings))),
+      scenarios: Object.freeze(scenarios),
+    });
+  }));
 }
 
 function summarizes(features, lineageDocumentCount) {
   const scenarios = features.flatMap((feature) => feature.scenarios);
   const obligations = scenarios.flatMap((scenario) => scenario.obligations);
   const responsibilities = obligations.flatMap((obligation) => obligation.responsibilities);
-  const byClosureDisposition = {};
-  const byBlocker = {};
+  const byStructuralStatus = {};
+  const byRuntimeConformance = {};
+  const byStructuralBlocker = {};
+  const byEvaluationLimit = {};
+  const byLineageQualityFinding = {};
   for (const scenario of scenarios) {
-    byClosureDisposition[scenario.closureDisposition] = (byClosureDisposition[scenario.closureDisposition] ?? 0) + 1;
-    for (const blocker of scenario.blockers) byBlocker[blocker] = (byBlocker[blocker] ?? 0) + 1;
+    increments(byStructuralStatus, scenario.structuralStatus);
+    increments(byRuntimeConformance, scenario.runtimeConformance);
+    for (const blocker of scenario.structuralBlockers) increments(byStructuralBlocker, blocker);
+    for (const limit of scenario.evaluationLimits) increments(byEvaluationLimit, limit);
+    for (const finding of scenario.lineageQualityFindings) increments(byLineageQualityFinding, finding);
   }
   return Object.freeze({
     lineageDocumentsDiscovered: lineageDocumentCount,
@@ -215,13 +260,21 @@ function summarizes(features, lineageDocumentCount) {
     scenariosDiscovered: scenarios.length,
     obligationsDiscovered: obligations.length,
     responsibilitiesDiscovered: responsibilities.length,
-    scenariosConformant: byClosureDisposition.CONFORMANT ?? 0,
-    byClosureDisposition: Object.freeze(byClosureDisposition),
-    byBlocker: Object.freeze(byBlocker),
+    scenariosStructurallyClosed: byStructuralStatus.STRUCTURALLY_CLOSED ?? 0,
+    scenariosStructurallyIncomplete: byStructuralStatus.STRUCTURALLY_INCOMPLETE ?? 0,
+    scenariosStructuralStatusNotEvaluated: byStructuralStatus.STRUCTURAL_STATUS_NOT_EVALUATED ?? 0,
+    scenariosExecutionEvaluated: scenarios.filter((scenario) => scenario.runtimeConformance !== "NOT_EVALUATED").length,
+    scenariosConformant: byRuntimeConformance.CONFORMANT ?? 0,
+    scenariosWithLineageQualityFindings: scenarios.filter((scenario) => scenario.lineageQualityFindings.length > 0).length,
+    byStructuralStatus: Object.freeze(byStructuralStatus),
+    byRuntimeConformance: Object.freeze(byRuntimeConformance),
+    byStructuralBlocker: Object.freeze(byStructuralBlocker),
+    byEvaluationLimit: Object.freeze(byEvaluationLimit),
+    byLineageQualityFinding: Object.freeze(byLineageQualityFinding),
   });
 }
 
-/** Projects the feature -> scenario -> responsibility -> obligation spine. */
+/** Projects independent lineage, structural, runtime, and proof dimensions. */
 export function projectsScenarioConformance({
   authorityDocuments,
   knownModulePaths,
