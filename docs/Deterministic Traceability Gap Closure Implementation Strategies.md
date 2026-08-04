@@ -54,6 +54,46 @@ The evidence was regenerated during this validation. Temporary evidence paths ar
 
 The checked-in governance report is deliberately not treated as current for the fresh source index. Its values are useful for proving the generator's schema mismatch, but its different index identity prevents it from participating in a valid closure receipt.
 
+### Commands that established the evidence identities
+
+These are projection commands, not relational queries. They establish the
+three queryable SourceFacts indexes used by every query in this document.
+
+```powershell
+$evidenceRoot = Join-Path ([System.IO.Path]::GetTempPath()) 'sourcefacts-gap-closure-evidence'
+$srcIndex = Join-Path $evidenceRoot 'src-index.json'
+$contractIndex = Join-Path $evidenceRoot 'contracts-index.json'
+$testIndex = Join-Path $evidenceRoot 'test-index.json'
+$graphPath = Join-Path $evidenceRoot 'call-graph.json'
+New-Item -ItemType Directory -Path $evidenceRoot -Force | Out-Null
+
+node src/cli.js project --workspace ./src --workspace-id gap-closure-src `
+  --output $srcIndex --summary
+
+node src/cli.js project --workspace ./contracts --workspace-id gap-closure-contracts `
+  --output $contractIndex --summary
+
+node src/cli.js project --workspace ./test --workspace-id gap-closure-tests `
+  --output $testIndex --summary
+
+node src/cli.js call-graph --index $srcIndex --output $graphPath --pretty --summary
+```
+
+SourceFacts does not currently expose index metadata as a relational collection.
+The IDs in the evidence table were therefore asserted directly from the
+projected artifacts after the SourceFacts commands completed:
+
+```powershell
+@($srcIndex, $contractIndex, $testIndex) | ForEach-Object {
+  $index = Get-Content -Raw -LiteralPath $_ | ConvertFrom-Json
+  [pscustomobject]@{
+    path = $_
+    indexId = $index.indexId
+    scanId = $index.manifest.scanId
+  }
+}
+```
+
 ### Evidence-plane failures discovered by execution
 
 | Failure | Actual result | Required implementation consequence |
@@ -65,9 +105,51 @@ The checked-in governance report is deliberately not treated as current for the 
 
 These are closure blockers, not incidental tooling notes. Documentation cannot be fully query-driven while the evidence artifacts themselves cannot be safely projected or selected.
 
+### Commands that established the evidence-plane failures
+
+The repository-wide projection failure was reproduced with:
+
+```powershell
+$repositoryIndex = Join-Path $evidenceRoot 'repository-index.json'
+node src/cli.js project --workspace . --workspace-id gap-closure-repository `
+  --output $repositoryIndex --summary
+```
+
+The large governance-report projection failure was reproduced by staging the
+exact report as the only workspace member and invoking the same SourceFacts
+projector:
+
+```powershell
+$reportStage = Join-Path $evidenceRoot 'governance-report-stage'
+$reportIndex = Join-Path $evidenceRoot 'governance-report-index.json'
+New-Item -ItemType Directory -Path $reportStage -Force | Out-Null
+Copy-Item -LiteralPath artifacts/governance/source-facts-self-governance-report.json `
+  -Destination (Join-Path $reportStage 'source-facts-self-governance-report.json') -Force
+
+node src/cli.js project --workspace $reportStage `
+  --workspace-id gap-closure-governance-report --output $reportIndex --summary
+```
+
+The fresh graph projection failure used the same pattern:
+
+```powershell
+$graphStage = Join-Path $evidenceRoot 'call-graph-stage'
+$graphDocumentIndex = Join-Path $evidenceRoot 'call-graph-document-index.json'
+New-Item -ItemType Directory -Path $graphStage -Force | Out-Null
+Copy-Item -LiteralPath $graphPath -Destination (Join-Path $graphStage 'call-graph.json') -Force
+
+node src/cli.js project --workspace $graphStage `
+  --workspace-id gap-closure-call-graph --output $graphDocumentIndex --summary
+```
+
+Both artifact projections failed before a relational query could be executed.
+That absence of a query receipt is part of the finding, not omitted evidence.
+
 ## Current query evidence register
 
-All queries below completed with `RELATIONAL_QUERY_EXECUTED`. Full query text is in the reproduction appendix.
+All queries below completed with `RELATIONAL_QUERY_EXECUTED`. Full query text
+is repeated beside the strategy section it establishes and collected again in
+the reproduction appendix.
 
 | ID | Evidence question | Input/result hashes | Rows | Deterministic finding |
 |---|---|---|---:|---|
@@ -127,11 +209,125 @@ A fresh generator execution against current defaults emitted:
 
 The actual values above are hash-bound artifact assertions, not relational-query receipts, because large-artifact projection currently fails. Strategy task `D1` removes that limitation before closure.
 
+### SourceFacts queries used for Strategy 1
+
+Set the query inputs to the indexes produced in the evidence-baseline section:
+
+```powershell
+$srcIndex = Join-Path $evidenceRoot 'src-index.json'
+$contractIndex = Join-Path $evidenceRoot 'contracts-index.json'
+$testIndex = Join-Path $evidenceRoot 'test-index.json'
+```
+
+#### `G1` — generator implementation surface
+
+```powershell
+$query = @"
+SELECT symbolId, name, sourceReferenceId
+FROM symbols
+WHERE modulePath = 'generate-traceability-docs.js'
+  AND kind = 'function'
+ORDER BY name
+"@
+node src/cli.js query --index $srcIndex --query $query --pretty
+```
+
+This produced three rows: `generatesTraceabilityDocs`,
+`countSymbolsByKind`, and `calculateRate`.
+
+#### `G2` — report properties read by the generator
+
+```powershell
+$query = @"
+SELECT toSymbolCandidate, COUNT(*) AS occurrenceCount
+FROM relationships
+WHERE fromSymbolId = 'generate-traceability-docs.js#function:generatesTraceabilityDocs'
+  AND relationshipKind = 'member-access'
+GROUP BY toSymbolCandidate
+ORDER BY occurrenceCount DESC
+"@
+node src/cli.js query --index $srcIndex --query $query --pretty
+```
+
+This is the query behind the property-access table above. Its recorded result
+hash is `sha256:68e49608d03081a32ebbf60e42f51e927fa4a7cac7431fdafdb08fb9d8ebc4d7`.
+
+#### `G3` — production callers of the generator
+
+```powershell
+$query = @"
+SELECT fromSymbolId, sourceReferenceId
+FROM relationships
+WHERE toSymbolCandidate = 'generatesTraceabilityDocs'
+  AND relationshipKind = 'invocation'
+ORDER BY sourceReferenceId
+"@
+node src/cli.js query --index $srcIndex --query $query --pretty
+```
+
+The sole row is `cli.js#function:runGenerateDocs`.
+
+#### `G4` — test callers of the generator
+
+Run the same query against the independently projected test index:
+
+```powershell
+node src/cli.js query --index $testIndex --query $query --pretty
+```
+
+The result contains zero rows. This establishes the missing focused generator
+test without inferring it from filenames.
+
+#### `C1` — governance-report contract locations
+
+```powershell
+$query = @"
+SELECT pointer, valuePreview, sourceReferenceId
+FROM documents
+WHERE relativePath = 'source-facts-self-governance-report.schema.v1.json'
+  AND pointer IN (
+    '/properties/index/properties/indexId',
+    '/properties/index/properties/scanId',
+    '/properties/scenarioConformance/properties/summary',
+    '/properties/featureCoverage/properties/summary'
+  )
+ORDER BY pointer
+"@
+node src/cli.js query --index $contractIndex --query $query --pretty
+```
+
+Those four rows establish the contract side of the generator/contract mismatch.
+
+#### Non-query artifact assertion used in this section
+
+The generated-versus-actual value table cannot yet be reproduced through a
+SourceFacts relational query because projecting the report overflows the call
+stack. Until `D1` is complete, the exact temporary assertion is:
+
+```powershell
+$report = Get-Content -Raw -LiteralPath `
+  artifacts/governance/source-facts-self-governance-report.json | ConvertFrom-Json
+
+[pscustomobject]@{
+  reportIndexId = $report.index.indexId
+  reportScanId = $report.index.scanId
+  canonicalFeatures = $report.featureCoverage.summary.canonicalFeatures
+  canonicalScenarios = $report.featureCoverage.summary.canonicalScenarios
+  mechanicsWithoutLineage = $report.featureCoverage.summary.mechanicsWithoutLineage
+}
+```
+
+It must be replaced by a registered query receipt before this gap can close.
+
 ### Required implementation order
 
 #### D1. Make generated evidence queryable
 
 **Impact:** `src/project.js`, JSON document projection tests, query fixtures.
+
+**Established by:** the governance-report and graph projection commands in
+“Commands that established the evidence-plane failures.” No relational receipt
+exists because both commands fail before the query stage.
 
 1. Replace `documents.push(...projected.facts)` with bounded iteration or a streaming sink.
 2. Add fixtures larger than the current governance report and call graph.
@@ -145,6 +341,9 @@ The actual values above are hash-bound artifact assertions, not relational-query
 #### D2. Define a metric catalog contract
 
 **Impact:** new `contracts/traceability-metric-catalog.schema.v1.json` and admitted catalog instance.
+
+**Established by:** `G2` for the handwritten property inventory and `C1` for
+the authoritative report-contract locations.
 
 Each metric must declare:
 
@@ -167,6 +366,9 @@ Do not encode report property paths in Markdown template expressions. The catalo
 
 **Impact:** `src/generate-traceability-docs.js`, report/graph validators, new call-graph schema.
 
+**Established by:** the evidence-identity commands, the mismatched source/report
+IDs in the baseline table, and the non-query report assertion shown above.
+
 1. Validate the source index, governance report, graph, metric catalog, and query receipts against schemas.
 2. Require graph `indexId === source index.indexId`.
 3. Require governance subject scope to be compatible with the requested report scope.
@@ -180,6 +382,8 @@ Do not encode report property paths in Markdown template expressions. The catalo
 
 **Impact:** `src/generate-traceability-docs.js`, `src/query.js`, registered query catalog.
 
+**Established by:** `G1`, `G2`, and `C1`.
+
 1. Add query sources for governance-report facts, graph entry points, graph callables, graph edges, and metric receipts.
 2. Execute only admitted catalog queries.
 3. Bind each rendered table row to query ID, input hash, result hash, and row count.
@@ -191,6 +395,9 @@ Do not encode report property paths in Markdown template expressions. The catalo
 #### D5. Fix and close the CLI surface
 
 **Impact:** `src/cli.js`, CLI help, CLI tests.
+
+**Established by:** `G3` for the only executable caller and the `generate-docs`
+custom-input command recorded in the evidence-plane failure table.
 
 1. Add `--report` and `--graph` to admitted value-taking options.
 2. Reject unknown options.
@@ -204,6 +411,9 @@ Do not encode report property paths in Markdown template expressions. The catalo
 #### D6. Build one same-index pipeline
 
 **Impact:** governance orchestration and package scripts.
+
+**Established by:** the separately generated evidence identities and their
+source/report index mismatch.
 
 The pipeline must execute in this order:
 
@@ -226,6 +436,8 @@ No stage may silently load an older default artifact.
 #### D7. Add focused tests and CI gates
 
 `G4` proves generator test invocation count is currently zero.
+
+**Established by:** `G4`, executed against the independent test index.
 
 Required fixtures:
 
@@ -291,11 +503,120 @@ Entry-point kinds currently emitted:
 
 `R4` proves all 692 callable source-fact rows have `isExported = null`. An uncalled exported API therefore cannot be established as a public entry point from the current source index.
 
+### SourceFacts queries used for Strategy 2
+
+#### `R1` — graph implementation impact surface
+
+```powershell
+$query = @"
+SELECT symbolId, name, sourceReferenceId
+FROM symbols
+WHERE modulePath = 'call-graph.js'
+  AND kind = 'function'
+  AND name IN (
+    'projectsCliEntryPointCallGraph',
+    'findsAffectedEntryPoints',
+    'buildsEntryPointInventory',
+    'buildsEntryPointReachability',
+    'buildsCallableInventory',
+    'classifiesCliEntryKinds',
+    'classifiesModuleEntryKinds',
+    'classifiesSyntheticEntryKinds',
+    'resolvesSymbolCandidate'
+  )
+ORDER BY name
+"@
+node src/cli.js query --index $srcIndex --query $query --pretty
+```
+
+The recorded result contains the nine functions named in the query.
+
+#### `R2` — top-level graph orchestration
+
+```powershell
+$query = @"
+SELECT toSymbolCandidate, COUNT(*) AS invocationCount
+FROM relationships
+WHERE fromSymbolId = 'call-graph.js#function:projectsCliEntryPointCallGraph'
+  AND relationshipKind = 'invocation'
+  AND toSymbolCandidate IN (
+    'buildsEntryPointInventory',
+    'buildsEntryPointReachability',
+    'buildsCallableInventory',
+    'summarizesInventory',
+    'buildsRootGraph'
+  )
+GROUP BY toSymbolCandidate
+ORDER BY toSymbolCandidate
+"@
+node src/cli.js query --index $srcIndex --query $query --pretty
+```
+
+The result contains five rows, each with `invocationCount = 1`.
+
+#### `R3` — public graph behaviors invoked by tests
+
+```powershell
+$query = @"
+SELECT toSymbolCandidate, COUNT(*) AS invocationCount
+FROM relationships
+WHERE relationshipKind = 'invocation'
+  AND toSymbolCandidate IN (
+    'projectsCliEntryPointCallGraph',
+    'findsAffectedEntryPoints'
+  )
+GROUP BY toSymbolCandidate
+ORDER BY toSymbolCandidate
+"@
+node src/cli.js query --index $testIndex --query $query --pretty
+```
+
+The only returned behavior is `projectsCliEntryPointCallGraph` with one
+invocation. `findsAffectedEntryPoints` has no test invocation row.
+
+#### `R4` — exported-callable fact completeness
+
+```powershell
+$query = @"
+SELECT isExported, COUNT(*) AS callableCount
+FROM symbols
+WHERE kind IN ('function', 'method', 'constructor', 'class')
+GROUP BY isExported
+ORDER BY isExported
+"@
+node src/cli.js query --index $srcIndex --query $query --pretty
+```
+
+The recorded result is one row:
+
+```json
+{ "isExported": null, "callableCount": 692 }
+```
+
+#### Non-query graph assertion used in this section
+
+The graph-measurement and entry-kind tables come from the fresh graph command,
+not a relational query, because call-graph artifacts are not yet admitted query
+sources and cannot currently be projected as document facts:
+
+```powershell
+node src/cli.js call-graph --index $srcIndex --output $graphPath --pretty --summary
+
+$graph = Get-Content -Raw -LiteralPath $graphPath | ConvertFrom-Json
+$graph.summary
+$graph.inventorySummary
+```
+
+Strategy tasks `R2` and `R6` make these collections queryable. The final closure
+documentation must replace this direct assertion with graph-query receipts.
+
 ### Required implementation order
 
 #### R1. Project export and interface evidence as first-class facts
 
 **Impact:** source scanner contract/dependency or a deterministic local projection overlay, source-index schema, index validator, fixtures.
+
+**Established by:** `R4`.
 
 1. Add `exportDisposition` rather than relying on an optional Boolean: `EXPORTED`, `NOT_EXPORTED`, or `NOT_EVALUATED`.
 2. Preserve export kind: named, default, re-export, CommonJS assignment, or contract-declared API.
@@ -309,6 +630,9 @@ Entry-point kinds currently emitted:
 #### R2. Define and validate the graph artifact contract
 
 **Impact:** new `contracts/call-graph.schema.v1.json`, graph validator, graph writer.
+
+**Established by:** `R1`, `R2`, and the direct fresh-graph assertion. The graph
+is not currently a relational query source, which is part of this task.
 
 The artifact must serialize one canonical edge inventory, not only counts and root-local copies. Every edge must contain:
 
@@ -327,6 +651,9 @@ Every callable must carry incoming and outgoing edge IDs, originating entry-poin
 #### R3. Make the entry-point taxonomy contract-driven
 
 **Impact:** graph taxonomy contract and `buildsEntryPointInventory`/classification functions identified by `R1` and `R2`.
+
+**Established by:** `R1`, `R2`, and the `inventorySummary.entryPointKindCounts`
+direct graph assertion.
 
 Required Round 2 kinds must be declared explicitly:
 
@@ -351,6 +678,9 @@ Each classification rule declares its evidence requirements, product/non-product
 
 **Impact:** `resolvesSymbolCandidate`, invocation projection, import/export binding, member-call resolution.
 
+**Established by:** `R1` for the resolver impact and the direct graph assertion
+for resolved, ambiguous, and unresolved counts.
+
 1. Separate external/library boundaries from internal unresolved calls.
 2. Resolve deterministic imports, re-exports, member calls, and same-module bindings.
 3. Assign every remaining runtime-sensitive edge a specific candidate kind rather than generic `unresolved`.
@@ -364,6 +694,9 @@ Each classification rule declares its evidence requirements, product/non-product
 
 **Impact:** relationship projector and stable synthetic-identity rules.
 
+**Established by:** the direct graph entry-kind assertion and the missing
+callback/event/scheduled categories in its returned inventory.
+
 1. Create stable identities for anonymous callbacks from module path, enclosing callable, registration/reference site, and ordinal.
 2. Model callback registration separately from callback invocation.
 3. Preserve module-scope execution nodes and their order evidence without inferring aggregate execution order.
@@ -375,6 +708,9 @@ Each classification rule declares its evidence requirements, product/non-product
 #### R6. Materialize reverse navigation as queryable evidence
 
 **Impact:** `findsAffectedEntryPoints`, graph query sources, CLI query surface.
+
+**Established by:** `R1` for the reverse-navigation implementation symbol and
+`R3` for its zero focused-test invocation count.
 
 Required reverse queries:
 
@@ -390,6 +726,8 @@ Required reverse queries:
 **Exit condition:** Forward-then-reverse round-trip fixtures return the original edge and entry-point identities for cycles, shared helpers, callbacks, exported APIs, and module-scope execution.
 
 #### R7. Add closure-focused fixtures and gates
+
+**Established by:** `R3` and the current one-behavior graph-test result.
 
 Required fixtures:
 
@@ -449,22 +787,26 @@ The two strategies converge at `D3`/`D4`: deterministic documentation must consu
 
 ```powershell
 $evidenceRoot = Join-Path ([System.IO.Path]::GetTempPath()) 'sourcefacts-gap-closure-evidence'
+$srcIndex = Join-Path $evidenceRoot 'src-index.json'
+$contractIndex = Join-Path $evidenceRoot 'contracts-index.json'
+$testIndex = Join-Path $evidenceRoot 'test-index.json'
+$graphPath = Join-Path $evidenceRoot 'call-graph.json'
 New-Item -ItemType Directory -Path $evidenceRoot -Force | Out-Null
 
 node src/cli.js project --workspace ./src --workspace-id gap-closure-src `
-  --output (Join-Path $evidenceRoot 'src-index.json') --summary
+  --output $srcIndex --summary
 
 node src/cli.js project --workspace ./contracts --workspace-id gap-closure-contracts `
-  --output (Join-Path $evidenceRoot 'contracts-index.json') --summary
+  --output $contractIndex --summary
 
 node src/cli.js project --workspace ./test --workspace-id gap-closure-tests `
-  --output (Join-Path $evidenceRoot 'test-index.json') --summary
+  --output $testIndex --summary
 
-node src/cli.js call-graph --index (Join-Path $evidenceRoot 'src-index.json') `
-  --output (Join-Path $evidenceRoot 'call-graph.json') --pretty --summary
+node src/cli.js call-graph --index $srcIndex --output $graphPath --pretty --summary
 ```
 
-After implementation, the CLI must either support these parenthesized PowerShell paths exactly as passed or documentation should assign paths to variables before invocation. Closure automation should use resolved absolute paths and record them only as non-identity diagnostics.
+Closure automation should use resolved absolute paths and record them only as
+non-identity diagnostics.
 
 ### `G1` — generator functions
 
