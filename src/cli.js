@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { projectSourceFactsWorkspace } from "./project.js";
 import { executeRelationalQuery } from "./query.js";
 import { validatesSourceFactIndex } from "./validate-index.js";
+import { formatsCallGraphSummary, projectsCliEntryPointCallGraph } from "./call-graph.js";
 import { projectsWebSurfaceInventory } from "./web/inventory.js";
 import { projectsWebSurfaceIndex } from "./web/project-web-surfaces.js";
 import { validatesWebSurfaceInventory, validatesWebSurfaceIndex, validatesWebKnowWorkspace } from "./web/validate-web-index.js";
@@ -70,6 +71,8 @@ if (command === "project") {
   await runProject(args.slice(1));
 } else if (command === "query") {
   await runQuery(args.slice(1));
+} else if (command === "call-graph") {
+  await runCallGraph(args.slice(1));
 } else if (command === "project-authority") {
   await runProjectAuthority(args.slice(1));
 } else if (command === "project-authority-violations") {
@@ -128,6 +131,24 @@ async function runQuery(rawArgs) {
   const result = await executeRelationalQuery(index, queryText);
   const pretty = flags.pretty === true;
   process.stdout.write(pretty ? JSON.stringify(result, null, 2) : JSON.stringify(result));
+}
+
+async function runCallGraph(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "call-graph.json"));
+  const pretty = flags.pretty === true;
+
+  const index = await readsJsonFile(indexPath);
+  await validatesSourceFactIndex(index);
+
+  const callGraph = projectsCliEntryPointCallGraph(index);
+  await writesJsonFile(outputPath, callGraph, { pretty });
+
+  process.stdout.write(`${outputPath}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(formatsCallGraphSummary(callGraph));
+  }
 }
 
 async function runProjectAuthority(rawArgs) {
@@ -1135,6 +1156,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project [--workspace <path>] [--workspace-id <id>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se query [--index <file>] --query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se query \"<sql>\" [--pretty]\n`);
+  stream.write(`  source-facts-se call-graph [--index <file>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web inventory --policy <contracts/web-know.workspace.json> [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web project --policy <contracts/web-know.workspace.json> [--inventory <file>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web query [--index <file>] --query \"<sql>\" [--pretty]\n`);
@@ -1158,6 +1180,7 @@ function writeUsage(stream) {
   stream.write(`Examples:\n`);
   stream.write(`  source-facts-se project --workspace C:/lab/repos/contract-driven-artifact-governance-engine --pretty\n`);
   stream.write(`  source-facts-se query --index ./source-fact-index.json \"SELECT symbolId, name FROM symbols\"\n`);
+  stream.write(`  source-facts-se call-graph --index ./source-fact-index.json --output ./call-graph.json --summary\n`);
   stream.write(`  source-facts-se web inventory --policy ./contracts/web-know.workspace.json --pretty --summary\n`);
   stream.write(`  source-facts-se web project --policy ./contracts/web-know.workspace.json --pretty --summary\n`);
   stream.write(`  source-facts-se web query --index ./web-surface-index.json \"SELECT familyId, entryRelativePath FROM webFamilies\"\n`);

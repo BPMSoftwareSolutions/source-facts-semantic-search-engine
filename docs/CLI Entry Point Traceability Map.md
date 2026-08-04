@@ -4,6 +4,15 @@
 **Question:** Can we link every method to a CLI entry point?  
 **Answer:** **Yes, with caveats.**
 
+## Implementation Note
+
+This repository now includes a deterministic CLI call-graph builder:
+
+- `npm run call-graph`
+- `node src/cli.js call-graph`
+
+It reads a validated source-fact index, roots the graph at `src/cli.js` command handlers that match `run*`, expands resolved invocation edges recursively, preserves unresolved and ambiguous edges, and writes a `call-graph.json` artifact plus a summary.
+
 ---
 
 ## The Challenge
