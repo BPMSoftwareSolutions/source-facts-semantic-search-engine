@@ -48,21 +48,25 @@
           },
           "artifactBinding": {
             "type": "object",
-            "required": ["artifactKind", "indexId"],
-            "additionalProperties": false,
-            "properties": {
-              "artifactKind": {
-                "enum": ["call-graph", "governance-report", "source-fact-index", "derived"]
-              },
-              "indexId": {
-                "type": "string",
-                "minLength": 1
-              },
-              "scanId": {
-                "type": "string",
-                "minLength": 1
-              }
+          "required": ["artifactKind", "indexId"],
+          "additionalProperties": false,
+          "properties": {
+            "artifactKind": {
+              "enum": ["call-graph", "governance-report", "source-fact-index", "derived"]
+            },
+            "indexId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "artifactContentHash": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "scanId": {
+              "type": "string",
+              "minLength": 1
             }
+          }
           },
           "catalogBinding": {
             "type": "object",

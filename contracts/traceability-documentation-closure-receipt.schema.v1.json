@@ -107,6 +107,7 @@
               "queryTextHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
               "inputHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
               "resultHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+              "disposition": { "type": "string", "minLength": 1 },
               "rowCount": { "type": "integer", "minimum": 0 }
             }
           }
@@ -125,7 +126,9 @@
           "section": { "type": "string", "minLength": 1 },
           "resultType": { "type": "string", "enum": ["integer", "number", "percentage"] },
           "metricDisposition": { "type": "string", "minLength": 1 },
-          "queryId": { "type": ["string", "null"] }
+          "queryId": { "type": ["string", "null"] },
+          "sourceQueryTextHash": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" },
+          "sourceResultHash": { "type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$" }
         }
       }
     },

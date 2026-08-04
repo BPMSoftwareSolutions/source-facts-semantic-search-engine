@@ -330,6 +330,9 @@ async function buildsMinimalQueryReceipts(metricCatalog) {
   const index = buildsMinimalIndex();
   const graph = buildsMinimalGraph();
   const catalogFingerprint = buildsCatalogFingerprint(metricCatalog);
+  const reportBindingHash = hashesArtifact(report);
+  const indexBindingHash = hashesArtifact(index);
+  const graphBindingHash = hashesArtifact(graph);
 
   const reportBinding = {
     indexId: report.index.indexId,
@@ -359,6 +362,15 @@ async function buildsMinimalQueryReceipts(metricCatalog) {
       indexBinding,
       graphBinding,
     });
+    if (metric.source.artifactKind === "call-graph") {
+      artifactBinding.artifactContentHash = graphBindingHash;
+    } else if (metric.source.artifactKind === "source-fact-index") {
+      artifactBinding.artifactContentHash = indexBindingHash;
+    } else if (metric.source.artifactKind === "governance-report") {
+      artifactBinding.artifactContentHash = reportBindingHash;
+    } else if (metric.source.artifactKind === "derived") {
+      delete artifactBinding.artifactContentHash;
+    }
     queryReceipts.push({
       queryId: metric.query.queryId,
       disposition: queryReceipt.disposition,
@@ -631,6 +643,56 @@ test("generate-docs rejects forged query-result hashes", async () => {
   }
 });
 
+test("generate-docs rejects forged query text", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
+    const graphPath = path.join(tempDir, "call-graph.json");
+    const indexPath = path.join(tempDir, "source-fact-index.json");
+    const outputPath = path.join(tempDir, "traceability-metrics.md");
+    const metricCatalogPath = path.join(tempDir, "traceability-metric-catalog.json");
+    const forgedReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
+
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const firstReceipt = queryReceipts.queryReceipts[0];
+    firstReceipt.queryText = `${firstReceipt.queryText} --forged`;
+    firstReceipt.queryTextHash = hashesQueryText(firstReceipt.queryText);
+
+    fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
+    fs.writeFileSync(forgedReceiptsPath, JSON.stringify(queryReceipts), "utf8");
+    fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
+    fs.writeFileSync(graphPath, JSON.stringify(buildsMinimalGraph()), "utf8");
+    fs.writeFileSync(indexPath, JSON.stringify(buildsMinimalIndex()), "utf8");
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        cliPath,
+        "generate-docs",
+        "--report",
+        reportPath,
+        "--graph",
+        graphPath,
+        "--index",
+        indexPath,
+        "--metric-catalog",
+        metricCatalogPath,
+        "--query-receipts",
+        forgedReceiptsPath,
+        "--output",
+        outputPath,
+      ],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+
+    assert.notEqual(result.status, 0);
+    assert.ok(result.stderr.includes("QUERY_RECEIPT_TEXT_MISMATCH") || result.stdout.includes("QUERY_RECEIPT_TEXT_MISMATCH"));
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("generate-docs rejects wrong query row counts", async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
   try {
@@ -675,6 +737,56 @@ test("generate-docs rejects wrong query row counts", async () => {
 
     assert.notEqual(result.status, 0);
     assert.ok(result.stderr.includes("QUERY_RECEIPT_ROW_COUNT_MISMATCH") || result.stdout.includes("QUERY_RECEIPT_ROW_COUNT_MISMATCH"));
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("generate-docs rejects forged artifact content bindings", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const reportPath = path.join(tempDir, "source-facts-self-governance-report.json");
+    const graphPath = path.join(tempDir, "call-graph.json");
+    const indexPath = path.join(tempDir, "source-fact-index.json");
+    const outputPath = path.join(tempDir, "traceability-metrics.md");
+    const metricCatalogPath = path.join(tempDir, "traceability-metric-catalog.json");
+    const forgedReceiptsPath = path.join(tempDir, "traceability-query-receipts.json");
+
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const firstReceipt = queryReceipts.queryReceipts.find((receipt) => receipt.artifactBinding.artifactKind !== "derived");
+    assert.ok(firstReceipt !== undefined);
+    firstReceipt.artifactBinding.artifactContentHash = "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+    fs.writeFileSync(metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
+    fs.writeFileSync(forgedReceiptsPath, JSON.stringify(queryReceipts), "utf8");
+    fs.writeFileSync(reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
+    fs.writeFileSync(graphPath, JSON.stringify(buildsMinimalGraph()), "utf8");
+    fs.writeFileSync(indexPath, JSON.stringify(buildsMinimalIndex()), "utf8");
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        cliPath,
+        "generate-docs",
+        "--report",
+        reportPath,
+        "--graph",
+        graphPath,
+        "--index",
+        indexPath,
+        "--metric-catalog",
+        metricCatalogPath,
+        "--query-receipts",
+        forgedReceiptsPath,
+        "--output",
+        outputPath,
+      ],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+
+    assert.notEqual(result.status, 0);
+    assert.ok(result.stderr.includes("QUERY_RECEIPT_ARTIFACT_CONTENT_HASH_MISMATCH") || result.stdout.includes("QUERY_RECEIPT_ARTIFACT_CONTENT_HASH_MISMATCH"));
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
@@ -771,7 +883,7 @@ test("generate-docs writes closure receipt", async () => {
       { cwd: repoRoot, encoding: "utf8" },
     );
 
-    assert.equal(result.status, 0);
+    assert.equal(result.status, 0, result.stderr || result.stdout);
     assert.ok(result.stdout.includes("Generated traceability metrics documentation."));
 
     const closureReceipt = JSON.parse(fs.readFileSync(closureReceiptPath, "utf8"));
@@ -802,6 +914,10 @@ function hashesQueryText(queryText) {
 
 function buildsCatalogFingerprint(metricCatalog) {
   return hashesQueryText(JSON.stringify(canonicalizes(metricCatalog)));
+}
+
+function hashesArtifact(artifact) {
+  return `sha256:${createHash("sha256").update(JSON.stringify(canonicalizes(artifact)), "utf8").digest("hex")}`;
 }
 
 function resolvesExpectedArtifactBinding(artifactKind, { reportBinding, indexBinding, graphBinding }) {

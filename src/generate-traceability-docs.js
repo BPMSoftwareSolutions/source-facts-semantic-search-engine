@@ -8,6 +8,7 @@ import { executeRelationalQuery } from "./query.js";
 import {
   validatesTraceabilityMetricCatalog,
   validatesTraceabilityQueryReceipts,
+  validatesTraceabilityClosureReceipt,
 } from "./validates-traceability-artifacts.js";
 
 const sectionHeadings = Object.freeze({
@@ -72,6 +73,8 @@ export async function generatesTraceabilityDocs(
     catalogType: metricCatalog.catalogType ?? null,
     catalogVersion: metricCatalog.catalogVersion ?? null,
     catalogFingerprint: buildsCatalogFingerprint(metricCatalog),
+    catalogSchemaVersion: metricCatalog.schemaVersion ?? null,
+    catalogContentHash: hashArtifact(metricCatalog),
   };
   const orderedMetricValues = [];
 
@@ -101,9 +104,7 @@ export async function generatesTraceabilityDocs(
   }
 
   const sections = sectionsFromMetrics(orderedMetricValues);
-  const timestamp = new Date().toISOString();
   const markdown = buildsTraceabilityMarkdown({
-    timestamp,
     reportBinding,
     indexBinding,
     graphBinding,
@@ -116,16 +117,20 @@ export async function generatesTraceabilityDocs(
   if (closureReceiptPath !== null) {
     const artifactHash = hashText(markdown);
     const closureReceipt = buildsClosureReceipt({
-      timestamp,
       report,
       graph,
       index,
+      reportBinding,
+      indexBinding,
+      graphBinding,
+      catalogBinding,
+      queryReceiptById,
       queryReceipts,
-      metricCatalog,
       metricValues: orderedMetricValues,
       documentPath: outputPath,
       documentHash: artifactHash,
     });
+    await validatesTraceabilityClosureReceipt(closureReceipt);
     mkdirSync(path.dirname(closureReceiptPath), { recursive: true });
     writeFileSync(closureReceiptPath, `${JSON.stringify(closureReceipt, null, 2)}\n`, "utf8");
   }
@@ -159,13 +164,24 @@ function validateArtifactCompatibility(report, graph, index) {
       indexId: reportIndexId,
       scanId: reportScanId,
       repositoryId: reportRepositoryId ?? "unknown",
+      reportType: report.reportType ?? null,
+      schemaVersion: report.schemaVersion ?? null,
+      generatedAtUtc: report.generatedAtUtc ?? null,
+      contentHash: hashArtifact(report),
     },
     indexBinding: {
       indexId: sourceIndexId,
       scanId: sourceScanId,
       workspaceId: sourceWorkspaceId ?? "unknown",
+      indexType: index.indexType ?? null,
+      schemaVersion: index.manifest?.schemaVersion ?? null,
+      contentHash: hashArtifact(index),
     },
-    graphBinding: { indexId: graphIndexId },
+    graphBinding: {
+      indexId: graphIndexId,
+      graphType: graph.callGraphType ?? null,
+      contentHash: hashArtifact(graph),
+    },
   };
 }
 
@@ -181,7 +197,6 @@ function sectionsFromMetrics(metrics) {
 }
 
 function buildsTraceabilityMarkdown({
-  timestamp,
   reportBinding,
   indexBinding,
   graphBinding,
@@ -193,7 +208,6 @@ function buildsTraceabilityMarkdown({
 
   lines.push("# Traceability Metrics Report");
   lines.push("");
-  lines.push(`**Generated:** ${timestamp}`);
   lines.push(`**Report Index ID:** \`${reportBinding.indexId}\``);
   lines.push(`**Report Scan ID:** \`${reportBinding.scanId}\``);
   lines.push(`**Call-graph Index ID:** \`${graphBinding.indexId}\``);
@@ -446,6 +460,9 @@ async function validatesQueryReceiptBinding(metric, receipt, { reportBinding, in
   if (expectedReceiptBinding.scanId !== null && receipt.artifactBinding.scanId !== expectedReceiptBinding.scanId) {
     throw new Error(`QUERY_RECEIPT_ARTIFACT_BINDING_MISMATCH: ${metric.metricId} artifact scanId ${receipt.artifactBinding.scanId} does not match expected ${expectedReceiptBinding.scanId}.`);
   }
+  if (receipt.artifactBinding.artifactContentHash !== expectedReceiptBinding.artifactContentHash) {
+    throw new Error(`QUERY_RECEIPT_ARTIFACT_CONTENT_HASH_MISMATCH: ${metric.metricId} artifactContentHash ${receipt.artifactBinding.artifactContentHash} does not match expected ${expectedReceiptBinding.artifactContentHash} for ${metric.query?.queryId}.`);
+  }
 
   const queryExecutionReceipt = await executeRelationalQuery(index, receipt.queryText);
   if (queryExecutionReceipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
@@ -485,6 +502,7 @@ function resolvesExpectedReceiptBinding(artifactKind, { reportBinding, indexBind
       artifactKind: "call-graph",
       indexId: graphBinding.indexId,
       scanId: null,
+      artifactContentHash: graphBinding.contentHash,
     });
   }
   if (artifactKind === "source-fact-index") {
@@ -492,6 +510,7 @@ function resolvesExpectedReceiptBinding(artifactKind, { reportBinding, indexBind
       artifactKind: "source-fact-index",
       indexId: indexBinding.indexId,
       scanId: indexBinding.scanId,
+      artifactContentHash: indexBinding.contentHash,
     });
   }
   if (artifactKind === "governance-report") {
@@ -499,6 +518,7 @@ function resolvesExpectedReceiptBinding(artifactKind, { reportBinding, indexBind
       artifactKind: "governance-report",
       indexId: reportBinding.indexId,
       scanId: reportBinding.scanId,
+      artifactContentHash: reportBinding.contentHash,
     });
   }
   return Object.freeze({
@@ -510,6 +530,10 @@ function resolvesExpectedReceiptBinding(artifactKind, { reportBinding, indexBind
 
 function buildsCatalogFingerprint(metricCatalog) {
   return hashText(JSON.stringify(canonicalizes(metricCatalog)));
+}
+
+function hashArtifact(artifact) {
+  return hashText(JSON.stringify(canonicalizes(artifact)));
 }
 
 function canonicalizes(value) {
@@ -559,52 +583,103 @@ function hashText(text) {
 }
 
 function buildsClosureReceipt({
-  timestamp,
   report,
   graph,
   index,
-  queryReceipts,
-  metricCatalog,
+  reportBinding,
+  indexBinding,
+  graphBinding,
+  catalogBinding,
+  queryReceiptById,
   metricValues,
   documentPath,
   documentHash,
 }) {
-  const metricRows = metricValues.map((metric) => ({
-    metricId: metric.metricId,
-    value: metric.value,
-    section: metric.section,
-    resultType: metric.resultType,
-    queryId: metric.query?.queryId ?? null,
-    metricDisposition: metric.disposition ?? "DERIVATION_COMPLETED",
-  }));
+  const generatedAtUtc = new Date().toISOString();
+  const orderedQueryReceiptRows = [...queryReceiptById.values()]
+    .map((receipt) => ({
+      queryId: receipt.queryId,
+      queryTextHash: receipt.queryTextHash,
+      inputHash: receipt.inputHash,
+      resultHash: receipt.resultHash,
+      rowCount: receipt.rowCount,
+      disposition: receipt.disposition,
+    }))
+    .sort((left, right) => left.queryId.localeCompare(right.queryId));
 
-  return {
+  const metricRows = metricValues.map((metric) => {
+    const sourceReceipt = metric.query?.queryId === undefined ? null : queryReceiptById.get(metric.query.queryId) ?? null;
+    return {
+      metricId: metric.metricId,
+      value: metric.value,
+      section: metric.section,
+      resultType: metric.resultType,
+      queryId: metric.query?.queryId ?? null,
+      metricDisposition: metric.disposition ?? "DERIVATION_COMPLETED",
+      sourceQueryTextHash: sourceReceipt?.queryTextHash ?? null,
+      sourceResultHash: sourceReceipt?.resultHash ?? null,
+    };
+  });
+
+  const queryReceiptBundle = {
+    receiptType: "traceability-query-receipts.v1",
+    queryReceiptCount: orderedQueryReceiptRows.length,
+    queryReceiptRows: orderedQueryReceiptRows,
+  };
+  const queryReceiptBundleHash = hashText(JSON.stringify(canonicalizes(queryReceiptBundle)));
+  const metricRowsHash = hashText(JSON.stringify(canonicalizes(metricRows)));
+
+  const deterministicPayload = {
     receiptType: "traceability-documentation-closure-receipt.v1",
-    generatedAtUtc: timestamp,
+    disposition: "CLOSED",
     reportBinding: {
-      repositoryId: report.repository?.repositoryId ?? report.subject?.repositoryId ?? null,
-      reportIndexId: report.index?.indexId ?? null,
-      reportScanId: report.index?.scanId ?? null,
+      repositoryId: reportBinding.repositoryId,
+      reportIndexId: reportBinding.indexId,
+      reportScanId: reportBinding.scanId,
+      reportType: reportBinding.reportType ?? null,
+      schemaVersion: reportBinding.schemaVersion ?? null,
+      contentHash: reportBinding.contentHash,
+      generatedAtUtc: reportBinding.generatedAtUtc ?? null,
     },
     indexBinding: {
-      sourceIndexId: index.indexId ?? null,
-      sourceScanId: index.manifest?.scanId ?? null,
-      workspaceId: index.workspace?.workspaceId ?? null,
+      sourceIndexId: indexBinding.indexId,
+      sourceScanId: indexBinding.scanId,
+      workspaceId: indexBinding.workspaceId,
+      indexType: indexBinding.indexType ?? null,
+      schemaVersion: indexBinding.schemaVersion ?? null,
+      contentHash: indexBinding.contentHash,
     },
     graphBinding: {
-      graphIndexId: graph.indexId ?? null,
-      summary: graph.summary ?? null,
+      graphType: graphBinding.graphType ?? null,
+      graphIndexId: graphBinding.indexId,
+      contentHash: graphBinding.contentHash,
     },
-    metricCatalog: {
-      catalogType: metricCatalog.catalogType ?? null,
-      catalogVersion: metricCatalog.catalogVersion ?? null,
+    catalogBinding: {
+      catalogType: catalogBinding.catalogType,
+      catalogVersion: catalogBinding.catalogVersion ?? null,
+      catalogSchemaVersion: catalogBinding.catalogSchemaVersion ?? null,
+      catalogFingerprint: catalogBinding.catalogFingerprint,
+      contentHash: catalogBinding.catalogContentHash,
     },
+    queryReceiptBundle,
+    metricRows,
+    queryReceiptCount: orderedQueryReceiptRows.length,
+    renderedMetricCount: metricValues.length,
+    failedConditionCount: 0,
+    failedConditions: [],
+  };
+
+  const deterministicReceiptHash = hashText(JSON.stringify(canonicalizes(deterministicPayload)));
+
+  return {
+    ...deterministicPayload,
+    generatedAtUtc,
     document: {
       path: documentPath,
       hash: documentHash,
     },
-    queryReceiptCount: queryReceipts.queryReceipts?.length ?? 0,
-    renderedMetricCount: metricRows.length,
-    metricRows,
+    queryReceiptBundleHash,
+    metricRowsHash,
+    deterministicReceiptHash,
   };
 }
