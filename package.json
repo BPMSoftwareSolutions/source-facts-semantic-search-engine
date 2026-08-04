@@ -17,8 +17,9 @@
     "generate-docs": "node src/cli.js generate-docs",
     "govern": "node src/cli.js govern",
     "start": "node src/cli.js",
+    "build": "npm run gate:workspace",
     "check:deps": "node ./scripts/check-deps.mjs",
-    "test": "node --test test",
+    "test": "npm run gate:workspace && node --test test",
     "prove:smoke": "node ./scripts/prove-smoke.mjs",
     "prove:smoke:web": "node ./scripts/prove-smoke-web.mjs",
     "gate:workspace": "workspace-fs evaluate --contract ./contracts/workspace-file-system.contract.json"
