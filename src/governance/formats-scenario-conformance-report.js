@@ -457,6 +457,42 @@ function formatsInterfaceGovernance(report) {
   return lines;
 }
 
+function formatsTestTraceability(report) {
+  const summary = queryRows(report, "test.summary.v1")[0];
+  const cliCoverage = queryRows(report, "test.cli-coverage.v1");
+  const unlined = queryRows(report, "test.without-canonical-lineage.v1");
+  const unreachable = queryRows(report, "test.unreachable-production-dependencies.v1");
+  return [
+    "## Test Traceability",
+    "",
+    "Tests are indexed as an independent evidence boundary, connected to production through imported callable execution, and then joined to CLI graphs and explicit canonical responsibility bindings. Passing status alone does not establish product lineage.",
+    "",
+    "| Metric | Count | Proving query |",
+    "|---|---:|---|",
+    `| Tests observed | ${summary.testsObserved} | ${formatsQueryLink("test.inventory.v1")} |`,
+    `| Tests with canonical scenario lineage | ${summary.testsWithCanonicalScenarioLineage} | ${formatsQueryLink("test.scenario-lineage.v1")} |`,
+    `| Tests with proposed lineage only | ${summary.testsWithProposedLineageOnly} | ${formatsQueryLink("test.scenario-lineage.v1")} |`,
+    `| Shared-infrastructure tests | ${summary.sharedInfrastructureTests} | ${formatsQueryLink("test.supporting-lineage.v1")} |`,
+    `| Tests proving CLI-unreachable code | ${summary.testsProvingCliUnreachableCode} | ${formatsQueryLink("test.unreachable-production-dependencies.v1")} |`,
+    `| Tests with no canonical lineage | ${summary.testsWithoutCanonicalLineage} | ${formatsQueryLink("test.without-canonical-lineage.v1")} |`,
+    `| Canonical/proposed scenarios without runtime test proof | ${summary.canonicalScenariosWithoutTestProof} | ${formatsQueryLink("scenario.without-test-proof.v1")} |`,
+    `| Duplicate proof candidates | ${summary.duplicateProofCandidates} | ${formatsQueryLink("test.duplicate-obligation-proof.v1")} |`,
+    "",
+    "### Per-CLI Test Coverage",
+    "",
+    "| CLI command | Reachable callables | Feature-specific tests | Shared-only tests | Canonical scenarios | Proof-linked | Runtime-proven | Gaps | Evidence |",
+    "|---|---:|---:|---:|---:|---:|---:|---:|---|",
+    ...cliCoverage.map((row) => `| \`${row.commandName}\` | ${row.reachableCallableCount} | ${row.featureSpecificTests} | ${row.sharedOnlyTests} | ${row.canonicalScenarioIds.length} | ${row.proofLinkedScenarioIds.length} | ${row.provenScenarioIds.length} | ${row.scenarioGapIds.length} | ${formatsQueryLink("test.cli-coverage.v1")} |`),
+    "",
+    "### Test Fat and Waste",
+    "",
+    `The critical intersection contains ${unreachable.length} test-to-production path(s) where the production callable has \`NO_CLI_REACHABILITY\`. ${unlined.length} test(s) execute production without canonical or admitted supporting lineage. These are review candidates, not automatic deletion instructions.`,
+    "",
+    `Unjustified lineage: ${formatsQueryLink("test.without-canonical-lineage.v1")}. Test-preserved unreachable implementation: ${formatsQueryLink("test.unreachable-production-dependencies.v1")}. Joint removal impact: ${formatsQueryLink("test.removal-impact.v1")}.`,
+    "",
+  ];
+}
+
 export function formatsScenarioConformanceReportMarkdown(report, { receiptDirectory = "source-facts-self-governance-report.receipts" } = {}) {
   const { repository, index, disposition, generatedAtUtc } = report;
   const summary = queryRows(report, "scenario-conformance.summary.v1")[0];
@@ -494,6 +530,7 @@ export function formatsScenarioConformanceReportMarkdown(report, { receiptDirect
     `| **Disposition** | \`${disposition}\` |`,
     "",
     ...formatsInterfaceGovernance(report),
+    ...(report.testTraceability ? formatsTestTraceability(report) : []),
     "## Secondary Governance Summary",
     "",
     "This report keeps four independent questions separate: whether lineage is canonical or proposed,",

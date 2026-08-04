@@ -16,6 +16,7 @@ import { projectsFeatureCoverage } from "./projects-feature-coverage.js";
 import { projectsReportQueryLineage, reconcilesReportQueryLineage } from "./projects-report-query-lineage.js";
 import { projectsInterfaceGovernance } from "./projects-interface-governance.js";
 import { projectsCanonicalFeatureQueryPlane } from "./canonical-feature-intent.js";
+import { projectsTestTraceability } from "./projects-test-traceability.js";
 
 function compareOccurrences(left, right) {
   return left.modulePath.localeCompare(right.modulePath)
@@ -102,7 +103,7 @@ function fileBreakdownKey(mechanic, modulePath) {
  * Still observational only -- no gap remediation records or projection
  * actions are produced yet.
  */
-export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, canonicalFeatureIntents = { pairs: [], findings: [], disposition: "CANONICAL_FEATURE_INTENTS_NOT_DISCOVERED" }, workspaceRelativePrefix = "" }) {
+export async function projectsSelfGovernanceReport({ index, testIndex = null, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, canonicalFeatureIntents = { pairs: [], findings: [], disposition: "CANONICAL_FEATURE_INTENTS_NOT_DISCOVERED" }, workspaceRelativePrefix = "" }) {
   const subject = scopesSelfGovernanceSubject({
     index,
     workspaceRelativePrefix,
@@ -272,6 +273,7 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     workspaceRelativePrefix: subject.workspaceRelativePrefix,
     cliAuthorityFiles,
   });
+  const testTraceability = await projectsTestTraceability({ testIndex, productionIndex: index, interfaceGovernance, canonicalFeatureQueryPlane });
   const lineageAuthorityFileSet = new Set(projectedScenarioConformance.lineageAuthorityFiles);
   const unclassifiedAuthorityDocuments = scopedAuthorityDocuments
     .filter((entry) => !lineageAuthorityFileSet.has(entry.filePath))
@@ -306,6 +308,7 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     subjectBoundaryItems: subject.scopeItems,
     authoringContractMap: Object.freeze(authoringContractMap),
     interfaceGovernance,
+    testTraceability,
     scenarioConformance,
     featureCoverage,
     unclassifiedInventory: Object.freeze({

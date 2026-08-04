@@ -178,6 +178,25 @@
         "inputs": { "type": "array", "items": { "type": "object" } }
       }
     },
+    "testTraceability": {
+      "type": "object",
+      "required": ["summary", "inventory", "productionReachability", "originatingCliFeatures", "scenarioLineage", "scenarioProofCoverage", "unreachableProductionDependencies", "withoutCanonicalLineage", "duplicateObligationProof", "scenarioWithoutTestProof", "removalImpact", "testPostures"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": { "type": "object" },
+        "inventory": { "type": "array", "items": { "type": "object" } },
+        "productionReachability": { "type": "array", "items": { "type": "object" } },
+        "originatingCliFeatures": { "type": "array", "items": { "type": "object" } },
+        "scenarioLineage": { "type": "array", "items": { "type": "object" } },
+        "scenarioProofCoverage": { "type": "array", "items": { "type": "object" } },
+        "unreachableProductionDependencies": { "type": "array", "items": { "type": "object" } },
+        "withoutCanonicalLineage": { "type": "array", "items": { "type": "object" } },
+        "duplicateObligationProof": { "type": "array", "items": { "type": "object" } },
+        "scenarioWithoutTestProof": { "type": "array", "items": { "type": "object" } },
+        "removalImpact": { "type": "array", "items": { "type": "object" } },
+        "testPostures": { "type": "array", "items": { "type": "object" } }
+      }
+    },
     "interfaceGovernance": {
       "type": "object",
       "required": [

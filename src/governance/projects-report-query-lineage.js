@@ -483,6 +483,15 @@ export function reconcilesReportQueryLineage(report) {
   for (const queryId of requiredCliQueries) {
     if (!registrations.has(queryId) || !receipts.has(queryId)) throw new FactQueryLineageError("CLI_QUERY_MISSING", queryId);
   }
+  const requiredTestQueries = [
+    "test.summary.v1", "test.inventory.v1", "test.production-reachability.v1", "test.originating-cli-features.v1",
+    "test.scenario-lineage.v1", "test.scenario-proof-coverage.v1", "test.unreachable-production-dependencies.v1",
+    "test.without-canonical-lineage.v1", "test.supporting-lineage.v1", "test.duplicate-obligation-proof.v1",
+    "scenario.without-test-proof.v1", "test.removal-impact.v1", "test.cli-coverage.v1",
+  ];
+  for (const queryId of requiredTestQueries) {
+    if (!registrations.has(queryId) || !receipts.has(queryId)) throw new FactQueryLineageError("TEST_QUERY_MISSING", queryId);
+  }
   const cliSummary = receipts.get("cli.traceability-summary.v1").result.rows[0];
   const callableRows = receipts.get("cli.callable-inventory.v1").result.rows;
   const unreachableCallableRows = receipts.get("cli.unreachable-callables.v1").result.rows;

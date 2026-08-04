@@ -352,6 +352,15 @@ export function buildsReportQueryContext(view, index, canonicalFeatureQueryPlane
   context.invocationRows = buildsInvocationRows(context);
   context.commandExecutionGraphRows = buildsCommandExecutionGraphRows(context);
   context.featureIntentProposalPackets = buildsFeatureIntentProposalPackets(context);
+  context.testCliCoverage = (context.interfaceGovernance.commands ?? []).map((command) => {
+    const commandTests = (context.testTraceability?.originatingCliFeatures ?? []).filter((row) => row.commandName === command.commandName);
+    const testIds = uniqueSorted(commandTests.map((row) => row.testId));
+    const featureSpecificTestIds = uniqueSorted(commandTests.filter((row) => row.coverageDisposition === "FEATURE_SPECIFIC_TEST_REACHABILITY").map((row) => row.testId));
+    const sharedOnlyTestIds = testIds.filter((testId) => !featureSpecificTestIds.includes(testId));
+    const proofLinkedScenarioIds = uniqueSorted((context.testTraceability?.scenarioLineage ?? []).filter((row) => command.canonicalScenarioIds.includes(row.scenarioId)).map((row) => row.scenarioId));
+    const provenScenarioIds = uniqueSorted((context.testTraceability?.scenarioProofCoverage ?? []).filter((row) => command.canonicalScenarioIds.includes(row.scenarioId) && row.proofCount > 0).map((row) => row.scenarioId));
+    return { commandName: command.commandName, handlerName: command.handlerName, entryPointId: command.entryPointId, reachableCallableCount: command.reachableCallableCount, testIds, testsReachingGraph: testIds.length, featureSpecificTestIds, featureSpecificTests: featureSpecificTestIds.length, sharedOnlyTestIds, sharedOnlyTests: sharedOnlyTestIds.length, canonicalScenarioIds: command.canonicalScenarioIds, proofLinkedScenarioIds, provenScenarioIds, scenarioGapIds: command.canonicalScenarioIds.filter((scenarioId) => !provenScenarioIds.includes(scenarioId)) };
+  });
   context.authoring = buildsAuthoringEvidenceContext(context);
   return context;
 }
@@ -372,6 +381,99 @@ export const reportDrillDownQueries = Object.freeze([
     rows: (context) => context.featureIntentProposalPackets,
     drillDowns: [next("cli.command-execution-graphs.v1", "Inspect execution graph evidence", { entryPointId: ":entryPointId" }), next("trace.responsibility-to-command-graph.v1", "Inspect responsibility bindings", { entryPointId: ":entryPointId" })],
     rowDrillDowns: (row) => [next("cli.command-execution-graphs.v1", "Inspect execution graph evidence", { entryPointId: row.entryPointId }), next("trace.responsibility-to-command-graph.v1", "Inspect responsibility bindings", { entryPointId: row.entryPointId })],
+  },
+  {
+    queryId: "test.summary.v1", section: "Test Traceability", depth: 0,
+    queryText: "SELECT * FROM reportTestTraceabilitySummary",
+    inputCollections: ["reportTestTraceabilitySummary"], expectedResultSchema: "one test-to-intent closure summary row",
+    parameters: [], rows: (context) => [context.testTraceability?.summary ?? {}],
+    drillDowns: [next("test.inventory.v1", "Inspect test inventory", {}), next("test.scenario-lineage.v1", "Inspect scenario lineage", {}), next("test.without-canonical-lineage.v1", "Inspect unresolved test lineage", {})],
+  },
+  {
+    queryId: "test.inventory.v1", section: "Test Traceability", depth: 0,
+    queryText: "SELECT * FROM reportTestInventory WHERE (:testId IS NULL OR testId = :testId) AND (:modulePath IS NULL OR modulePath = :modulePath) ORDER BY modulePath, startLine",
+    inputCollections: ["reportTestInventory"], expectedResultSchema: "every statically declared test case with stable identity and source location",
+    parameters: [parameter("testId"), parameter("modulePath"), parameter("executionStatus")], rows: (context) => context.testTraceability?.inventory ?? [],
+    drillDowns: [next("test.production-reachability.v1", "Inspect production execution", { testId: ":testId" }), next("test.scenario-lineage.v1", "Inspect canonical lineage", { testId: ":testId" })],
+    rowDrillDowns: (row) => [next("test.production-reachability.v1", "Inspect production execution", { testId: row.testId }), next("test.scenario-lineage.v1", "Inspect canonical lineage", { testId: row.testId })],
+  },
+  {
+    queryId: "test.production-reachability.v1", section: "Test Traceability", depth: 1,
+    queryText: "SELECT * FROM reportTestProductionReachability WHERE (:testId IS NULL OR testId = :testId) AND (:productionSymbolId IS NULL OR productionSymbolId = :productionSymbolId) ORDER BY testFile, testId, depth",
+    inputCollections: ["reportTestProductionReachability"], expectedResultSchema: "test-rooted production call paths with direct or indirect posture",
+    parameters: [parameter("testId"), parameter("productionSymbolId"), parameter("cliClosureClassification")], rows: (context) => context.testTraceability?.productionReachability ?? [],
+    drillDowns: [next("test.originating-cli-features.v1", "Join production paths to CLI graphs", { testId: ":testId" })],
+    rowDrillDowns: (row) => [next("test.originating-cli-features.v1", "Join production path to CLI graphs", { testId: row.testId })],
+  },
+  {
+    queryId: "test.originating-cli-features.v1", section: "Test Traceability", depth: 2,
+    queryText: "SELECT * FROM reportTestOriginatingCliFeatures WHERE (:testId IS NULL OR testId = :testId) AND (:commandName IS NULL OR commandName = :commandName)",
+    inputCollections: ["reportTestProductionReachability", "reportCliCommandExecutionGraphs"], expectedResultSchema: "tests joined to consumer CLI command execution slices",
+    parameters: [parameter("testId"), parameter("commandName"), parameter("entryPointId")], rows: (context) => context.testTraceability?.originatingCliFeatures ?? [],
+    drillDowns: [next("cli.command-execution-graphs.v1", "Inspect covered CLI graph", { entryPointId: ":entryPointId" }), next("test.scenario-lineage.v1", "Inspect scenario proof lineage", { testId: ":testId" })],
+  },
+  {
+    queryId: "test.scenario-lineage.v1", section: "Test Traceability", depth: 2,
+    queryText: "SELECT * FROM reportTestScenarioLineage WHERE (:testId IS NULL OR testId = :testId) AND (:scenarioId IS NULL OR scenarioId = :scenarioId)",
+    inputCollections: ["reportTestProductionReachability", "intentResponsibilityRegistry"], expectedResultSchema: "test to feature, scenario, responsibility, obligation, and expected-signal lineage",
+    parameters: [parameter("testId"), parameter("featureId"), parameter("scenarioId"), parameter("responsibilityId"), parameter("obligationId"), parameter("lineageStatus")], rows: (context) => context.testTraceability?.scenarioLineage ?? [],
+    drillDowns: [next("test.scenario-proof-coverage.v1", "Inspect scenario proof coverage", { scenarioId: ":scenarioId" })],
+  },
+  {
+    queryId: "test.scenario-proof-coverage.v1", section: "Test Traceability", depth: 1,
+    queryText: "SELECT * FROM reportScenarioProofCoverage WHERE (:scenarioId IS NULL OR scenarioId = :scenarioId) ORDER BY featureId, scenarioId",
+    inputCollections: ["intentScenarioRegistry", "reportTestScenarioLineage"], expectedResultSchema: "canonical scenario proof counts, expected signals, and test identities",
+    parameters: [parameter("featureId"), parameter("scenarioId"), parameter("proofDisposition")], rows: (context) => context.testTraceability?.scenarioProofCoverage ?? [],
+    drillDowns: [next("test.scenario-lineage.v1", "Inspect proving tests", { scenarioId: ":scenarioId" })],
+  },
+  {
+    queryId: "test.unreachable-production-dependencies.v1", section: "Test Fat and Waste", depth: 1,
+    queryText: "SELECT * FROM reportTestProductionReachability WHERE cliClosureClassification = 'NO_CLI_REACHABILITY'",
+    inputCollections: ["reportTestProductionReachability", "reportCallableInventory"], expectedResultSchema: "tests preserving production callables with no CLI reachability",
+    parameters: [parameter("testId"), parameter("productionSymbolId")], rows: (context) => context.testTraceability?.unreachableProductionDependencies ?? [],
+    drillDowns: [next("test.removal-impact.v1", "Inspect joint removal impact", { testId: ":testId" })],
+  },
+  {
+    queryId: "test.without-canonical-lineage.v1", section: "Test Fat and Waste", depth: 1,
+    queryText: "SELECT * FROM reportTestPostures WHERE posture = 'NO_CANONICAL_TEST_LINEAGE'",
+    inputCollections: ["reportTestPostures"], expectedResultSchema: "tests reaching production without canonical or admitted supporting lineage",
+    parameters: [parameter("testId"), parameter("modulePath")], rows: (context) => context.testTraceability?.withoutCanonicalLineage ?? [],
+    drillDowns: [next("test.production-reachability.v1", "Inspect unjustified production paths", { testId: ":testId" }), next("test.removal-impact.v1", "Inspect removal impact", { testId: ":testId" })],
+  },
+  {
+    queryId: "test.supporting-lineage.v1", section: "Test Traceability", depth: 1,
+    queryText: "SELECT * FROM reportTestPostures WHERE posture IN ('SHARED_INFRASTRUCTURE_PROOF','KERNEL_PRIMITIVE_CONFORMANCE','ADAPTER_MECHANICS_PROOF')",
+    inputCollections: ["reportTestPostures"], expectedResultSchema: "tests justified by admitted supporting infrastructure posture",
+    parameters: [parameter("testId"), parameter("posture")], rows: (context) => (context.testTraceability?.testPostures ?? []).filter((row) => ["SHARED_INFRASTRUCTURE_PROOF", "KERNEL_PRIMITIVE_CONFORMANCE", "ADAPTER_MECHANICS_PROOF"].includes(row.posture)),
+    terminal: true,
+  },
+  {
+    queryId: "test.duplicate-obligation-proof.v1", section: "Test Fat and Waste", depth: 1,
+    queryText: "SELECT * FROM reportDuplicateObligationProofCandidates ORDER BY obligationId",
+    inputCollections: ["reportTestScenarioLineage"], expectedResultSchema: "obligations restated by multiple tests and requiring fixture-class review",
+    parameters: [parameter("obligationId")], rows: (context) => context.testTraceability?.duplicateObligationProof ?? [],
+    drillDowns: [next("test.scenario-lineage.v1", "Inspect duplicate proving tests", { obligationId: ":obligationId" })],
+  },
+  {
+    queryId: "scenario.without-test-proof.v1", section: "Test Fat and Waste", depth: 1,
+    queryText: "SELECT * FROM reportScenarioProofCoverage WHERE proofDisposition = 'SCENARIO_WITHOUT_TEST_PROOF'",
+    inputCollections: ["intentScenarioRegistry", "reportTestScenarioLineage"], expectedResultSchema: "canonical or proposed scenarios with no observed executable test proof",
+    parameters: [parameter("featureId"), parameter("scenarioId")], rows: (context) => context.testTraceability?.scenarioWithoutTestProof ?? [],
+    drillDowns: [next("intent.scenario-lineage.v1", "Inspect unproved scenario intent", { scenarioId: ":scenarioId" })],
+  },
+  {
+    queryId: "test.removal-impact.v1", section: "Test Fat and Waste", depth: 2,
+    queryText: "SELECT * FROM reportTestRemovalImpact WHERE (:testId IS NULL OR testId = :testId)",
+    inputCollections: ["reportTestPostures", "reportTestProductionReachability"], expectedResultSchema: "tests and production symbols that must be reviewed or removed together",
+    parameters: [parameter("testId"), parameter("removalDisposition")], rows: (context) => context.testTraceability?.removalImpact ?? [],
+    terminal: true,
+  },
+  {
+    queryId: "test.cli-coverage.v1", section: "Test Traceability", depth: 1,
+    queryText: "SELECT * FROM reportTestCliCoverage WHERE (:commandName IS NULL OR commandName = :commandName) ORDER BY commandName",
+    inputCollections: ["reportCliCommands", "reportTestOriginatingCliFeatures", "reportTestScenarioLineage"], expectedResultSchema: "per-command callable, test, canonical scenario, proven scenario, and gap counts",
+    parameters: [parameter("commandName"), parameter("entryPointId")], rows: (context) => context.testCliCoverage,
+    drillDowns: [next("test.originating-cli-features.v1", "Inspect covering tests", { commandName: ":commandName" }), next("scenario.without-test-proof.v1", "Inspect proof gaps", {})],
   },
   {
     queryId: "cli.entry-points.v1", section: "CLI Traceability", depth: 0,

@@ -393,9 +393,13 @@ async function runGovern(rawArgs) {
     ?? path.join(repositoryRoot, "..", "contract-driven-artifact-governance-engine"));
   const authoringContractMap = await discoversAuthorityAuthoringContractMap(authoringContractMapRoot);
   const canonicalFeatureIntents = await discoversCanonicalFeatureIntents(path.join(repositoryRoot, "features"), { relativeTo: repositoryRoot });
+  const testWorkspaceRoot = path.resolve(flags.testWorkspace ?? path.join(repositoryRoot, "test"));
+  const testIndex = await projectSourceFactsWorkspace({ workspaceRoot: testWorkspaceRoot, workspaceId: `${index.workspace?.workspaceId ?? "workspace"}-tests`, languageId: "typescript" });
+  await validatesSourceFactIndex(testIndex);
 
   const report = await projectsSelfGovernanceReport({
     index,
+    testIndex,
     repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
     authorityDocuments,
     semanticOverlapProposalBatches,

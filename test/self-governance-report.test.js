@@ -134,8 +134,10 @@ test("CLI-first closure inventories every command, classifies every callable, an
 
   const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
   const canonicalFeatureIntents = await discoversCanonicalFeatureIntents(path.join(repositoryRoot, "features"), { relativeTo: repositoryRoot });
+  const testIndex = await projectSourceFactsWorkspace({ workspaceRoot: path.join(repositoryRoot, "test"), workspaceId: "test-traceability-test", languageId: "typescript" });
   const report = await projectsSelfGovernanceReport({
     index,
+    testIndex,
     repositoryId: "cli-execution-graph-test",
     workspaceRelativePrefix: "src",
     canonicalFeatureIntents,
@@ -163,6 +165,16 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.equal(responsibilityTrace.rowCount, 1);
   assert.equal(responsibilityTrace.rows[0].bindingDisposition, "RESPONSIBILITY_EXECUTION_GRAPH_BOUND");
   assert.deepEqual(responsibilityTrace.rows[0].boundImplementationSymbols, ["projectsCliEntryPointCallGraph", "runCallGraph"]);
+
+  const testInventory = rerunsRegisteredReportQuery(report, "test.inventory.v1", {});
+  assert.ok(testInventory.rowCount > 100);
+  assert.ok(testInventory.rows.every((row) => row.testId.startsWith("sha256:") && row.modulePath.startsWith("test/") && row.startLine > 0));
+  const callGraphProofs = rerunsRegisteredReportQuery(report, "test.scenario-lineage.v1", { scenarioId: "source-facts.cli-call-graph.from-entry-point" });
+  assert.equal(callGraphProofs.rowCount, 1);
+  assert.equal(callGraphProofs.rows[0].testFile, "test/call-graph.test.js");
+  assert.equal(callGraphProofs.rows[0].lineageStatus, "PROPOSED_SCENARIO_LINEAGE");
+  const unreachableTestDependencies = rerunsRegisteredReportQuery(report, "test.unreachable-production-dependencies.v1", {});
+  assert.ok(unreachableTestDependencies.rows.every((row) => row.depth === 0 && row.cliClosureClassification === "NO_CLI_REACHABILITY"));
 });
 
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {
