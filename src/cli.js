@@ -404,21 +404,21 @@ async function runGenerateConnectiveTissue(rawArgs) {
     return;
   }
 
-  const readsEvidenceBlock = async (fileListFlag) => {
+  const readsEvidenceFiles = async (fileListFlag) => {
     if (typeof fileListFlag !== "string") return null;
     const filePaths = fileListFlag.split(",").map((entry) => entry.trim()).filter((entry) => entry.length > 0);
-    if (filePaths.length === 0) return null;
-    const blocks = [];
+    if (filePaths.length === 0) return [];
+    const files = [];
     for (const relativePath of filePaths) {
       const absolutePath = path.resolve(repositoryRoot, relativePath);
       const content = await fs.readFile(absolutePath, "utf8");
-      blocks.push(`## ${relativePath}\n\`\`\`\n${content}\n\`\`\``);
+      files.push({ path: relativePath.replaceAll("\\", "/"), content });
     }
-    return blocks.join("\n\n");
+    return files;
   };
 
-  const authorityEvidence = await readsEvidenceBlock(flags.authorityEvidenceFiles);
-  const executableEvidence = await readsEvidenceBlock(flags.executableEvidenceFiles);
+  const authorityEvidence = await readsEvidenceFiles(flags.authorityEvidenceFiles);
+  const executableEvidence = await readsEvidenceFiles(flags.executableEvidenceFiles);
   const knownGaps = typeof flags.knownGapsFile === "string" ? await readsJsonFile(path.resolve(repositoryRoot, flags.knownGapsFile)) : [];
 
   const batch = await generatesConnectiveTissue({

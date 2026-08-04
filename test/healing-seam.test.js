@@ -16,6 +16,13 @@ import { formatsSelfGovernanceReportMarkdown, formatsSelfGovernanceReportSummary
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cliPath = path.join(repoRoot, "src", "cli.js");
 
+function readsEvidenceFixture(relativePath) {
+  return Object.freeze({
+    path: relativePath.replaceAll("\\", "/"),
+    content: readFileSync(path.join(repoRoot, relativePath), "utf8"),
+  });
+}
+
 function buildsMinimalIndex() {
   return {
     indexType: "source-fact-index.v1",
@@ -65,7 +72,10 @@ test("generatesConnectiveTissue builds a structured repair packet and preserves 
     healingDisposition: "HEALING_DRAFT_GENERATED",
     missingTissue: ["AUTHORITY_DOCUMENT_MISSING"],
     confidence: 0.93,
-    evidenceReferences: ["src/console/serves-query-console.runtime.impl.mjs"],
+    evidenceReferences: [
+      "src/console/serves-query-console.runtime.impl.mjs",
+      "src/console/console-authority-runtime.mjs#serializesErrorResponse",
+    ],
     authorityCompletionDraft: { applicable: true, rationale: "Authority completion is needed.", candidateAuthorityId: "success-response-serialization", family: "serialization", mechanics: [] },
     bindingDraft: { applicable: false, rationale: "No binding yet." },
     runtimeWiringDraft: { applicable: false, rationale: "No wiring yet." },
@@ -75,8 +85,11 @@ test("generatesConnectiveTissue builds a structured repair packet and preserves 
 
   const batch = await generatesConnectiveTissue({
     subjectId: "success-response-serialization",
-    authorityEvidence: "contracts/serves-query-console.authority.draft.json",
-    executableEvidence: "src/console/serves-query-console.runtime.impl.mjs",
+    authorityEvidence: [readsEvidenceFixture("contracts/serves-query-console.authority.json")],
+    executableEvidence: [
+      readsEvidenceFixture("src/console/serves-query-console.runtime.impl.mjs"),
+      readsEvidenceFixture("src/console/console-authority-runtime.mjs"),
+    ],
     existingWiring: "serializesErrorResponse is already delegated",
     knownGaps: ["success-path JSON.stringify is duplicated inline"],
     requiredOutputs: ["authority-draft", "binding-draft"],
@@ -111,10 +124,69 @@ test("generatesConnectiveTissue builds a structured repair packet and preserves 
   assert.deepEqual(batch.subject.knownGaps, ["success-path JSON.stringify is duplicated inline"]);
   assert.equal(batch.draft.healingDisposition, "HEALING_DRAFT_GENERATED");
   assert.equal(batch.inference.resolvedModel, "gemini-flash-latest");
+  assert.equal(capturedRequest.interaction.messages[1].content.includes("## Grounding manifest"), true);
   assert.equal(capturedRequest.interaction.messages[1].content.includes("success-response-serialization"), true);
   assert.equal(capturedRequest.interaction.messages[1].content.includes("serializesErrorResponse"), true);
+  assert.equal(capturedRequest.interaction.messages[1].content.includes("serializesSuccessResponse"), false);
   assert.equal(capturedRequest.responsePolicy.maximumOutputTokens, 32768);
   assert.equal(capturedRequest.responsePolicy.temperature, 0);
+});
+
+test("generatesConnectiveTissue rejects model responses that invent an unsupported runtime port or body ref", async () => {
+  await assert.rejects(
+    () => generatesConnectiveTissue({
+      subjectId: "success-response-serialization",
+      authorityEvidence: [readsEvidenceFixture("contracts/serves-query-console.authority.json")],
+      executableEvidence: [
+        readsEvidenceFixture("src/console/serves-query-console.runtime.impl.mjs"),
+        readsEvidenceFixture("src/console/console-authority-runtime.mjs"),
+      ],
+      existingWiring: "serializesErrorResponse is already delegated",
+      knownGaps: ["success-path JSON.stringify is duplicated inline"],
+      requestId: "test-request-invalid",
+      invoke: async () => ({
+        requestId: "test-request-invalid",
+        invocationId: "inv-1",
+        disposition: "MODEL_RESPONSE_OBTAINED",
+        resolvedAuthority: {
+          providerAuthorityId: "primary-cognitive-provider",
+          providerKind: "gemini",
+          resolvedModel: "gemini-flash-latest",
+        },
+        result: {
+          format: "json",
+          structuredValue: {
+            healingDisposition: "HEALING_DRAFT_PARTIAL",
+            missingTissue: ["AUTHORITY_DOCUMENT_MISSING"],
+            confidence: 0.5,
+            evidenceReferences: ["src/console/serves-query-console.runtime.impl.mjs"],
+            authorityCompletionDraft: { applicable: true, rationale: "Authority exists.", candidateAuthorityId: "success-response-serialization", family: "serialization", mechanics: [] },
+            bindingDraft: {
+              applicable: true,
+              rationale: "Binding exists.",
+              bindingId: "success-response-serialization-binding",
+              authorityRef: "contracts/serves-query-console.authority.json",
+              bodyRef: "src/console/console-authority-runtime.mjs#serializesSuccessResponse",
+              runtimePort: "serializesSuccessResponse",
+              resultContractId: "success-response-serialization",
+            },
+            runtimeWiringDraft: { applicable: false, rationale: "No wiring yet." },
+            collapsedBodyDraft: { applicable: false, rationale: "No body replacement yet." },
+            equivalenceVectorDraft: { applicable: false, rationale: "No proof yet." },
+          },
+        },
+        usage: { totalTokens: 42 },
+        proof: {
+          requestHash: "sha256:abc",
+          responseHash: "sha256:def",
+          startedAt: "2026-08-03T21:17:46.489Z",
+          completedAt: "2026-08-03T21:17:47.489Z",
+          durationMilliseconds: 1000,
+        },
+      }),
+    }),
+    /Model response was not grounded in the provided evidence/,
+  );
 });
 
 test("discoversHealingDrafts and summarizesHealingDraftRegistry count reviewed-only drafts without trusting unrelated JSON", async () => {
