@@ -193,7 +193,7 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
     rootModulePath,
     rootNamePattern,
     cliSurfaceSymbolIds,
-    directCliRootIds: new Set(rootsBySymbolId.keys()),
+    directCliRootIds: new Set(roots.filter((root) => root.entryKind === "cli-command").map((root) => root.symbolId)),
     symbolById,
     outgoingByCallerId,
     incomingByCalleeId,
@@ -204,14 +204,24 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
   const entryPointReachability = buildsEntryPointReachability(
     entryPointInventory.entryPoints,
     entryPointInventory.entryPointOutgoingById,
+    outgoingByCallerId,
     symbolById,
   );
+
+  for (const entryPoint of entryPointInventory.entryPoints) {
+    const downstream = entryPointReachability.downstreamByEntryPointId.get(entryPoint.entryPointId);
+    if (downstream !== undefined) {
+      entryPoint.downstreamCallableCount = downstream.downstreamCallableCount;
+      entryPoint.downstreamMaxDepth = downstream.downstreamMaxDepth;
+    }
+  }
 
   const callables = buildsCallableInventory({
     runtimeSymbols,
     symbolById,
     cliReachabilityBySymbolId: reachableBySymbolId,
     inventoryReachabilityBySymbolId: entryPointReachability.reachableBySymbolId,
+    entryPointById: entryPointInventory.entryPointsById,
     entryPointBySymbolId: entryPointInventory.entryPointBySymbolId,
     incomingByCalleeId,
     ambiguousIncomingByCalleeId,
@@ -300,6 +310,7 @@ function buildsEntryPointInventory({
   roots,
   rootModulePath,
   rootNamePattern,
+  cliSurfaceSymbolIds,
   directCliRootIds,
   symbolById,
   outgoingByCallerId,
@@ -312,60 +323,119 @@ function buildsEntryPointInventory({
   const entryPointOutgoingById = new Map();
   const rootEntryBySymbolId = new Map(roots.map((root) => [root.symbolId, root]));
 
-  const cliSurfaceCandidates = [];
   for (const root of roots) {
-    for (const node of root.nodes) {
-      if (node.modulePath !== rootModulePath) continue;
-      if (!rootNamePattern.test(node.name)) continue;
-      cliSurfaceCandidates.push(node);
-    }
-  }
-  cliSurfaceCandidates.sort(comparesNodes);
-
-  for (const node of cliSurfaceCandidates) {
-    const symbol = symbolById.get(node.symbolId);
+    const symbol = symbolById.get(root.symbolId);
     if (symbol === undefined) continue;
 
-    const sameModuleIncomingCount = countsIncomingFromModulePath({
-      symbolId: node.symbolId,
-      modulePath: rootModulePath,
-      incomingByCalleeId,
-      ambiguousIncomingByCalleeId,
-      symbolById,
-    });
-    const sameModuleOutgoingCount = countsOutgoingToModulePath({
-      symbolId: node.symbolId,
-      modulePath: rootModulePath,
-      outgoingByCallerId,
-      symbolById,
-      rootNamePattern,
-    });
-    const entryKinds = classifiesCliEntryKinds({
-      symbol,
-      isDirectCliRoot: directCliRootIds.has(node.symbolId),
-      sameModuleIncomingCount,
-      sameModuleOutgoingCount,
-    });
-    const rootEntry = rootEntryBySymbolId.get(node.symbolId) ?? null;
-
-    registersEntryPoint(entryPointsById, entryPointBySymbolId, {
-      entryPointId: symbol.symbolId,
-      symbol,
-      entryKinds,
-      productEntryPoint: true,
-      synthetic: false,
-      evidenceKinds: [directCliRootIds.has(node.symbolId) ? "module-scope-invocation" : "root-tree-reachability"],
-      sourceReferenceId: node.sourceReferenceId ?? symbol.sourceReferenceId,
-      entryLine: node.declarationLine ?? symbol.declarationLine,
-      entryColumn: node.declarationColumn ?? symbol.declarationColumn,
-      entryRelationshipId: rootEntry?.entryRelationshipId ?? null,
-      moduleScopeInvocationCount: 0,
-      outgoingInvocationCount: outgoingByCallerId.get(symbol.symbolId)?.length ?? 0,
-    });
+    if (root.entryKind === "cli-command") {
+      const sameModuleIncomingCount = countsIncomingFromModulePath({
+        symbolId: symbol.symbolId,
+        modulePath: rootModulePath,
+        incomingByCalleeId,
+        ambiguousIncomingByCalleeId,
+        symbolById,
+      });
+      const sameModuleOutgoingCount = countsOutgoingToModulePath({
+        symbolId: symbol.symbolId,
+        modulePath: rootModulePath,
+        outgoingByCallerId,
+        symbolById,
+        rootNamePattern,
+      });
+      const entryKinds = classifiesCliEntryKinds({
+        symbol,
+        isDirectCliRoot: directCliRootIds.has(symbol.symbolId),
+        sameModuleIncomingCount,
+        sameModuleOutgoingCount,
+      });
+      registersEntryPoint(entryPointsById, entryPointBySymbolId, {
+        entryPointId: symbol.symbolId,
+        symbol,
+        kind: root.entryKind,
+        entryKinds,
+        productEntryPoint: true,
+        synthetic: false,
+        justificationDisposition: classifiesEntryPointJustification(entryKinds),
+        evidenceKinds: [directCliRootIds.has(symbol.symbolId) ? "direct-cli-root" : "root-tree-reachability"],
+        sourceReferenceId: root.sourceReferenceId ?? symbol.sourceReferenceId,
+        entryLine: root.entryLine ?? symbol.declarationLine,
+        entryColumn: root.entryColumn ?? symbol.declarationColumn,
+        entryRelationshipId: root.entryRelationshipId ?? null,
+        moduleScopeInvocationCount: 0,
+        outgoingInvocationCount: outgoingByCallerId.get(symbol.symbolId)?.length ?? 0,
+      });
+    } else if (root.entryKind === "exported-function") {
+      const entryKinds = classifiesModuleEntryKinds({ symbol });
+      registersEntryPoint(entryPointsById, entryPointBySymbolId, {
+        entryPointId: symbol.symbolId,
+        symbol,
+        kind: root.entryKind,
+        entryKinds,
+        productEntryPoint: true,
+        synthetic: false,
+        justificationDisposition: classifiesEntryPointJustification(entryKinds),
+        evidenceKinds: ["cross-module-invocation"],
+        sourceReferenceId: root.sourceReferenceId ?? symbol.sourceReferenceId,
+        entryLine: root.entryLine ?? symbol.declarationLine,
+        entryColumn: root.entryColumn ?? symbol.declarationColumn,
+        entryRelationshipId: root.entryRelationshipId ?? null,
+        moduleScopeInvocationCount: 0,
+        outgoingInvocationCount: outgoingByCallerId.get(symbol.symbolId)?.length ?? 0,
+      });
+    }
   }
 
   for (const symbol of symbolById.values()) {
-    if (symbol.modulePath === rootModulePath) continue;
+    if (symbol.modulePath === rootModulePath) {
+      const sameModuleIncomingCount = countsIncomingFromModulePath({
+        symbolId: symbol.symbolId,
+        modulePath: rootModulePath,
+        incomingByCalleeId,
+        ambiguousIncomingByCalleeId,
+        symbolById,
+      });
+      const sameModuleOutgoingCount = countsOutgoingToModulePath({
+        symbolId: symbol.symbolId,
+        modulePath: rootModulePath,
+        outgoingByCallerId,
+        symbolById,
+        rootNamePattern,
+      });
+      const isDirectCliRoot = directCliRootIds.has(symbol.symbolId);
+      const isCliSurface = cliSurfaceSymbolIds.has(symbol.symbolId)
+        || isDirectCliRoot
+        || rootNamePattern.test(symbol.name)
+        || sameModuleIncomingCount > 0
+        || sameModuleOutgoingCount > 0;
+      if (!isCliSurface) continue;
+
+      const entryKinds = classifiesCliEntryKinds({
+        symbol,
+        isDirectCliRoot,
+        sameModuleIncomingCount,
+        sameModuleOutgoingCount,
+      });
+      const rootEntry = rootEntryBySymbolId.get(symbol.symbolId) ?? null;
+
+      registersEntryPoint(entryPointsById, entryPointBySymbolId, {
+        entryPointId: symbol.symbolId,
+        symbol,
+        kind: rootEntry?.kind ?? symbol.kind,
+        entryKinds,
+        productEntryPoint: true,
+        synthetic: false,
+        justificationDisposition: classifiesEntryPointJustification(entryKinds),
+        evidenceKinds: [isDirectCliRoot ? "direct-cli-root" : "cli-module-surface"],
+        sourceReferenceId: rootEntry?.sourceReferenceId ?? symbol.sourceReferenceId,
+        entryLine: rootEntry?.entryLine ?? symbol.declarationLine,
+        entryColumn: rootEntry?.entryColumn ?? symbol.declarationColumn,
+        entryRelationshipId: rootEntry?.entryRelationshipId ?? null,
+        moduleScopeInvocationCount: 0,
+        outgoingInvocationCount: outgoingByCallerId.get(symbol.symbolId)?.length ?? 0,
+      });
+      continue;
+    }
+
     if (isScriptModulePath(symbol.modulePath)) continue;
 
     const externalIncomingCount = countsIncomingFromOtherModules({
@@ -377,14 +447,14 @@ function buildsEntryPointInventory({
     if (externalIncomingCount === 0) continue;
 
     const entryKinds = classifiesModuleEntryKinds({ symbol });
-    if (entryKinds.length === 0) continue;
-
     registersEntryPoint(entryPointsById, entryPointBySymbolId, {
       entryPointId: symbol.symbolId,
       symbol,
+      kind: symbol.kind,
       entryKinds,
       productEntryPoint: true,
       synthetic: false,
+      justificationDisposition: classifiesEntryPointJustification(entryKinds),
       evidenceKinds: ["cross-module-invocation"],
       sourceReferenceId: symbol.sourceReferenceId,
       entryLine: symbol.declarationLine,
@@ -411,6 +481,7 @@ function buildsEntryPointInventory({
       entryKinds,
       productEntryPoint: false,
       synthetic: true,
+      justificationDisposition: classifiesEntryPointJustification(entryKinds),
       evidenceKinds: ["module-scope-invocation"],
       moduleScopeInvocationCount: moduleScopeEdges.length,
       outgoingInvocationCount: moduleScopeEdges.length,
@@ -433,7 +504,7 @@ function buildsEntryPointInventory({
   };
 }
 
-function buildsEntryPointReachability(entryPoints, entryPointOutgoingById, symbolById) {
+function buildsEntryPointReachability(entryPoints, entryPointOutgoingById, outgoingByCallerId, symbolById) {
   const reachableBySymbolId = new Map();
   const downstreamByEntryPointId = new Map();
 
@@ -442,28 +513,30 @@ function buildsEntryPointReachability(entryPoints, entryPointOutgoingById, symbo
     const queue = [];
 
     if (entryPoint.synthetic === true) {
-      queue.push({ symbolId: null, entryPointId: entryPoint.entryPointId, depth: 0, synthetic: true });
-    } else {
-      visited.set(entryPoint.symbolId, 0);
-      queue.push({ symbolId: entryPoint.symbolId, entryPointId: entryPoint.entryPointId, depth: 0, synthetic: false });
+      for (const edge of entryPointOutgoingById.get(entryPoint.entryPointId) ?? []) {
+        if (edge.resolutionDisposition !== "resolved" || edge.toSymbolId === null) continue;
+        queue.push({ symbolId: edge.toSymbolId, depth: 1 });
+      }
+    } else if (entryPoint.symbolId !== null) {
+      queue.push({ symbolId: entryPoint.symbolId, depth: 0 });
     }
 
     for (let index = 0; index < queue.length; index++) {
       const current = queue[index];
-      const outgoingEdges = getsOutgoingEdgesForEntryPointNode(current, entryPointOutgoingById, entryPoints);
+      const knownDepth = visited.get(current.symbolId);
+      if (knownDepth !== undefined && knownDepth <= current.depth) continue;
+      visited.set(current.symbolId, current.depth);
 
-      for (const edge of outgoingEdges) {
+      for (const edge of outgoingByCallerId.get(current.symbolId) ?? []) {
         if (edge.resolutionDisposition !== "resolved" || edge.toSymbolId === null) continue;
         const targetDepth = current.depth + 1;
-        const knownDepth = visited.get(edge.toSymbolId);
-        if (knownDepth !== undefined && knownDepth <= targetDepth) continue;
-
-        visited.set(edge.toSymbolId, targetDepth);
-        queue.push({ symbolId: edge.toSymbolId, entryPointId: entryPoint.entryPointId, depth: targetDepth, synthetic: false });
+        const knownTargetDepth = visited.get(edge.toSymbolId);
+        if (knownTargetDepth !== undefined && knownTargetDepth <= targetDepth) continue;
+        queue.push({ symbolId: edge.toSymbolId, depth: targetDepth });
       }
     }
 
-    const maxDepth = [...visited.values()].reduce((largest, depth) => Math.max(largest, depth), 0);
+    const maxDepth = visited.size === 0 ? 0 : Math.max(...visited.values());
     downstreamByEntryPointId.set(entryPoint.entryPointId, {
       downstreamCallableCount: visited.size,
       downstreamMaxDepth: maxDepth,
@@ -471,7 +544,7 @@ function buildsEntryPointReachability(entryPoints, entryPointOutgoingById, symbo
 
     for (const [symbolId, depth] of visited.entries()) {
       const record = reachableBySymbolId.get(symbolId) ?? {
-        symbol: symbolById.get(symbolId),
+        symbol: symbolById.get(symbolId) ?? null,
         reachableFrom: new Map(),
       };
       const currentDepth = record.reachableFrom.get(entryPoint.entryPointId);
@@ -493,6 +566,7 @@ function buildsCallableInventory({
   symbolById,
   cliReachabilityBySymbolId,
   inventoryReachabilityBySymbolId,
+  entryPointById,
   entryPointBySymbolId,
   incomingByCalleeId,
   ambiguousIncomingByCalleeId,
@@ -538,7 +612,7 @@ function buildsCallableInventory({
       .sort((left, right) => comparesEntryPointIds(left, right));
     const reachableFromEntryPointKinds = reachableFromEntryPointIds
       .map((entryPointId) => {
-        const entryPoint = ownEntryPoint?.entryPointId === entryPointId ? ownEntryPoint : null;
+        const entryPoint = entryPointById.get(entryPointId) ?? null;
         if (entryPoint !== null) return entryPoint.primaryEntryKind;
         return null;
       })
@@ -612,6 +686,7 @@ function registersEntryPoint(entryPointsById, entryPointBySymbolId, entryPoint) 
   const normalizedKinds = [...new Set((Array.isArray(entryPoint.entryKinds) ? entryPoint.entryKinds : []).filter(Boolean))].sort(comparesEntryKinds);
   const existing = entryPointsById.get(entryPoint.entryPointId);
   if (existing === undefined) {
+    const justificationDisposition = entryPoint.justificationDisposition ?? classifiesEntryPointJustification(normalizedKinds);
     const record = {
       entryPointId: entryPoint.entryPointId,
       symbolId: entryPoint.symbolId ?? null,
@@ -627,6 +702,8 @@ function registersEntryPoint(entryPointsById, entryPointBySymbolId, entryPoint) 
       primaryEntryKind: selectsPrimaryEntryKind(normalizedKinds),
       productEntryPoint: entryPoint.productEntryPoint === true,
       synthetic: entryPoint.synthetic === true,
+      justificationDisposition,
+      entryPointDisposition: entryPoint.entryPointDisposition ?? justificationDisposition,
       evidenceKinds: [...new Set((entryPoint.evidenceKinds ?? []).filter(Boolean))].sort(),
       moduleScopeInvocationCount: entryPoint.moduleScopeInvocationCount ?? 0,
       outgoingInvocationCount: entryPoint.outgoingInvocationCount ?? 0,
@@ -645,6 +722,8 @@ function registersEntryPoint(entryPointsById, entryPointBySymbolId, entryPoint) 
   existing.primaryEntryKind = selectsPrimaryEntryKind(mergedKinds);
   existing.productEntryPoint = existing.productEntryPoint || entryPoint.productEntryPoint === true;
   existing.synthetic = existing.synthetic || entryPoint.synthetic === true;
+  existing.justificationDisposition = existing.justificationDisposition ?? entryPoint.justificationDisposition ?? classifiesEntryPointJustification(mergedKinds);
+  existing.entryPointDisposition = existing.entryPointDisposition ?? entryPoint.entryPointDisposition ?? existing.justificationDisposition;
   existing.sourceReferenceId = existing.sourceReferenceId ?? entryPoint.sourceReferenceId ?? entryPoint.symbol?.sourceReferenceId ?? null;
   existing.declarationLine = existing.declarationLine ?? entryPoint.entryLine ?? entryPoint.symbol?.declarationLine ?? null;
   existing.declarationColumn = existing.declarationColumn ?? entryPoint.entryColumn ?? entryPoint.symbol?.declarationColumn ?? null;
@@ -734,7 +813,7 @@ function countsOutgoingToModulePath({ symbolId, modulePath, outgoingByCallerId, 
   return outgoingEdges.filter((edge) => {
     if (edge.resolutionDisposition !== "resolved" || edge.toSymbolId === null) return false;
     const target = symbolById.get(edge.toSymbolId);
-    return target !== undefined && target.modulePath === modulePath && rootNamePattern.test(target.name);
+    return target !== undefined && target.modulePath === modulePath;
   }).length;
 }
 
@@ -761,6 +840,11 @@ function selectsPrimaryEntryKind(entryKinds) {
   return kinds[0];
 }
 
+function comparesEntryKinds(left, right) {
+  return (entryKindPriority.get(left) ?? 99) - (entryKindPriority.get(right) ?? 99)
+    || left.localeCompare(right);
+}
+
 function comparesEntryPoints(left, right) {
   return (left.productEntryPoint === right.productEntryPoint ? 0 : (left.productEntryPoint ? -1 : 1))
     || (entryKindPriority.get(left.primaryEntryKind ?? "") ?? 99) - (entryKindPriority.get(right.primaryEntryKind ?? "") ?? 99)
@@ -778,13 +862,6 @@ function comparesCallables(left, right) {
     || (left.modulePath.localeCompare(right.modulePath))
     || (left.name.localeCompare(right.name))
     || (left.symbolId.localeCompare(right.symbolId));
-}
-
-function getsOutgoingEdgesForEntryPointNode(current, entryPointOutgoingById, entryPoints) {
-  if (current.synthetic === true) {
-    return entryPointOutgoingById.get(current.entryPointId) ?? [];
-  }
-  return entryPointOutgoingById.get(current.entryPointId) ?? [];
 }
 
 function buildsRootGraph(rootEntry, outgoingByCallerId, incomingByCalleeId, symbolById) {
@@ -998,123 +1075,4 @@ function normalizesModulePrefix(modulePrefix) {
   const normalized = normalizesModulePath(modulePrefix);
   if (normalized.length === 0) return "";
   return normalized.endsWith("/") ? normalized : `${normalized}/`;
-}
-
-function buildsEntryPointInventory({
-  roots,
-  rootModulePath,
-  rootNamePattern,
-  cliSurfaceSymbolIds,
-  directCliRootIds,
-  symbolById,
-  outgoingByCallerId,
-  incomingByCalleeId,
-  ambiguousIncomingByCalleeId,
-  moduleScopeEdgesByModulePath,
-}) {
-  const entryPoints = roots.map((root) => ({
-    ...root,
-    isCliSurface: cliSurfaceSymbolIds.has(root.symbolId),
-    isDirectCliRoot: directCliRootIds.has(root.symbolId),
-  }));
-
-  const entryPointBySymbolId = new Map(entryPoints.map((ep) => [ep.symbolId, ep]));
-  const entryPointOutgoingById = new Map(
-    entryPoints.map((ep) => [ep.symbolId, outgoingByCallerId.get(ep.symbolId) ?? []]),
-  );
-
-  return {
-    entryPoints,
-    entryPointBySymbolId,
-    entryPointOutgoingById,
-  };
-}
-
-function buildsEntryPointReachability(entryPoints, entryPointOutgoingById, symbolById) {
-  const reachableBySymbolId = new Map();
-
-  for (const entryPoint of entryPoints) {
-    const visited = new Set([entryPoint.symbolId]);
-    const queue = [...(entryPointOutgoingById.get(entryPoint.symbolId) ?? [])];
-
-    while (queue.length > 0) {
-      const edge = queue.shift();
-      if (edge.toSymbolId === null) continue;
-
-      if (!visited.has(edge.toSymbolId)) {
-        visited.add(edge.toSymbolId);
-        const outgoing = entryPointOutgoingById.get(edge.toSymbolId) ?? [];
-        queue.push(...outgoing);
-      }
-    }
-
-    for (const symbolId of visited) {
-      const record = reachableBySymbolId.get(symbolId) ?? { reachableFrom: new Set() };
-      record.reachableFrom.add(entryPoint.symbolId);
-      reachableBySymbolId.set(symbolId, record);
-    }
-  }
-
-  return {
-    reachableBySymbolId,
-  };
-}
-
-function buildsCallableInventory({
-  runtimeSymbols,
-  symbolById,
-  cliReachabilityBySymbolId,
-  inventoryReachabilityBySymbolId,
-  entryPointBySymbolId,
-  incomingByCalleeId,
-  ambiguousIncomingByCalleeId,
-  outgoingByCallerId,
-}) {
-  return runtimeSymbols
-    .map((symbol) => {
-      const isEntryPoint = entryPointBySymbolId.has(symbol.symbolId);
-      const isCliReachable = cliReachabilityBySymbolId.has(symbol.symbolId);
-      const isInventoryReachable = inventoryReachabilityBySymbolId.has(symbol.symbolId);
-      const incomingEdges = incomingByCalleeId.get(symbol.symbolId) ?? [];
-      const ambiguousIncomingEdges = ambiguousIncomingByCalleeId.get(symbol.symbolId) ?? [];
-      const outgoingEdges = outgoingByCallerId.get(symbol.symbolId) ?? [];
-
-      let disposition = "UNREACHABLE";
-      if (isEntryPoint) {
-        disposition = "REACHABLE";
-      } else if (isCliReachable || isInventoryReachable) {
-        disposition = "REACHABLE";
-      } else if (incomingEdges.length > 0 || ambiguousIncomingEdges.length > 0) {
-        disposition = "SHARED_SUPPORT";
-      }
-
-      return {
-        ...symbol,
-        isEntryPoint,
-        isCliReachable,
-        isInventoryReachable,
-        disposition,
-        incomingEdgeCount: incomingEdges.length + ambiguousIncomingEdges.length,
-        outgoingEdgeCount: outgoingEdges.length,
-      };
-    })
-    .sort((a, b) => {
-      const aPriority = callableDispositionPriority.get(a.disposition) ?? 999;
-      const bPriority = callableDispositionPriority.get(b.disposition) ?? 999;
-      return aPriority - bPriority || a.name.localeCompare(b.name);
-    });
-}
-
-function summarizesInventory(entryPoints, callables) {
-  const dispositionCounts = new Map();
-  for (const callable of callables) {
-    const count = dispositionCounts.get(callable.disposition) ?? 0;
-    dispositionCounts.set(callable.disposition, count + 1);
-  }
-
-  return {
-    entryPointCount: entryPoints.length,
-    callableCount: callables.length,
-    dispositionCounts: Object.fromEntries(dispositionCounts),
-  };
 }

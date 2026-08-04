@@ -65,6 +65,27 @@ const consoleViolationModulePaths = Object.freeze([
 ]);
 const consoleViolationMechanics = Object.freeze(Object.keys(new AuthorityProjectorFromViolations().authorityFamilyMap));
 
+const allowedRootFiles = new Set(["LICENSE", "README.md", "package.json", "package-lock.json", ".gitignore"]);
+
+function validatesOutputPathNotOnRoot(filePath) {
+  const dir = path.dirname(filePath);
+  const fileName = path.basename(filePath);
+
+  if (dir === "." || dir === repositoryRoot) {
+    if (!allowedRootFiles.has(fileName)) {
+      throw new Error(
+        `Output file cannot be created on repository root: ${filePath}\n` +
+        `All generated artifacts must be placed in organized directories:\n` +
+        `  - artifacts/indexes/ for source-fact indexes\n` +
+        `  - artifacts/call-graphs/ for call graph outputs\n` +
+        `  - artifacts/governance/ for governance reports\n` +
+        `  - evidence/ for evidence artifacts\n` +
+        `Root directory is reserved for package metadata and documentation only.`
+      );
+    }
+  }
+}
+
 const args = process.argv.slice(2);
 const command = args[0];
 
@@ -109,7 +130,7 @@ async function runProject(rawArgs) {
   const { flags, positional } = parseArgs(rawArgs);
   const workspaceRoot = path.resolve(flags.workspace ?? process.cwd());
   const workspaceId = flags.workspaceId ?? path.basename(workspaceRoot);
-  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "source-fact-index.json"));
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
   const pretty = flags.pretty === true;
 
   const index = await projectSourceFactsWorkspace({
@@ -128,7 +149,7 @@ async function runProject(rawArgs) {
 
 async function runQuery(rawArgs) {
   const { flags, positional } = parseArgs(rawArgs);
-  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
   const queryText = resolveQueryText(flags, positional);
   const index = await readsJsonFile(indexPath);
   const result = await executeRelationalQuery(index, queryText);
@@ -138,8 +159,8 @@ async function runQuery(rawArgs) {
 
 async function runCallGraph(rawArgs) {
   const { flags } = parseArgs(rawArgs);
-  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
-  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "call-graph.json"));
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "artifacts", "call-graphs", "call-graph.json"));
   const pretty = flags.pretty === true;
   const runtimeModulePrefix = flags.runtimeModulePrefix ?? "";
   const rootModulePath = flags.rootModulePath ?? "cli.js";
@@ -158,9 +179,9 @@ async function runCallGraph(rawArgs) {
 
 async function runGenerateDocs(rawArgs) {
   const { flags } = parseArgs(rawArgs);
-  const reportPath = path.resolve(flags.report ?? path.join(process.cwd(), "source-facts-self-governance-report.json"));
-  const graphPath = path.resolve(flags.graph ?? path.join(process.cwd(), "call-graph.json"));
-  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const reportPath = path.resolve(flags.report ?? path.join(process.cwd(), "artifacts", "governance", "source-facts-self-governance-report.json"));
+  const graphPath = path.resolve(flags.graph ?? path.join(process.cwd(), "artifacts", "call-graphs", "call-graph.json"));
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
   const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "docs", "generated", "traceability-metrics.md"));
 
   const docPath = await generatesTraceabilityDocs(reportPath, graphPath, indexPath, outputPath);
@@ -172,7 +193,7 @@ async function runGenerateDocs(rawArgs) {
 
 async function runProjectAuthority(rawArgs) {
   const { flags, positional } = parseArgs(rawArgs);
-  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
   const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "authority-candidates.json"));
   const modulePath = flags.module ?? "";
   const responsibilityId = flags.responsibility ?? "";
@@ -654,7 +675,7 @@ function resolvesSqlServerConnection(flags) {
 
 async function runLoadSqlServer(rawArgs) {
   const { flags } = parseArgs(rawArgs);
-  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
   const index = await readsJsonFile(indexPath);
   const connection = resolvesSqlServerConnection(flags);
   const receipt = await loadsSourceFactIndexIntoSqlServer({
@@ -670,7 +691,7 @@ async function runIngest(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const workspaceRoot = path.resolve(flags.workspace ?? process.cwd());
   const workspaceId = flags.workspaceId ?? path.basename(workspaceRoot);
-  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "source-fact-index.json"));
+  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
 
   const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId, languageId: "typescript" });
   await validatesSourceFactIndex(index);
@@ -715,7 +736,7 @@ async function runConsole(rawArgs) {
 
 async function runConsoleServe(rawArgs) {
   const { flags } = parseArgs(rawArgs);
-  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
+  const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
   const index = await readsJsonFile(indexPath);
   const workspaceRoot = typeof flags.workspace === "string"
     ? path.resolve(flags.workspace)
