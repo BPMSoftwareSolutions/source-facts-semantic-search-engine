@@ -8,7 +8,7 @@
     {
       "queryId": "cli.entry-points.v1",
       "purpose": "Locate call-graph command entry point",
-      "expectedResult": "src/cli.js#runProjectCallGraph"
+      "expectedResult": "src/cli.js#runCallGraph"
     },
     {
       "queryId": "cli.entry-point-reachability.v1",

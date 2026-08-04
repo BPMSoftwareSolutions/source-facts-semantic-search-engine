@@ -119,6 +119,9 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(commandNames.includes("project-governed-console-contract"));
   assert.equal(projection.summary.observedCliCommandHandlers, 15);
   assert.equal(projection.summary.observedCliCommandTokens, 16);
+  assert.equal(projection.summary.distinctCliExecutionSlices, 15);
+  assert.equal(projection.summary.aliasedCliCommandTokens, 2);
+  assert.equal(projection.commands.find((row) => row.commandName === "project-console-contract").executionSliceDisposition, "MULTIPLE_INTERFACE_ALIASES_ONE_EXECUTION_SLICE");
   assert.equal(projection.summary.admittedCliCommands, 0);
   assert.equal(projection.callableInventory.length, projection.summary.runtimeCallables);
   assert.ok(projection.callableInventory.every((row) => [
@@ -129,10 +132,13 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(projection.unreachableSourceFacts.every((row) => row.cliClosureClassification === "NO_CLI_REACHABILITY"));
   assert.ok(projection.removalImpact.every((row) => ["REMOVE_CANDIDATE", "REVIEW_BEFORE_REMOVAL"].includes(row.removalDisposition)));
 
+  const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
+  const canonicalFeatureIntents = await discoversCanonicalFeatureIntents(path.join(repositoryRoot, "features"), { relativeTo: repositoryRoot });
   const report = await projectsSelfGovernanceReport({
     index,
     repositoryId: "cli-execution-graph-test",
     workspaceRelativePrefix: "src",
+    canonicalFeatureIntents,
   });
   const governGraph = rerunsRegisteredReportQuery(report, "cli.command-execution-graphs.v1", { commandName: "govern" });
   assert.equal(governGraph.rowCount, 1);
@@ -141,6 +147,22 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(governGraph.rows[0].nodes.every((node) => node.pathWitness[0].symbolName === "runGovern"));
   assert.equal(governGraph.rows[0].edges.length, governGraph.rows[0].summary.invocationEdgeCount);
   assert.ok(governGraph.rows[0].unresolvedOrAmbiguousEdges.every((edge) => edge.resolutionDisposition !== "resolved"));
+  assert.ok(governGraph.rows[0].edges.every((edge) => typeof edge.semanticBoundaryDisposition === "string"));
+  assert.ok(governGraph.rows[0].summary.actionableInternalClosureDebt < governGraph.rows[0].summary.unresolvedInvocationEdgeCount);
+
+  const packets = rerunsRegisteredReportQuery(report, "cli.feature-intent-proposal-packets.v1", {});
+  assert.equal(packets.rowCount, 15);
+  assert.deepEqual(packets.rows.find((row) => row.handler === "runProjectConsoleContract").commandAliases, ["project-console-contract", "project-governed-console-contract"]);
+  const callGraphPacket = packets.rows.find((row) => row.commandId === "call-graph");
+  assert.equal(callGraphPacket.proposalDisposition, "FEATURE_INTENT_EXECUTION_GRAPH_BOUND");
+  assert.deepEqual(callGraphPacket.existingFeatureMatches, ["source-facts.cli-call-graph"]);
+  assert.ok(callGraphPacket.resolvedInternalEdges.length > 0);
+  assert.ok(callGraphPacket.platformBoundaries.length > 0);
+
+  const responsibilityTrace = rerunsRegisteredReportQuery(report, "trace.responsibility-to-command-graph.v1", { responsibilityId: "cli-call-graph-projection" });
+  assert.equal(responsibilityTrace.rowCount, 1);
+  assert.equal(responsibilityTrace.rows[0].bindingDisposition, "RESPONSIBILITY_EXECUTION_GRAPH_BOUND");
+  assert.deepEqual(responsibilityTrace.rows[0].boundImplementationSymbols, ["projectsCliEntryPointCallGraph", "runCallGraph"]);
 });
 
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {

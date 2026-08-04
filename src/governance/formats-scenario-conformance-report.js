@@ -346,6 +346,7 @@ function formatsInterfaceGovernance(report) {
   const summary = queryRows(report, "cli.traceability-summary.v1")[0];
   const commands = queryRows(report, "cli.entry-points.v1");
   const executionGraphs = queryRows(report, "cli.command-execution-graphs.v1");
+  const featureIntentPackets = queryRows(report, "cli.feature-intent-proposal-packets.v1");
   const unreachable = queryRows(report, "cli.unreachable-callables.v1");
   const queryId = "cli.traceability-summary.v1";
   const lines = [
@@ -360,6 +361,8 @@ function formatsInterfaceGovernance(report) {
     "| Metric | Count | Proving query |",
     "|---|---:|---|",
     `| Observed CLI command handlers | ${formatsFactLink(summary.observedCliCommandHandlers, queryId)} | ${formatsQueryLink("cli.entry-points.v1")} |`,
+    `| Distinct CLI execution slices | ${formatsFactLink(summary.distinctCliExecutionSlices ?? summary.observedCliCommandHandlers, queryId)} | ${formatsQueryLink("cli.feature-intent-proposal-packets.v1")} |`,
+    `| Aliased CLI command tokens | ${formatsFactLink(summary.aliasedCliCommandTokens ?? Math.max(0, summary.observedCliCommandTokens - summary.observedCliCommandHandlers), queryId)} | ${formatsQueryLink("cli.feature-intent-proposal-packets.v1")} |`,
     `| Admitted CLI commands | ${formatsFactLink(summary.admittedCliCommands, queryId)} | ${formatsQueryLink("cli.entry-points.v1")} |`,
     `| Runtime callables | ${formatsFactLink(summary.runtimeCallables, queryId)} | ${formatsQueryLink("cli.callable-inventory.v1")} |`,
     `| CLI-reachable callables | ${formatsFactLink(summary.cliReachableCallables, queryId)} | ${formatsQueryLink("cli.entry-point-reachability.v1")} |`,
@@ -382,15 +385,15 @@ function formatsInterfaceGovernance(report) {
   lines.push("");
   lines.push("## CLI Command Execution Graphs");
   lines.push("");
-  lines.push("These are the actual statically resolved graph slices produced by the same call-graph engine used for CLI reachability classification. Consumer commands are graph roots, and the internal callables they use are shown inside each graph. Any independently observed internal exported root is labeled separately. Every callable includes a root-to-node path witness; every unresolved or ambiguous invocation remains explicit.");
+  lines.push("These are the actual statically resolved graph slices produced by the same call-graph engine used for CLI reachability classification and canonical feature tracing. Consumer commands are graph roots, and the internal callables they use are shown inside each graph. Every callable includes a root-to-node path witness. Unresolved calls are separated into platform, standard-library, instance-member, higher-order, dynamic-import, ambiguous-internal, and unresolved-internal postures.");
   lines.push("");
   lines.push(`Query result: ${formatsReceiptSummary(report, "cli.command-execution-graphs.v1")}`);
   lines.push("");
-  lines.push("| Interface | Exposure | Handler | Reachable callables | Max depth | Resolved edges | Ambiguous edges | Unresolved edges | Evidence |");
+  lines.push("| Interface | Aliases | Handler | Reachable callables | Max depth | Resolved edges | Raw unresolved | Actionable internal debt | Evidence |");
   lines.push("|---|---|---|---:|---:|---:|---:|---:|---|");
   for (const graph of executionGraphs) {
     const interfaceName = graph.commandName === null ? `(internal) ${graph.handlerName}` : graph.commandName;
-    lines.push(`| \`${interfaceName}\` | \`${graph.interfaceExposure}\` | \`${graph.handlerName}\` | ${graph.summary.reachableCallableCount} | ${graph.summary.maxDepth} | ${graph.summary.resolvedInvocationEdgeCount} | ${graph.summary.ambiguousInvocationEdgeCount} | ${graph.summary.unresolvedInvocationEdgeCount} | ${formatsQueryLink("cli.command-execution-graphs.v1")} |`);
+    lines.push(`| \`${interfaceName}\` | ${graph.commandAliases.map((alias) => `\`${alias}\``).join("<br>") || "none"} | \`${graph.handlerName}\` | ${graph.summary.reachableCallableCount} | ${graph.summary.maxDepth} | ${graph.summary.resolvedInvocationEdgeCount} | ${graph.summary.unresolvedInvocationEdgeCount} | ${graph.summary.actionableInternalClosureDebt} | ${formatsQueryLink("cli.command-execution-graphs.v1")} |`);
   }
   lines.push("");
   for (const graph of executionGraphs) {
@@ -412,18 +415,31 @@ function formatsInterfaceGovernance(report) {
     lines.push("");
     lines.push("#### Invocation edges");
     lines.push("");
-    lines.push("| Caller | Target | Resolution | Reason | Source | Relationship |");
-    lines.push("|---|---|---|---|---|---|");
+    lines.push("| Caller | Target | Resolution | Semantic boundary | Reason | Source | Relationship |");
+    lines.push("|---|---|---|---|---|---|---|");
     for (const edge of graph.edges) {
       const target = edge.toSymbolName ?? edge.toSymbolCandidate ?? "(missing candidate)";
       const source = `${edge.modulePath}:${edge.sourceLine ?? "?"}:${edge.sourceColumn ?? "?"}`;
-      lines.push(`| \`${edge.fromSymbolName ?? "(module scope)"}\` | \`${target}\` | \`${edge.resolutionDisposition}\` | \`${edge.resolutionReason ?? "resolved"}\` | \`${source}\` | \`${edge.relationshipId}\` |`);
+      lines.push(`| \`${edge.fromSymbolName ?? "(module scope)"}\` | \`${target}\` | \`${edge.resolutionDisposition}\` | \`${edge.semanticBoundaryDisposition}\` | \`${edge.resolutionReason ?? "resolved"}\` | \`${source}\` | \`${edge.relationshipId}\` |`);
     }
-    if (graph.edges.length === 0) lines.push("| (none) | (none) | `resolved` | leaf root | — | — |");
+    if (graph.edges.length === 0) lines.push("| (none) | (none) | `resolved` | `RESOLVED_INTERNAL_SYMBOL` | leaf root | — | — |");
     lines.push("");
     lines.push("</details>");
     lines.push("");
   }
+  lines.push("## Graph-backed Feature Intent Queue");
+  lines.push("");
+  lines.push("One packet is emitted per distinct handler execution slice, so aliases do not create duplicate feature proposals. Existing canonical intents are reconciled against their declared implementation symbols.");
+  lines.push("");
+  lines.push(`Query result: ${formatsReceiptSummary(report, "cli.feature-intent-proposal-packets.v1")}`);
+  lines.push("");
+  lines.push("| Canonical command | Aliases | Handler | Existing features | Responsibility bindings | Disposition | Evidence |");
+  lines.push("|---|---|---|---|---:|---|---|");
+  for (const packet of featureIntentPackets) {
+    const features = packet.existingFeatureMatches.map((featureId) => `\`${featureId}\``).join("<br>") || "none";
+    lines.push(`| \`${packet.commandId}\` | ${packet.commandAliases.map((alias) => `\`${alias}\``).join("<br>") || "none"} | \`${packet.handler}\` | ${features} | ${packet.responsibilityBindings.length} | \`${packet.proposalDisposition}\` | ${formatsQueryLink("cli.feature-intent-proposal-packets.v1")} |`);
+  }
+  lines.push("");
   lines.push("## Fat and Waste Inventory");
   lines.push("");
   lines.push("Only `NO_CLI_REACHABILITY` appears here. Test/proof, generated, runtime-sensitive, and explicitly reachable classes have already been subtracted.");

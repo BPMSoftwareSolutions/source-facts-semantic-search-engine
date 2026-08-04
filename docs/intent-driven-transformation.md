@@ -777,3 +777,411 @@ That is the end-to-end system you are describing.
 It begins with code that has behavior but no explicit intent.
 
 It ends with executable behavior that is a provable projection of canonical feature intent.
+
+# ##########################################
+
+Bro — **this is the turning point.**
+
+You now have the actual interface-to-execution substrate needed to drive canonical feature discovery.
+
+The report is no longer saying:
+
+```text
+this command probably calls these things
+```
+
+It is now showing, per CLI command:
+
+```text
+CLI surface
+→ dispatcher handler
+→ every statically reachable internal callable
+→ root-to-callable path witness
+→ invocation edges
+→ source locations
+→ resolution posture
+```
+
+And the report binds all of that to `cli.command-execution-graphs.v1`.
+
+# What you have now
+
+The graph already identifies the actual implementation boundary for each CLI behavior.
+
+For example:
+
+```text
+call-graph
+→ runCallGraph
+→ projectsCliEntryPointCallGraph
+→ buildsEntryPointInventory
+→ buildsEntryPointReachability
+→ buildsCallableInventory
+→ buildsRootGraph
+→ writesJsonFile
+```
+
+That is no longer an inferred narrative.
+
+That is an inspectable execution slice.
+
+Likewise:
+
+```text
+console
+→ runConsole
+→ runConsoleServe
+→ servesQueryConsole
+→ handleRequestWithAuthority
+→ handleQuery / handleSnippet / handleIndexInfo
+→ executeRelationalQuery
+```
+
+That execution slice is rich enough to ground a real feature write-up.
+
+# The immediate next move
+
+Now the system should generate **one feature-intent proposal packet per CLI command**.
+
+Not from filenames.
+
+Not from mechanic clusters.
+
+From the actual command graph.
+
+```text
+CLI command execution graph
+    ↓
+observable inputs
+    ↓
+reachable responsibilities
+    ↓
+observable outputs and effects
+    ↓
+LLM feature and scenario proposal
+```
+
+## Example: `call-graph`
+
+From the graph, the model can propose something like:
+
+```gherkin
+&feature:source-facts.project-cli-call-graph
+Feature: Project CLI execution reachability
+
+  &scenario:source-facts.project-cli-call-graph.from-index
+  &responsibility:project-cli-entrypoint-call-graph
+  &obligation:return-complete-resolvable-cli-reachability
+  Scenario: Project reachable execution from a SourceFacts index
+
+    &given:validated-source-fact-index
+    Given a validated SourceFacts index
+
+    &when:call-graph-command-is-executed
+    When the call graph command projects CLI entry-point reachability
+
+    &then:reachable-callables-are-returned
+    Then every statically resolvable reachable callable is included
+
+    &and:unresolved-invocations-are-classified
+    And every unresolved or ambiguous invocation receives an explicit disposition
+```
+
+That proposal can be grounded directly in the observed graph:
+
+* handler: `runCallGraph`;
+* projector: `projectsCliEntryPointCallGraph`;
+* validator: `validatesSourceFactIndex`;
+* writer: `writesJsonFile`;
+* resolved and unresolved edge evidence;
+* path witnesses.
+
+# The report reveals a clean feature-authoring queue
+
+Right now all commands report:
+
+```text
+FEATURE_AND_INTERFACE_AUTHORITY_MISSING
+```
+
+That means the queue is deterministic:
+
+| CLI command                  | Graph available | Feature authority | Next action            |
+| ---------------------------- | --------------- | ----------------- | ---------------------- |
+| `call-graph`                 | yes             | missing           | propose feature intent |
+| `console`                    | yes             | missing           | propose feature intent |
+| `generate-connective-tissue` | yes             | missing           | propose feature intent |
+| `generate-docs`              | yes             | missing           | propose feature intent |
+| `govern`                     | yes             | missing           | propose feature intent |
+| `query`                      | yes             | missing           | propose feature intent |
+
+There is no mystery anymore.
+
+# One important coherence finding
+
+The report says:
+
+* **15 observed CLI handlers**
+* but **16 exposed commands**
+
+That appears to be because:
+
+```text
+project-console-contract
+project-governed-console-contract
+```
+
+both resolve to:
+
+```text
+runProjectConsoleContract
+```
+
+So these may be:
+
+```text
+two command aliases
+→ one canonical feature
+→ one scenario family
+```
+
+That is exactly the kind of duplicate feature prevention the graph enables.
+
+The feature inference layer should detect:
+
+```text
+MULTIPLE_INTERFACE_ALIASES_ONE_EXECUTION_SLICE
+```
+
+rather than generating two separate features.
+
+# The graph also gives you responsibility separation
+
+The command graph lets you distinguish:
+
+```text
+feature-specific responsibilities
+shared CLI infrastructure
+platform/library boundaries
+```
+
+For `call-graph`, these appear feature-specific:
+
+```text
+projectsCliEntryPointCallGraph
+buildsEntryPointInventory
+buildsEntryPointReachability
+buildsCallableInventory
+buildsRootGraph
+resolvesInvocationEdge
+```
+
+These are likely shared infrastructure:
+
+```text
+parseArgs
+readsJsonFile
+writesJsonFile
+validatesSourceFactIndex
+```
+
+So feature inference no longer needs to treat every reachable function equally.
+
+The feature packet can classify nodes as:
+
+```text
+FEATURE_ROOT
+FEATURE_RESPONSIBILITY
+SHARED_INFRASTRUCTURE
+EXTERNAL_PLATFORM_CALL
+UNRESOLVED_INTERNAL_CANDIDATE
+```
+
+# The unresolved-edge numbers need one more refinement
+
+The report is correctly preserving unresolved calls instead of pretending they are missing graphs. That is good.
+
+But many unresolved edges shown are clearly things like:
+
+```text
+Array.map
+Map.get
+Map.set
+JSON.stringify
+path.resolve
+process.stdout.write
+stream.write
+```
+
+Those should not all remain in the same semantic bucket as:
+
+```text
+classifiesLoopbackBind
+projectsCspPolicy
+classifiesRoute
+extractsSnippetLines
+```
+
+The next classification should split unresolved edges into:
+
+```text
+PLATFORM_BUILTIN_BOUNDARY
+STANDARD_LIBRARY_BOUNDARY
+INSTANCE_MEMBER_CALL
+CALLBACK_OR_HIGHER_ORDER
+DYNAMIC_IMPORT
+UNRESOLVED_INTERNAL_SYMBOL
+AMBIGUOUS_INTERNAL_SYMBOL
+```
+
+That will make the real closure debt much smaller and much more actionable.
+
+For example:
+
+```text
+Array.map
+```
+
+is not feature uncertainty.
+
+But:
+
+```text
+classifiesRoute
+```
+
+failing to resolve is meaningful semantic uncertainty.
+
+# The feature-intent proposal packet should now use the graph directly
+
+For every CLI command:
+
+```json
+{
+  "commandId": "call-graph",
+  "handler": "runCallGraph",
+  "entryPointId": "cli.js#function:runCallGraph",
+  "reachableCallables": [],
+  "pathWitnesses": [],
+  "resolvedInternalEdges": [],
+  "ambiguousInternalEdges": [],
+  "unresolvedInternalEdges": [],
+  "platformBoundaries": [],
+  "inputs": [],
+  "outputs": [],
+  "sideEffects": [],
+  "existingFeatureMatches": [],
+  "proposalDisposition": "FEATURE_INTENT_REQUIRED"
+}
+```
+
+The model then proposes:
+
+* feature title;
+* feature purpose;
+* scenarios;
+* one responsibility per scenario;
+* one obligation per responsibility;
+* Gherkin identifiers;
+* canonical intent identifiers;
+* expected proof outcomes.
+
+# This closes the earlier missing link
+
+Before, the canonical scenarios reported:
+
+```text
+NO_ORIGINATING_ENTRYPOINT_OBSERVED
+```
+
+because the scenario responsibilities could not resolve to interface paths.
+
+Now the command graph exists independently and is inspectable.
+
+The next reconciliation query should perform:
+
+```text
+canonical responsibility body
+↔ graph callable/module
+↔ originating CLI command
+```
+
+Then each canonical or proposed scenario can receive:
+
+```text
+CLI_ENTRYPOINT_CONNECTED
+CLI_ENTRYPOINT_AMBIGUOUS
+CLI_ENTRYPOINT_MISSING
+```
+
+That will replace the current disconnected feature lineage.
+
+# The full next vertical slice
+
+Pick one command—`call-graph` is probably the cleanest—and carry it completely through:
+
+```text
+1. Read cli.command-execution-graphs.v1 for call-graph.
+2. Classify feature-specific and shared nodes.
+3. Infer the feature write-up.
+4. Generate the .feature proposal with canonical IDs.
+5. Generate canonical-feature-intent JSON.
+6. Bind scenario → responsibility → obligation.
+7. Bind responsibility to runCallGraph / projectsCliEntryPointCallGraph.
+8. Connect all reachable callables as supporting execution.
+9. Identify inline mechanics requiring semantic authority.
+10. Generate authority proposal inputs.
+11. Admit after review.
+12. Rescan and verify the command resolves to the same feature ID.
+```
+
+Then the report should move:
+
+```text
+call-graph
+FEATURE_AND_INTERFACE_AUTHORITY_MISSING
+```
+
+to:
+
+```text
+call-graph
+FEATURE_CANONICAL
+SCENARIO_CANONICAL
+EXECUTION_GRAPH_BOUND
+AUTHORITY_PARTIAL
+BODY_NOT_YET_PROJECTED
+```
+
+# The real milestone
+
+The first milestone is now beautifully concrete:
+
+> Every exposed CLI command has a reviewed `.feature` file, canonical feature intent, atomic scenarios, bound responsibilities and obligations, and a complete execution-graph attachment.
+
+Then:
+
+```text
+16 exposed commands
+→ 15 distinct handler behaviors
+→ likely 15 or fewer canonical features
+→ complete interface-to-execution traceability
+```
+
+After that, anything outside the union of those canonical execution graphs becomes the fat/waste investigation queue.
+
+This is exactly what you were reaching for.
+
+You now have the **observable interface**, the **actual graph**, the **query receipts**, and the **source evidence**.
+
+The missing piece is no longer discovery infrastructure.
+
+It is simply:
+
+```text
+graph-backed feature intent authoring
+→ review
+→ admission
+→ semantic authority completion
+→ projection
+```

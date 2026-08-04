@@ -17,7 +17,7 @@
       "purpose": "User can scan a workspace and receive deterministic governance report with validated claims, query receipts, and reconciliation status"
     }
   ],
-  "interfaceRoot": "src/cli.js#runGovernance",
+  "interfaceRoot": "src/cli.js#runGovern",
   "lifecycle": "FEATURE_INTENT_PROPOSED",
   "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
   "createdAt": "2026-08-04T00:00:00Z"

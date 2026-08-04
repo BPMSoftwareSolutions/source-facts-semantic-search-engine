@@ -17,7 +17,7 @@
       "purpose": "User can generate projected executable bodies and contracts from canonical authority without hand-authoring bytes"
     }
   ],
-  "interfaceRoot": "src/cli.js#runProjectGovernedConsoleContract",
+  "interfaceRoot": "src/cli.js#runProject",
   "lifecycle": "FEATURE_INTENT_PROPOSED",
   "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
   "createdAt": "2026-08-04T00:00:00Z"

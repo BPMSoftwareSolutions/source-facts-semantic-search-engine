@@ -193,8 +193,19 @@ const catalog = Object.freeze([
     expectedResultSchema: "zero or more responsibility rows",
     parameters: [{ name: "scenarioId", type: "string", required: false, nullable: true }, { name: "responsibilityId", type: "string", required: false, nullable: true }, { name: "obligationId", type: "string", required: false, nullable: true }],
     rows: (view) => view.canonicalIntents?.responsibilities ?? [],
-    drillDowns: [{ queryId: "trace.scenario-to-source-facts.v1", label: "Resolve scenario source facts", parameterBindings: { scenarioId: ":scenarioId" } }],
-    rowDrillDowns: (row) => [{ queryId: "trace.scenario-to-source-facts.v1", label: "Resolve scenario source facts", parameterBindings: { scenarioId: row.scenarioId } }],
+    drillDowns: [{ queryId: "trace.responsibility-to-command-graph.v1", label: "Resolve responsibility execution graph", parameterBindings: { responsibilityId: ":responsibilityId" } }, { queryId: "trace.scenario-to-source-facts.v1", label: "Resolve scenario source facts", parameterBindings: { scenarioId: ":scenarioId" } }],
+    rowDrillDowns: (row) => [{ queryId: "trace.responsibility-to-command-graph.v1", label: "Resolve responsibility execution graph", parameterBindings: { responsibilityId: row.responsibilityId } }, { queryId: "trace.scenario-to-source-facts.v1", label: "Resolve scenario source facts", parameterBindings: { scenarioId: row.scenarioId } }],
+  },
+  {
+    queryId: "trace.responsibility-to-command-graph.v1",
+    section: "Canonical Trace",
+    queryText: "SELECT * FROM responsibilityCommandGraphRegistry WHERE (:responsibilityId IS NULL OR responsibilityId = :responsibilityId) AND (:entryPointId IS NULL OR entryPointId = :entryPointId)",
+    inputCollections: ["intentResponsibilityRegistry", "reportCliCommandExecutionGraphs"],
+    expectedResultSchema: "one canonical responsibility-to-command execution graph reconciliation row",
+    parameters: [{ name: "featureId", type: "string", required: false, nullable: true }, { name: "scenarioId", type: "string", required: false, nullable: true }, { name: "responsibilityId", type: "string", required: false, nullable: true }, { name: "entryPointId", type: "string", required: false, nullable: true }, { name: "bindingDisposition", type: "string", required: false, nullable: true }],
+    rows: (view) => view.canonicalTraces?.responsibilityToCallgraph ?? [],
+    drillDowns: [{ queryId: "cli.command-execution-graphs.v1", label: "Inspect bound command graph", parameterBindings: { entryPointId: ":entryPointId" } }],
+    rowDrillDowns: (row) => [{ queryId: "cli.command-execution-graphs.v1", label: "Inspect bound command graph", parameterBindings: { entryPointId: row.entryPointId } }],
   },
   {
     queryId: "trace.feature-to-interface.v1",
@@ -245,6 +256,7 @@ const baseQueryDrillDowns = Object.freeze({
   "cli.traceability-summary.v1": [
     { queryId: "cli.entry-points.v1", label: "Inspect CLI roots", parameterBindings: {} },
     { queryId: "cli.command-execution-graphs.v1", label: "Inspect complete per-command execution graphs", parameterBindings: {} },
+    { queryId: "cli.feature-intent-proposal-packets.v1", label: "Inspect graph-backed feature-intent packets", parameterBindings: {} },
     { queryId: "cli.callable-inventory.v1", label: "Inspect classified runtime callables", parameterBindings: {} },
     { queryId: "cli.unreachable-callables.v1", label: "Inspect NO_CLI_REACHABILITY remainder", parameterBindings: {} },
   ],
@@ -463,7 +475,7 @@ export function reconcilesReportQueryLineage(report) {
   }
   const requiredCliQueries = [
     "cli.traceability-summary.v1", "cli.entry-points.v1", "cli.callable-inventory.v1",
-    "cli.command-execution-graphs.v1",
+    "cli.command-execution-graphs.v1", "cli.feature-intent-proposal-packets.v1",
     "cli.entry-point-reachability.v1", "cli.shared-reachability.v1", "cli.runtime-resolution-debt.v1",
     "cli.reachable-source-facts.v1", "cli.unreachable-callables.v1", "cli.unreachable-source-facts.v1",
     "cli.symbol-originating-commands.v1", "cli.unreachable-removal-impact.v1",

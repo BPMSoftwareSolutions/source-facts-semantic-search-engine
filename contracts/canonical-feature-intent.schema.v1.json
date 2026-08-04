@@ -32,6 +32,12 @@
         "whenId": { "$ref": "#/$defs/id" },
         "thenId": { "$ref": "#/$defs/id" },
         "andId": { "$ref": "#/$defs/id" },
+        "implementationSymbols": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$" }
+        },
         "purpose": { "type": "string", "minLength": 1 }
       }
     }

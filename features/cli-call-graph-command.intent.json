@@ -14,10 +14,14 @@
       "whenId": "call-graph-projection-requested",
       "thenId": "reachable-callables-returned",
       "andId": "unresolved-edges-classified",
+      "implementationSymbols": [
+        "runCallGraph",
+        "projectsCliEntryPointCallGraph"
+      ],
       "purpose": "User can project complete reachable call graph from a CLI entry point and observe runtime-sensitive edge classifications"
     }
   ],
-  "interfaceRoot": "src/cli.js#runProjectCallGraph",
+  "interfaceRoot": "src/cli.js#runCallGraph",
   "lifecycle": "FEATURE_INTENT_PROPOSED",
   "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
   "createdAt": "2026-08-04T00:00:00Z"

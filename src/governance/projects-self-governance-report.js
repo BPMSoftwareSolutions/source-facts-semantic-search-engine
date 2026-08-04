@@ -264,9 +264,11 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
   const cliAuthorityFiles = scopedAuthorityDocuments.filter((entry) => (
     resolvesClaimedFiles(entry.documentKind, entry.document).includes("src/cli.js")
   )).map((entry) => entry.filePath).sort();
+  const canonicalFeatureQueryPlane = projectsCanonicalFeatureQueryPlane(canonicalFeatureIntents, index);
   const interfaceGovernance = await projectsInterfaceGovernance({
     index,
     scenarioConformance,
+    canonicalFeatureQueryPlane,
     workspaceRelativePrefix: subject.workspaceRelativePrefix,
     cliAuthorityFiles,
   });
@@ -350,7 +352,6 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     occurrences: featureCoverageProjection.occurrences,
     disposition: "OBSERVATIONAL_NO_GATE_APPLIED",
   };
-  const canonicalFeatureQueryPlane = projectsCanonicalFeatureQueryPlane(canonicalFeatureIntents, index);
   const report = Object.freeze({
     ...reportView,
     queryLineage: projectsReportQueryLineage(reportView, index, canonicalFeatureQueryPlane),

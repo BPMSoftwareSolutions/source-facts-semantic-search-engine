@@ -60,6 +60,30 @@ function safelyBuildsCallGraph(index) {
   }
 }
 
+const higherOrderMethods = new Set(["every", "filter", "find", "findIndex", "flatMap", "forEach", "map", "reduce", "reduceRight", "some", "sort"]);
+const platformRoots = new Set(["Array", "BigInt", "Boolean", "Date", "Error", "JSON", "Map", "Math", "Number", "Object", "Promise", "RegExp", "Set", "String", "Symbol", "WeakMap", "WeakSet", "console", "process"]);
+const standardLibraryRoots = new Set(["assert", "buffer", "crypto", "events", "fs", "http", "https", "os", "path", "perf_hooks", "querystring", "stream", "url", "util", "worker_threads", "zlib"]);
+const standardLibraryFunctions = new Set([
+  "access", "basename", "createHash", "createReadStream", "createServer", "createWriteStream", "dirname", "finished",
+  "fileURLToPath", "join", "mkdir", "once", "readFile", "readdir", "realpath", "resolve", "stat", "unlink", "writeFile",
+]);
+
+function classifiesInvocationEdge(edge) {
+  if (edge.resolutionDisposition === "resolved") return "RESOLVED_INTERNAL_SYMBOL";
+  if (edge.resolutionDisposition === "ambiguous") return "AMBIGUOUS_INTERNAL_SYMBOL";
+  const candidate = String(edge.toSymbolCandidate ?? "").trim();
+  if (/\bimport\s*\(/u.test(candidate) || edge.operator === "dynamic-import") return "DYNAMIC_IMPORT";
+  const member = candidate.match(/\.([A-Za-z_$][\w$]*)\s*$/u)?.[1] ?? null;
+  if (member && higherOrderMethods.has(member)) return "CALLBACK_OR_HIGHER_ORDER";
+  const root = candidate.match(/^([A-Za-z_$][\w$]*)\./u)?.[1] ?? null;
+  if (root && platformRoots.has(root)) return "PLATFORM_BUILTIN_BOUNDARY";
+  if (root && standardLibraryRoots.has(root)) return "STANDARD_LIBRARY_BOUNDARY";
+  if (standardLibraryFunctions.has(candidate)) return "STANDARD_LIBRARY_BOUNDARY";
+  if (["validate", "validator", "callback", "handler", "listener", "predicate"].includes(candidate)) return "CALLBACK_OR_HIGHER_ORDER";
+  if (member || candidate.includes(".")) return "INSTANCE_MEMBER_CALL";
+  return "UNRESOLVED_INTERNAL_SYMBOL";
+}
+
 function buildsCallPathRows(context) {
   const rows = [];
   for (const root of context.callGraph.roots ?? []) {
@@ -133,6 +157,8 @@ function buildsCommandExecutionGraphRows(context) {
       candidateSymbolIds: edge.toSymbolIds,
       resolutionDisposition: edge.resolutionDisposition,
       resolutionReason: edge.resolutionReason,
+      operator: edge.operator,
+      semanticBoundaryDisposition: classifiesInvocationEdge(edge),
     }));
     const commandRows = commandsByEntryPoint.get(root.symbolId) ?? [{ commandName: null, handlerName: root.name }];
     for (const command of commandRows) {
@@ -144,16 +170,78 @@ function buildsCommandExecutionGraphRows(context) {
         entryKind: root.entryKind,
         modulePath: repositoryPath(context, root.modulePath),
         declarationLine: root.entryLine,
-        summary: root.summary,
+        summary: {
+          ...root.summary,
+          semanticBoundaryCounts: Object.fromEntries([...new Set(edges.map((edge) => edge.semanticBoundaryDisposition))]
+            .sort().map((disposition) => [disposition, edges.filter((edge) => edge.semanticBoundaryDisposition === disposition).length])),
+          actionableInternalClosureDebt: edges.filter((edge) => ["UNRESOLVED_INTERNAL_SYMBOL", "AMBIGUOUS_INTERNAL_SYMBOL"].includes(edge.semanticBoundaryDisposition)).length,
+        },
         depthLayers: root.depthLayers,
         nodes,
         edges,
         unresolvedOrAmbiguousEdges: edges.filter((edge) => edge.resolutionDisposition !== "resolved"),
+        internalClosureDebtEdges: edges.filter((edge) => ["UNRESOLVED_INTERNAL_SYMBOL", "AMBIGUOUS_INTERNAL_SYMBOL"].includes(edge.semanticBoundaryDisposition)),
+        boundaryEdges: edges.filter((edge) => !["RESOLVED_INTERNAL_SYMBOL", "UNRESOLVED_INTERNAL_SYMBOL", "AMBIGUOUS_INTERNAL_SYMBOL"].includes(edge.semanticBoundaryDisposition)),
+        canonicalCommandName: command.canonicalCommandName ?? command.commandName,
+        commandAliases: command.commandAliases ?? [command.commandName].filter(Boolean),
+        executionSliceDisposition: command.executionSliceDisposition ?? "ONE_INTERFACE_ONE_EXECUTION_SLICE",
       });
     }
   }
   return rows.sort((left, right) => String(left.commandName ?? "~internal").localeCompare(String(right.commandName ?? "~internal"))
     || left.handlerName.localeCompare(right.handlerName));
+}
+
+function buildsFeatureIntentProposalPackets(context) {
+  const packets = [];
+  const seen = new Set();
+  const callableById = new Map((context.interfaceGovernance.callableInventory ?? []).map((row) => [row.symbolId, row]));
+  const responsibilities = context.canonicalTraces?.responsibilityToCallgraph ?? [];
+  for (const graph of context.commandExecutionGraphRows ?? []) {
+    if (seen.has(graph.entryPointId)) continue;
+    seen.add(graph.entryPointId);
+    const commands = (context.interfaceGovernance.commands ?? []).filter((row) => row.entryPointId === graph.entryPointId);
+    const featureIds = uniqueSorted(commands.flatMap((row) => row.canonicalFeatureIds ?? []));
+    const responsibilityBindings = responsibilities.filter((row) => featureIds.includes(row.featureId));
+    const explicitlyBoundSymbols = new Set(responsibilityBindings.flatMap((row) => row.boundImplementationSymbols));
+    const classifiedNodes = graph.nodes.map((node) => ({
+      ...node,
+      nodeDisposition: node.symbolId === graph.entryPointId ? "FEATURE_ROOT"
+        : explicitlyBoundSymbols.has(node.symbolName) ? "FEATURE_RESPONSIBILITY"
+          : callableById.get(node.symbolId)?.cliClosureClassification === "SHARED_CLI_INFRASTRUCTURE" ? "SHARED_INFRASTRUCTURE"
+            : "SUPPORTING_EXECUTION",
+    }));
+    const boundaryCandidate = (edge) => ({
+      candidate: edge.toSymbolCandidate,
+      disposition: edge.semanticBoundaryDisposition,
+      sourceReferenceId: edge.sourceReferenceId,
+      modulePath: edge.modulePath,
+      sourceLine: edge.sourceLine,
+    });
+    const observable = graph.boundaryEdges.map(boundaryCandidate);
+    packets.push({
+      commandId: graph.canonicalCommandName,
+      commandAliases: graph.commandAliases,
+      aliasDisposition: graph.executionSliceDisposition,
+      handler: graph.handlerName,
+      entryPointId: graph.entryPointId,
+      reachableCallables: classifiedNodes,
+      pathWitnesses: classifiedNodes.map((node) => ({ symbolId: node.symbolId, pathWitness: node.pathWitness })),
+      resolvedInternalEdges: graph.edges.filter((edge) => edge.semanticBoundaryDisposition === "RESOLVED_INTERNAL_SYMBOL"),
+      ambiguousInternalEdges: graph.edges.filter((edge) => edge.semanticBoundaryDisposition === "AMBIGUOUS_INTERNAL_SYMBOL"),
+      unresolvedInternalEdges: graph.edges.filter((edge) => edge.semanticBoundaryDisposition === "UNRESOLVED_INTERNAL_SYMBOL"),
+      platformBoundaries: observable,
+      inputs: observable.filter((edge) => /(?:read|parse|argv|input|request|get)/iu.test(edge.candidate ?? "")),
+      outputs: observable.filter((edge) => /(?:write|print|stringify|response|send)/iu.test(edge.candidate ?? "")),
+      sideEffects: observable.filter((edge) => /(?:write|set|push|serve|load|create|delete|remove)/iu.test(edge.candidate ?? "")),
+      existingFeatureMatches: featureIds,
+      responsibilityBindings,
+      proposalDisposition: featureIds.length === 0 ? "FEATURE_INTENT_REQUIRED"
+        : responsibilityBindings.some((row) => row.bindingDisposition === "RESPONSIBILITY_EXECUTION_GRAPH_BOUND") ? "FEATURE_INTENT_EXECUTION_GRAPH_BOUND"
+          : "FEATURE_INTENT_RESPONSIBILITY_BINDING_REQUIRED",
+    });
+  }
+  return packets.sort((left, right) => String(left.commandId).localeCompare(String(right.commandId)));
 }
 
 function buildsInvocationRows(context) {
@@ -263,6 +351,7 @@ export function buildsReportQueryContext(view, index, canonicalFeatureQueryPlane
   context.callPathRows = buildsCallPathRows(context);
   context.invocationRows = buildsInvocationRows(context);
   context.commandExecutionGraphRows = buildsCommandExecutionGraphRows(context);
+  context.featureIntentProposalPackets = buildsFeatureIntentProposalPackets(context);
   context.authoring = buildsAuthoringEvidenceContext(context);
   return context;
 }
@@ -274,6 +363,15 @@ export const reportDrillDownQueries = Object.freeze([
     inputCollections: ["reportInterfaceGovernanceSummary"], expectedResultSchema: "one CLI-first closure and subtraction summary row", parameters: [],
     rows: (context) => [context.interfaceGovernance.summary],
     drillDowns: [next("cli.entry-points.v1", "Inspect CLI roots", {}), next("cli.callable-inventory.v1", "Inspect classified runtime callables", {}), next("cli.unreachable-callables.v1", "Inspect NO_CLI_REACHABILITY remainder", {})],
+  },
+  {
+    queryId: "cli.feature-intent-proposal-packets.v1", section: "CLI Execution Graphs", depth: 1,
+    queryText: "SELECT * FROM reportCliFeatureIntentProposalPackets WHERE (:commandName IS NULL OR commandId = :commandName) AND (:entryPointId IS NULL OR entryPointId = :entryPointId) ORDER BY commandId",
+    inputCollections: ["reportCliCommandExecutionGraphs", "intentFeatureRegistry", "intentResponsibilityRegistry"], expectedResultSchema: "one graph-backed feature-intent proposal or reconciliation packet per distinct CLI execution slice",
+    parameters: [parameter("commandName"), parameter("entryPointId"), parameter("proposalDisposition")],
+    rows: (context) => context.featureIntentProposalPackets,
+    drillDowns: [next("cli.command-execution-graphs.v1", "Inspect execution graph evidence", { entryPointId: ":entryPointId" }), next("trace.responsibility-to-command-graph.v1", "Inspect responsibility bindings", { entryPointId: ":entryPointId" })],
+    rowDrillDowns: (row) => [next("cli.command-execution-graphs.v1", "Inspect execution graph evidence", { entryPointId: row.entryPointId }), next("trace.responsibility-to-command-graph.v1", "Inspect responsibility bindings", { entryPointId: row.entryPointId })],
   },
   {
     queryId: "cli.entry-points.v1", section: "CLI Traceability", depth: 0,

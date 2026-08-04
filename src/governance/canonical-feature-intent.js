@@ -1,6 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { projectsCliEntryPointCallGraph } from "../call-graph.js";
 import Ajv2020 from "ajv/dist/2020.js";
 
 const anchorPattern = /^\s*&(feature|scenario|given|when|then|and|but):([a-z0-9][a-z0-9._-]*)\s*$/iu;
@@ -245,7 +246,7 @@ function moduleMatchesInterfaceFile(modulePath, interfaceFile) {
   return normalized === interfaceFile || interfaceFile.endsWith(`/${normalized}`) || normalized.endsWith(`/${interfaceFile}`);
 }
 
-function reachableSymbols(rootSymbolId, symbolsById, relationships) {
+function buildsPreResolvedReachability(rootSymbolId, symbolsById, relationships) {
   if (!rootSymbolId) return [];
   const outgoing = new Map();
   for (const relationship of relationships) {
@@ -254,18 +255,18 @@ function reachableSymbols(rootSymbolId, symbolsById, relationships) {
     rows.push(relationship.toSymbolId);
     outgoing.set(relationship.fromSymbolId, rows);
   }
-  const queue = [{ symbolId: rootSymbolId, depth: 0 }];
+  const queue = [{ symbolId: rootSymbolId, depth: 0, parentSymbolId: null }];
   const seen = new Set();
-  const rows = [];
+  const nodes = [];
   while (queue.length > 0) {
     const current = queue.shift();
     if (seen.has(current.symbolId)) continue;
     seen.add(current.symbolId);
-    const symbol = symbolsById.get(current.symbolId);
-    if (symbol) rows.push({ symbol, depth: current.depth });
-    for (const target of outgoing.get(current.symbolId) ?? []) queue.push({ symbolId: target, depth: current.depth + 1 });
+    if (symbolsById.has(current.symbolId)) nodes.push({ ...current });
+    for (const target of outgoing.get(current.symbolId) ?? []) queue.push({ symbolId: target, depth: current.depth + 1, parentSymbolId: current.symbolId });
   }
-  return rows;
+  const root = { nodes };
+  return nodes.map((node) => ({ symbol: symbolsById.get(node.symbolId), depth: node.depth, node, pathWitness: buildsNodePath(root, node) }));
 }
 
 function callableIdentity(symbol) {
@@ -288,7 +289,15 @@ export function projectsCanonicalFeatureQueryPlane(discovery, index) {
   const featureToCallgraph = [];
   const scenarioToSourceFacts = [];
   const obligationToMechanics = [];
+  const responsibilityToCallgraph = [];
   const symbolsById = new Map((index.symbols ?? []).map((symbol) => [symbol.symbolId, symbol]));
+  let callGraph;
+  try {
+    callGraph = projectsCliEntryPointCallGraph(index);
+  } catch {
+    callGraph = { roots: [] };
+  }
+  const graphRootsBySymbolId = new Map((callGraph.roots ?? []).map((root) => [root.symbolId, root]));
   const referencesById = new Map((index.sourceReferences ?? []).map((reference) => [reference.referenceId, reference]));
   const mechanicsBySymbol = new Map();
   for (const mechanic of index.bodyMechanics ?? []) {
@@ -312,7 +321,7 @@ export function projectsCanonicalFeatureQueryPlane(discovery, index) {
       const stepIds = (parsedScenario?.steps ?? []).map((step) => step.stepId).filter(Boolean);
       scenarios.push({ featureId: intent.featureId, scenarioId: scenarioIntent.scenarioId, scenarioAnchor: parsedScenario?.scenarioAnchor ?? null, featureFile: pair.featureFile, purpose: parsedScenario?.title ?? null, steps: stepIds, lineNumber: parsedScenario?.line ?? null, validationDisposition });
       intentScenarios.push({ featureId: intent.featureId, scenarioId: scenarioIntent.scenarioId, scenarioAnchor: scenarioIntent.scenarioAnchor, responsibilityId: scenarioIntent.responsibilityId, obligationId: scenarioIntent.obligationId, purpose: scenarioIntent.purpose ?? null, stepIds: scenarioIntentSteps(scenarioIntent).map((step) => step.stepId), intentFile: pair.intentFile, lifecycle: projectsLifecycle(intent.lifecycle, "SCENARIO") });
-      responsibilities.push({ featureId: intent.featureId, scenarioId: scenarioIntent.scenarioId, responsibilityId: scenarioIntent.responsibilityId, obligationId: scenarioIntent.obligationId, obligationStatement: scenarioIntent.purpose ?? null, responsibilityType: "command-entry", lifecycle: projectsLifecycle(intent.lifecycle, "RESPONSIBILITY"), intentFile: pair.intentFile });
+      responsibilities.push({ featureId: intent.featureId, scenarioId: scenarioIntent.scenarioId, responsibilityId: scenarioIntent.responsibilityId, obligationId: scenarioIntent.obligationId, obligationStatement: scenarioIntent.purpose ?? null, responsibilityType: "command-entry", implementationSymbols: scenarioIntent.implementationSymbols ?? [], lifecycle: projectsLifecycle(intent.lifecycle, "RESPONSIBILITY"), intentFile: pair.intentFile });
       for (const parsedStep of parsedScenario?.steps ?? []) steps.push({ featureId: intent.featureId, scenarioId: scenarioIntent.scenarioId, stepId: parsedStep.stepId, stepType: parsedStep.keyword, stepText: parsedStep.text, stepAnchor: parsedStep.stepAnchor, featureFile: pair.featureFile, lineNumber: parsedStep.line, validationDisposition });
     }
 
@@ -320,13 +329,33 @@ export function projectsCanonicalFeatureQueryPlane(discovery, index) {
     const matchingSymbols = (index.symbols ?? []).filter((symbol) => symbol.name === interfaceSymbol && moduleMatchesInterfaceFile(symbol.modulePath, interfaceFile));
     const interfaceDisposition = matchingSymbols.length === 1 ? "INTERFACE_ROOT_RESOLVED" : matchingSymbols.length === 0 ? "INTERFACE_ROOT_MISSING" : "INTERFACE_ROOT_AMBIGUOUS";
     featureToInterface.push({ featureId: intent.featureId, featureFile: pair.featureFile, intentFile: pair.intentFile, interfaceRoot: intent.interfaceRoot ?? null, interfaceFile, interfaceSymbol, lineNumber: matchingSymbols.length === 1 ? matchingSymbols[0].declarationLine ?? null : null, symbolId: matchingSymbols.length === 1 ? matchingSymbols[0].symbolId : null, interfaceDisposition });
-    const reachable = matchingSymbols.length === 1 ? reachableSymbols(matchingSymbols[0].symbolId, symbolsById, index.relationships ?? []) : [];
-    for (const { symbol, depth } of reachable) {
-      const incomingEdges = (index.relationships ?? []).filter((relationship) => relationship.toSymbolId === symbol.symbolId).length;
-      const outgoingEdges = (index.relationships ?? []).filter((relationship) => relationship.fromSymbolId === symbol.symbolId && relationship.toSymbolId).length;
-      featureToCallgraph.push({ featureId: intent.featureId, interfaceRoot: intent.interfaceRoot, callableId: callableIdentity(symbol), sourceSymbolId: symbol.symbolId, callableFile: symbol.modulePath, callableSymbol: symbol.name, depth, incomingEdges, outgoingEdges, interfaceDisposition });
+    const graphRoot = matchingSymbols.length === 1 ? graphRootsBySymbolId.get(matchingSymbols[0].symbolId) ?? null : null;
+    const reachable = graphRoot
+      ? graphRoot.nodes.map((node) => ({ symbol: symbolsById.get(node.symbolId) ?? node, depth: node.depth, node, pathWitness: buildsNodePath(graphRoot, node) }))
+      : (matchingSymbols.length === 1 ? buildsPreResolvedReachability(matchingSymbols[0].symbolId, symbolsById, index.relationships ?? []) : []);
+    for (const { symbol, depth, pathWitness } of reachable) {
+      const graphEdges = graphRoot?.edges ?? (index.relationships ?? []);
+      const incomingEdges = graphEdges.filter((edge) => edge.toSymbolId === symbol.symbolId).length;
+      const outgoingEdges = graphEdges.filter((edge) => edge.fromSymbolId === symbol.symbolId && (edge.resolutionDisposition === undefined || edge.resolutionDisposition === "resolved")).length;
+      featureToCallgraph.push({ featureId: intent.featureId, interfaceRoot: intent.interfaceRoot, callableId: callableIdentity(symbol), sourceSymbolId: symbol.symbolId, callableFile: symbol.modulePath, callableSymbol: symbol.name, depth, pathWitness, incomingEdges, outgoingEdges, interfaceDisposition });
     }
     for (const scenarioIntent of scenarioIntents) {
+      const requestedSymbols = scenarioIntent.implementationSymbols ?? [];
+      const boundSymbols = reachable.filter(({ symbol }) => requestedSymbols.includes(symbol.name));
+      responsibilityToCallgraph.push({
+        featureId: intent.featureId,
+        scenarioId: scenarioIntent.scenarioId,
+        responsibilityId: scenarioIntent.responsibilityId,
+        obligationId: scenarioIntent.obligationId,
+        interfaceRoot: intent.interfaceRoot ?? null,
+        entryPointId: graphRoot?.symbolId ?? null,
+        requestedImplementationSymbols: requestedSymbols,
+        boundImplementationSymbols: boundSymbols.map(({ symbol }) => symbol.name).sort(),
+        supportingCallableIds: reachable.map(({ symbol }) => callableIdentity(symbol)),
+        bindingDisposition: requestedSymbols.length === 0 ? "RESPONSIBILITY_IMPLEMENTATION_BINDING_NOT_DECLARED"
+          : boundSymbols.length === requestedSymbols.length ? "RESPONSIBILITY_EXECUTION_GRAPH_BOUND"
+            : boundSymbols.length > 0 ? "RESPONSIBILITY_EXECUTION_GRAPH_PARTIALLY_BOUND" : "RESPONSIBILITY_EXECUTION_GRAPH_MISSING",
+      });
       const mechanics = reachable.flatMap(({ symbol, depth }) => (mechanicsBySymbol.get(symbol.symbolId) ?? []).map((mechanic) => ({ symbol, depth, mechanic })));
       const counts = new Map();
       for (const row of mechanics) {
@@ -348,6 +377,17 @@ export function projectsCanonicalFeatureQueryPlane(discovery, index) {
   return Object.freeze({
     canonicalFeatures: Object.freeze({ features: Object.freeze(features.sort(by(["featureId"]))), scenarios: Object.freeze(scenarios.sort(by(["scenarioId"]))), steps: Object.freeze(steps.sort(by(["scenarioId", "lineNumber"]))) }),
     canonicalIntents: Object.freeze({ features: Object.freeze(intentFeatures.sort(by(["featureId"]))), scenarios: Object.freeze(intentScenarios.sort(by(["scenarioId"]))), responsibilities: Object.freeze(responsibilities.sort(by(["scenarioId"]))) }),
-    canonicalTraces: Object.freeze({ featureToInterface: Object.freeze(featureToInterface.sort(by(["featureId"]))), featureToCallgraph: Object.freeze(featureToCallgraph.sort(by(["featureId", "depth", "callableId"]))), scenarioToSourceFacts: Object.freeze(scenarioToSourceFacts.sort(by(["scenarioId", "callableId", "mechanicType"]))), obligationToMechanics: Object.freeze(obligationToMechanics.sort(by(["obligationId", "file", "line"]))) }),
+    canonicalTraces: Object.freeze({ featureToInterface: Object.freeze(featureToInterface.sort(by(["featureId"]))), featureToCallgraph: Object.freeze(featureToCallgraph.sort(by(["featureId", "depth", "callableId"]))), responsibilityToCallgraph: Object.freeze(responsibilityToCallgraph.sort(by(["featureId", "scenarioId", "responsibilityId"]))), scenarioToSourceFacts: Object.freeze(scenarioToSourceFacts.sort(by(["scenarioId", "callableId", "mechanicType"]))), obligationToMechanics: Object.freeze(obligationToMechanics.sort(by(["obligationId", "file", "line"]))) }),
   });
+}
+
+function buildsNodePath(root, node) {
+  const nodesById = new Map(root.nodes.map((candidate) => [candidate.symbolId, candidate]));
+  const path = [];
+  let current = node;
+  while (current) {
+    path.push(current.symbolId);
+    current = current.parentSymbolId ? nodesById.get(current.parentSymbolId) ?? null : null;
+  }
+  return path.reverse();
 }

@@ -88,17 +88,17 @@
   "exampleResult": [
     {
       "featureId": "source-facts.cli-call-graph",
-      "interfaceRoot": "src/cli.js#runProjectCallGraph",
-      "callableId": "src/cli.js#runProjectCallGraph",
+      "interfaceRoot": "src/cli.js#runCallGraph",
+      "callableId": "src/cli.js#runCallGraph",
       "callableFile": "src/cli.js",
-      "callableSymbol": "runProjectCallGraph",
+      "callableSymbol": "runCallGraph",
       "depth": 0,
       "incomingEdges": 1,
       "outgoingEdges": 3
     },
     {
       "featureId": "source-facts.cli-call-graph",
-      "interfaceRoot": "src/cli.js#runProjectCallGraph",
+      "interfaceRoot": "src/cli.js#runCallGraph",
       "callableId": "src/call-graph.js#projectsCliEntryPointCallGraph",
       "callableFile": "src/call-graph.js",
       "callableSymbol": "projectsCliEntryPointCallGraph",

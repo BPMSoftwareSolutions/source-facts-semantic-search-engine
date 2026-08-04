@@ -72,6 +72,7 @@ function buildsReachabilityRows(callGraph, commandNamesByHandler, workspaceRelat
 export async function projectsInterfaceGovernance({
   index,
   scenarioConformance,
+  canonicalFeatureQueryPlane = {},
   workspaceRelativePrefix = "",
   cliAuthorityFiles = [],
 }) {
@@ -95,6 +96,16 @@ export async function projectsInterfaceGovernance({
     dispatchByHandler.set(row.handlerName, bucket);
   }
   const bindings = scenarioBindings(scenarioConformance);
+  const canonicalInterfacesBySymbolId = new Map();
+  for (const trace of canonicalFeatureQueryPlane.canonicalTraces?.featureToInterface ?? []) {
+    if (!trace.symbolId || trace.interfaceDisposition !== "INTERFACE_ROOT_RESOLVED") continue;
+    const rows = canonicalInterfacesBySymbolId.get(trace.symbolId) ?? [];
+    rows.push(trace);
+    canonicalInterfacesBySymbolId.set(trace.symbolId, rows);
+  }
+  const intentFeaturesById = new Map((canonicalFeatureQueryPlane.canonicalIntents?.features ?? []).map((feature) => [feature.featureId, feature]));
+  const intentScenarios = canonicalFeatureQueryPlane.canonicalIntents?.scenarios ?? [];
+  const intentResponsibilities = canonicalFeatureQueryPlane.canonicalIntents?.responsibilities ?? [];
   const rootIds = new Set(callGraph.roots.map((root) => root.symbolId));
   const callableInventory = callGraph.callables.map((callable) => ({
     ...callable,
@@ -108,9 +119,16 @@ export async function projectsInterfaceGovernance({
     const reachableSymbolNames = new Set(root.nodes.map((node) => node.name));
     const matched = bindings.filter((binding) => reachableModulePaths.has(binding.bodyFile)
       || reachableSymbolNames.has(binding.responsibilityId));
-    const canonicalFeatureIds = [...new Set(matched.map((item) => item.featureId))].sort();
-    const canonicalScenarioIds = [...new Set(matched.map((item) => item.scenarioId))].sort();
-    const canonicalResponsibilityIds = [...new Set(matched.map((item) => item.responsibilityId))].sort();
+    const canonicalInterfaceTraces = canonicalInterfacesBySymbolId.get(root.symbolId) ?? [];
+    const canonicalFeatureIds = [...new Set([...matched.map((item) => item.featureId), ...canonicalInterfaceTraces.map((item) => item.featureId)])].sort();
+    const canonicalScenarioIds = [...new Set([
+      ...matched.map((item) => item.scenarioId),
+      ...intentScenarios.filter((item) => canonicalFeatureIds.includes(item.featureId)).map((item) => item.scenarioId),
+    ])].sort();
+    const canonicalResponsibilityIds = [...new Set([
+      ...matched.map((item) => item.responsibilityId),
+      ...intentResponsibilities.filter((item) => canonicalFeatureIds.includes(item.featureId)).map((item) => item.responsibilityId),
+    ])].sort();
     const canonicalAuthorityFiles = [...new Set(matched.map((item) => item.authorityFile))].sort();
     const commandNames = dispatchByHandler.get(root.name) ?? [null];
     return commandNames.map((commandName) => {
@@ -133,6 +151,8 @@ export async function projectsInterfaceGovernance({
         canonicalScenarioIds,
         canonicalResponsibilityIds,
         canonicalAuthorityFiles,
+        canonicalFeatureIntentFiles: canonicalFeatureIds.map((featureId) => intentFeaturesById.get(featureId)?.intentFile).filter(Boolean).sort(),
+        canonicalFeatureLifecycles: canonicalFeatureIds.map((featureId) => intentFeaturesById.get(featureId)?.lifecycle).filter(Boolean).sort(),
         cliInterfaceAuthorityFiles: [...cliAuthorityFiles],
         featureAccessDisposition: featureLinked ? "CANONICAL_FEATURE_ACCESS_OBSERVED" : "CANONICAL_FEATURE_LINK_MISSING",
         interfaceAuthorityDisposition: interfaceAuthorityBound ? "CLI_INTERFACE_AUTHORITY_BOUND" : "CLI_INTERFACE_AUTHORITY_MISSING",
@@ -142,10 +162,25 @@ export async function projectsInterfaceGovernance({
       };
     });
   }).sort((left, right) => String(left.commandName).localeCompare(String(right.commandName)) || left.handlerName.localeCompare(right.handlerName));
+  const commandsByEntryPoint = new Map();
+  for (const command of commands) {
+    const rows = commandsByEntryPoint.get(command.entryPointId) ?? [];
+    rows.push(command);
+    commandsByEntryPoint.set(command.entryPointId, rows);
+  }
+  const commandsWithAliases = commands.map((command) => {
+    const aliases = (commandsByEntryPoint.get(command.entryPointId) ?? []).map((row) => row.commandName).filter(Boolean).sort();
+    return Object.freeze({
+      ...command,
+      canonicalCommandName: aliases[0] ?? command.commandName,
+      commandAliases: Object.freeze(aliases),
+      executionSliceDisposition: aliases.length > 1 ? "MULTIPLE_INTERFACE_ALIASES_ONE_EXECUTION_SLICE" : "ONE_INTERFACE_ONE_EXECUTION_SLICE",
+    });
+  });
   const observedHttpEntryPoints = (callGraph.entryPoints ?? [])
     .filter((entry) => entry.entryKinds.includes("http-server-entry")).length;
-  const linkedFeatureIds = [...new Set(commands.flatMap((row) => row.canonicalFeatureIds))].sort();
-  const commandsWithCanonicalFeature = commands.filter((row) => row.canonicalFeatureIds.length > 0).length;
+  const linkedFeatureIds = [...new Set(commandsWithAliases.flatMap((row) => row.canonicalFeatureIds))].sort();
+  const commandsWithCanonicalFeature = commandsWithAliases.filter((row) => row.canonicalFeatureIds.length > 0).length;
   const references = new Map((index.sourceReferences ?? []).map((row) => [row.referenceId, row]));
   const symbols = new Map((index.symbols ?? []).map((row) => [row.symbolId, row]));
   const relationships = index.relationships ?? [];
@@ -237,15 +272,17 @@ export async function projectsInterfaceGovernance({
     cliDispatchEvidenceDisposition: dispatchEvidenceDisposition,
     cliDispatchSourceHash: source ? `sha256:${createHash("sha256").update(source, "utf8").digest("hex")}` : null,
     observedCliCommandHandlers: callGraph.roots.length,
-    observedCliCommandTokens: commands.filter((row) => row.commandName !== null).length,
+    observedCliCommandTokens: commandsWithAliases.filter((row) => row.commandName !== null).length,
+    distinctCliExecutionSlices: commandsByEntryPoint.size,
+    aliasedCliCommandTokens: commandsWithAliases.filter((row) => row.commandAliases.length > 1).length,
     observedHttpEntryPoints,
     commandsWithCanonicalFeature,
-    commandsWithoutCanonicalFeature: commands.length - commandsWithCanonicalFeature,
+    commandsWithoutCanonicalFeature: commandsWithAliases.length - commandsWithCanonicalFeature,
     canonicalFeaturesAccessibleViaCli: linkedFeatureIds.length,
     canonicalFeatureIdsAccessibleViaCli: linkedFeatureIds,
     cliInterfaceAuthorityDocuments: cliAuthorityFiles.length,
     cliInterfaceAuthorityDisposition: cliAuthorityFiles.length > 0 ? "CLI_INTERFACE_AUTHORITY_BOUND" : "CLI_INTERFACE_AUTHORITY_MISSING",
-    admittedCliCommands: cliAuthorityFiles.length > 0 ? commands.length : 0,
+    admittedCliCommands: cliAuthorityFiles.length > 0 ? commandsWithAliases.length : 0,
     runtimeCallables: callableInventory.length,
     cliReachableCallables: callableInventory.filter((row) => ["CLI_FEATURE_ROOT", "CLI_FEATURE_REACHABLE", "SHARED_CLI_INFRASTRUCTURE"].includes(row.cliClosureClassification)).length,
     sharedCliInfrastructure: sharedReachability.length,
@@ -256,7 +293,7 @@ export async function projectsInterfaceGovernance({
   };
   return Object.freeze({
     summary: Object.freeze(summary),
-    commands: Object.freeze(commands),
+    commands: Object.freeze(commandsWithAliases),
     callableInventory: Object.freeze(callableInventory),
     reachability: Object.freeze(reachability),
     sharedReachability: Object.freeze(sharedReachability),
