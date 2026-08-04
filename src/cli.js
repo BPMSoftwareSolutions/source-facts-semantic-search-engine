@@ -183,8 +183,17 @@ async function runGenerateDocs(rawArgs) {
   const graphPath = path.resolve(flags.graph ?? path.join(process.cwd(), "artifacts", "call-graphs", "call-graph.json"));
   const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "artifacts", "indexes", "source-fact-index.json"));
   const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "docs", "generated", "traceability-metrics.md"));
+  const metricCatalogPath = path.resolve(flags.metricCatalog ?? path.join(process.cwd(), "contracts", "traceability-metric-catalog.json"));
+  const queryReceiptPath = flags.queryReceipts === undefined ? null : path.resolve(flags.queryReceipts);
+  const closureReceiptPath = flags.closureReceipt === undefined ? null : path.resolve(flags.closureReceipt);
 
-  const docPath = await generatesTraceabilityDocs(reportPath, graphPath, indexPath, outputPath);
+  const docPath = await generatesTraceabilityDocs(
+    reportPath,
+    graphPath,
+    indexPath,
+    outputPath,
+    { metricCatalogPath, queryReceiptPath, closureReceiptPath },
+  );
   process.stdout.write(`${docPath}\n`);
   if (flags.summary === true) {
     process.stdout.write(`Generated traceability metrics documentation.\n`);
@@ -1199,7 +1208,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se query [--index <file>] --query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se call-graph [--index <file>] [--output <file>] [--pretty] [--summary]\n`);
-  stream.write(`  source-facts-se generate-docs [--report <file>] [--graph <file>] [--index <file>] [--output <file>] [--summary]\n`);
+  stream.write(`  source-facts-se generate-docs [--report <file>] [--graph <file>] [--index <file>] [--metric-catalog <file>] [--query-receipts <file>] [--closure-receipt <file>] [--output <file>] [--summary]\n`);
   stream.write(`  source-facts-se web inventory --policy <contracts/web-know.workspace.json> [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web project --policy <contracts/web-know.workspace.json> [--inventory <file>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web query [--index <file>] --query \"<sql>\" [--pretty]\n`);

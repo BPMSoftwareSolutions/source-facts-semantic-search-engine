@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Traceability Metric Catalog",
+  "type": "object",
+  "required": ["catalogType", "catalogVersion", "schemaVersion", "metrics"],
+  "additionalProperties": false,
+  "properties": {
+    "catalogType": {
+      "const": "traceability-metric-catalog.v1"
+    },
+    "catalogVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "schemaVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/metric" }
+    }
+  },
+  "$defs": {
+    "metric": {
+      "type": "object",
+      "required": ["metricId", "metricVersion", "metricLabel", "section", "claimType", "source", "resultType", "disposition"],
+      "additionalProperties": false,
+      "properties": {
+        "metricId": {
+          "type": "string",
+          "pattern": "^[a-z0-9-_.]+$",
+          "minLength": 3
+        },
+        "metricVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metricLabel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claimType": {
+          "enum": ["factual", "derived", "interpretive"]
+        },
+        "resultType": {
+          "enum": ["integer", "number", "percentage"]
+        },
+        "disposition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "query": {
+          "type": "object",
+          "required": ["queryId"],
+          "additionalProperties": false,
+          "properties": {
+            "queryId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "disposition": {
+              "type": "string",
+              "minLength": 1
+            },
+            "queryText": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "source": {
+          "type": "object",
+          "required": ["artifactKind", "valueMode"],
+          "additionalProperties": false,
+          "properties": {
+            "artifactKind": {
+              "enum": ["call-graph", "governance-report", "source-fact-index", "derived"]
+            },
+            "valueMode": {
+              "enum": ["artifact-pointer", "symbol-count", "sum-symbol-counts", "sum-metrics", "ratio"]
+            },
+            "pointer": {
+              "type": "string",
+              "minLength": 1
+            },
+            "symbolKind": {
+              "type": "string",
+              "minLength": 1
+            },
+            "symbolKinds": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "addendMetricIds": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "numeratorMetricId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "denominatorMetricId": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

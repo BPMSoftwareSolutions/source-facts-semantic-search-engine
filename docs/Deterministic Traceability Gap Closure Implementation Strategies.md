@@ -1,514 +1,520 @@
 # Deterministic Traceability Gap Closure Implementation Strategies
 
-**Status:** Implementation-ready; both gap closures remain unproved
+**Status:** Normative implementation specification; neither gap is closed
 
-**Prepared:** 2026-08-04
+**Evidence date:** 2026-08-04
 
-**Repository revision:** `0ab7c9d`
+**HEAD observed:** `f71eb33a0f173832b93b62f86d90f33bf1ed3e33`
+
+**Revision qualification:** The evidence was produced from a dirty working tree. It is valid for implementation planning, but it is not eligible for a release closure receipt.
+
 **Subject:** The two closure claims in the [Feature and Capability Traceability Strategic Roadmap](<./Feature and Capability Traceability Strategic Roadmap.md>)
 
 ## Purpose
 
-This document turns the current conversation and repository evidence into two deterministic implementation strategies:
+This document is the executable specification for closing two gaps:
 
-1. close automated, evidence-bound documentation generation; and
-2. close repository-wide forward and reverse reachability for the declared Round 2 scope.
+1. deterministic, evidence-bound traceability documentation; and
+2. complete forward and reverse reachability for the declared repository scope.
 
-The strategy is not a prose-only recommendation. Every current-state claim is bound to one of:
+It supersedes any earlier prose in this document that could be satisfied by constructing plausible fixtures or copying unverified hashes. Every implementation step below declares:
 
-- a SourceFacts relational-query receipt over a named index;
-- a hash-bound generated artifact assertion; or
-- a recorded tool failure that must be removed before closure.
+- the exact SourceFacts query or non-query command that establishes its current state;
+- the observed result, including receipt hash and row count where available;
+- the required implementation impact;
+- negative cases that must fail closed; and
+- a binary exit condition.
 
-Every implementation task has an impact surface, an ordered change, a verification query, and a zero-ambiguity exit condition. A passing general test suite is supporting evidence, not a substitute for the exit queries.
+`Implemented`, `tests added`, and `schema exists` are not closure dispositions. Only the closure algorithm at the end of this document may emit `CLOSED`.
 
-## Closure evidence contract
+## Normative determinism rules
 
-A gap may be marked closed only when one closure receipt binds all of the following:
+The terms **MUST**, **MUST NOT**, **REQUIRED**, and **SHALL** are normative.
 
-| Required identity | Rule |
-|---|---|
-| Repository revision | One exact commit; a dirty worktree is rejected for a release closure receipt |
-| Source index | One `indexId` and `scanId` for the declared executable-code boundary |
-| Contract index | One `indexId` and `scanId` for the declared contract boundary |
-| Call graph | Its `indexId` must equal the source index ID |
-| Governance report | Its bound index, subject scope, and revision must match the documentation request |
-| Query catalog | One catalog version and content hash |
-| Query receipts | Query text, input hash, result hash, row count, and disposition for every required query |
-| Generated documentation | Content hash derived from the bound artifacts and receipts |
-| Verification | Every required exit query returns its declared result shape and expected value |
+### Evidence classes
 
-No generator may replace a missing property with `unknown` or `0` for a required metric. Missing, stale, incompatible, or unqueryable evidence must fail with a typed disposition.
-
-## Evidence baseline
-
-The evidence was regenerated during this validation. Temporary evidence paths are intentionally excluded from the closure identity; the IDs and hashes below are the stable bindings.
-
-| Evidence plane | Boundary | Index or artifact identity |
+| Evidence class | What it proves | May close a gate? |
 |---|---|---|
-| Executable source facts | `src/` | index `sha256:495c69b24dd6eb6f6c1127840c14d4565f05864b238c796c7bbcfd3c03cd4997`; scan `3b2e71803eee88a085969f8a15f4a45ceb2654e875e97edf0670a0939acebcaa` |
-| Contract facts | `contracts/` | index `sha256:9e6f5214f4a06720f0981161500d81cef670541c5b586a3d1db8a31c20a44455`; scan `d87ae2a9819beca39b5658637f75146300e36dacaf3ddbbedf27198b142c432b` |
-| Test facts | `test/` | index `sha256:9d72fda4714d7e158c6a73b4e9326b0e1b8076a25b5040e6803fd38476effc06`; scan `878f37f2c209729c5e8c66eca92c8049162f9c707ee4b54add0f15eebf516782` |
-| Fresh call graph | Fresh executable source index | graph index `sha256:495c69b24dd6eb6f6c1127840c14d4565f05864b238c796c7bbcfd3c03cd4997`; file hash `sha256:2091099ba7aa3aada5f8a2ab5a4f5871bd6ab158fb3797167bb05d7498bbe1e7` |
-| Checked-in governance report | Historical source scan | bound index `sha256:5f711aa0fbe2f2115f97c5102d9a9606116c685142dce12c8d1f4edbbd08af80`; file hash `sha256:1eb4f4cc286072b23054fb9429cebb2fba7fe41141212bff87600aaa990b9366` |
+| SourceFacts query receipt | The exact query executed against the exact admitted input and produced the recorded result | Yes, after independent receipt verification |
+| Artifact assertion | A deterministic program read or hashed an artifact | Yes, only for facts not exposed as a relational collection |
+| Test receipt | A named behavior produced the expected success or rejection disposition | Yes, for behavioral gates |
+| Tool failure | A required pipeline stage could not complete | No; it proves the gate remains open |
+| Prose interpretation | A human or model interpreted evidence | No |
 
-The checked-in governance report is deliberately not treated as current for the fresh source index. Its values are useful for proving the generator's schema mismatch, but its different index identity prevents it from participating in a valid closure receipt.
+### Query definition is not a query receipt
 
-### Commands that established the evidence identities
+A query definition identifies what should run. A query receipt proves what did run. A closure verifier MUST reject a receipt unless it can reproduce all of these values from admitted inputs:
 
-These are projection commands, not relational queries. They establish the
-three queryable SourceFacts indexes used by every query in this document.
+| Binding | Required verification |
+|---|---|
+| `queryId` | Exactly one catalog query has the ID |
+| `queryText` | Byte-equal to catalog text after the catalog's declared normalization policy |
+| `queryTextHash` | Recomputed from the exact query text |
+| `catalogFingerprint` | Recomputed from canonical catalog JSON |
+| `artifactKind` | Matches the catalog metric source |
+| Artifact content | SHA-256 of the queried artifact or projected query input |
+| Internal identity | Index ID, scan ID, graph source-index ID, report source-index ID, and scope as applicable |
+| `inputHash` | Equal to the hash emitted by a fresh execution of the admitted query engine request |
+| `resultHash` | Equal to the hash emitted by that execution |
+| `rowCount` | Equal to the actual result row count |
+| `disposition` | Exactly `RELATIONAL_QUERY_EXECUTED` |
+
+Well-formed but invented hashes MUST be rejected. A test helper that manufactures hashes without executing the query engine is not success evidence.
+
+### Time and path policy
+
+- Timestamps and absolute temporary paths MUST NOT contribute to deterministic evidence or document content hashes.
+- A timestamp MAY appear as receipt metadata after the deterministic digest has been calculated.
+- Generation time MUST be supplied as a controlled input when it is rendered into a document.
+- Paths MAY be recorded as diagnostics, but artifact identity MUST use content hashes and declared logical roles.
+- Two runs with identical admitted inputs MUST produce byte-identical factual Markdown and identical deterministic closure payloads.
+
+### Failure policy
+
+The generator and closure verifier MUST fail before writing final output when any required artifact, identity, query, result, metric, or schema is missing or incompatible. `unknown`, `null`, and fallback `0` MUST NOT replace a required fact.
+
+## Reproducible evidence baseline
+
+### Projection commands used
 
 ```powershell
-$evidenceRoot = Join-Path ([System.IO.Path]::GetTempPath()) 'sourcefacts-gap-closure-evidence'
+$evidenceRoot = Join-Path ([System.IO.Path]::GetTempPath()) `
+  'sourcefacts-deterministic-doc-spec-20260804'
 $srcIndex = Join-Path $evidenceRoot 'src-index.json'
 $contractIndex = Join-Path $evidenceRoot 'contracts-index.json'
 $testIndex = Join-Path $evidenceRoot 'test-index.json'
-$graphPath = Join-Path $evidenceRoot 'call-graph.json'
+$freshGraph = Join-Path $evidenceRoot 'fresh-call-graph.json'
 New-Item -ItemType Directory -Path $evidenceRoot -Force | Out-Null
 
-node src/cli.js project --workspace ./src --workspace-id gap-closure-src `
-  --output $srcIndex --summary
-
-node src/cli.js project --workspace ./contracts --workspace-id gap-closure-contracts `
-  --output $contractIndex --summary
-
-node src/cli.js project --workspace ./test --workspace-id gap-closure-tests `
-  --output $testIndex --summary
-
-node src/cli.js call-graph --index $srcIndex --output $graphPath --pretty --summary
+node src/cli.js project --workspace ./src `
+  --workspace-id deterministic-doc-src --output $srcIndex --summary
+node src/cli.js project --workspace ./contracts `
+  --workspace-id deterministic-doc-contracts --output $contractIndex --summary
+node src/cli.js project --workspace ./test `
+  --workspace-id deterministic-doc-tests --output $testIndex --summary
+node src/cli.js call-graph --index $srcIndex `
+  --output $freshGraph --pretty --summary
 ```
 
-SourceFacts does not currently expose index metadata as a relational collection.
-The IDs in the evidence table were therefore asserted directly from the
-projected artifacts after the SourceFacts commands completed:
+### Observed projection results
+
+| Boundary | Observed result |
+|---|---|
+| `src/` | 94 files, 5,352 symbols, 24,027 relationships; index `sha256:f0aaf385fef56864acae42e1b5071c8409d0b96446d77f72b1d24c6a4021e07f`; scan `b67dd8f9ce2776f9395fedcf1b5a8857061af346af90f614be6339535b13b820` |
+| `test/` | 33 files, 1,098 symbols, 7,692 relationships; index `sha256:3ab329138891d586afcf5488a5e290c2f2a14e1b15fe226e13b6e5a94dc3cf6b`; scan `abb234399f4b975ea1e5deb7c2e01ac01cf1c32c8794c782e424911e0c786aca` |
+| `contracts/` | **Failed**: `traceability-query-receipts.schema.v1.json:34:9: Expected a JSON value` |
+| Fresh graph | Source index `sha256:f0aaf385...`; 710 runtime callables; 235 inventory entry points; 573 reachable; 137 unreachable; 5,051 unresolved invocation edges |
+
+The contract projection failure is a closure failure, not an omitted result. The current receipt schema contains invalid JSON, so a current contract index cannot be produced.
+
+### Large artifact projection commands used
+
+The checked governance report, fresh graph, and metric catalog were each copied into a single-file staging directory and projected with the same `project` command:
 
 ```powershell
-@($srcIndex, $contractIndex, $testIndex) | ForEach-Object {
-  $index = Get-Content -Raw -LiteralPath $_ | ConvertFrom-Json
-  [pscustomobject]@{
-    path = $_
-    indexId = $index.indexId
-    scanId = $index.manifest.scanId
-  }
-}
-```
+$reportStage = Join-Path $evidenceRoot 'report-stage'
+$graphStage = Join-Path $evidenceRoot 'graph-stage'
+$catalogStage = Join-Path $evidenceRoot 'catalog-stage'
+$reportIndex = Join-Path $evidenceRoot 'report-index.json'
+$graphIndex = Join-Path $evidenceRoot 'graph-index.json'
+$catalogIndex = Join-Path $evidenceRoot 'catalog-index.json'
+New-Item -ItemType Directory -Force `
+  -Path $reportStage, $graphStage, $catalogStage | Out-Null
 
-### Evidence-plane failures discovered by execution
-
-| Failure | Actual result | Required implementation consequence |
-|---|---|---|
-| Project repository root as one index | Node reached the heap limit near 4 GB and produced no usable index | Keep explicit source/contract/test boundaries, or implement a streaming/batched repository projection before claiming one repository-wide index |
-| Project the 4.9 MB governance report as document facts | `RangeError: Maximum call stack size exceeded` at `documents.push(...projected.facts)` | Replace spread insertion with bounded iteration/streaming and add a large-document fixture |
-| Project a fresh call-graph JSON as document facts | The same call-stack overflow | Make graph artifacts queryable without expanding a large fact array on the JavaScript call stack |
-| Pass `--report` and `--graph` to `generate-docs` | The CLI parser ignores both options and silently uses default files | Admit both flags in `parseArgs`; reject unknown options instead of treating them as booleans |
-
-These are closure blockers, not incidental tooling notes. Documentation cannot be fully query-driven while the evidence artifacts themselves cannot be safely projected or selected.
-
-### Commands that established the evidence-plane failures
-
-The repository-wide projection failure was reproduced with:
-
-```powershell
-$repositoryIndex = Join-Path $evidenceRoot 'repository-index.json'
-node src/cli.js project --workspace . --workspace-id gap-closure-repository `
-  --output $repositoryIndex --summary
-```
-
-The large governance-report projection failure was reproduced by staging the
-exact report as the only workspace member and invoking the same SourceFacts
-projector:
-
-```powershell
-$reportStage = Join-Path $evidenceRoot 'governance-report-stage'
-$reportIndex = Join-Path $evidenceRoot 'governance-report-index.json'
-New-Item -ItemType Directory -Path $reportStage -Force | Out-Null
-Copy-Item -LiteralPath artifacts/governance/source-facts-self-governance-report.json `
-  -Destination (Join-Path $reportStage 'source-facts-self-governance-report.json') -Force
+Copy-Item -LiteralPath `
+  artifacts/governance/source-facts-self-governance-report.json `
+  -Destination $reportStage -Force
+Copy-Item -LiteralPath $freshGraph `
+  -Destination (Join-Path $graphStage 'fresh-call-graph.json') -Force
+Copy-Item -LiteralPath contracts/traceability-metric-catalog.json `
+  -Destination $catalogStage -Force
 
 node src/cli.js project --workspace $reportStage `
-  --workspace-id gap-closure-governance-report --output $reportIndex --summary
-```
-
-The fresh graph projection failure used the same pattern:
-
-```powershell
-$graphStage = Join-Path $evidenceRoot 'call-graph-stage'
-$graphDocumentIndex = Join-Path $evidenceRoot 'call-graph-document-index.json'
-New-Item -ItemType Directory -Path $graphStage -Force | Out-Null
-Copy-Item -LiteralPath $graphPath -Destination (Join-Path $graphStage 'call-graph.json') -Force
-
+  --workspace-id deterministic-doc-report --output $reportIndex --summary
 node src/cli.js project --workspace $graphStage `
-  --workspace-id gap-closure-call-graph --output $graphDocumentIndex --summary
+  --workspace-id deterministic-doc-graph --output $graphIndex --summary
+node src/cli.js project --workspace $catalogStage `
+  --workspace-id deterministic-doc-catalog --output $catalogIndex --summary
 ```
 
-Both artifact projections failed before a relational query could be executed.
-That absence of a query receipt is part of the finding, not omitted evidence.
+The observed results were:
 
-## Current query evidence register
+| Artifact | Document facts | Disposition |
+|---|---:|---|
+| Checked governance report | 164,466 | Projection completed |
+| Fresh call graph | 214,620 | Projection completed |
+| Metric catalog | 590 | Projection completed |
 
-All queries below completed with `RELATIONAL_QUERY_EXECUTED`. Full query text
-is repeated beside the strategy section it establishes and collected again in
-the reproduction appendix.
+This closes only the former call-stack-overflow sub-gap. It does not close documentation generation.
 
-| ID | Evidence question | Input/result hashes | Rows | Deterministic finding |
+## Query evidence register
+
+Every query used to establish this specification is repeated in its relevant strategy section.
+
+| ID | Input hash | Result hash | Rows | Observed fact |
 |---|---|---|---:|---|
-| `G1` | Which functions implement traceability generation? | input `095fb964...`; result `2db4beab...` | 3 | `generatesTraceabilityDocs`, `countSymbolsByKind`, and `calculateRate` are the complete function impact surface in `generate-traceability-docs.js` |
-| `G2` | Which report properties does the generator read? | input `b7be3afb...`; result `68e49608...` | 52 | Reads include obsolete flat names such as `canonicalFeatureCount`, `canonicalScenarioCount`, `unlinkedMechanicsCount`, and top-level `indexId`/`manifest` |
-| `G3` | What executable code calls the generator? | input `27ff0c43...`; result `34aab79b...` | 1 | The sole caller is `cli.js#function:runGenerateDocs` |
-| `G4` | Do tests invoke the generator? | input `8bc9d639...`; result `ef3c66ce...` | 0 | No test invokes `generatesTraceabilityDocs` |
-| `R1` | Which graph functions implement the affected path? | input `b0c38a6e...`; result `0f864fde...` | 9 | The graph inventory, reachability, classification, reverse lookup, and resolution functions are all source-addressable |
-| `R2` | Does the top-level graph projection call the inventory stages? | input `044b0465...`; result `08383e30...` | 5 | It calls root graph, entry inventory, entry reachability, callable inventory, and summary exactly once each |
-| `R3` | Which public graph behaviors do tests invoke? | input `e6271389...`; result `956a39d2...` | 1 | Tests invoke `projectsCliEntryPointCallGraph`; they do not invoke `findsAffectedEntryPoints` |
-| `R4` | Does the source index carry exported-callable facts? | input `45f4ffe0...`; result `0022108e...` | 1 | All 692 callable rows have `isExported = null` |
-| `C1` | Where does the report contract place identity and summaries? | input `ec1b411f...`; result `a2b9460f...` | 4 | Identity is nested under `index`; scenario and feature measurements are nested under their respective `summary` objects |
+| `D-GENERATOR-SURFACE` | `sha256:903f0dc...` | `sha256:5cebc581...` | 18 | Current generator implementation functions |
+| `D-CALLER-SURFACE` | `sha256:b01c116...` | `sha256:2689c7c...` | 1 | `runGenerateDocs` is the production caller |
+| `D-REPORT-FACTS` | `sha256:dc1cedf...` | `sha256:9afbeb98...` | 5 | Real report identity and baseline values |
+| `D-GRAPH-FACTS` | `sha256:e48f9fd...` | `sha256:43562dc...` | 5 | Fresh graph identity and summary values; one requested pointer was absent |
+| `D-CATALOG-MODES` | `sha256:bd50581...` | `sha256:b7b7c88...` | 5 | 41 catalog metrics partitioned by value mode |
+| `D-RECEIPT-CHECKS` | `sha256:4d2b21a...` | `sha256:833e4df...` | 19 | Current verifier accesses query text and identity fields, but not result proof fields |
+| `D-CLOSURE-FIELDS` | `sha256:facaef9...` | `sha256:2b5d40f...` | 22 | Current closure builder omits receipt and catalog content hashes |
+| `D-TEST-HELPERS` | `sha256:73a0235...` | `sha256:62e1aa5...` | 5 | Generator tests construct minimal artifacts and receipts |
+| `R-SURFACE` | `sha256:9904ce0...` | `sha256:0f864fd...` | 9 | Reachability implementation surface |
+| `R-ORCHESTRATION` | `sha256:bfb9110...` | `sha256:08383e3...` | 5 | Top-level graph projection invokes all five inventory stages |
+| `R-TEST-COVERAGE` | `sha256:a8a1568...` | `sha256:956a39d...` | 1 | Tests call graph projection but not reverse lookup |
+| `R-EXPORT-FACTS` | `sha256:e03bed1...` | `sha256:8c34528...` | 1 | All 710 callable rows have `isExported = null` |
 
-### Selected real query results
-
-`G2` returned the following implementation-relevant property evidence:
-
-| Property candidate | Observed accesses |
-|---|---:|
-| `scenarioConformance` | 12 |
-| `canonicalScenarioCount` | 5 |
-| `evidence` | 8 |
-| `authority` | 3 |
-| `indexId` | 2 |
-| `manifest` | 2 |
-| `featureCoverage` | 2 |
-| `unlinkedMechanicsCount` | 2 |
-| `scanId` | 1 |
-| `canonicalFeatureCount` | 1 |
-
-`C1` returned these contract pointers:
-
-| Contract pointer | Source reference |
-|---|---|
-| `/properties/index/properties/indexId` | `source-facts-self-governance-report.schema.v1.json:2493:30` |
-| `/properties/index/properties/scanId` | `source-facts-self-governance-report.schema.v1.json:2543:30` |
-| `/properties/scenarioConformance/properties/summary` | `source-facts-self-governance-report.schema.v1.json:5235:20` |
-| `/properties/featureCoverage/properties/summary` | `source-facts-self-governance-report.schema.v1.json:5682:20` |
-
-This is query-backed proof of the generator/contract mismatch. The implementation reads top-level identity and flat summary fields while the contract declares nested identity and summary objects.
+Hashes are abbreviated only in this human-readable register. A machine receipt MUST retain all 64 hexadecimal characters.
 
 ## Strategy 1: deterministic documentation generation
 
 ### Current disposition
 
-**`IMPLEMENTATION_REQUIRED`**. The gap is not closed.
+**`PARTIAL_IMPLEMENTATION_NOT_CLOSED`**
 
-A fresh generator execution against current defaults emitted:
+Confirmed progress:
 
-| Metric | Generated value | Actual checked-in governance-report value |
-|---|---:|---:|
-| Report index ID | `unknown` | `sha256:5f711aa0...` |
-| Report scan ID | `unknown` | `49c9632b...` |
-| Canonical features | 0 | 4 |
-| Canonical scenarios | 0 | 6 |
-| Mechanics without scenario lineage | 0 | 5,154 |
+- large JSON projection completes;
+- CLI options are wired and unknown options are rejected;
+- catalog value modes are implemented;
+- all 31 current `artifact-pointer` metrics resolve against the selected report, fresh graph, and source index;
+- query text, catalog fingerprint, and artifact internal identity checks exist.
 
-The actual values above are hash-bound artifact assertions, not relational-query receipts, because large-artifact projection currently fails. Strategy task `D1` removes that limitation before closure.
+Blocking evidence:
 
-### SourceFacts queries used for Strategy 1
+- the query-receipt schema is invalid JSON;
+- query `inputHash`, `resultHash`, and `rowCount` are accepted without verification;
+- the call graph is not schema-validated;
+- the closure receipt has no schema and does not bind catalog content or receipt content;
+- the generated timestamp changes the document hash for identical factual inputs;
+- four of five focused generator tests fail, and the full suite is 152 passed / 4 failed.
 
-Set the query inputs to the indexes produced in the evidence-baseline section:
+Queries used to establish the current implementation and caller surfaces, both run against `$srcIndex`:
 
-```powershell
-$srcIndex = Join-Path $evidenceRoot 'src-index.json'
-$contractIndex = Join-Path $evidenceRoot 'contracts-index.json'
-$testIndex = Join-Path $evidenceRoot 'test-index.json'
-```
-
-#### `G1` — generator implementation surface
-
-```powershell
-$query = @"
+```sql
 SELECT symbolId, name, sourceReferenceId
 FROM symbols
 WHERE modulePath = 'generate-traceability-docs.js'
   AND kind = 'function'
 ORDER BY name
-"@
-node src/cli.js query --index $srcIndex --query $query --pretty
 ```
 
-This produced three rows: `generatesTraceabilityDocs`,
-`countSymbolsByKind`, and `calculateRate`.
+This returned 18 functions with result hash `sha256:5cebc581ce2a5e3f535970bd75556e703e6ec565e83bc3730d44ee0c87379e53`.
 
-#### `G2` — report properties read by the generator
-
-```powershell
-$query = @"
-SELECT toSymbolCandidate, COUNT(*) AS occurrenceCount
-FROM relationships
-WHERE fromSymbolId = 'generate-traceability-docs.js#function:generatesTraceabilityDocs'
-  AND relationshipKind = 'member-access'
-GROUP BY toSymbolCandidate
-ORDER BY occurrenceCount DESC
-"@
-node src/cli.js query --index $srcIndex --query $query --pretty
-```
-
-This is the query behind the property-access table above. Its recorded result
-hash is `sha256:68e49608d03081a32ebbf60e42f51e927fa4a7cac7431fdafdb08fb9d8ebc4d7`.
-
-#### `G3` — production callers of the generator
-
-```powershell
-$query = @"
+```sql
 SELECT fromSymbolId, sourceReferenceId
 FROM relationships
 WHERE toSymbolCandidate = 'generatesTraceabilityDocs'
   AND relationshipKind = 'invocation'
 ORDER BY sourceReferenceId
-"@
-node src/cli.js query --index $srcIndex --query $query --pretty
 ```
 
-The sole row is `cli.js#function:runGenerateDocs`.
+This returned the single production caller `cli.js#function:runGenerateDocs`, result hash `sha256:2689c7c84a78630f8678ebb58c6e3ae4e79962eade51f478e7410f631636fdcb`.
 
-#### `G4` — test callers of the generator
+### D1 — Large artifacts are queryable
 
-Run the same query against the independently projected test index:
+**Status:** Evidence gate passes.
 
-```powershell
-node src/cli.js query --index $testIndex --query $query --pretty
-```
+#### Report query actually used
 
-The result contains zero rows. This establishes the missing focused generator
-test without inferring it from filenames.
+Run this query against `$reportIndex`.
 
-#### `C1` — governance-report contract locations
-
-```powershell
-$query = @"
-SELECT pointer, valuePreview, sourceReferenceId
+```sql
+SELECT pointer, valuePreview
 FROM documents
-WHERE relativePath = 'source-facts-self-governance-report.schema.v1.json'
-  AND pointer IN (
-    '/properties/index/properties/indexId',
-    '/properties/index/properties/scanId',
-    '/properties/scenarioConformance/properties/summary',
-    '/properties/featureCoverage/properties/summary'
-  )
+WHERE pointer IN (
+  '/index/indexId',
+  '/index/scanId',
+  '/featureCoverage/summary/canonicalFeatures',
+  '/scenarioConformance/summary/scenariosDiscovered',
+  '/featureCoverage/summary/mechanicsWithoutLineage'
+)
 ORDER BY pointer
-"@
-node src/cli.js query --index $contractIndex --query $query --pretty
 ```
 
-Those four rows establish the contract side of the generator/contract mismatch.
+Observed receipt: result hash `sha256:9afbeb98dc44f14c84d3ea66ceb477626eb79ed00fb40e467f349aeec65441fd`, five rows.
 
-#### Non-query artifact assertion used in this section
+| Pointer | Value |
+|---|---|
+| `/featureCoverage/summary/canonicalFeatures` | `4` |
+| `/featureCoverage/summary/mechanicsWithoutLineage` | `5154` |
+| `/index/indexId` | `sha256:5f711aa0fbe2f2115f97c5102d9a9606116c685142dce12c8d1f4edbbd08af80` |
+| `/index/scanId` | `49c9632b050e44f8fc3910aa3497458ebf8a8b186ff4d660892ac69d741a373a` |
+| `/scenarioConformance/summary/scenariosDiscovered` | `6` |
 
-The generated-versus-actual value table cannot yet be reproduced through a
-SourceFacts relational query because projecting the report overflows the call
-stack. Until `D1` is complete, the exact temporary assertion is:
+#### Graph query actually used
 
-```powershell
-$report = Get-Content -Raw -LiteralPath `
-  artifacts/governance/source-facts-self-governance-report.json | ConvertFrom-Json
+Run this query against `$graphIndex`.
 
-[pscustomobject]@{
-  reportIndexId = $report.index.indexId
-  reportScanId = $report.index.scanId
-  canonicalFeatures = $report.featureCoverage.summary.canonicalFeatures
-  canonicalScenarios = $report.featureCoverage.summary.canonicalScenarios
-  mechanicsWithoutLineage = $report.featureCoverage.summary.mechanicsWithoutLineage
-}
+```sql
+SELECT pointer, valuePreview
+FROM documents
+WHERE pointer IN (
+  '/indexId',
+  '/summary/runtimeCallableCount',
+  '/summary/inventoryEntryPointCount',
+  '/summary/reachableCallableCount',
+  '/summary/unreachableCallableCount',
+  '/summary/unresolvedInvocationEdgeCount'
+)
+ORDER BY pointer
 ```
 
-It must be replaced by a registered query receipt before this gap can close.
+Observed receipt: result hash `sha256:43562dc5fb5d3817c169ca9b24ea55ddeb71e893d406dc8e96a75511742e8840`, five rows. `/summary/inventoryEntryPointCount` did not exist and therefore did not produce a row. Missing requested rows MUST be detected by expected-row assertions; `RELATIONAL_QUERY_EXECUTED` alone is insufficient.
 
-### Required implementation order
+**Exit condition:** Two repeated projections of each unchanged artifact produce identical document-fact roots, and each admitted pointer query returns exactly its cataloged pointer set with no missing or duplicate rows.
 
-#### D1. Make generated evidence queryable
+### D2 — Metric catalog is executable authority
 
-**Impact:** `src/project.js`, JSON document projection tests, query fixtures.
+#### Catalog query actually used
 
-**Established by:** the governance-report and graph projection commands in
-“Commands that established the evidence-plane failures.” No relational receipt
-exists because both commands fail before the query stage.
+Run this query against `$catalogIndex`.
 
-1. Replace `documents.push(...projected.facts)` with bounded iteration or a streaming sink.
-2. Add fixtures larger than the current governance report and call graph.
-3. Prove that projection completes without heap or call-stack failure.
-4. Prove repeated projections produce the same `indexId`.
+```sql
+SELECT valuePreview AS valueMode, COUNT(*) AS metricCount
+FROM documents
+WHERE pointer LIKE '/metrics/%/source/valueMode'
+GROUP BY valuePreview
+ORDER BY valuePreview
+```
 
-**Exit query:** Query the projected governance report for `/index/indexId` and the projected graph for `/indexId`.
+Observed result hash: `sha256:b7b7c88e32880aea0cb35f5b5c1bdde7ef5c4eb98da6326777010c97a05f742d`.
 
-**Exit condition:** Both queries execute; each returns exactly one non-null row; repeated runs have identical result hashes.
+| Value mode | Metrics |
+|---|---:|
+| `artifact-pointer` | 31 |
+| `ratio` | 4 |
+| `sum-metrics` | 1 |
+| `sum-symbol-counts` | 1 |
+| `symbol-count` | 4 |
 
-#### D2. Define a metric catalog contract
+A deterministic pointer audit over the selected artifacts resolved all 31 current artifact pointers. That audit MUST become an admitted query/verifier behavior, not remain an ad hoc script.
 
-**Impact:** new `contracts/traceability-metric-catalog.schema.v1.json` and admitted catalog instance.
+Required catalog invariants:
 
-**Established by:** `G2` for the handwritten property inventory and `C1` for
-the authoritative report-contract locations.
+1. `metricId` and `queryId` are globally unique.
+2. Every value mode has a conditional schema defining exactly its required and forbidden properties.
+3. Every factual metric declares a query with exact text and expected result shape.
+4. Every derived metric declares its operand metric IDs, formula, numeric type, and zero-denominator policy.
+5. Every artifact pointer is proven to exist before rendering.
+6. Interpretive claims are excluded from factual metric tables.
 
-Each metric must declare:
+**Exit query ID:** `traceability.metric-catalog-integrity.v1`
 
-- stable `metricId` and version;
-- source artifact kind and schema version;
-- exact JSON pointer or registered query ID;
-- numerator, denominator, and zero-denominator policy where applicable;
-- result type and formatting rule;
-- required artifact identities and allowed scope relationship;
-- factual/derived/interpretive claim type;
-- failure disposition when evidence is absent or incompatible.
+**Required result:** one row with `duplicateMetricIds = 0`, `duplicateQueryIds = 0`, `invalidValueModes = 0`, `missingPointers = 0`, `untypedMetrics = 0`.
 
-Do not encode report property paths in Markdown template expressions. The catalog is the authority that maps a metric to evidence.
+### D3 — Every input has a valid, compatible contract
 
-**Exit query:** Select every required roadmap metric from the catalog and left join its latest query receipt.
-
-**Exit condition:** Missing receipt count, duplicate metric ID count, untyped claim count, and invalid pointer count are all zero.
-
-#### D3. Validate every input before rendering
-
-**Impact:** `src/generate-traceability-docs.js`, report/graph validators, new call-graph schema.
-
-**Established by:** the evidence-identity commands, the mismatched source/report
-IDs in the baseline table, and the non-query report assertion shown above.
-
-1. Validate the source index, governance report, graph, metric catalog, and query receipts against schemas.
-2. Require graph `indexId === source index.indexId`.
-3. Require governance subject scope to be compatible with the requested report scope.
-4. Require revision identity for release closure generation.
-5. Reject `unknown`, null, or fallback zero for every required metric.
-6. Emit typed failures such as `ARTIFACT_INDEX_MISMATCH`, `METRIC_POINTER_NOT_FOUND`, and `QUERY_RECEIPT_STALE`.
-
-**Exit condition:** Every negative fixture fails with its declared disposition; no invalid fixture writes output.
-
-#### D4. Replace handwritten field reads with query receipts
-
-**Impact:** `src/generate-traceability-docs.js`, `src/query.js`, registered query catalog.
-
-**Established by:** `G1`, `G2`, and `C1`.
-
-1. Add query sources for governance-report facts, graph entry points, graph callables, graph edges, and metric receipts.
-2. Execute only admitted catalog queries.
-3. Bind each rendered table row to query ID, input hash, result hash, and row count.
-4. Render a provenance appendix automatically.
-5. Keep narrative interpretation outside the factual metric renderer unless it cites a typed claim receipt.
-
-**Exit condition:** A query over rendered claims returns zero claims without a supporting receipt.
-
-#### D5. Fix and close the CLI surface
-
-**Impact:** `src/cli.js`, CLI help, CLI tests.
-
-**Established by:** `G3` for the only executable caller and the `generate-docs`
-custom-input command recorded in the evidence-plane failure table.
-
-1. Add `--report` and `--graph` to admitted value-taking options.
-2. Reject unknown options.
-3. Add `--metric-catalog`, `--query-receipts`, and `--closure-receipt` as explicit inputs.
-4. Make `--summary` report the bound identities and output hash.
-
-`G3` proves `runGenerateDocs` is the only executable caller, so this is the complete current CLI caller impact surface.
-
-**Exit condition:** CLI tests prove each admitted option changes the selected input and every unknown option fails.
-
-#### D6. Build one same-index pipeline
-
-**Impact:** governance orchestration and package scripts.
-
-**Established by:** the separately generated evidence identities and their
-source/report index mismatch.
-
-The pipeline must execute in this order:
+The current `contracts/` projection command fails at:
 
 ```text
-project source and contracts
-→ validate indexes
-→ generate graph from the source index
-→ generate governance report from the same source index and declared contract index
-→ execute registered metric queries
-→ validate query receipts
-→ render documentation
-→ execute documentation exit queries
-→ write closure receipt
+traceability-query-receipts.schema.v1.json:34:9: Expected a JSON value
 ```
 
-No stage may silently load an older default artifact.
+Required implementation impact:
 
-**Exit condition:** Mutating any one bound identity makes the pipeline fail before rendering.
+- repair and validate the receipt schema as JSON and JSON Schema;
+- add a versioned call-graph schema and validator;
+- add a versioned closure-receipt schema and validator;
+- define scope compatibility as an explicit relation instead of comparing `repositoryId` and `workspaceId` as if they were the same identity domain;
+- require source revision and dirty-tree disposition in release mode;
+- validate all inputs before creating output directories or files.
 
-#### D7. Add focused tests and CI gates
+Required negative fixtures:
 
-`G4` proves generator test invocation count is currently zero.
-
-**Established by:** `G4`, executed against the independent test index.
-
-Required fixtures:
-
-- current report schema with non-zero feature/scenario/lineage values;
-- graph/source same-index success;
-- graph/source mismatch;
-- report subject-scope mismatch;
-- missing required metric;
-- stale query receipt;
-- large governance and graph JSON;
-- repeated generation producing identical factual content;
-- CLI custom-path selection;
-- unknown CLI option rejection.
-
-**Exit condition:** The test query finds every required fixture ID and at least one invocation of the public generator behavior; CI independently runs the closure verifier.
-
-### Documentation-generation closure queries
-
-These queries become admitted assets. The names are normative; physical collection names may change only with a catalog version bump.
-
-| Query ID | Required result |
+| Fixture | Required disposition |
 |---|---|
-| `traceability.artifact-binding.v1` | One row; all required identities compatible |
-| `traceability.required-metric-receipts.v1` | Missing, stale, duplicate, and invalid receipt counts all zero |
-| `traceability.rendered-claim-provenance.v1` | Unsupported factual claims zero |
-| `traceability.metric-reconciliation.v1` | Mismatched rendered/source metric count zero |
-| `traceability.generator-test-coverage.v1` | Every required failure disposition and success behavior observed |
-| `traceability.documentation-byte-stability.v1` | Two identical-input factual outputs have the same hash |
+| Invalid JSON contract | `CONTRACT_JSON_INVALID` |
+| Schema-invalid report | `REPORT_SCHEMA_INVALID` |
+| Schema-invalid graph | `CALL_GRAPH_SCHEMA_INVALID` |
+| Graph/source index mismatch | `ARTIFACT_INDEX_MISMATCH` |
+| Report/source scope incompatibility | `REPORT_SCOPE_MISMATCH` |
+| Dirty release closure | `REPOSITORY_REVISION_NOT_CLOSABLE` |
+
+**Exit condition:** `project --workspace ./contracts` succeeds, every schema compiles, every negative fixture produces exactly its declared disposition, and no failure writes final Markdown or a closure receipt.
+
+### D4 — Query receipts are independently verifiable
+
+#### Query used to inspect the implemented verifier
+
+```sql
+SELECT toSymbolCandidate, COUNT(*) AS occurrenceCount
+FROM relationships
+WHERE fromSymbolId =
+  'generate-traceability-docs.js#function:validatesQueryReceiptBinding'
+  AND relationshipKind IN ('member-access', 'invocation')
+GROUP BY toSymbolCandidate
+ORDER BY toSymbolCandidate
+```
+
+Observed result hash: `sha256:833e4dfbe9c54f23c52843313e4c4ae3b51188b1ac0848d85aacc176a650c694`.
+
+The result includes `queryText`, `queryTextHash`, `catalogFingerprint`, `artifactKind`, `indexId`, and `scanId`. It contains no accesses for `inputHash`, `resultHash`, or `rowCount`. Therefore the current verifier proves query identity but not query execution or result integrity.
+
+The verifier MUST perform this exact algorithm:
+
+1. Load and schema-validate the catalog and receipt bundle.
+2. Canonicalize the catalog and recompute its fingerprint.
+3. Select exactly one catalog query by `queryId`.
+4. Verify exact query text and query-text hash.
+5. Load the declared artifact and verify content hash plus internal identities.
+6. Reconstruct the query-engine request from that artifact.
+7. Execute the query through the real SourceFacts query engine.
+8. Compare engine disposition, input hash, result hash, row count, columns, and expected row assertions.
+9. Reject on any difference.
+10. Return the freshly verified engine receipt; do not trust copied values from the supplied wrapper.
+
+Required rejection tests:
+
+- one-character query change;
+- catalog change without receipt regeneration;
+- artifact content change with unchanged internal ID;
+- correct-looking but fabricated input hash;
+- correct-looking but fabricated result hash;
+- wrong row count;
+- executed empty result where a required pointer was expected;
+- receipt generated by a different query-engine authority/version.
+
+**Exit query ID:** `traceability.query-receipt-verification.v1`
+
+**Required result:** one row with all rejection fixtures observed and `unverifiedReceipts = 0`.
+
+### D5 — Closure receipt binds the whole proof
+
+#### Query used to inspect the closure builder
+
+```sql
+SELECT toSymbolCandidate, COUNT(*) AS occurrenceCount
+FROM relationships
+WHERE fromSymbolId =
+  'generate-traceability-docs.js#function:buildsClosureReceipt'
+  AND relationshipKind = 'member-access'
+GROUP BY toSymbolCandidate
+ORDER BY toSymbolCandidate
+```
+
+Observed result hash: `sha256:2b5d40fdd0a7bd459e5330ef985c42f3f382821886e9d68c8baee7684f5e47e5`.
+
+The current closure builder reads catalog type/version and receipt count, but it does not bind catalog content, the receipt-bundle content, individual receipt result hashes, repository revision, or a contract index.
+
+A valid closure receipt MUST include:
+
+- clean commit ID and repository-content or subject-scope hash;
+- source and contract index IDs, scan IDs, schema versions, and content hashes;
+- report and graph content hashes plus their internal source bindings;
+- catalog version and canonical content hash;
+- receipt-bundle hash and an ordered list of every query ID, query-text hash, input hash, result hash, row count, and disposition;
+- rendered metric rows with source receipt IDs;
+- factual Markdown hash calculated without uncontrolled metadata;
+- every exit-query receipt;
+- final disposition and zero failed conditions.
+
+**Exit condition:** Changing one byte in any bound input invalidates verification. Changing only an excluded diagnostic path or post-digest timestamp does not alter the deterministic payload hash.
+
+### D6 — Renderer is byte-stable and claim-reconcilable
+
+The SourceFacts query used against `$srcIndex` was:
+
+```sql
+SELECT toSymbolCandidate, COUNT(*) AS occurrenceCount
+FROM relationships
+WHERE fromSymbolId =
+  'generate-traceability-docs.js#function:generatesTraceabilityDocs'
+  AND relationshipKind = 'invocation'
+GROUP BY toSymbolCandidate
+ORDER BY toSymbolCandidate
+```
+
+It returned `new Date().toISOString` once; full result hash `sha256:fe5aa03d3e7c1a779e17a5ff176194d57824f59c43c55e8ab6d21e7805fb8240`. The current timestamp is rendered into Markdown before the document hash is calculated, so identical evidence does not produce an identical hash.
+
+Required behavior:
+
+1. Accept an explicit generation time or omit time from factual Markdown.
+2. Render every factual row with its metric ID and receipt ID.
+3. Generate a provenance appendix from verified receipts.
+4. Parse the produced Markdown back into rendered metric facts.
+5. Compare every rendered fact to the verified source result.
+
+**Exit query IDs:** `traceability.rendered-claim-provenance.v1`, `traceability.metric-reconciliation.v1`, and `traceability.documentation-byte-stability.v1`.
+
+**Required results:** unsupported factual claims `0`; metric mismatches `0`; two identical-input output hashes equal.
+
+### D7 — Tests exercise real contracts and real queries
+
+Commands actually used:
+
+```powershell
+node --test test/generate-docs.test.js test/project.test.js
+npm test
+```
+
+Observed focused result: 8 tests, 4 passed, 4 failed. The four generator failures occur before their intended assertions because `buildsMinimalIndex` does not construct a schema-valid source-fact index.
+
+Observed full result: 156 tests, 152 passed, 4 failed.
+
+The test index query used to inventory helpers was:
+
+```sql
+SELECT symbolId, name, sourceReferenceId
+FROM symbols
+WHERE modulePath = 'generate-docs.test.js'
+  AND kind = 'function'
+ORDER BY name
+```
+
+It returned five helper functions: `buildsMinimalGraph`, `buildsMinimalIndex`, `buildsMinimalMetricCatalog`, `buildsMinimalQueryReceipts`, and `buildsMinimalReport`.
+
+Required test policy:
+
+- success fixtures MUST be projected or validated by the same production validators used by the CLI;
+- receipt fixtures for success MUST come from executing the real query engine;
+- mutation helpers MAY corrupt one field only after a valid fixture and receipt exist;
+- each negative test MUST prove it reached the intended rejection stage;
+- an end-to-end test MUST use the shipped catalog against freshly generated compatible artifacts;
+- the full suite MUST pass before closure.
+
+### Strategy 1 implementation order
+
+| Order | Task | Blocking exit evidence |
+|---:|---|---|
+| 1 | Repair receipt JSON/schema and add graph/closure schemas | Contract projection and schema compilation pass |
+| 2 | Make test fixtures production-schema-valid | Focused tests reach intended assertions |
+| 3 | Implement independent receipt replay verification | All forged/stale receipt mutations rejected |
+| 4 | Complete closure-receipt provenance | One-byte mutation invalidates closure |
+| 5 | Remove uncontrolled time from deterministic output | Identical-input byte-stability passes |
+| 6 | Add rendered-claim reconciliation | Zero unsupported or mismatched factual rows |
+| 7 | Run same-revision end-to-end pipeline | All documentation exit queries pass |
+| 8 | Run full suite | 156 of 156, or the then-current complete suite, passes |
 
 ## Strategy 2: complete forward and reverse reachability
 
 ### Current disposition
 
-**`PARTIAL_IMPLEMENTATION`**. The new inventory is material progress, but the requested closure is not proved.
+**`PARTIAL_IMPLEMENTATION_NOT_CLOSED`**
 
-Fresh graph results bound to the fresh source index:
+The graph is useful and reproducible for its current taxonomy, but it cannot yet prove repository-wide reachability. Fresh observed values are:
 
 | Measure | Value |
 |---|---:|
-| Runtime callables | 692 |
-| CLI roots | 15 |
-| Inventory entry points | 230 |
-| Product entry points | 178 |
-| Inventory-reachable callables | 627 |
-| Runtime-resolution-required callables | 13 |
-| Inventory-unreachable callables | 65 |
-| Invocation edges | 6,333 |
-| Resolved edges | 1,404 |
+| CLI command roots | 15 |
+| Inventory entry points | 235 |
+| Product entry points | 181 |
+| Runtime callables | 710 |
+| Reachable callables | 573 |
+| Unreachable callables | 137 |
+| Runtime-resolution-required callables | 14 |
+| Invocation edges | 6,493 |
+| Resolved edges | 1,434 |
 | Ambiguous edges | 8 |
-| Unresolved edges | 4,921 |
+| Unresolved edges | 5,051 |
 
-Entry-point kinds currently emitted:
+### R1 — Implementation impact surface
 
-| Kind | Count |
-|---|---:|
-| `cli-command` | 15 |
-| `cli-subcommand` | 32 |
-| `http-server-entry` | 3 |
-| `module-api` | 128 |
-| `proof-script` | 1 |
-| `script-entry` | 1 |
-| `module-evaluation` | 50 |
+Query actually used:
 
-`R4` proves all 692 callable source-fact rows have `isExported = null`. An uncalled exported API therefore cannot be established as a public entry point from the current source index.
-
-### SourceFacts queries used for Strategy 2
-
-#### `R1` — graph implementation impact surface
-
-```powershell
-$query = @"
+```sql
 SELECT symbolId, name, sourceReferenceId
 FROM symbols
 WHERE modulePath = 'call-graph.js'
@@ -525,16 +531,15 @@ WHERE modulePath = 'call-graph.js'
     'resolvesSymbolCandidate'
   )
 ORDER BY name
-"@
-node src/cli.js query --index $srcIndex --query $query --pretty
 ```
 
-The recorded result contains the nine functions named in the query.
+Observed result hash `sha256:0f864fde983ea36bd0cc9e8069e6daae61b9745d4e4cf030fcc9a5f92cff4cca`, nine rows. These functions are the minimum implementation impact surface; new taxonomy or graph modules discovered during implementation must be added by a versioned catalog change.
 
-#### `R2` — top-level graph orchestration
+### R2 — Top-level orchestration
 
-```powershell
-$query = @"
+Query actually used:
+
+```sql
 SELECT toSymbolCandidate, COUNT(*) AS invocationCount
 FROM relationships
 WHERE fromSymbolId = 'call-graph.js#function:projectsCliEntryPointCallGraph'
@@ -548,16 +553,15 @@ WHERE fromSymbolId = 'call-graph.js#function:projectsCliEntryPointCallGraph'
   )
 GROUP BY toSymbolCandidate
 ORDER BY toSymbolCandidate
-"@
-node src/cli.js query --index $srcIndex --query $query --pretty
 ```
 
-The result contains five rows, each with `invocationCount = 1`.
+Observed result hash `sha256:08383e30390b5fb79090894ceb6058cdc9c34eb70acc38d93ec782b592d59e55`, five rows, each count `1`.
 
-#### `R3` — public graph behaviors invoked by tests
+### R3 — Reverse behavior test gap
 
-```powershell
-$query = @"
+Query actually used against the test index:
+
+```sql
 SELECT toSymbolCandidate, COUNT(*) AS invocationCount
 FROM relationships
 WHERE relationshipKind = 'invocation'
@@ -567,379 +571,139 @@ WHERE relationshipKind = 'invocation'
   )
 GROUP BY toSymbolCandidate
 ORDER BY toSymbolCandidate
-"@
-node src/cli.js query --index $testIndex --query $query --pretty
 ```
 
-The only returned behavior is `projectsCliEntryPointCallGraph` with one
-invocation. `findsAffectedEntryPoints` has no test invocation row.
+Observed result hash `sha256:956a39d2da02cec495b9820c98d014fb3e55b975daec3b11230bc6199e155ef1`. It returned one row for `projectsCliEntryPointCallGraph` and no row for `findsAffectedEntryPoints`.
 
-#### `R4` — exported-callable fact completeness
+### R4 — Exported API evidence gap
 
-```powershell
-$query = @"
+Query actually used:
+
+```sql
 SELECT isExported, COUNT(*) AS callableCount
 FROM symbols
 WHERE kind IN ('function', 'method', 'constructor', 'class')
 GROUP BY isExported
 ORDER BY isExported
-"@
-node src/cli.js query --index $srcIndex --query $query --pretty
 ```
 
-The recorded result is one row:
+Observed result hash `sha256:8c34528574cccbf52ca7c1a8d9981a5a3cea5c9b1124e7510cfcef98c896e4d5`. The sole row was `isExported = null`, `callableCount = 710`.
 
-```json
-{ "isExported": null, "callableCount": 692 }
+### R5 — Required graph contract
+
+The graph schema MUST require:
+
+- source index ID, scan ID, revision, and subject scope;
+- versioned entry-point taxonomy and exclusions;
+- one disposition for every in-scope callable;
+- canonical forward and reverse adjacency;
+- path witnesses with stable node and edge IDs;
+- edge resolution class: resolved internal, ambiguous internal, unresolved dynamic, external, or invalid;
+- callback, registration, module-evaluation, and public-export roots;
+- runtime-resolution owner, evidence requirement, and expiry where static resolution is impossible.
+
+Generic unresolved internal edges MUST NOT be counted as valid reachability proof.
+
+### R6 — Required reverse query plane
+
+The implementation MUST answer both directions from the same canonical edge inventory:
+
+```text
+entry point -> reachable callable -> source reference
+source reference or symbol -> affected callable -> affected entry point
 ```
 
-#### Non-query graph assertion used in this section
-
-The graph-measurement and entry-kind tables come from the fresh graph command,
-not a relational query, because call-graph artifacts are not yet admitted query
-sources and cannot currently be projected as document facts:
-
-```powershell
-node src/cli.js call-graph --index $srcIndex --output $graphPath --pretty --summary
-
-$graph = Get-Content -Raw -LiteralPath $graphPath | ConvertFrom-Json
-$graph.summary
-$graph.inventorySummary
-```
-
-Strategy tasks `R2` and `R6` make these collections queryable. The final closure
-documentation must replace this direct assertion with graph-query receipts.
-
-### Required implementation order
-
-#### R1. Project export and interface evidence as first-class facts
-
-**Impact:** source scanner contract/dependency or a deterministic local projection overlay, source-index schema, index validator, fixtures.
-
-**Established by:** `R4`.
-
-1. Add `exportDisposition` rather than relying on an optional Boolean: `EXPORTED`, `NOT_EXPORTED`, or `NOT_EVALUATED`.
-2. Preserve export kind: named, default, re-export, CommonJS assignment, or contract-declared API.
-3. Link every export fact to a source reference.
-4. Project declared CLI, HTTP/API, scheduled, event, proof, migration, and public-module interfaces from source and contracts.
-
-**Exit query:** Group callable rows by `exportDisposition` and interface kind.
-
-**Exit condition:** `NOT_EVALUATED` is zero for deterministic Round 2 source forms; every exported callable has a source or contract reference.
-
-#### R2. Define and validate the graph artifact contract
-
-**Impact:** new `contracts/call-graph.schema.v1.json`, graph validator, graph writer.
-
-**Established by:** `R1`, `R2`, and the direct fresh-graph assertion. The graph
-is not currently a relational query source, which is part of this task.
-
-The artifact must serialize one canonical edge inventory, not only counts and root-local copies. Every edge must contain:
-
-- stable edge ID;
-- caller and callee identity or typed boundary identity;
-- relationship kind and source reference;
-- resolution disposition and reason;
-- static/runtime evidence kind;
-- owning scope;
-- forward and reverse adjacency membership.
-
-Every callable must carry incoming and outgoing edge IDs, originating entry-point IDs, disposition, and path-witness IDs.
-
-**Exit condition:** Schema validation passes; edge count equals unique edge rows; every adjacency edge ID resolves exactly once.
-
-#### R3. Make the entry-point taxonomy contract-driven
-
-**Impact:** graph taxonomy contract and `buildsEntryPointInventory`/classification functions identified by `R1` and `R2`.
-
-**Established by:** `R1`, `R2`, and the `inventorySummary.entryPointKindCounts`
-direct graph assertion.
-
-Required Round 2 kinds must be declared explicitly:
-
-- CLI command and subcommand;
-- HTTP/API entry;
-- public module/SDK operation;
-- event handler and registration;
-- scheduled trigger;
-- callback/higher-order invocation;
-- proof/test entry where included by policy;
-- migration/script entry;
-- module evaluation;
-- dynamic-dispatch candidate.
-
-Each classification rule declares its evidence requirements, product/non-product status, and allowed closure disposition. Filename/name heuristics alone may produce candidates, not admitted product entry points.
-
-**Exit query:** Compare required taxonomy kinds with observed and explicitly excluded kinds.
-
-**Exit condition:** Missing required kind disposition count is zero; every entry point has typed evidence and policy status.
-
-#### R4. Close deterministic invocation resolution
-
-**Impact:** `resolvesSymbolCandidate`, invocation projection, import/export binding, member-call resolution.
-
-**Established by:** `R1` for the resolver impact and the direct graph assertion
-for resolved, ambiguous, and unresolved counts.
-
-1. Separate external/library boundaries from internal unresolved calls.
-2. Resolve deterministic imports, re-exports, member calls, and same-module bindings.
-3. Assign every remaining runtime-sensitive edge a specific candidate kind rather than generic `unresolved`.
-4. Require owner, debt ID, and closure round for every `RUNTIME_RESOLUTION_REQUIRED` edge.
-
-**Exit query:** Group edges by scope, disposition, and reason.
-
-**Exit condition:** Generic unresolved deterministic internal edge count is zero; unowned runtime-resolution debt count is zero.
-
-#### R5. Project callbacks, module evaluation, and dynamic dispatch
-
-**Impact:** relationship projector and stable synthetic-identity rules.
-
-**Established by:** the direct graph entry-kind assertion and the missing
-callback/event/scheduled categories in its returned inventory.
-
-1. Create stable identities for anonymous callbacks from module path, enclosing callable, registration/reference site, and ordinal.
-2. Model callback registration separately from callback invocation.
-3. Preserve module-scope execution nodes and their order evidence without inferring aggregate execution order.
-4. Model dispatch tables, injected/default function parameters, factories, and service-provider candidates.
-5. Accept runtime observations only when bound to source index, graph, revision, and trace identity.
-
-**Exit condition:** Every candidate receives `RESOLVED`, a typed external/platform boundary, or owned `RUNTIME_RESOLUTION_REQUIRED`; no candidate is mislabeled dead.
-
-#### R6. Materialize reverse navigation as queryable evidence
-
-**Impact:** `findsAffectedEntryPoints`, graph query sources, CLI query surface.
-
-**Established by:** `R1` for the reverse-navigation implementation symbol and
-`R3` for its zero focused-test invocation count.
-
-Required reverse queries:
-
-- callers of a symbol;
-- all originating entry points;
-- shortest and all admitted path witnesses;
-- impacted interface behaviors, features, and scenarios;
-- unresolved candidates that could reach a symbol;
-- edges and outcomes affected by a source-reference change.
-
-`R3` proves no test currently invokes `findsAffectedEntryPoints`.
-
-**Exit condition:** Forward-then-reverse round-trip fixtures return the original edge and entry-point identities for cycles, shared helpers, callbacks, exported APIs, and module-scope execution.
-
-#### R7. Add closure-focused fixtures and gates
-
-**Established by:** `R3` and the current one-behavior graph-test result.
+Forward and reverse results MUST round-trip: every forward edge has exactly one reverse counterpart, and every path witness references existing nodes and edges.
 
 Required fixtures:
 
-- uncalled exported API;
-- named and anonymous callback;
-- event registration;
-- scheduled trigger;
-- module-scope invocation;
-- dynamic dispatch table;
-- injected/default function parameter;
-- re-export chain;
-- same-name symbols in different modules;
-- internal unresolved import;
-- external/library boundary;
-- cycle and shared helper;
-- dead callable with no candidate path.
+- direct invocation;
+- multi-hop invocation;
+- shared helper reached by multiple roots;
+- callback registration;
+- module-scope execution;
+- uniquely resolvable export;
+- ambiguous export;
+- dynamic dispatch requiring runtime evidence;
+- external dependency;
+- truly dead internal callable.
 
-**Exit condition:** The fixture inventory query returns every required fixture ID; reverse-navigation and disposition assertions exist for each; CI blocks regression of any zero-count exit query.
-
-### Reachability closure queries
+### R7 — Reachability closure queries
 
 | Query ID | Required result |
 |---|---|
 | `reachability.callable-dispositions.v1` | Every in-scope callable has exactly one allowed disposition |
-| `reachability.edge-resolution.v1` | Generic unresolved deterministic internal edges zero |
+| `reachability.edge-resolution.v1` | Generic unresolved deterministic internal edges `0` |
 | `reachability.entry-taxonomy.v1` | Every required family observed or explicitly excluded by policy |
-| `reachability.forward-reverse-integrity.v1` | Missing/dangling adjacency and path-witness references zero |
-| `reachability.exported-api-roots.v1` | Every exported API admitted or explicitly non-product/excluded |
-| `reachability.runtime-resolution-debt.v1` | Unowned or expired runtime-resolution items zero |
-| `reachability.dead-code-certainty.v1` | No callback/dynamic/public-boundary candidate classified as dead |
-| `reachability.reverse-navigation-tests.v1` | Every required reverse fixture and behavior tested |
+| `reachability.forward-reverse-integrity.v1` | Missing or dangling adjacency and path references `0` |
+| `reachability.exported-api-roots.v1` | Every exported API admitted or explicitly excluded |
+| `reachability.runtime-resolution-debt.v1` | Unowned or expired runtime-resolution items `0` |
+| `reachability.dead-code-certainty.v1` | No callback, dynamic, or public-boundary candidate classified as dead |
+| `reachability.reverse-navigation-tests.v1` | Every required reverse fixture observed |
 
-## Deterministic implementation tracker
+### Strategy 2 implementation order
 
-| Task | Depends on | Completion evidence |
-|---|---|---|
-| `D1` large-artifact queryability | none | repeatable projection/query receipts for report and graph |
-| `D2` metric catalog | `D1` | schema-valid catalog; zero missing/duplicate metrics |
-| `D3` input validation | `D2`, `R2` graph schema | negative-fixture receipts and no output on failure |
-| `D4` query-driven renderer | `D1`–`D3`, `R6` graph query sources | zero unsupported rendered claims |
-| `D5` CLI closure | `D3` | custom-path and unknown-option tests |
-| `D6` same-index pipeline | `D3`–`D5` | one closure receipt binding all identities |
-| `D7` documentation gate | `D6` | all documentation exit queries pass |
-| `R1` export/interface facts | none | zero deterministic export `NOT_EVALUATED` rows |
-| `R2` graph schema | none | schema-valid canonical edge inventory |
-| `R3` taxonomy authority | `R1`, `R2` | zero missing family dispositions |
-| `R4` deterministic resolution | `R2` | zero generic unresolved deterministic internal edges |
-| `R5` runtime-sensitive candidates | `R3`, `R4` | typed/owned disposition for every candidate |
-| `R6` reverse query plane | `R2`–`R5` | round-trip query fixtures pass |
-| `R7` reachability gate | `R6` | all reachability exit queries pass |
+| Order | Task | Blocking exit evidence |
+|---:|---|---|
+| 1 | Project export and interface evidence as first-class source facts | No callable has unknown export disposition |
+| 2 | Define and validate the graph schema | Current graph and negative fixtures validate as expected |
+| 3 | Make entry taxonomy contract-driven | Every family admitted or explicitly excluded |
+| 4 | Resolve deterministic internal invocations | Generic deterministic unresolved edges `0` |
+| 5 | Model callbacks, registrations, module execution, and dynamic dispatch | Every runtime-sensitive edge typed and owned |
+| 6 | Materialize reverse adjacency and path witnesses | Forward/reverse round-trip passes |
+| 7 | Add reverse-navigation and dead-code fixtures | All reachability closure queries pass |
 
-The two strategies converge at `D3`/`D4`: deterministic documentation must consume the validated graph and its query receipts, and the graph closure cannot be claimed until those receipts can be rendered and independently reconciled.
+## One same-revision closure pipeline
 
-## Reproduction appendix
+The two strategies converge in one pipeline. No stage may load an older default artifact.
 
-### Rebuild the evidence indexes
-
-```powershell
-$evidenceRoot = Join-Path ([System.IO.Path]::GetTempPath()) 'sourcefacts-gap-closure-evidence'
-$srcIndex = Join-Path $evidenceRoot 'src-index.json'
-$contractIndex = Join-Path $evidenceRoot 'contracts-index.json'
-$testIndex = Join-Path $evidenceRoot 'test-index.json'
-$graphPath = Join-Path $evidenceRoot 'call-graph.json'
-New-Item -ItemType Directory -Path $evidenceRoot -Force | Out-Null
-
-node src/cli.js project --workspace ./src --workspace-id gap-closure-src `
-  --output $srcIndex --summary
-
-node src/cli.js project --workspace ./contracts --workspace-id gap-closure-contracts `
-  --output $contractIndex --summary
-
-node src/cli.js project --workspace ./test --workspace-id gap-closure-tests `
-  --output $testIndex --summary
-
-node src/cli.js call-graph --index $srcIndex --output $graphPath --pretty --summary
+```text
+assert clean declared revision and scope
+-> project source index
+-> project contract index
+-> validate both indexes
+-> generate and schema-validate graph from source index
+-> generate and schema-validate governance report from the same source identity
+-> project report, graph, catalog, and receipt evidence for querying
+-> execute every admitted metric and reachability query
+-> independently replay and verify every query receipt
+-> resolve and reconcile every metric
+-> render byte-stable factual documentation
+-> execute documentation and reachability exit queries
+-> build deterministic closure payload
+-> validate closure receipt schema
+-> emit CLOSED only when failedExitConditionCount = 0
 ```
 
-Closure automation should use resolved absolute paths and record them only as
-non-identity diagnostics.
+Mutating any bound identity or content byte MUST make the pipeline fail before final output is promoted.
 
-### `G1` — generator functions
+## Closure receipt minimum result
 
-```sql
-SELECT symbolId, name, sourceReferenceId
-FROM symbols
-WHERE modulePath = 'generate-traceability-docs.js'
-  AND kind = 'function'
-ORDER BY name
+A closure receipt is valid only if its independently verified payload contains:
+
+```json
+{
+  "disposition": "CLOSED",
+  "dirtyWorktree": false,
+  "failedExitConditionCount": 0,
+  "unsupportedFactualClaimCount": 0,
+  "metricMismatchCount": 0,
+  "unverifiedQueryReceiptCount": 0,
+  "missingArtifactBindingCount": 0,
+  "schemaFailureCount": 0,
+  "testFailureCount": 0
+}
 ```
 
-Expected row count for the recorded baseline: 3.
-
-### `G2` — generator field accesses
-
-```sql
-SELECT toSymbolCandidate, COUNT(*) AS occurrenceCount
-FROM relationships
-WHERE fromSymbolId = 'generate-traceability-docs.js#function:generatesTraceabilityDocs'
-  AND relationshipKind = 'member-access'
-GROUP BY toSymbolCandidate
-ORDER BY occurrenceCount DESC
-```
-
-Expected recorded result hash: `sha256:68e49608d03081a32ebbf60e42f51e927fa4a7cac7431fdafdb08fb9d8ebc4d7`.
-
-### `G3` / `G4` — production and test callers
-
-```sql
-SELECT fromSymbolId, sourceReferenceId
-FROM relationships
-WHERE toSymbolCandidate = 'generatesTraceabilityDocs'
-  AND relationshipKind = 'invocation'
-ORDER BY sourceReferenceId
-```
-
-Run against both the source and test indexes. Recorded row counts are 1 and 0 respectively.
-
-### `R1` — graph implementation impact
-
-```sql
-SELECT symbolId, name, sourceReferenceId
-FROM symbols
-WHERE modulePath = 'call-graph.js'
-  AND kind = 'function'
-  AND name IN (
-    'projectsCliEntryPointCallGraph',
-    'findsAffectedEntryPoints',
-    'buildsEntryPointInventory',
-    'buildsEntryPointReachability',
-    'buildsCallableInventory',
-    'classifiesCliEntryKinds',
-    'classifiesModuleEntryKinds',
-    'classifiesSyntheticEntryKinds',
-    'resolvesSymbolCandidate'
-  )
-ORDER BY name
-```
-
-Expected recorded row count: 9.
-
-### `R2` — top-level graph orchestration
-
-```sql
-SELECT toSymbolCandidate, COUNT(*) AS invocationCount
-FROM relationships
-WHERE fromSymbolId = 'call-graph.js#function:projectsCliEntryPointCallGraph'
-  AND relationshipKind = 'invocation'
-  AND toSymbolCandidate IN (
-    'buildsEntryPointInventory',
-    'buildsEntryPointReachability',
-    'buildsCallableInventory',
-    'summarizesInventory',
-    'buildsRootGraph'
-  )
-GROUP BY toSymbolCandidate
-ORDER BY toSymbolCandidate
-```
-
-Recorded result: five rows, each with `invocationCount = 1`.
-
-### `R3` — graph public-behavior tests
-
-```sql
-SELECT toSymbolCandidate, COUNT(*) AS invocationCount
-FROM relationships
-WHERE relationshipKind = 'invocation'
-  AND toSymbolCandidate IN (
-    'projectsCliEntryPointCallGraph',
-    'findsAffectedEntryPoints'
-  )
-GROUP BY toSymbolCandidate
-ORDER BY toSymbolCandidate
-```
-
-Recorded result: one invocation row for `projectsCliEntryPointCallGraph`; none for `findsAffectedEntryPoints`.
-
-### `R4` — export fact completeness
-
-```sql
-SELECT isExported, COUNT(*) AS callableCount
-FROM symbols
-WHERE kind IN ('function', 'method', 'constructor', 'class')
-GROUP BY isExported
-ORDER BY isExported
-```
-
-Recorded result: `{ "isExported": null, "callableCount": 692 }`.
-
-### `C1` — report contract locations
-
-```sql
-SELECT pointer, valuePreview, sourceReferenceId
-FROM documents
-WHERE relativePath = 'source-facts-self-governance-report.schema.v1.json'
-  AND pointer IN (
-    '/properties/index/properties/indexId',
-    '/properties/index/properties/scanId',
-    '/properties/scenarioConformance/properties/summary',
-    '/properties/featureCoverage/properties/summary'
-  )
-ORDER BY pointer
-```
-
-Expected recorded row count: 4.
+Each zero is a computed value backed by a named exit-query or test receipt. It MUST NOT be a caller-supplied assertion.
 
 ## Final closure rule
 
-Neither roadmap row changes to `Closed` because implementation tasks were completed informally or because the general suite passes. The status changes only when one reproducible closure run:
+Neither roadmap row changes to `Closed` because files were added, focused tests were written, or most of the suite passes. A row changes only when the same clean revision and declared scope complete the entire pipeline above and an independent verifier recomputes every binding and every zero-valued exit condition.
 
-1. regenerates every bound artifact from the declared revision and boundaries;
-2. executes every admitted current-state and exit query;
-3. validates every receipt and cross-artifact identity;
-4. renders the evidence-bound documentation;
-5. reconciles rendered metrics back to query results; and
-6. writes a schema-valid closure receipt with zero failed exit conditions.
+At the recorded baseline:
+
+- large-artifact queryability is proven;
+- metric pointer resolution is proven for the selected artifacts;
+- documentation closure is **not proven**;
+- repository-wide forward/reverse reachability is **not proven**.

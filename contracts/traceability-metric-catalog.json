@@ -1,0 +1,635 @@
+{
+  "catalogType": "traceability-metric-catalog.v1",
+  "catalogVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "description": "Deterministic source-facts traceability metrics and their bound evidentiary sources.",
+  "metrics": [
+    {
+      "metricId": "traceability.entry.command-root-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "CLI command roots",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.command-root-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/commandRootCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.exported-function-root-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Exported function roots",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.exported-function-root-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/exportedFunctionRootCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.total-root-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Total entry points",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.total-root-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/totalRootCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.runtime-callable-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Runtime callable functions",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.runtime-callable-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/runtimeCallableCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.reachable-callable-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Reachable from entry points",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.reachable-callable-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/reachableCallableCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.unreachable-callable-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Unreachable (dead code)",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.unreachable-callable-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/unreachableCallableCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.invocation-edge-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Invocation edges",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.invocation-edge-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/invocationEdgeCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.resolved-invocation-edge-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Resolved edges",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.resolved-invocation-edge-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/resolvedInvocationEdgeCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.ambiguous-invocation-edge-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Ambiguous edges",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.ambiguous-invocation-edge-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/ambiguousInvocationEdgeCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.unresolved-invocation-edge-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Unresolved edges",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.unresolved-invocation-edge-count" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/unresolvedInvocationEdgeCount"
+      }
+    },
+    {
+      "metricId": "traceability.entry.max-depth.v1",
+      "metricVersion": "1",
+      "metricLabel": "Max call depth",
+      "section": "entry-point-reachability",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.call-graph.max-depth" },
+      "source": {
+        "artifactKind": "call-graph",
+        "valueMode": "artifact-pointer",
+        "pointer": "/summary/maxDepth"
+      }
+    },
+    {
+      "metricId": "traceability.symbol.function-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Functions",
+      "section": "symbol-inventory",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.symbol.function-count" },
+      "source": {
+        "artifactKind": "source-fact-index",
+        "valueMode": "symbol-count",
+        "symbolKind": "function"
+      }
+    },
+    {
+      "metricId": "traceability.symbol.variable-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Variables",
+      "section": "symbol-inventory",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.symbol.variable-count" },
+      "source": {
+        "artifactKind": "source-fact-index",
+        "valueMode": "symbol-count",
+        "symbolKind": "variable"
+      }
+    },
+    {
+      "metricId": "traceability.symbol.parameter-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Parameters",
+      "section": "symbol-inventory",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.symbol.parameter-count" },
+      "source": {
+        "artifactKind": "source-fact-index",
+        "valueMode": "symbol-count",
+        "symbolKind": "parameter"
+      }
+    },
+    {
+      "metricId": "traceability.symbol.class-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Classes",
+      "section": "symbol-inventory",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.symbol.class-count" },
+      "source": {
+        "artifactKind": "source-fact-index",
+        "valueMode": "symbol-count",
+        "symbolKind": "class"
+      }
+    },
+    {
+      "metricId": "traceability.symbol.total-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Total",
+      "section": "symbol-inventory",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.symbol.total-count" },
+      "source": {
+        "artifactKind": "source-fact-index",
+        "valueMode": "sum-symbol-counts",
+        "symbolKinds": [
+          "function",
+          "variable",
+          "parameter",
+          "class"
+        ]
+      }
+    },
+    {
+      "metricId": "traceability.feature.canonical-feature-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Canonical features",
+      "section": "feature-coverage",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.feature.canonical-feature-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/canonicalFeatures"
+      }
+    },
+    {
+      "metricId": "traceability.feature.proposed-feature-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Proposed features",
+      "section": "feature-coverage",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.feature.proposed-feature-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/proposedFeatures"
+      }
+    },
+    {
+      "metricId": "traceability.scenario.canonical-scenario-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Canonical scenarios",
+      "section": "feature-coverage",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.scenario.canonical-scenario-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/scenariosDiscovered"
+      }
+    },
+    {
+      "metricId": "traceability.scenario.structurally-closed-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Scenarios structurally closed",
+      "section": "feature-coverage",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.scenario.structurally-closed-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/scenariosStructurallyClosed"
+      }
+    },
+    {
+      "metricId": "traceability.scenario.execution-evaluated-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Scenarios with execution evaluated",
+      "section": "feature-coverage",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.scenario.execution-evaluated-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/scenariosExecutionEvaluated"
+      }
+    },
+    {
+      "metricId": "traceability.scenario.conformant-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Scenarios runtime conformant",
+      "section": "feature-coverage",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.scenario.conformant-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/scenariosConformant"
+      }
+    },
+    {
+      "metricId": "traceability.evidence.canonical-mechanics-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Mechanics with canonical scenario lineage",
+      "section": "mechanic-evidence",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evidence.canonical-mechanics-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/mechanicsWithCanonicalLineage"
+      }
+    },
+    {
+      "metricId": "traceability.evidence.proposed-mechanics-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Mechanics with proposed scenario lineage",
+      "section": "mechanic-evidence",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evidence.proposed-mechanics-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/mechanicsWithProposedLineage"
+      }
+    },
+    {
+      "metricId": "traceability.evidence.ambiguous-mechanics-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Mechanics with ambiguous lineage",
+      "section": "mechanic-evidence",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evidence.ambiguous-mechanics-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/mechanicsWithAmbiguousLineage"
+      }
+    },
+    {
+      "metricId": "traceability.evidence.unlinked-mechanics-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Mechanics without scenario lineage",
+      "section": "mechanic-evidence",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evidence.unlinked-mechanics-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/mechanicsWithoutLineage"
+      }
+    },
+    {
+      "metricId": "traceability.evidence.unresolved-clusters-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Unresolved responsibility clusters",
+      "section": "mechanic-evidence",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evidence.unresolved-clusters-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/unresolvedEvidenceClusters"
+      }
+    },
+    {
+      "metricId": "traceability.authority.canonical-lineage-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "With canonical scenario lineage",
+      "section": "authority-document-status",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.authority.canonical-lineage-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/authorityWithCanonicalLineage"
+      }
+    },
+    {
+      "metricId": "traceability.authority.proposed-lineage-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "With proposed scenario lineage",
+      "section": "authority-document-status",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.authority.proposed-lineage-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/authorityWithProposedLineage"
+      }
+    },
+    {
+      "metricId": "traceability.authority.missing-lineage-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Without scenario lineage",
+      "section": "authority-document-status",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.authority.missing-lineage-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/featureCoverage/summary/authorityWithoutLineage"
+      }
+    },
+    {
+      "metricId": "traceability.findings.implementation-variants-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Implementation variants declared as distinct responsibilities",
+      "section": "findings",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.findings.implementation-variants-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/byLineageQualityFinding/IMPLEMENTATION_VARIANTS_DECLARED_AS_DISTINCT_RESPONSIBILITIES"
+      }
+    },
+    {
+      "metricId": "traceability.findings.multiple-owners-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Multiple responsibility owners requiring review",
+      "section": "findings",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.findings.multiple-owners-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/byLineageQualityFinding/MULTIPLE_RESPONSIBILITY_OWNERS_REQUIRE_REVIEW"
+      }
+    },
+    {
+      "metricId": "traceability.findings.projection-gaps-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Projection obligations without projecting relationship",
+      "section": "findings",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.findings.projection-gaps-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/byLineageQualityFinding/PROJECTION_OBLIGATION_HAS_NO_PROJECTING_RELATIONSHIP"
+      }
+    },
+    {
+      "metricId": "traceability.evaluation.authority-depth-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Authority wiring not evaluated (depth limit)",
+      "section": "evaluation-limits",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evaluation.authority-depth-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/byEvaluationLimit/AUTHORITY_WIRING_NOT_EVALUATED_DEPTH_LIMIT"
+      }
+    },
+    {
+      "metricId": "traceability.evaluation.body-out-of-scope-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Body not evaluated outside subject",
+      "section": "evaluation-limits",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evaluation.body-out-of-scope-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/byEvaluationLimit/BODY_NOT_EVALUATED_OUTSIDE_SUBJECT"
+      }
+    },
+    {
+      "metricId": "traceability.evaluation.body-not-observed-count.v1",
+      "metricVersion": "1",
+      "metricLabel": "Body not statically observed",
+      "section": "evaluation-limits",
+      "claimType": "factual",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.evaluation.body-not-observed-count" },
+      "source": {
+        "artifactKind": "governance-report",
+        "valueMode": "artifact-pointer",
+        "pointer": "/scenarioConformance/summary/byEvaluationLimit/BODY_NOT_STATICALLY_OBSERVED"
+      }
+    },
+    {
+      "metricId": "traceability.rate.reachability-coverage.v1",
+      "metricVersion": "1",
+      "metricLabel": "Reachability Coverage",
+      "section": "derived-rates",
+      "claimType": "derived",
+      "resultType": "percentage",
+      "disposition": "ZERO_DENOMINATOR",
+      "query": { "queryId": "traceability.query.rate.reachability-coverage" },
+      "source": {
+        "artifactKind": "derived",
+        "valueMode": "ratio",
+        "numeratorMetricId": "traceability.entry.reachable-callable-count.v1",
+        "denominatorMetricId": "traceability.entry.runtime-callable-count.v1"
+      }
+    },
+    {
+      "metricId": "traceability.rate.canonical-lineage-coverage.v1",
+      "metricVersion": "1",
+      "metricLabel": "Canonical lineage coverage",
+      "section": "derived-rates",
+      "claimType": "derived",
+      "resultType": "percentage",
+      "disposition": "ZERO_DENOMINATOR",
+      "query": { "queryId": "traceability.query.rate.canonical-lineage-coverage" },
+      "source": {
+        "artifactKind": "derived",
+        "valueMode": "ratio",
+        "numeratorMetricId": "traceability.evidence.canonical-mechanics-count.v1",
+        "denominatorMetricId": "traceability.rate.canonical-lineage-coverage.denominator.v1"
+      }
+    },
+    {
+      "metricId": "traceability.rate.canonical-lineage-coverage.denominator.v1",
+      "metricVersion": "1",
+      "metricLabel": "Canonical lineage denominator",
+      "section": "derived-rates",
+      "claimType": "derived",
+      "resultType": "integer",
+      "disposition": "METRIC_POINTER_NOT_FOUND",
+      "query": { "queryId": "traceability.query.rate.canonical-lineage-coverage.denominator" },
+      "source": {
+        "artifactKind": "derived",
+        "valueMode": "sum-metrics",
+        "addendMetricIds": [
+          "traceability.evidence.canonical-mechanics-count.v1",
+          "traceability.evidence.unlinked-mechanics-count.v1"
+        ]
+      }
+    },
+    {
+      "metricId": "traceability.rate.structural-closure.v1",
+      "metricVersion": "1",
+      "metricLabel": "Structural closure rate",
+      "section": "derived-rates",
+      "claimType": "derived",
+      "resultType": "percentage",
+      "disposition": "ZERO_DENOMINATOR",
+      "query": { "queryId": "traceability.query.rate.structural-closure" },
+      "source": {
+        "artifactKind": "derived",
+        "valueMode": "ratio",
+        "numeratorMetricId": "traceability.scenario.structurally-closed-count.v1",
+        "denominatorMetricId": "traceability.scenario.canonical-scenario-count.v1"
+      }
+    },
+    {
+      "metricId": "traceability.rate.runtime-conformance.v1",
+      "metricVersion": "1",
+      "metricLabel": "Runtime conformance rate",
+      "section": "derived-rates",
+      "claimType": "derived",
+      "resultType": "percentage",
+      "disposition": "ZERO_DENOMINATOR",
+      "query": { "queryId": "traceability.query.rate.runtime-conformance" },
+      "source": {
+        "artifactKind": "derived",
+        "valueMode": "ratio",
+        "numeratorMetricId": "traceability.scenario.conformant-count.v1",
+        "denominatorMetricId": "traceability.scenario.canonical-scenario-count.v1"
+      }
+    }
+  ]
+}

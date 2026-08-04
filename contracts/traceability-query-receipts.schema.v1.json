@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Traceability Query Receipts",
+  "type": "object",
+  "required": ["receiptType", "queryReceipts"],
+  "additionalProperties": false,
+  "properties": {
+    "receiptType": {
+      "const": "traceability-query-receipts.v1"
+    },
+    "generatedAtUtc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "queryReceipts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/queryReceipt" }
+    }
+  },
+  "$defs": {
+    "queryReceipt": {
+      "type": "object",
+        "required": [
+          "queryId",
+          "queryText",
+          "queryTextHash",
+          "artifactBinding",
+          "catalogBinding",
+          "disposition",
+          "inputHash",
+          "resultHash",
+          "rowCount"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "queryId": {
+            "type": "string",
+            "minLength": 1
+        },
+          "queryText": {
+            "type": "string",
+            "minLength": 1
+          },
+          "queryTextHash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "artifactBinding": {
+            "type": "object",
+            "required": ["artifactKind", "indexId"],
+            "additionalProperties": false,
+            "properties": {
+              "artifactKind": {
+                "enum": ["call-graph", "governance-report", "source-fact-index", "derived"]
+              },
+              "indexId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scanId": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "catalogBinding": {
+            "type": "object",
+            "required": ["catalogType", "catalogVersion", "catalogFingerprint"],
+            "additionalProperties": false,
+            "properties": {
+              "catalogType": {
+                "type": "string",
+                "minLength": 1
+              },
+              "catalogVersion": {
+                "type": "string",
+                "pattern": "^\\d+\\.\\d+\\.\\d+$"
+              },
+              "catalogFingerprint": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          "disposition": {
+            "enum": ["RELATIONAL_QUERY_EXECUTED", "RELATIONAL_QUERY_REJECTED", "RELATIONAL_QUERY_FAILED"]
+          },
+        "inputHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "resultHash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "rowCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}
