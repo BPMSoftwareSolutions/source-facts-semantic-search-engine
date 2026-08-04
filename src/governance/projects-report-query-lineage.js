@@ -717,6 +717,31 @@ export function rerunsRegisteredReportQuery(report, queryId, parameters = {}) {
   return freezes({ queryId, parameters, rows, rowCount: rows.length, resultHash: hashes(rows) });
 }
 
+export function projectsBoundReportQueryReceiptArtifact(report, queryId, parameters = {}) {
+  const registeredQuery = report.queryLineage?.registeredQueries.find((entry) => entry.queryId === queryId);
+  if (!registeredQuery) throw new FactQueryLineageError("FACT_WITHOUT_REGISTERED_QUERY", queryId);
+  const sourceReceipt = report.queryLineage?.queryReceipts.find((entry) => entry.queryId === queryId);
+  if (!sourceReceipt) throw new FactQueryLineageError("FACT_QUERY_RECEIPT_MISSING", queryId);
+  const result = rerunsRegisteredReportQuery(report, queryId, parameters);
+  return freezes({
+    documentKind: "source-facts-report-query-artifact.v1",
+    artifactDisposition: "PARAMETER_BOUND_REGISTERED_QUERY_EXECUTION",
+    catalog: report.queryLineage.catalog,
+    registeredQuery,
+    queryReceipt: {
+      ...sourceReceipt,
+      parameterBindings: result.parameters,
+      execution: {
+        ...sourceReceipt.execution,
+        rowCount: result.rowCount,
+        resultHash: result.resultHash,
+      },
+      result: { rows: result.rows },
+    },
+    claims: [],
+  });
+}
+
 function queryArtifactFileName(queryId) {
   return `${queryId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.json`;
 }

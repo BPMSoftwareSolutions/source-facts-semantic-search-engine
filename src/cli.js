@@ -45,7 +45,7 @@ import { generatesConnectiveTissue } from "./governance/generates-connective-tis
 import { discoversHealingDrafts } from "./governance/discovers-healing-drafts.js";
 import { discoversAuthorityAuthoringContractMap } from "./governance/discovers-authority-authoring-contract-map.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
-import { projectsReportQueryReceiptArtifacts, rerunsRegisteredReportQuery } from "./governance/projects-report-query-lineage.js";
+import { projectsBoundReportQueryReceiptArtifact, projectsReportQueryReceiptArtifacts, rerunsRegisteredReportQuery } from "./governance/projects-report-query-lineage.js";
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
 import { discoversCanonicalFeatureIntents } from "./governance/canonical-feature-intent.js";
@@ -441,6 +441,11 @@ async function runReportQuery(rawArgs) {
   const result = rerunsRegisteredReportQuery(report, queryId, { featureId: flags.featureId });
   if (result.rowCount !== 1) throw new Error(`${queryId} expected exactly one feature row for ${flags.featureId}; observed ${result.rowCount}.`);
   const output = { documentKind: "source-facts-report-query-result.v1", ...result };
+  if (typeof flags.receiptOutput === "string") {
+    const receiptOutputPath = path.resolve(flags.receiptOutput);
+    const receipt = projectsBoundReportQueryReceiptArtifact(report, queryId, result.parameters);
+    await writesJsonFile(receiptOutputPath, receipt, { pretty: true });
+  }
   if (typeof flags.output === "string") {
     const outputPath = path.resolve(flags.output);
     await writesJsonFile(outputPath, output, { pretty: flags.pretty === true });
@@ -1182,6 +1187,7 @@ function parseArgs(rawArgs) {
     "--graph",
     "--metric-catalog",
     "--query-receipts",
+    "--receipt-output",
     "--closure-receipt",
     "--contract-map-root",
   ]);
@@ -1263,7 +1269,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
   stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
-  stream.write(`  source-facts-se report-query --report <file> [--query-id trace.feature-complete-lineage.v1] --feature-id <id> [--output <file>] [--pretty]\n`);
+  stream.write(`  source-facts-se report-query --report <file> [--query-id trace.feature-complete-lineage.v1] --feature-id <id> [--output <file>] [--receipt-output <file>] [--pretty]\n`);
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
   stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);
   stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --feature-authority-file <file> --feature-id <id> --scenario-id <id> --responsibility-id <id> --obligation-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);

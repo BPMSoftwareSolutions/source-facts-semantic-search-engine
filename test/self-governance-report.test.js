@@ -23,7 +23,7 @@ import { proposesSemanticOverlap } from "../src/governance/proposes-semantic-ove
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportMarkdown } from "../src/governance/formats-self-governance-report-summary.js";
-import { FactQueryLineageError, projectsReportQueryReceiptArtifacts, rerunsRegisteredReportQuery } from "../src/governance/projects-report-query-lineage.js";
+import { FactQueryLineageError, projectsBoundReportQueryReceiptArtifact, projectsReportQueryReceiptArtifacts, rerunsRegisteredReportQuery } from "../src/governance/projects-report-query-lineage.js";
 import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageProposals } from "../src/governance/discovers-feature-coverage-proposals.js";
 import { createsProposalFeatureFingerprint, validatesFeatureCoverageProposal } from "../src/governance/projects-feature-coverage.js";
 import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "../src/governance/proposes-feature-coverage.js";
@@ -183,6 +183,13 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.equal(completeLineage.rows[0].scenarios[0].tests.length, 1);
   assert.equal(completeLineage.rows[0].scenarios[0].proofCoverage.proofCount, 0);
   assert.equal(completeLineage.rows[0].lineageDisposition, "FEATURE_LINEAGE_BOUND_RUNTIME_PROOF_MISSING");
+
+  const boundReceiptArtifact = projectsBoundReportQueryReceiptArtifact(report, "trace.feature-complete-lineage.v1", { featureId: "source-facts.cli-call-graph" });
+  assert.equal(boundReceiptArtifact.artifactDisposition, "PARAMETER_BOUND_REGISTERED_QUERY_EXECUTION");
+  assert.deepEqual(boundReceiptArtifact.queryReceipt.parameterBindings, { featureId: "source-facts.cli-call-graph" });
+  assert.equal(boundReceiptArtifact.queryReceipt.execution.rowCount, 1);
+  assert.equal(boundReceiptArtifact.queryReceipt.execution.resultHash, completeLineage.resultHash);
+  assert.deepEqual(boundReceiptArtifact.queryReceipt.result.rows, completeLineage.rows);
 });
 
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {

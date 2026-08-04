@@ -2,6 +2,29 @@
 
 This repository turns enterprise source into queryable facts, inspectable web experiences, and governed candidate products.
 
+## Local CLI setup
+
+Install dependencies and link the package binary once from this repository so the documented `source-facts-se` commands resolve in a new shell:
+
+```powershell
+npm install
+npm link
+source-facts-se --help
+```
+
+For automation that should not depend on a linked binary, use the equivalent repository-local form: `node .\src\cli.js`.
+
+To produce a feature-scoped result and a receipt bound to that exact invocation:
+
+```powershell
+source-facts-se report-query `
+  --report .\artifacts\governance\source-facts-self-governance-report.json `
+  --feature-id source-facts.cli-call-graph `
+  --output .\artifacts\governance\call-graph-complete-lineage.json `
+  --receipt-output .\artifacts\governance\call-graph-complete-lineage.receipt.json `
+  --pretty
+```
+
 The north star is now implemented as a narrow, evidence-bound sign-in composition slice:
 
 ```text
