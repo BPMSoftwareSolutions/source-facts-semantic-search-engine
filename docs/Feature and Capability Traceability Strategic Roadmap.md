@@ -17,7 +17,7 @@ The roadmap is based on:
 - [CLI Entry Point Traceability Map](<./CLI Entry Point Traceability Map.md>)
 - [Source Facts Query Cookbook](<./Source Facts Query Cookbook.md>)
 
-The current generated [self-governance report](<../source-facts-self-governance-report.md>) was also used to distinguish the documented model from the repository's measured baseline.
+The current generated [self-governance report](<../artifacts/governance/source-facts-self-governance-report.md>) was also used to distinguish the documented model from the repository's measured baseline.
 
 ## Executive recommendation
 
@@ -48,8 +48,8 @@ The current measured CLI-slice reachability is useful discovery evidence, but it
 
 | Gap | Consequence | Required response | Status |
 |---|---|---|---|
-| Counts and percentages are embedded in narrative snapshots | Documentation drifts as the source and scan boundary change | Generate metrics and tables from a versioned traceability report | ✅ [Closed](Round-1-Documentation-Generation.md) |
-| The CLI map now measures the CLI slice, but broader entry-point families and reverse navigation are still incomplete | Deep reachability is reproducible for the CLI slice, but not yet for the whole repository | Materialize a complete forward and reverse execution graph and widen the entry-point taxonomy | ✅ [Closed](Round-2-Bidirectional-Reachability.md) |
+| Counts and percentages are embedded in narrative snapshots | Documentation drifts as the source and scan boundary change | Generate metrics and tables from a versioned traceability report | ⚠️ [Reopened; deterministic implementation strategy](<Deterministic Traceability Gap Closure Implementation Strategies.md#strategy-1-deterministic-documentation-generation>) |
+| The CLI map now measures the CLI slice, but broader entry-point families and reverse navigation are still incomplete | Deep reachability is reproducible for the CLI slice, but not yet for the whole repository | Materialize a complete forward and reverse execution graph and widen the entry-point taxonomy | 🟡 [Partial; deterministic implementation strategy](<Deterministic Traceability Gap Closure Implementation Strategies.md#strategy-2-complete-forward-and-reverse-reachability>) |
 | Surface names are not yet normalized into atomic interface behaviors | One command, route, or method can hide several distinct outcomes and obligations | Inventory input/action/outcome behavior slices before feature discovery |
 | Callbacks, dynamic dispatch, and module-scope execution are incompletely modeled | Reachable behavior can look dead or remain ambiguous | Add synthetic nodes, dispatch evidence, and runtime resolution |
 | The call graph does not by itself prove semantic flow | Invocation edges cannot show which input, authority, outcome, side effect, or failure closes a scenario | Build surface-to-outcome semantic data-flow slices alongside the call graph |
@@ -367,8 +367,9 @@ This is the Round 1 floor for the call-graph component. It satisfies the CLI por
 ### Exit criteria
 
 - 100% of version-controlled production files have an explicit in-scope or excluded disposition.
-- 100% of real released interface surfaces and their atomic behaviors are generated or declared, typed, and linked to source/contract references.
-- Every surface behavior records its input, observable output or side effect, and failure disposition, even before canonical admission.
+- 100% of Round 1-in-scope surfaces (CLI and documented baseline mechanics only) and their atomic behaviors are generated or declared, typed, and linked to source/contract references.
+- Every Round 1-in-scope surface behavior records its input, observable output or side effect, and failure disposition, even before canonical admission.
+- Surface families not in Round 1 scope remain explicitly deferred: HTTP/API, SDK/public module surfaces, event/scheduled triggers, proof/migration scripts, synthetic callables, dynamic dispatch, injected/default functions, and graph-claim receipts are deferred by design.
 - All eight ratios have executable definitions and reproduce identically from the same revision.
 - 100% of registered queries parse, execute against compatible fixtures, and return the declared shape; unsupported examples remain explicitly rejected, not documented as working queries.
 - Every machine-generated documentation claim is typed, and every quoted or reconstructed code block declares its provenance.
@@ -417,16 +418,17 @@ Make every executable unit and evidence cluster navigable from atomic interface 
 
 ### Exit criteria
 
-- 100% of in-scope callable units receive one reachability disposition during analysis: `REACHABLE`, `SHARED_SUPPORT`, `RUNTIME_RESOLUTION_REQUIRED`, or `UNREACHABLE`.
-- No in-scope internal invocation edge remains generically unresolved; each edge is resolved or assigned a precise typed boundary.
+- 100% of deterministic, Round 2-in-scope callables in the target graph receive one reachability disposition during analysis: `REACHABLE`, `SHARED_SUPPORT`, `RUNTIME_RESOLUTION_REQUIRED`, or `UNREACHABLE`.
+- No deterministic internal invocation edge remains generically unresolved; runtime-sensitive edges in scope this round (callbacks, synthetic/module-scope identities, module evaluation, dynamic-dispatch candidates, and injected/default-function targets) are explicitly staged with typed `RUNTIME_RESOLUTION_REQUIRED`, debt tickets, and owners for closure in Round 3/4.
 - Every released interface behavior has at least one deterministic path witness.
 - Every released interface behavior has a surface-to-outcome slice with typed input, call, data-flow, authority, output/side-effect, and failure edges; runtime-dependent gaps remain explicitly `RUNTIME_RESOLUTION_REQUIRED` for Round 4.
 - Every reachable evidence cluster lists all originating interface behaviors.
 - Every execution-order statement and interface-behavior reachability statement in generated analysis has a current graph witness; aggregate mechanic counts cannot satisfy this requirement.
 - No unresolved or dynamic graph candidate is labeled dead code; it remains a candidate until imports, registrations, public interfaces, and runtime evidence are closed.
-- Dead and orphaned production callables, modules, mechanics, and evidence clusters are zero: each discovered item is deleted or deliberately reconnected to a governed live path before the round exits.
+- Confirmed dead and orphaned production callables, modules, mechanics, and evidence clusters are zero: each confirmed item is deleted or deliberately reconnected to a governed live path before the round exits.
+- Deferred runtime-sensitive candidates are allowed only if they remain in quarantine with explicit closure tickets, owner, and round target; they are not treated as dead code.
 - Temporary quarantine cannot satisfy the round exit and automatically fails after its remediation expiry.
-- CI blocks net-new unclassified callables and net-new unresolved internal edges.
+- CI blocks net-new unclassified callables and net-new unresolved deterministic internal edges.
 - CI blocks net-new interface behaviors without a surface-to-outcome slice and net-new untyped semantic data-flow gaps.
 
 ### Released outcome

@@ -1,7 +1,16 @@
 # Round 2: Bidirectional Reachability & Multiple Entry Points
 
-**Status:** ✅ Gap closed  
+**Status:** 🟡 Partial implementation; closure unproved
 **Date:** 2026-08-04
+
+> **Validation update:** A fresh source-fact index and graph confirm the new
+> inventory/reverse-navigation foundation, but exported-callable facts are null,
+> runtime-sensitive entry families remain incomplete, thousands of invocation
+> edges remain unresolved, and reverse lookup lacks focused test invocation.
+> Use the query-backed
+> [Deterministic Traceability Gap Closure Implementation Strategies](<./Deterministic Traceability Gap Closure Implementation Strategies.md>)
+> as the implementation and exit-proof plan. Historical completion statements
+> below are superseded by this validation status.
 
 ## What Was the Gap?
 

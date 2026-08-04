@@ -1,7 +1,15 @@
 # Round 1: Automated Documentation Generation
 
-**Status:** ✅ Gap closed  
+**Status:** ⚠️ Closure claim invalidated; implementation required
 **Date:** 2026-08-04
+
+> **Validation update:** A fresh evidence run found that the generator reads an
+> obsolete governance-report shape, emits required metrics as `unknown` or zero,
+> has no direct test invocation, and cannot bind custom `--report`/`--graph`
+> inputs through the current CLI parser. Use the query-backed
+> [Deterministic Traceability Gap Closure Implementation Strategies](<./Deterministic Traceability Gap Closure Implementation Strategies.md>)
+> as the implementation and exit-proof plan. Historical completion statements
+> below describe the attempted slice and are not current closure evidence.
 
 ## What Was the Gap?
 
