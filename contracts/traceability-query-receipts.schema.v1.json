@@ -48,11 +48,11 @@
           },
           "artifactBinding": {
             "type": "object",
-          "required": ["artifactKind", "indexId"],
+          "required": ["artifactKind", "indexId", "artifactContentHash"],
           "additionalProperties": false,
           "properties": {
             "artifactKind": {
-              "enum": ["call-graph", "governance-report", "source-fact-index", "derived"]
+              "enum": ["call-graph", "governance-report", "source-fact-index"]
             },
             "indexId": {
               "type": "string",

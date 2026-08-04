@@ -8,7 +8,7 @@ import { executeRelationalQuery } from "./query.js";
 import {
   validatesTraceabilityMetricCatalog,
   validatesTraceabilityQueryReceipts,
-  validatesTraceabilityClosureReceipt,
+  validatesTraceabilityClosureReceiptIntegrity,
 } from "./validates-traceability-artifacts.js";
 
 const sectionHeadings = Object.freeze({
@@ -60,6 +60,11 @@ export async function generatesTraceabilityDocs(
     "call-graph": graph,
     derived: Object.freeze({}),
   });
+  const queryIndexByArtifactKind = Object.freeze({
+    "source-fact-index": index,
+    "governance-report": buildsArtifactQueryIndex("governance-report", report),
+    "call-graph": buildsArtifactQueryIndex("call-graph", graph),
+  });
   const queryReceiptById = normalizesQueryReceipts(queryReceipts);
   const metricById = new Map();
   for (const metric of metricCatalog.metrics) {
@@ -91,7 +96,7 @@ export async function generatesTraceabilityDocs(
           indexBinding,
           graphBinding,
           catalogBinding,
-          index,
+          queryIndexByArtifactKind,
         },
         resolved,
         new Set(),
@@ -111,15 +116,17 @@ export async function generatesTraceabilityDocs(
     sections,
     resolved,
   });
-  mkdirSync(path.dirname(outputPath), { recursive: true });
-  writeFileSync(outputPath, markdown, "utf8");
 
+  let closureReceipt = null;
   if (closureReceiptPath !== null) {
     const artifactHash = hashText(markdown);
-    const closureReceipt = buildsClosureReceipt({
-      report,
-      graph,
-      index,
+    const closureConditions = evaluatesDocumentationClosure({
+      metricCatalog,
+      queryReceiptById,
+      metricValues: orderedMetricValues,
+      documentHash: artifactHash,
+    });
+    closureReceipt = buildsClosureReceipt({
       reportBinding,
       indexBinding,
       graphBinding,
@@ -129,8 +136,17 @@ export async function generatesTraceabilityDocs(
       metricValues: orderedMetricValues,
       documentPath: outputPath,
       documentHash: artifactHash,
+      closureConditions,
     });
-    await validatesTraceabilityClosureReceipt(closureReceipt);
+    await validatesTraceabilityClosureReceiptIntegrity(closureReceipt);
+    if (closureReceipt.disposition !== "CLOSED") {
+      throw new Error(`DOCUMENTATION_CLOSURE_FAILED: ${closureReceipt.failedConditions.join(", ")}.`);
+    }
+  }
+
+  mkdirSync(path.dirname(outputPath), { recursive: true });
+  writeFileSync(outputPath, markdown, "utf8");
+  if (closureReceiptPath !== null) {
     mkdirSync(path.dirname(closureReceiptPath), { recursive: true });
     writeFileSync(closureReceiptPath, `${JSON.stringify(closureReceipt, null, 2)}\n`, "utf8");
   }
@@ -297,6 +313,7 @@ async function resolveMetric(metricId, metricById, artifactByKind, queryReceiptB
   }
   seenIds.add(metricId);
 
+  let verifiedQuery = null;
   if (metric.query?.queryId !== undefined) {
     const receipt = queryReceiptById.get(metric.query.queryId);
     if (receipt === undefined) {
@@ -305,7 +322,7 @@ async function resolveMetric(metricId, metricById, artifactByKind, queryReceiptB
     if (receipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
       throw new Error(`QUERY_RECEIPT_STALE: ${metric.query.queryId} for ${metricId} was ${receipt.disposition}.`);
     }
-    await validatesQueryReceiptBinding(metric, receipt, context);
+    verifiedQuery = await validatesQueryReceiptBinding(metric, receipt, context);
   }
 
   const { source } = metric;
@@ -386,6 +403,12 @@ async function resolveMetric(metricId, metricById, artifactByKind, queryReceiptB
   }
 
   const resolvedValue = readNumberValue(value, metricId);
+  if (verifiedQuery !== null) {
+    const queriedValue = readsSingleMetricQueryValue(metric, verifiedQuery);
+    if (queriedValue !== resolvedValue) {
+      throw new Error(`QUERY_RESULT_METRIC_MISMATCH: ${metricId} query returned ${String(queriedValue)} but the resolved metric value is ${String(resolvedValue)}.`);
+    }
+  }
   const resolvedResult = Object.freeze({
     metricId,
     section: metric.section,
@@ -393,6 +416,7 @@ async function resolveMetric(metricId, metricById, artifactByKind, queryReceiptB
     value: resolvedValue,
     resultType: metric.resultType,
     query: metric.query ?? null,
+    queryVerified: verifiedQuery !== null,
     disposition: metric.disposition ?? "DERIVATION_COMPLETED",
   });
   resolved.set(metricId, resolvedResult);
@@ -408,6 +432,76 @@ function countSymbolsByKind(index, symbolKind) {
   return count;
 }
 
+export function buildsArtifactQueryIndex(artifactKind, artifact) {
+  if (artifactKind === "source-fact-index") return artifact;
+  if (artifactKind !== "governance-report" && artifactKind !== "call-graph") {
+    throw new Error(`QUERY_ARTIFACT_NOT_QUERYABLE: ${artifactKind}.`);
+  }
+  const documents = [];
+  visitsArtifactValues(artifact, "", (value, pointer) => {
+    const valueType = readsArtifactValueType(value);
+    const documentFactId = createHash("sha256")
+      .update(`${artifactKind}\0${pointer}\0${valueType}`, "utf8")
+      .digest("hex");
+    documents.push(Object.freeze({
+      documentFactId,
+      documentFactVersionId: hashText(`${documentFactId}\0${JSON.stringify(value)}`),
+      relativePath: `${artifactKind}.json`,
+      pointer,
+      valueType,
+      valuePreview: summarizesArtifactValue(value),
+      valuePath: Object.freeze(readsJsonPointerParts(pointer)),
+      ...(valueType === "object" || valueType === "array" ? {} : { value }),
+      sourceReferenceId: `${artifactKind}:${pointer}`,
+    }));
+  });
+  return Object.freeze({
+    symbols: Object.freeze([]),
+    relationships: Object.freeze([]),
+    dataflows: Object.freeze([]),
+    sourceReferences: Object.freeze([]),
+    documents: Object.freeze(documents),
+    governanceRules: Object.freeze([]),
+    bodyMechanics: Object.freeze([]),
+  });
+}
+
+function visitsArtifactValues(value, pointer, visitor) {
+  visitor(value, pointer);
+  if (value === null || typeof value !== "object") return;
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index++) {
+      visitsArtifactValues(value[index], `${pointer}/${index}`, visitor);
+    }
+    return;
+  }
+  for (const key of Object.keys(value).sort()) {
+    visitsArtifactValues(value[key], `${pointer}/${escapesJsonPointerPart(key)}`, visitor);
+  }
+}
+
+function readsArtifactValueType(value) {
+  if (value === null) return "null";
+  if (Array.isArray(value)) return "array";
+  return typeof value;
+}
+
+function summarizesArtifactValue(value) {
+  if (value === null) return "null";
+  if (Array.isArray(value)) return `[${value.length} items]`;
+  if (typeof value === "object") return `{${Object.keys(value).length} properties}`;
+  return String(value).slice(0, 240);
+}
+
+function readsJsonPointerParts(pointer) {
+  if (pointer === "") return [];
+  return pointer.slice(1).split("/").map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
+}
+
+function escapesJsonPointerPart(value) {
+  return value.replaceAll("~", "~0").replaceAll("/", "~1");
+}
+
 function normalizesQueryReceipts(receipts) {
   const receiptsById = new Map();
   for (const receipt of receipts.queryReceipts ?? []) {
@@ -419,11 +513,20 @@ function normalizesQueryReceipts(receipts) {
   return receiptsById;
 }
 
-async function validatesQueryReceiptBinding(metric, receipt, { reportBinding, indexBinding, graphBinding, catalogBinding, index }) {
+async function validatesQueryReceiptBinding(metric, receipt, {
+  reportBinding,
+  indexBinding,
+  graphBinding,
+  catalogBinding,
+  queryIndexByArtifactKind,
+}) {
   if (receipt.queryText === undefined || receipt.queryText.length === 0) {
     throw new Error(`QUERY_RECEIPT_TEXT_MISSING: ${metric.metricId} has no query text for ${metric.query?.queryId}.`);
   }
-  if (metric.query?.queryText !== undefined && metric.query.queryText !== receipt.queryText) {
+  if (typeof metric.query?.queryText !== "string" || metric.query.queryText.length === 0) {
+    throw new Error(`CATALOG_QUERY_TEXT_MISSING: ${metric.metricId} has no admitted query text for ${metric.query?.queryId}.`);
+  }
+  if (metric.query.queryText !== receipt.queryText) {
     throw new Error(`QUERY_RECEIPT_TEXT_MISMATCH: ${metric.metricId} expected ${JSON.stringify(metric.query.queryText)} received ${JSON.stringify(receipt.queryText)}.`);
   }
   if (receipt.queryTextHash !== hashText(receipt.queryText)) {
@@ -464,7 +567,11 @@ async function validatesQueryReceiptBinding(metric, receipt, { reportBinding, in
     throw new Error(`QUERY_RECEIPT_ARTIFACT_CONTENT_HASH_MISMATCH: ${metric.metricId} artifactContentHash ${receipt.artifactBinding.artifactContentHash} does not match expected ${expectedReceiptBinding.artifactContentHash} for ${metric.query?.queryId}.`);
   }
 
-  const queryExecutionReceipt = await executeRelationalQuery(index, receipt.queryText);
+  const queryIndex = queryIndexByArtifactKind[metric.source.artifactKind];
+  if (queryIndex === undefined) {
+    throw new Error(`QUERY_ARTIFACT_NOT_QUERYABLE: ${metric.metricId} uses ${metric.source.artifactKind}.`);
+  }
+  const queryExecutionReceipt = await executeRelationalQuery(queryIndex, metric.query.queryText);
   if (queryExecutionReceipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
     throw new Error(`QUERY_RECEIPT_QUERY_EXECUTION_FAILED: ${metric.metricId} query execution for ${metric.query?.queryId} ended with ${queryExecutionReceipt.disposition}.`);
   }
@@ -494,6 +601,19 @@ async function validatesQueryReceiptBinding(metric, receipt, { reportBinding, in
   if (receipt.resultHash !== queryExecutionReceipt.resultHash) {
     throw new Error(`QUERY_RECEIPT_RESULT_HASH_MISMATCH: ${metric.metricId} result hash ${receipt.resultHash} does not match expected value for ${metric.query?.queryId}.`);
   }
+  return queryExecutionReceipt;
+}
+
+function readsSingleMetricQueryValue(metric, queryExecutionReceipt) {
+  const rows = queryExecutionReceipt.result?.value?.rows;
+  if (!Array.isArray(rows) || rows.length !== 1) {
+    throw new Error(`QUERY_RESULT_SHAPE_MISMATCH: ${metric.metricId} must return exactly one row.`);
+  }
+  const row = rows[0];
+  if (row === null || typeof row !== "object" || Object.keys(row).length !== 1 || !("value" in row)) {
+    throw new Error(`QUERY_RESULT_SHAPE_MISMATCH: ${metric.metricId} must return exactly one column named value.`);
+  }
+  return readNumberValue(row.value, metric.metricId);
 }
 
 function resolvesExpectedReceiptBinding(artifactKind, { reportBinding, indexBinding, graphBinding }) {
@@ -583,9 +703,6 @@ function hashText(text) {
 }
 
 function buildsClosureReceipt({
-  report,
-  graph,
-  index,
   reportBinding,
   indexBinding,
   graphBinding,
@@ -594,6 +711,7 @@ function buildsClosureReceipt({
   metricValues,
   documentPath,
   documentHash,
+  closureConditions,
 }) {
   const generatedAtUtc = new Date().toISOString();
   const orderedQueryReceiptRows = [...queryReceiptById.values()]
@@ -604,6 +722,7 @@ function buildsClosureReceipt({
       resultHash: receipt.resultHash,
       rowCount: receipt.rowCount,
       disposition: receipt.disposition,
+      artifactBinding: receipt.artifactBinding,
     }))
     .sort((left, right) => left.queryId.localeCompare(right.queryId));
 
@@ -628,10 +747,14 @@ function buildsClosureReceipt({
   };
   const queryReceiptBundleHash = hashText(JSON.stringify(canonicalizes(queryReceiptBundle)));
   const metricRowsHash = hashText(JSON.stringify(canonicalizes(metricRows)));
+  const failedConditions = closureConditions
+    .filter((condition) => condition.disposition !== "PASSED")
+    .map((condition) => condition.conditionId);
+  const disposition = failedConditions.length === 0 ? "CLOSED" : "OPEN";
 
   const deterministicPayload = {
     receiptType: "traceability-documentation-closure-receipt.v1",
-    disposition: "CLOSED",
+    disposition,
     reportBinding: {
       repositoryId: reportBinding.repositoryId,
       reportIndexId: reportBinding.indexId,
@@ -663,10 +786,17 @@ function buildsClosureReceipt({
     },
     queryReceiptBundle,
     metricRows,
+    document: {
+      path: path.basename(documentPath),
+      hash: documentHash,
+    },
     queryReceiptCount: orderedQueryReceiptRows.length,
     renderedMetricCount: metricValues.length,
-    failedConditionCount: 0,
-    failedConditions: [],
+    queryReceiptBundleHash,
+    metricRowsHash,
+    closureConditions,
+    failedConditionCount: failedConditions.length,
+    failedConditions,
   };
 
   const deterministicReceiptHash = hashText(JSON.stringify(canonicalizes(deterministicPayload)));
@@ -674,12 +804,33 @@ function buildsClosureReceipt({
   return {
     ...deterministicPayload,
     generatedAtUtc,
-    document: {
-      path: documentPath,
-      hash: documentHash,
-    },
-    queryReceiptBundleHash,
-    metricRowsHash,
     deterministicReceiptHash,
   };
+}
+
+function evaluatesDocumentationClosure({ metricCatalog, queryReceiptById, metricValues, documentHash }) {
+  const requiredQueryIds = metricCatalog.metrics
+    .filter((metric) => metric.claimType === "factual")
+    .map((metric) => metric.query?.queryId)
+    .filter((queryId) => typeof queryId === "string")
+    .sort();
+  const receivedQueryIds = [...queryReceiptById.keys()].sort();
+  const exactReceiptSet = JSON.stringify(requiredQueryIds) === JSON.stringify(receivedQueryIds);
+  const allFactualQueriesVerified = metricValues
+    .filter((metric) => metric.source.artifactKind !== "derived")
+    .every((metric) => metric.queryVerified === true);
+  const allMetricValuesFinite = metricValues.every((metric) => Number.isFinite(metric.value));
+  const allCatalogMetricsRendered = metricValues.length === metricCatalog.metrics.length;
+  const documentHashValid = /^sha256:[0-9a-f]{64}$/u.test(documentHash);
+  return Object.freeze([
+    closureCondition("traceability.exact-query-receipt-set.v1", exactReceiptSet),
+    closureCondition("traceability.all-factual-queries-verified.v1", allFactualQueriesVerified),
+    closureCondition("traceability.all-metric-values-finite.v1", allMetricValuesFinite),
+    closureCondition("traceability.all-catalog-metrics-rendered.v1", allCatalogMetricsRendered),
+    closureCondition("traceability.document-content-hash.v1", documentHashValid),
+  ]);
+}
+
+function closureCondition(conditionId, passed) {
+  return Object.freeze({ conditionId, disposition: passed ? "PASSED" : "FAILED" });
 }

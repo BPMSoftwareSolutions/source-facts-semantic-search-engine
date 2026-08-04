@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
@@ -30,6 +31,44 @@ export async function validatesTraceabilityClosureReceipt(receipt) {
   throw new Error(`traceability-documentation-closure-receipt schema validation failed: ${details}`);
 }
 
+export async function validatesTraceabilityClosureReceiptIntegrity(receipt) {
+  await validatesTraceabilityClosureReceipt(receipt);
+  if (receipt.queryReceiptCount !== receipt.queryReceiptBundle.queryReceiptRows.length) {
+    throw new Error("CLOSURE_RECEIPT_COUNT_MISMATCH: queryReceiptCount does not match queryReceiptRows.");
+  }
+  if (receipt.renderedMetricCount !== receipt.metricRows.length) {
+    throw new Error("CLOSURE_RECEIPT_COUNT_MISMATCH: renderedMetricCount does not match metricRows.");
+  }
+  const expectedBundleHash = hashCanonical(receipt.queryReceiptBundle);
+  if (receipt.queryReceiptBundleHash !== expectedBundleHash) {
+    throw new Error("CLOSURE_RECEIPT_HASH_MISMATCH: queryReceiptBundleHash is invalid.");
+  }
+  const expectedMetricRowsHash = hashCanonical(receipt.metricRows);
+  if (receipt.metricRowsHash !== expectedMetricRowsHash) {
+    throw new Error("CLOSURE_RECEIPT_HASH_MISMATCH: metricRowsHash is invalid.");
+  }
+  const failedConditions = receipt.closureConditions
+    .filter((condition) => condition.disposition !== "PASSED")
+    .map((condition) => condition.conditionId);
+  if (receipt.failedConditionCount !== failedConditions.length
+      || JSON.stringify(receipt.failedConditions) !== JSON.stringify(failedConditions)) {
+    throw new Error("CLOSURE_RECEIPT_CONDITION_MISMATCH: failed-condition summary is invalid.");
+  }
+  const expectedDisposition = failedConditions.length === 0 ? "CLOSED" : "OPEN";
+  if (receipt.disposition !== expectedDisposition) {
+    throw new Error("CLOSURE_RECEIPT_CONDITION_MISMATCH: disposition does not match closure conditions.");
+  }
+  const {
+    generatedAtUtc: _generatedAtUtc,
+    deterministicReceiptHash: _deterministicReceiptHash,
+    ...deterministicPayload
+  } = receipt;
+  if (receipt.deterministicReceiptHash !== hashCanonical(deterministicPayload)) {
+    throw new Error("CLOSURE_RECEIPT_HASH_MISMATCH: deterministicReceiptHash is invalid.");
+  }
+  return receipt;
+}
+
 async function loadsValidator(schemaKey) {
   const cached = validatorCache.get(schemaKey);
   if (cached !== undefined) return cached;
@@ -37,4 +76,16 @@ async function loadsValidator(schemaKey) {
   const validate = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true, validateFormats: false }).compile(schema);
   validatorCache.set(schemaKey, validate);
   return validate;
+}
+
+function hashCanonical(value) {
+  return `sha256:${createHash("sha256").update(JSON.stringify(canonicalizes(value)), "utf8").digest("hex")}`;
+}
+
+function canonicalizes(value) {
+  if (Array.isArray(value)) return value.map(canonicalizes);
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonicalizes(value[key])]));
+  }
+  return value;
 }

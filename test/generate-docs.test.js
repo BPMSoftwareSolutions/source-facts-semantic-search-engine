@@ -7,6 +7,9 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { executeRelationalQuery } from "../src/query.js";
+import { buildsArtifactQueryIndex, generatesTraceabilityDocs } from "../src/generate-traceability-docs.js";
+import { projectsReportQueryLineage } from "../src/governance/projects-report-query-lineage.js";
+import { validatesTraceabilityClosureReceiptIntegrity } from "../src/validates-traceability-artifacts.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cliPath = path.join(repoRoot, "src", "cli.js");
@@ -61,7 +64,7 @@ function buildsMinimalIndex() {
 }
 
 function buildsMinimalReport() {
-  return {
+  const report = {
     reportType: "source-facts-self-governance-report.v1",
     generatedAtUtc: "2026-01-01T00:00:00Z",
     index: {
@@ -185,6 +188,8 @@ function buildsMinimalReport() {
     occurrences: [],
     disposition: "OBSERVATIONAL_NO_GATE_APPLIED",
   };
+  report.queryLineage = projectsReportQueryLineage(report, buildsMinimalIndex());
+  return report;
 }
 
 function buildsMinimalGraph() {
@@ -222,7 +227,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.call-graph.command-root-count",
-          queryText: "SELECT COUNT(*) AS rowCount FROM relationships;",
+          queryText: "SELECT value FROM documents WHERE pointer = '/summary/commandRootCount'",
         },
         source: {
           artifactKind: "call-graph",
@@ -240,7 +245,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.feature.canonical-feature-count",
-          queryText: "SELECT COUNT(*) AS rowCount FROM symbols;",
+          queryText: "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/canonicalFeatures'",
         },
         source: {
           artifactKind: "governance-report",
@@ -258,7 +263,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.scenario.canonical-scenario-count",
-          queryText: "SELECT COUNT(*) AS rowCount FROM sourceReferences;",
+          queryText: "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/canonicalScenarioCount'",
         },
         source: {
           artifactKind: "governance-report",
@@ -276,7 +281,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.entry.reachable-callable-count",
-          queryText: "SELECT COUNT(*) AS rowCount FROM dataflows;",
+          queryText: "SELECT value FROM documents WHERE pointer = '/summary/reachableCallableCount'",
         },
         source: {
           artifactKind: "call-graph",
@@ -294,7 +299,7 @@ function buildsMinimalMetricCatalog() {
         disposition: "METRIC_POINTER_NOT_FOUND",
         query: {
           queryId: "traceability.query.entry.runtime-callable-count",
-          queryText: "SELECT COUNT(*) AS rowCount FROM documents;",
+          queryText: "SELECT value FROM documents WHERE pointer = '/summary/runtimeCallableCount'",
         },
         source: {
           artifactKind: "call-graph",
@@ -310,10 +315,6 @@ function buildsMinimalMetricCatalog() {
         claimType: "derived",
         resultType: "percentage",
         disposition: "ZERO_DENOMINATOR",
-        query: {
-          queryId: "traceability.query.rate.reachability-coverage",
-          queryText: "SELECT COUNT(*) AS rowCount FROM bodyMechanics;",
-        },
         source: {
           artifactKind: "derived",
           valueMode: "ratio",
@@ -351,7 +352,10 @@ async function buildsMinimalQueryReceipts(metricCatalog) {
   for (const metric of metricCatalog.metrics) {
     if (metric.query?.queryId === undefined) continue;
     const queryText = metric.query.queryText ?? "";
-    const queryReceipt = await executeRelationalQuery(index, queryText);
+    const queryIndex = metric.source.artifactKind === "source-fact-index"
+      ? index
+      : buildsArtifactQueryIndex(metric.source.artifactKind, metric.source.artifactKind === "call-graph" ? graph : report);
+    const queryReceipt = await executeRelationalQuery(queryIndex, queryText);
     if (queryReceipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
       throw new Error(`Cannot build test receipt for ${metric.query.queryId}: ${queryReceipt.disposition}`);
     }
@@ -393,6 +397,23 @@ async function buildsMinimalQueryReceipts(metricCatalog) {
     generatedAtUtc: "2026-01-01T00:00:00Z",
     queryReceipts,
   };
+}
+
+function writesMinimalTraceabilityInputs(tempDir, metricCatalog, queryReceipts) {
+  const paths = {
+    reportPath: path.join(tempDir, "source-facts-self-governance-report.json"),
+    graphPath: path.join(tempDir, "call-graph.json"),
+    indexPath: path.join(tempDir, "source-fact-index.json"),
+    outputPath: path.join(tempDir, "traceability-metrics.md"),
+    metricCatalogPath: path.join(tempDir, "traceability-metric-catalog.json"),
+    queryReceiptsPath: path.join(tempDir, "traceability-query-receipts.json"),
+  };
+  fs.writeFileSync(paths.metricCatalogPath, JSON.stringify(metricCatalog), "utf8");
+  fs.writeFileSync(paths.queryReceiptsPath, JSON.stringify(queryReceipts), "utf8");
+  fs.writeFileSync(paths.reportPath, JSON.stringify(buildsMinimalReport()), "utf8");
+  fs.writeFileSync(paths.graphPath, JSON.stringify(buildsMinimalGraph()), "utf8");
+  fs.writeFileSync(paths.indexPath, JSON.stringify(buildsMinimalIndex()), "utf8");
+  return paths;
 }
 
 test("generate-docs CLI accepts report, graph, metric catalog and query receipts overrides", async () => {
@@ -840,6 +861,57 @@ test("generate-docs rejects query-receipts with mismatched catalog fingerprint",
   }
 });
 
+test("generate-docs rejects a receipt executed against the wrong artifact query input", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const metricCatalog = buildsMinimalMetricCatalog();
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const graphMetric = metricCatalog.metrics.find((metric) => metric.source.artifactKind === "call-graph");
+    const graphReceipt = queryReceipts.queryReceipts.find((receipt) => receipt.queryId === graphMetric.query.queryId);
+    const wrongExecution = await executeRelationalQuery(buildsMinimalIndex(), graphMetric.query.queryText);
+    graphReceipt.inputHash = wrongExecution.inputHash;
+    graphReceipt.resultHash = wrongExecution.resultHash;
+    graphReceipt.rowCount = wrongExecution.result.value.rowCount;
+    const paths = writesMinimalTraceabilityInputs(tempDir, metricCatalog, queryReceipts);
+
+    await assert.rejects(
+      generatesTraceabilityDocs(
+        paths.reportPath,
+        paths.graphPath,
+        paths.indexPath,
+        paths.outputPath,
+        { metricCatalogPath: paths.metricCatalogPath, queryReceiptPath: paths.queryReceiptsPath },
+      ),
+      /QUERY_RECEIPT_INPUT_HASH_MISMATCH/,
+    );
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("generate-docs rejects an executed query whose value does not match its metric", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
+  try {
+    const metricCatalog = buildsMinimalMetricCatalog();
+    metricCatalog.metrics[0].query.queryText = "SELECT value FROM documents WHERE pointer = '/summary/runtimeCallableCount'";
+    const queryReceipts = await buildsMinimalQueryReceipts(metricCatalog);
+    const paths = writesMinimalTraceabilityInputs(tempDir, metricCatalog, queryReceipts);
+
+    await assert.rejects(
+      generatesTraceabilityDocs(
+        paths.reportPath,
+        paths.graphPath,
+        paths.indexPath,
+        paths.outputPath,
+        { metricCatalogPath: paths.metricCatalogPath, queryReceiptPath: paths.queryReceiptsPath },
+      ),
+      /QUERY_RESULT_METRIC_MISMATCH/,
+    );
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test("generate-docs writes closure receipt", async () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-generate-docs-"));
   try {
@@ -890,8 +962,16 @@ test("generate-docs writes closure receipt", async () => {
     assert.equal(closureReceipt.receiptType, "traceability-documentation-closure-receipt.v1");
     assert.equal(closureReceipt.queryReceiptCount, queryReceipts.queryReceipts.length);
     assert.equal(closureReceipt.renderedMetricCount, metricCatalog.metrics.length);
-    assert.ok(closureReceipt.document?.path === outputPath);
+    assert.equal(closureReceipt.document?.path, path.basename(outputPath));
     assert.ok(typeof closureReceipt.document?.hash === "string" && closureReceipt.document.hash.startsWith("sha256:"));
+    assert.equal(closureReceipt.disposition, "CLOSED");
+    assert.equal(closureReceipt.failedConditionCount, 0);
+    assert.ok(closureReceipt.closureConditions.every((condition) => condition.disposition === "PASSED"));
+    closureReceipt.document.hash = `sha256:${"f".repeat(64)}`;
+    await assert.rejects(
+      validatesTraceabilityClosureReceiptIntegrity(closureReceipt),
+      /CLOSURE_RECEIPT_HASH_MISMATCH/,
+    );
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }

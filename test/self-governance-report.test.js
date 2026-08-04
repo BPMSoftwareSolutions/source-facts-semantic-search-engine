@@ -22,6 +22,8 @@ import { invokesLiveModelInference, ModelInvocationError } from "../src/governan
 import { proposesSemanticOverlap } from "../src/governance/proposes-semantic-overlap.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
+import { formatsSelfGovernanceReportMarkdown } from "../src/governance/formats-self-governance-report-summary.js";
+import { FactQueryLineageError, rerunsRegisteredReportQuery } from "../src/governance/projects-report-query-lineage.js";
 import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageProposals } from "../src/governance/discovers-feature-coverage-proposals.js";
 import { createsProposalFeatureFingerprint, validatesFeatureCoverageProposal } from "../src/governance/projects-feature-coverage.js";
 import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "../src/governance/proposes-feature-coverage.js";
@@ -182,6 +184,49 @@ test("projectsSelfGovernanceReport reports everything as unknown when no authori
   assert.equal(report.executionMechanics.byPosture.UNKNOWN_CLASSIFICATION, 3);
   assert.equal(report.authoritySources.length, 0);
   assert.ok(report.fileBreakdown.every((entry) => entry.homeStatus === "AUTHORITY_HOME_MISSING"));
+});
+
+test("projectsSelfGovernanceReport binds rendered facts to inspectable registered-query receipts", async () => {
+  const report = await projectsSelfGovernanceReport({
+    index: buildsSyntheticIndex(),
+    repositoryId: "self-governance-test",
+    authorityDocuments: [buildsAuthorityDocumentEntry("contracts/example.authority.json")],
+  });
+
+  assert.equal(report.queryLineage.invariant, "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT");
+  assert.ok(report.queryLineage.claims.length > 0);
+  const receipt = report.queryLineage.queryReceipts.find((entry) => entry.queryId === "feature-coverage.summary.v1");
+  assert.equal(receipt.index.indexId, report.index.indexId);
+  assert.equal(receipt.index.scanId, report.index.scanId);
+  assert.equal(receipt.execution.rowCount, 1);
+  assert.match(receipt.queryHash, /^sha256:[0-9a-f]{64}$/);
+  assert.equal(receipt.result.rows[0].mechanicsWithoutLineage, report.featureCoverage.summary.mechanicsWithoutLineage);
+
+  const rerun = rerunsRegisteredReportQuery(report, "feature-coverage.summary.v1");
+  assert.equal(rerun.resultHash, receipt.execution.resultHash);
+  assert.deepEqual(rerun.rows, receipt.result.rows);
+});
+
+test("query-lineage reconciliation fails closed when a receipt result is changed", async () => {
+  const projected = await projectsSelfGovernanceReport({ index: buildsSyntheticIndex(), repositoryId: "self-governance-test" });
+  const forged = structuredClone(projected);
+  forged.queryLineage.queryReceipts.find((entry) => entry.queryId === "feature-coverage.summary.v1").result.rows[0].canonicalFeatures = 999;
+
+  await assert.rejects(
+    validatesSelfGovernanceReport(forged),
+    (error) => error instanceof FactQueryLineageError && error.disposition === "FACT_QUERY_RECEIPT_STALE",
+  );
+});
+
+test("self-governance Markdown exposes inline query identities, receipts, exact query text, and result rows", async () => {
+  const report = await projectsSelfGovernanceReport({ index: buildsSyntheticIndex(), repositoryId: "self-governance-test" });
+  const markdown = formatsSelfGovernanceReportMarkdown(report);
+
+  assert.match(markdown, /Canonical feature declarations.*feature-coverage\.summary\.v1/);
+  assert.match(markdown, /## Query Evidence Register/);
+  assert.match(markdown, /## Registered Queries/);
+  assert.match(markdown, /SELECT \* FROM reportFeatureCoverageSummary/);
+  assert.match(markdown, /Inspect 1 result row\(s\)/);
 });
 
 test("projectsSelfGovernanceReport flags a file claimed by more than one authority document as ambiguous", async () => {

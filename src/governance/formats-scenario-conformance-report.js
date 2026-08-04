@@ -1,3 +1,5 @@
+import { queryRows } from "./projects-report-query-lineage.js";
+
 function formatsCount(value) {
   return Number(value ?? 0).toLocaleString("en-US");
 }
@@ -14,7 +16,7 @@ function formatsCodeList(values, emptyText = "none") {
 }
 
 function formatsScenarioConformanceFeatures(report) {
-  const lines = [];
+  const lines = ["Query: `scenario-conformance.drilldown.v1`", ""];
   for (const feature of report.scenarioConformance.features) {
     lines.push(`## Feature: \`${feature.featureId}\``);
     lines.push("");
@@ -73,7 +75,7 @@ function formatsScenarioConformanceFeatures(report) {
 }
 
 function formatsUnclassifiedInventory(report) {
-  const { unclassifiedInventory, executionMechanics, knowHowRegistry, healingDraftRegistry } = report;
+  const unclassifiedInventory = queryRows(report, "feature-coverage.unclassified-inventory.v1")[0];
   const noLineageCount = unclassifiedInventory.mechanicsByFeatureCoveragePosture.FEATURE_COVERAGE_MISSING ?? 0;
   const lines = [
     "## Evidence Without Canonical Lineage",
@@ -81,26 +83,22 @@ function formatsUnclassifiedInventory(report) {
     "These facts are inside the report subject but have no admitted scenario lineage. A proposal is",
     "shown as proposed coverage; it is never counted as canonical coverage.",
     "",
-    "| Inventory | Count | Disposition |",
-    "|---|---:|---|",
-    `| Static mechanics without canonical or proposed lineage | ${formatsCount(noLineageCount)} | \`NO_SCENARIO_LINEAGE\` |`,
-    `| Authority documents without canonical scenario lineage | ${formatsCount(unclassifiedInventory.unclassifiedAuthorityDocumentCount)} | inspect per-item posture below |`,
-    `| Admitted know-how without canonical obligation lineage | ${formatsCount(unclassifiedInventory.knowHowWithoutScenarioLineage)} | inspect per-item posture below |`,
-    `| Healing drafts without a canonical scenario target | ${formatsCount(unclassifiedInventory.healingDraftsWithoutScenarioTarget)} | \`HEALING_WITHOUT_CANONICAL_SCENARIO_TARGET\` |`,
+    "| Inventory | Count | Disposition | Query |",
+    "|---|---:|---|---|",
+    `| Static mechanics without canonical or proposed lineage | ${formatsCount(noLineageCount)} | \`NO_SCENARIO_LINEAGE\` | \`feature-coverage.unclassified-inventory.v1\` |`,
+    `| Authority documents without canonical scenario lineage | ${formatsCount(unclassifiedInventory.unclassifiedAuthorityDocumentCount)} | inspect per-item posture below | \`feature-coverage.unclassified-inventory.v1\` |`,
+    `| Admitted know-how without canonical obligation lineage | ${formatsCount(unclassifiedInventory.knowHowWithoutScenarioLineage)} | inspect per-item posture below | \`feature-coverage.unclassified-inventory.v1\` |`,
+    `| Healing drafts without a canonical scenario target | ${formatsCount(unclassifiedInventory.healingDraftsWithoutScenarioTarget)} | \`HEALING_WITHOUT_CANONICAL_SCENARIO_TARGET\` | \`feature-coverage.unclassified-inventory.v1\` |`,
     "",
   ];
 
   if (noLineageCount > 0) {
     lines.push("### Mechanics without lineage");
     lines.push("");
-    lines.push("| Mechanic | Occurrences | Files |");
-    lines.push("|---|---:|---:|");
-    for (const entry of executionMechanics.byMechanicType) {
-      const occurrences = report.occurrences.filter(
-        (occurrence) => occurrence.mechanic === entry.mechanic && occurrence.featureCoveragePosture === "FEATURE_COVERAGE_MISSING",
-      );
-      if (occurrences.length === 0) continue;
-      lines.push(`| ${entry.mechanic} | ${formatsCount(occurrences.length)} | ${new Set(occurrences.map((occurrence) => occurrence.modulePath)).size} |`);
+    lines.push("| Mechanic | Occurrences | Files | Query |");
+    lines.push("|---|---:|---:|---|");
+    for (const entry of queryRows(report, "feature-coverage.unlined-mechanics.v1")) {
+      lines.push(`| ${entry.mechanic} | ${formatsCount(entry.occurrenceCount)} | ${entry.fileCount} | \`feature-coverage.unlined-mechanics.v1\` |`);
     }
     lines.push("");
   }
@@ -109,29 +107,29 @@ function formatsUnclassifiedInventory(report) {
     lines.push("### Authority without canonical scenario lineage");
     lines.push("");
     for (const document of unclassifiedInventory.unclassifiedAuthorityDocuments) {
-      const posture = report.featureCoverage.entityCoverage.authoritySubjects
+      const posture = unclassifiedInventory.entityCoverage.authoritySubjects
         .find((entry) => entry.authorityFile === document.authorityFile)?.featureCoveragePosture ?? "FEATURE_COVERAGE_MISSING";
       lines.push(`- \`${document.authorityFile}\` (${document.documentKind}) — \`${posture}\``);
     }
     lines.push("");
   }
 
-  if (knowHowRegistry.knowHowRecords.length > 0) {
+  if (unclassifiedInventory.knowHowRecords.length > 0) {
     lines.push("### Know-how without canonical obligation lineage");
     lines.push("");
-    for (const record of knowHowRegistry.knowHowRecords) {
-      const posture = report.featureCoverage.entityCoverage.knowHow
+    for (const record of unclassifiedInventory.knowHowRecords) {
+      const posture = unclassifiedInventory.entityCoverage.knowHow
         .find((entry) => entry.knowHowId === record.knowHowId)?.featureCoveragePosture ?? "FEATURE_COVERAGE_MISSING";
       lines.push(`- \`${record.knowHowId}\` — \`${posture}\` — ${record.statement}`);
     }
     lines.push("");
   }
 
-  if (healingDraftRegistry.drafts.length > 0) {
+  if (unclassifiedInventory.healingDrafts.length > 0) {
     lines.push("### Healing drafts without a canonical scenario target");
     lines.push("");
-    for (const draft of healingDraftRegistry.drafts) {
-      const posture = report.featureCoverage.entityCoverage.healingDrafts
+    for (const draft of unclassifiedInventory.healingDrafts) {
+      const posture = unclassifiedInventory.entityCoverage.healingDrafts
         .find((entry) => entry.draftFile === draft.draftFile)?.featureCoveragePosture ?? "FEATURE_COVERAGE_MISSING";
       lines.push(`- \`${draft.draftFile}\` — \`${posture}\` — targets \`${draft.subjectId ?? "(unspecified)"}\`, but declares no canonical feature / scenario / responsibility / obligation tuple.`);
     }
@@ -140,16 +138,51 @@ function formatsUnclassifiedInventory(report) {
   return lines;
 }
 
-function pushesCountBreakdown(lines, heading, values) {
+function pushesCountBreakdown(lines, heading, values, queryId) {
   for (const [label, count] of Object.entries(values).sort(([left], [right]) => left.localeCompare(right))) {
-    lines.push(`| ${heading} \`${label}\` | ${formatsCount(count)} |`);
+    lines.push(`| ${heading} \`${label}\` | ${formatsCount(count)} | \`${queryId}\` |`);
   }
 }
 
+function formatsQueryEvidenceAppendix(report) {
+  const lines = [
+    "## Query Evidence Register",
+    "",
+    `Reconciliation: \`${report.queryLineage.reconciliation.disposition}\`; ${report.queryLineage.reconciliation.claimCount} claim values reconciled.`,
+    "",
+    "| Query ID | Section | Rows | Result hash | Status |",
+    "|---|---|---:|---|---|",
+  ];
+  const registrations = new Map(report.queryLineage.registeredQueries.map((query) => [query.queryId, query]));
+  for (const receipt of report.queryLineage.queryReceipts) {
+    lines.push(`| \`${receipt.queryId}\` | ${registrations.get(receipt.queryId)?.section ?? "(unregistered)"} | ${receipt.execution.rowCount} | \`${receipt.execution.resultHash}\` | Executed |`);
+  }
+  lines.push("", "## Registered Queries", "");
+  for (const query of report.queryLineage.registeredQueries) {
+    const receipt = report.queryLineage.queryReceipts.find((entry) => entry.queryId === query.queryId);
+    lines.push(`### \`${query.queryId}\``, "");
+    lines.push(`Version \`${query.queryVersion}\`; query hash \`${query.queryHash}\`; index \`${receipt.index.indexId ?? "(unknown)"}\`; scan \`${receipt.index.scanId ?? "(unknown)"}\`; scope \`${query.scopePolicy}\`.`);
+    lines.push("", "```sql", query.queryText, "```", "");
+    lines.push(`<details><summary>Inspect ${receipt.execution.rowCount} result row(s)</summary>`, "", "```json", JSON.stringify(receipt.result.rows, null, 2), "```", "", "</details>", "");
+  }
+  return lines;
+}
+
 export function formatsScenarioConformanceReportMarkdown(report) {
-  const { repository, index, disposition, generatedAtUtc, scenarioConformance, featureCoverage, subjectScope } = report;
-  const { summary } = scenarioConformance;
-  const featureSummary = featureCoverage.summary;
+  const { repository, index, disposition, generatedAtUtc } = report;
+  const summary = queryRows(report, "scenario-conformance.summary.v1")[0];
+  const featureSummary = queryRows(report, "feature-coverage.summary.v1")[0];
+  const subjectScope = queryRows(report, "subject-boundary.evidence.v1")[0];
+  const featureCoverage = {
+    ...report.featureCoverage,
+    proposals: queryRows(report, "feature-coverage.proposal-evidence.v1"),
+    liveInferenceEvaluations: queryRows(report, "feature-coverage.live-inference.v1"),
+    uncoveredClusters: queryRows(report, "feature-coverage.unresolved-clusters.v1"),
+  };
+  const scenarioConformance = {
+    ...report.scenarioConformance,
+    features: queryRows(report, "scenario-conformance.drilldown.v1"),
+  };
   const lines = [
     "# Source Facts Self-Governance Report",
     "",
@@ -171,37 +204,37 @@ export function formatsScenarioConformanceReportMarkdown(report) {
     "passed. Static source evidence and live LLM inference calls can support discovery, but neither is",
     "a runtime execution receipt for a scenario.",
     "",
-    "| Dimension | Count |",
-    "|---|---:|",
-    `| Canonical feature declarations | ${formatsCount(featureSummary.canonicalFeatures)} |`,
-    `| Proposed features, not admitted | ${formatsCount(featureSummary.proposedFeatures)} |`,
-    `| Canonical scenarios | ${formatsCount(featureSummary.canonicalScenarios)} |`,
-    `| Proposed scenarios, not admitted | ${formatsCount(featureSummary.proposedScenarios)} |`,
-    `| Canonical scenarios structurally closed | ${formatsCount(featureSummary.scenariosStructurallyClosed)} |`,
-    `| Canonical scenarios structurally incomplete | ${formatsCount(featureSummary.scenariosStructurallyIncomplete)} |`,
-    `| Canonical scenarios with structural status not evaluated | ${formatsCount(featureSummary.scenariosStructuralStatusNotEvaluated)} |`,
-    `| Canonical scenarios with execution evaluated | ${formatsCount(featureSummary.scenariosExecutionEvaluated)} |`,
-    `| Canonical scenarios with runtime conformance \`NOT_EVALUATED\` | ${formatsCount(featureSummary.scenariosRuntimeNotEvaluated)} |`,
-    `| Canonical scenarios conformant by execution proof | ${formatsCount(featureSummary.fullyConformantScenarios)} |`,
-    `| Canonical scenarios with lineage-quality findings | ${formatsCount(featureSummary.scenariosWithLineageQualityFindings)} |`,
-    `| Mechanics with canonical scenario lineage | ${formatsCount(featureSummary.mechanicsWithCanonicalLineage)} |`,
-    `| Mechanics with proposed scenario lineage | ${formatsCount(featureSummary.mechanicsWithProposedLineage)} |`,
-    `| Mechanics with ambiguous scenario lineage | ${formatsCount(featureSummary.mechanicsWithAmbiguousLineage)} |`,
-    `| Mechanics without scenario lineage | ${formatsCount(featureSummary.mechanicsWithoutLineage)} |`,
-    `| Authority documents with canonical scenario lineage | ${formatsCount(featureSummary.authorityWithCanonicalLineage)} |`,
-    `| Authority documents with proposed scenario lineage | ${formatsCount(featureSummary.authorityWithProposedLineage)} |`,
-    `| Authority documents with ambiguous scenario lineage | ${formatsCount(featureSummary.authorityWithAmbiguousLineage)} |`,
-    `| Authority documents without scenario lineage | ${formatsCount(featureSummary.authorityWithoutLineage)} |`,
-    `| Unresolved responsibility-evidence clusters | ${formatsCount(featureSummary.unresolvedEvidenceClusters)} |`,
-    `| Clusters confirmed as feature candidates | ${formatsCount(featureSummary.confirmedFeatureCandidateClusters)} |`,
-    `| Live LLM inference evaluations | ${formatsCount(featureSummary.liveInferenceEvaluations)} |`,
-    `| Optional capability relations proposed from evidence | ${formatsCount(featureSummary.capabilityRelationsProposed)} |`,
-    `| Duplicate proposals prevented | ${formatsCount(featureSummary.duplicateProposalsPrevented)} |`,
+    "| Dimension | Count | Query |",
+    "|---|---:|---|",
+    `| Canonical feature declarations | ${formatsCount(featureSummary.canonicalFeatures)} | \`feature-coverage.summary.v1\` |`,
+    `| Proposed features, not admitted | ${formatsCount(featureSummary.proposedFeatures)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios | ${formatsCount(featureSummary.canonicalScenarios)} | \`feature-coverage.summary.v1\` |`,
+    `| Proposed scenarios, not admitted | ${formatsCount(featureSummary.proposedScenarios)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios structurally closed | ${formatsCount(featureSummary.scenariosStructurallyClosed)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios structurally incomplete | ${formatsCount(featureSummary.scenariosStructurallyIncomplete)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios with structural status not evaluated | ${formatsCount(featureSummary.scenariosStructuralStatusNotEvaluated)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios with execution evaluated | ${formatsCount(featureSummary.scenariosExecutionEvaluated)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios with runtime conformance \`NOT_EVALUATED\` | ${formatsCount(featureSummary.scenariosRuntimeNotEvaluated)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios conformant by execution proof | ${formatsCount(featureSummary.fullyConformantScenarios)} | \`feature-coverage.summary.v1\` |`,
+    `| Canonical scenarios with lineage-quality findings | ${formatsCount(featureSummary.scenariosWithLineageQualityFindings)} | \`feature-coverage.summary.v1\` |`,
+    `| Mechanics with canonical scenario lineage | ${formatsCount(featureSummary.mechanicsWithCanonicalLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Mechanics with proposed scenario lineage | ${formatsCount(featureSummary.mechanicsWithProposedLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Mechanics with ambiguous scenario lineage | ${formatsCount(featureSummary.mechanicsWithAmbiguousLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Mechanics without scenario lineage | ${formatsCount(featureSummary.mechanicsWithoutLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Authority documents with canonical scenario lineage | ${formatsCount(featureSummary.authorityWithCanonicalLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Authority documents with proposed scenario lineage | ${formatsCount(featureSummary.authorityWithProposedLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Authority documents with ambiguous scenario lineage | ${formatsCount(featureSummary.authorityWithAmbiguousLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Authority documents without scenario lineage | ${formatsCount(featureSummary.authorityWithoutLineage)} | \`feature-coverage.summary.v1\` |`,
+    `| Unresolved responsibility-evidence clusters | ${formatsCount(featureSummary.unresolvedEvidenceClusters)} | \`feature-coverage.summary.v1\` |`,
+    `| Clusters confirmed as feature candidates | ${formatsCount(featureSummary.confirmedFeatureCandidateClusters)} | \`feature-coverage.summary.v1\` |`,
+    `| Live LLM inference evaluations | ${formatsCount(featureSummary.liveInferenceEvaluations)} | \`feature-coverage.summary.v1\` |`,
+    `| Optional capability relations proposed from evidence | ${formatsCount(featureSummary.capabilityRelationsProposed)} | \`feature-coverage.summary.v1\` |`,
+    `| Duplicate proposals prevented | ${formatsCount(featureSummary.duplicateProposalsPrevented)} | \`feature-coverage.summary.v1\` |`,
   ];
 
-  pushesCountBreakdown(lines, "Scenarios with structural blocker", summary.byStructuralBlocker);
-  pushesCountBreakdown(lines, "Scenarios with evaluation limit", summary.byEvaluationLimit);
-  pushesCountBreakdown(lines, "Scenarios with lineage-quality finding", summary.byLineageQualityFinding);
+  pushesCountBreakdown(lines, "Scenarios with structural blocker", summary.byStructuralBlocker, "scenario-conformance.summary.v1");
+  pushesCountBreakdown(lines, "Scenarios with evaluation limit", summary.byEvaluationLimit, "scenario-conformance.summary.v1");
+  pushesCountBreakdown(lines, "Scenarios with lineage-quality finding", summary.byLineageQualityFinding, "scenario-conformance.summary.v1");
 
   lines.push("");
   lines.push("## Feature Coverage Proposals");
@@ -212,12 +245,14 @@ export function formatsScenarioConformanceReportMarkdown(report) {
   } else {
     lines.push("These are inferred candidates. They do not become canonical feature or scenario lineage until admitted into canonical authority.");
     lines.push("");
+    lines.push("Query: `feature-coverage.proposal-evidence.v1`");
+    lines.push("");
     lines.push("| Proposed feature | Evidence cluster | Scenarios | Responsibilities | Coverage posture | Duplicate check |");
     lines.push("|---|---|---:|---:|---|---|");
     for (const proposal of featureCoverage.proposals) {
       const mechanics = proposal.evidence.mechanics.length > 0 ? proposal.evidence.mechanics.join("/") : "unspecified";
-      const cluster = `${proposal.evidence.symbols.length} symbols; ${proposal.matchedOccurrences} matching ${mechanics} mechanics`;
-      lines.push(`| \`${proposal.featureId}\` — ${proposal.featureTitle} | ${cluster} | ${proposal.scenarios.length} | ${proposal.responsibilities.length} | \`${proposal.lifecycle === "ADMITTED" ? "FEATURE_COVERED" : "FEATURE_COVERAGE_PROPOSED"}\` | \`${proposal.duplicateDisposition}\` |`);
+      const cluster = `${proposal.evidenceSymbolCount} symbols; ${proposal.matchedOccurrences} matching ${mechanics} mechanics`;
+      lines.push(`| \`${proposal.featureId}\` — ${proposal.featureTitle} | ${cluster} | ${proposal.scenarioCount} | ${proposal.responsibilityCount} | \`${proposal.lifecycle === "ADMITTED" ? "FEATURE_COVERED" : "FEATURE_COVERAGE_PROPOSED"}\` | \`${proposal.duplicateDisposition}\` |`);
       lines.push(`|  | Fingerprint: \`${proposal.fingerprint}\`${proposal.fingerprintVerified ? " (verified)" : " (DECLARED FINGERPRINT MISMATCH)"} |  |  |  |  |`);
     }
     lines.push("");
@@ -254,6 +289,8 @@ export function formatsScenarioConformanceReportMarkdown(report) {
   lines.push("");
   lines.push("These are receipts from real model calls over deterministic query results. They test the inference target, but remain observational discovery evidence: they neither admit a feature nor execute a product scenario.");
   lines.push("");
+  lines.push("Query: `feature-coverage.live-inference.v1`");
+  lines.push("");
   if (featureCoverage.liveInferenceEvaluations.length === 0) {
     lines.push("No in-subject live feature-inference evaluation artifacts were discovered.");
     lines.push("");
@@ -277,12 +314,14 @@ export function formatsScenarioConformanceReportMarkdown(report) {
     lines.push("");
     lines.push("These are bounded static-evidence clusters, not feature candidates. A function or module scope becomes eligible for feature inference only after a separate feature-shaping review establishes an actor, outcome, scenario boundary, responsibility, and obligation.");
     lines.push("");
+    lines.push("Query: `feature-coverage.unresolved-clusters.v1`");
+    lines.push("");
     lines.push("| Evidence cluster | Cluster kind | Mechanics | Occurrences | Feature candidacy | Inference eligibility |");
     lines.push("|---|---|---|---:|---|---|");
     for (const cluster of featureCoverage.uncoveredClusters.slice(0, 30)) {
       lines.push(`| \`${cluster.modulePath}#${cluster.responsibility ?? "(module-scope)"}\` | \`${cluster.clusterKind}\` | ${cluster.mechanics.join(", ")} | ${cluster.occurrences} | \`${cluster.featureCandidateDisposition}\` | \`${cluster.inferenceEligibility}\` |`);
     }
-    if (featureCoverage.uncoveredClusters.length > 30) lines.push(`| … |  | ${featureCoverage.uncoveredClusters.length - 30} additional cluster(s) in JSON |  |  |  |`);
+    if (featureCoverage.uncoveredClusters.length > 30) lines.push("| … |  | Full result continues in the cited query receipt |  |  |  |");
     lines.push("");
   }
 
@@ -292,15 +331,13 @@ export function formatsScenarioConformanceReportMarkdown(report) {
     lines.push("**No canonical feature lineage is declared for this report subject.** Static mechanics and inference proposals can be inventoried, but no canonical scenario structural or runtime verdict can be made.");
     lines.push("");
   } else {
+    lines.push("Query: `scenario-conformance.drilldown.v1`");
+    lines.push("");
     lines.push("| Feature | Source lineage classification | Scenarios | Responsibilities | Structurally closed | Runtime conformant | Lineage-quality findings |");
     lines.push("|---|---|---:|---:|---:|---:|---:|");
     for (const feature of scenarioConformance.features) {
-      const scenarios = feature.scenarios;
-      const responsibilities = scenarios.flatMap((scenario) => scenario.obligations).flatMap((obligation) => obligation.responsibilities);
-      const structurallyClosed = scenarios.filter((scenario) => scenario.structuralStatus === "STRUCTURALLY_CLOSED").length;
-      const conformant = scenarios.filter((scenario) => scenario.runtimeConformance === "CONFORMANT").length;
       const classifications = feature.classifications.length === 0 ? "none detected" : feature.classifications.map((classification) => `\`${classification.classificationId}\``).join(", ");
-      lines.push(`| \`${feature.featureId}\` | ${classifications} | ${scenarios.length} | ${responsibilities.length} | ${structurallyClosed} | ${conformant} | ${feature.lineageQualityFindings.length} |`);
+      lines.push(`| \`${feature.featureId}\` | ${classifications} | ${feature.scenarioCount} | ${feature.responsibilityCount} | ${feature.structurallyClosedCount} | ${feature.runtimeConformantCount} | ${feature.lineageQualityFindingCount} |`);
     }
     lines.push("");
   }
@@ -310,6 +347,8 @@ export function formatsScenarioConformanceReportMarkdown(report) {
   lines.push("## Subject Boundary");
   lines.push("");
   lines.push(`Scope mode: \`${subjectScope.scopeMode}\`; repository-relative workspace prefix: \`${subjectScope.workspaceRelativePrefix || "(repository root)"}\`.`);
+  lines.push("");
+  lines.push("Query: `subject-boundary.evidence.v1`");
   lines.push("");
   lines.push("| Evidence class | Discovered | In subject | Excluded as out of subject |");
   lines.push("|---|---:|---:|---:|");
@@ -322,6 +361,7 @@ export function formatsScenarioConformanceReportMarkdown(report) {
   lines.push("");
   lines.push("Excluded evidence is not called orphaned: it belongs to a different subject and is not judged by this scan.");
   lines.push("");
+  lines.push(...formatsQueryEvidenceAppendix(report));
   lines.push("## Disposition");
   lines.push("");
   lines.push(`\`${disposition}\` — this run statically evaluates declarations and wiring evidence. It does not execute product scenarios or their proof verifiers. Runtime conformance therefore remains \`NOT_EVALUATED\` unless a separate execution receipt is supplied.`);

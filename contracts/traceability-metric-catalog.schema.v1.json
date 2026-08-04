@@ -30,6 +30,18 @@
       "type": "object",
       "required": ["metricId", "metricVersion", "metricLabel", "section", "claimType", "source", "resultType", "disposition"],
       "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": { "claimType": { "const": "factual" } },
+            "required": ["claimType"]
+          },
+          "then": {
+            "required": ["query"],
+            "properties": { "query": {} }
+          }
+        }
+      ],
       "properties": {
         "metricId": {
           "type": "string",
@@ -60,7 +72,7 @@
         },
         "query": {
           "type": "object",
-          "required": ["queryId"],
+          "required": ["queryId", "queryText"],
           "additionalProperties": false,
           "properties": {
             "queryId": {

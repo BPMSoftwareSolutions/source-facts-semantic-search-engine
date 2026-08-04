@@ -13,6 +13,7 @@ import { summarizesHealingDraftRegistry } from "./summarizes-healing-drafts.js";
 import { scopesSelfGovernanceSubject } from "./scopes-self-governance-subject.js";
 import { projectsScenarioConformance, resolvesOccurrenceScenarioLineage } from "./projects-scenario-conformance.js";
 import { projectsFeatureCoverage } from "./projects-feature-coverage.js";
+import { projectsReportQueryLineage, reconcilesReportQueryLineage } from "./projects-report-query-lineage.js";
 
 function compareOccurrences(left, right) {
   return left.modulePath.localeCompare(right.modulePath)
@@ -272,7 +273,7 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
       && scenarioTarget?.responsibilityId && scenarioTarget?.obligationId);
   }).length;
 
-  return Object.freeze({
+  const reportView = {
     reportType: "source-facts-self-governance-report.v1",
     generatedAtUtc: new Date().toISOString(),
     repository: Object.freeze({
@@ -334,5 +335,11 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     automationReadiness: Object.freeze({ byDisposition: Object.freeze(byAutomationDisposition) }),
     occurrences: featureCoverageProjection.occurrences,
     disposition: "OBSERVATIONAL_NO_GATE_APPLIED",
+  };
+  const report = Object.freeze({
+    ...reportView,
+    queryLineage: projectsReportQueryLineage(reportView, index),
   });
+  reconcilesReportQueryLineage(report);
+  return report;
 }

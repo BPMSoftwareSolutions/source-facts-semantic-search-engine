@@ -12,7 +12,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.command-root-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.command-root-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/commandRootCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -27,7 +30,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.exported-function-root-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.exported-function-root-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/exportedFunctionRootCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -42,7 +48,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.total-root-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.total-root-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/totalRootCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -57,7 +66,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.runtime-callable-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.runtime-callable-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/runtimeCallableCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -72,7 +84,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.reachable-callable-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.reachable-callable-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/reachableCallableCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -87,7 +102,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.unreachable-callable-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.unreachable-callable-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/unreachableCallableCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -102,7 +120,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.invocation-edge-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.invocation-edge-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/invocationEdgeCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -117,7 +138,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.resolved-invocation-edge-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.resolved-invocation-edge-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/resolvedInvocationEdgeCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -132,7 +156,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.ambiguous-invocation-edge-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.ambiguous-invocation-edge-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/ambiguousInvocationEdgeCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -147,7 +174,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.unresolved-invocation-edge-count" },
+      "query": {
+        "queryId": "traceability.query.call-graph.unresolved-invocation-edge-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/unresolvedInvocationEdgeCount'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -162,7 +192,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.call-graph.max-depth" },
+      "query": {
+        "queryId": "traceability.query.call-graph.max-depth",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/summary/maxDepth'"
+      },
       "source": {
         "artifactKind": "call-graph",
         "valueMode": "artifact-pointer",
@@ -177,7 +210,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.symbol.function-count" },
+      "query": {
+        "queryId": "traceability.query.symbol.function-count",
+        "queryText": "SELECT COUNT(*) AS value FROM symbols WHERE kind = 'function'"
+      },
       "source": {
         "artifactKind": "source-fact-index",
         "valueMode": "symbol-count",
@@ -192,7 +228,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.symbol.variable-count" },
+      "query": {
+        "queryId": "traceability.query.symbol.variable-count",
+        "queryText": "SELECT COUNT(*) AS value FROM symbols WHERE kind = 'variable'"
+      },
       "source": {
         "artifactKind": "source-fact-index",
         "valueMode": "symbol-count",
@@ -207,7 +246,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.symbol.parameter-count" },
+      "query": {
+        "queryId": "traceability.query.symbol.parameter-count",
+        "queryText": "SELECT COUNT(*) AS value FROM symbols WHERE kind = 'parameter'"
+      },
       "source": {
         "artifactKind": "source-fact-index",
         "valueMode": "symbol-count",
@@ -222,7 +264,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.symbol.class-count" },
+      "query": {
+        "queryId": "traceability.query.symbol.class-count",
+        "queryText": "SELECT COUNT(*) AS value FROM symbols WHERE kind = 'class'"
+      },
       "source": {
         "artifactKind": "source-fact-index",
         "valueMode": "symbol-count",
@@ -237,7 +282,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.symbol.total-count" },
+      "query": {
+        "queryId": "traceability.query.symbol.total-count",
+        "queryText": "SELECT COUNT(*) AS value FROM symbols WHERE kind IN ('function', 'variable', 'parameter', 'class')"
+      },
       "source": {
         "artifactKind": "source-fact-index",
         "valueMode": "sum-symbol-counts",
@@ -257,7 +305,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.feature.canonical-feature-count" },
+      "query": {
+        "queryId": "traceability.query.feature.canonical-feature-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/canonicalFeatures'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -272,7 +323,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.feature.proposed-feature-count" },
+      "query": {
+        "queryId": "traceability.query.feature.proposed-feature-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/proposedFeatures'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -287,7 +341,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.scenario.canonical-scenario-count" },
+      "query": {
+        "queryId": "traceability.query.scenario.canonical-scenario-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/scenariosDiscovered'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -302,7 +359,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.scenario.structurally-closed-count" },
+      "query": {
+        "queryId": "traceability.query.scenario.structurally-closed-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/scenariosStructurallyClosed'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -317,7 +377,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.scenario.execution-evaluated-count" },
+      "query": {
+        "queryId": "traceability.query.scenario.execution-evaluated-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/scenariosExecutionEvaluated'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -332,7 +395,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.scenario.conformant-count" },
+      "query": {
+        "queryId": "traceability.query.scenario.conformant-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/scenariosConformant'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -347,7 +413,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evidence.canonical-mechanics-count" },
+      "query": {
+        "queryId": "traceability.query.evidence.canonical-mechanics-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/mechanicsWithCanonicalLineage'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -362,7 +431,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evidence.proposed-mechanics-count" },
+      "query": {
+        "queryId": "traceability.query.evidence.proposed-mechanics-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/mechanicsWithProposedLineage'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -377,7 +449,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evidence.ambiguous-mechanics-count" },
+      "query": {
+        "queryId": "traceability.query.evidence.ambiguous-mechanics-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/mechanicsWithAmbiguousLineage'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -392,7 +467,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evidence.unlinked-mechanics-count" },
+      "query": {
+        "queryId": "traceability.query.evidence.unlinked-mechanics-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/mechanicsWithoutLineage'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -407,7 +485,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evidence.unresolved-clusters-count" },
+      "query": {
+        "queryId": "traceability.query.evidence.unresolved-clusters-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/unresolvedEvidenceClusters'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -422,7 +503,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.authority.canonical-lineage-count" },
+      "query": {
+        "queryId": "traceability.query.authority.canonical-lineage-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/authorityWithCanonicalLineage'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -437,7 +521,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.authority.proposed-lineage-count" },
+      "query": {
+        "queryId": "traceability.query.authority.proposed-lineage-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/authorityWithProposedLineage'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -452,7 +539,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.authority.missing-lineage-count" },
+      "query": {
+        "queryId": "traceability.query.authority.missing-lineage-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/featureCoverage/summary/authorityWithoutLineage'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -467,7 +557,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.findings.implementation-variants-count" },
+      "query": {
+        "queryId": "traceability.query.findings.implementation-variants-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/byLineageQualityFinding/IMPLEMENTATION_VARIANTS_DECLARED_AS_DISTINCT_RESPONSIBILITIES'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -482,7 +575,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.findings.multiple-owners-count" },
+      "query": {
+        "queryId": "traceability.query.findings.multiple-owners-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/byLineageQualityFinding/MULTIPLE_RESPONSIBILITY_OWNERS_REQUIRE_REVIEW'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -497,7 +593,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.findings.projection-gaps-count" },
+      "query": {
+        "queryId": "traceability.query.findings.projection-gaps-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/byLineageQualityFinding/PROJECTION_OBLIGATION_HAS_NO_PROJECTING_RELATIONSHIP'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -512,7 +611,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evaluation.authority-depth-count" },
+      "query": {
+        "queryId": "traceability.query.evaluation.authority-depth-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/byEvaluationLimit/AUTHORITY_WIRING_NOT_EVALUATED_DEPTH_LIMIT'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -527,7 +629,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evaluation.body-out-of-scope-count" },
+      "query": {
+        "queryId": "traceability.query.evaluation.body-out-of-scope-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/byEvaluationLimit/BODY_NOT_EVALUATED_OUTSIDE_SUBJECT'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -542,7 +647,10 @@
       "claimType": "factual",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.evaluation.body-not-observed-count" },
+      "query": {
+        "queryId": "traceability.query.evaluation.body-not-observed-count",
+        "queryText": "SELECT value FROM documents WHERE pointer = '/scenarioConformance/summary/byEvaluationLimit/BODY_NOT_STATICALLY_OBSERVED'"
+      },
       "source": {
         "artifactKind": "governance-report",
         "valueMode": "artifact-pointer",
@@ -557,7 +665,6 @@
       "claimType": "derived",
       "resultType": "percentage",
       "disposition": "ZERO_DENOMINATOR",
-      "query": { "queryId": "traceability.query.rate.reachability-coverage" },
       "source": {
         "artifactKind": "derived",
         "valueMode": "ratio",
@@ -573,7 +680,6 @@
       "claimType": "derived",
       "resultType": "percentage",
       "disposition": "ZERO_DENOMINATOR",
-      "query": { "queryId": "traceability.query.rate.canonical-lineage-coverage" },
       "source": {
         "artifactKind": "derived",
         "valueMode": "ratio",
@@ -589,7 +695,6 @@
       "claimType": "derived",
       "resultType": "integer",
       "disposition": "METRIC_POINTER_NOT_FOUND",
-      "query": { "queryId": "traceability.query.rate.canonical-lineage-coverage.denominator" },
       "source": {
         "artifactKind": "derived",
         "valueMode": "sum-metrics",
@@ -607,7 +712,6 @@
       "claimType": "derived",
       "resultType": "percentage",
       "disposition": "ZERO_DENOMINATOR",
-      "query": { "queryId": "traceability.query.rate.structural-closure" },
       "source": {
         "artifactKind": "derived",
         "valueMode": "ratio",
@@ -623,7 +727,6 @@
       "claimType": "derived",
       "resultType": "percentage",
       "disposition": "ZERO_DENOMINATOR",
-      "query": { "queryId": "traceability.query.rate.runtime-conformance" },
       "source": {
         "artifactKind": "derived",
         "valueMode": "ratio",

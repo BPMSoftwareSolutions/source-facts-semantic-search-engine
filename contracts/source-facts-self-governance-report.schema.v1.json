@@ -23,6 +23,7 @@
     "healingDraftRegistry",
     "automationReadiness",
     "occurrences",
+    "queryLineage",
     "disposition"
   ],
   "additionalProperties": false,
@@ -757,6 +758,99 @@
               "FEATURE_LINEAGE_AMBIGUOUS",
               "FEATURE_COVERAGE_MISSING"
             ]
+          }
+        }
+      }
+    },
+    "queryLineage": {
+      "type": "object",
+      "required": ["documentKind", "invariant", "registeredQueries", "queryReceipts", "claims", "reconciliation"],
+      "additionalProperties": false,
+      "properties": {
+        "documentKind": { "const": "source-facts-report-query-lineage.v1" },
+        "invariant": { "const": "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT" },
+        "registeredQueries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["queryId", "section", "queryText", "inputCollections", "expectedResultSchema", "queryVersion", "scopePolicy", "queryHash"],
+            "additionalProperties": false,
+            "properties": {
+              "queryId": { "type": "string", "minLength": 1 },
+              "section": { "type": "string", "minLength": 1 },
+              "queryText": { "type": "string", "minLength": 1 },
+              "inputCollections": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+              "expectedResultSchema": { "type": "string", "minLength": 1 },
+              "queryVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+              "scopePolicy": { "type": "string", "minLength": 1 },
+              "queryHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+            }
+          }
+        },
+        "queryReceipts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["documentKind", "queryId", "queryVersion", "queryHash", "index", "execution", "result"],
+            "additionalProperties": false,
+            "properties": {
+              "documentKind": { "const": "source-facts-query-receipt.v1" },
+              "queryId": { "type": "string", "minLength": 1 },
+              "queryVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+              "queryHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+              "index": {
+                "type": "object",
+                "required": ["indexId", "scanId"],
+                "additionalProperties": false,
+                "properties": {
+                  "indexId": { "type": ["string", "null"] },
+                  "scanId": { "type": ["string", "null"] }
+                }
+              },
+              "execution": {
+                "type": "object",
+                "required": ["disposition", "rowCount", "resultHash"],
+                "additionalProperties": false,
+                "properties": {
+                  "disposition": { "const": "RELATIONAL_QUERY_EXECUTED" },
+                  "rowCount": { "type": "integer", "minimum": 0 },
+                  "resultHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+                }
+              },
+              "result": {
+                "type": "object",
+                "required": ["rows"],
+                "additionalProperties": false,
+                "properties": { "rows": { "type": "array" } }
+              }
+            }
+          }
+        },
+        "claims": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["claimId", "claimType", "queryId", "reportPointer", "valuePointer"],
+            "additionalProperties": false,
+            "properties": {
+              "claimId": { "type": "string", "minLength": 1 },
+              "claimType": { "enum": ["DIRECT_FACT", "DERIVED_METRIC", "CLASSIFICATION", "INFERENCE", "HUMAN_REVIEWED_AUTHORITY"] },
+              "queryId": { "type": "string", "minLength": 1 },
+              "reportPointer": { "type": "string", "pattern": "^/" },
+              "valuePointer": { "type": "string", "pattern": "^/" }
+            }
+          }
+        },
+        "reconciliation": {
+          "type": "object",
+          "required": ["disposition", "claimCount"],
+          "additionalProperties": false,
+          "properties": {
+            "disposition": { "const": "QUERY_FACTS_RECONCILED" },
+            "claimCount": { "type": "integer", "minimum": 1 }
           }
         }
       }
