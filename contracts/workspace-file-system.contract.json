@@ -8,6 +8,7 @@
   },
   "workspace": {
     "workspaceRoot": "..",
+    "rootAllowList": ["LICENSE", "README.md", "package.json", "package-lock.json", ".gitignore"],
     "scope": {
       "scopeType": "declared-workspace-paths.v1",
       "governedDirectories": ["artifacts", "contracts", "docs", "evidence", "scripts", "source-facts-query-console", "src", "test"],
