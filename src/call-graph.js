@@ -8,6 +8,7 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
   const runtimeModulePrefix = normalizesModulePrefix(options.runtimeModulePrefix ?? defaultRuntimeModulePrefix);
   const rootNamePattern = options.rootNamePattern ?? defaultRootNamePattern;
 
+
   const sourceReferenceById = new Map((index.sourceReferences ?? []).map((reference) => [reference.referenceId, reference]));
   const runtimeSymbols = [];
   const symbolById = new Map();
@@ -33,6 +34,7 @@ export function projectsCliEntryPointCallGraph(index, options = {}) {
 
   for (const relationship of index.relationships ?? []) {
     if (relationship.relationshipKind !== "invocation") continue;
+
     const sourceReference = sourceReferenceById.get(relationship.sourceReferenceId);
     if (sourceReference === undefined) continue;
 

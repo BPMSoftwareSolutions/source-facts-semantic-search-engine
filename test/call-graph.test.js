@@ -62,10 +62,11 @@ test("call-graph CLI writes the graph artifact and summary", async () => {
   try {
     const result = spawnSync(
       process.execPath,
-      [cliPath, "call-graph", "--index", indexPath, "--output", outputPath, "--pretty", "--summary"],
+      [cliPath, "call-graph", "--index", indexPath, "--output", outputPath, "--root-module-path", "src/cli.js", "--runtime-module-prefix", "src/", "--pretty", "--summary"],
       {
         cwd: repoRoot,
         encoding: "utf8",
+        env: { ...process.env, DEBUG_CALL_GRAPH: "true" },
       },
     );
 

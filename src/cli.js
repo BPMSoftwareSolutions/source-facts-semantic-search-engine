@@ -138,11 +138,13 @@ async function runCallGraph(rawArgs) {
   const indexPath = path.resolve(flags.index ?? path.join(process.cwd(), "source-fact-index.json"));
   const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "call-graph.json"));
   const pretty = flags.pretty === true;
+  const runtimeModulePrefix = flags.runtimeModulePrefix ?? "";
+  const rootModulePath = flags.rootModulePath ?? "cli.js";
 
   const index = await readsJsonFile(indexPath);
   await validatesSourceFactIndex(index);
 
-  const callGraph = projectsCliEntryPointCallGraph(index);
+  const callGraph = projectsCliEntryPointCallGraph(index, { rootModulePath, runtimeModulePrefix });
   await writesJsonFile(outputPath, callGraph, { pretty });
 
   process.stdout.write(`${outputPath}\n`);
@@ -1109,6 +1111,8 @@ function parseArgs(rawArgs) {
         case "--feature-id-hint":
         case "--know-how-evidence-files":
         case "--symbols":
+        case "--root-module-path":
+        case "--runtime-module-prefix":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
