@@ -1069,6 +1069,73 @@ function formatWebIndexSummary(index) {
 function parseArgs(rawArgs) {
   const flags = Object.create(null);
   const positional = [];
+  const longValueOptions = new Set([
+    "--workspace",
+    "--workspace-id",
+    "--repository-id",
+    "--output",
+    "--index",
+    "--query",
+    "--policy",
+    "--inventory",
+    "--dir",
+    "--write-mode",
+    "--module",
+    "--responsibility",
+    "--code-file",
+    "--authority-file",
+    "--authority-dir",
+    "--authority-complete",
+    "--authority-output",
+    "--reviews-dir",
+    "--know-how-dir",
+    "--healing-dir",
+    "--template-contract",
+    "--binding",
+    "--violation-bindings",
+    "--strategy-doc",
+    "--modules",
+    "--request",
+    "--manifest",
+    "--authorities",
+    "--layout",
+    "--authentication-entry",
+    "--messaging",
+    "--theme",
+    "--subject",
+    "--purpose",
+    "--audience",
+    "--server",
+    "--database",
+    "--connection-env",
+    "--port",
+    "--historical-authority-file",
+    "--successor-file",
+    "--related-files",
+    "--succession-evidence",
+    "--subject-id",
+    "--feature-authority-file",
+    "--feature-id",
+    "--scenario-id",
+    "--responsibility-id",
+    "--obligation-id",
+    "--authority-evidence-files",
+    "--executable-evidence-files",
+    "--wiring-evidence",
+    "--known-gaps-file",
+    "--cluster-id",
+    "--feature-id-hint",
+    "--know-how-evidence-files",
+    "--symbols",
+    "--root-module-path",
+    "--runtime-module-prefix",
+    "--report",
+    "--graph",
+    "--metric-catalog",
+    "--query-receipts",
+    "--closure-receipt",
+  ]);
+  const booleanOptions = new Set(["--pretty", "--summary", "--prove", "--project", "--gate", "--write", "--write-receipt"]);
   for (let index = 0; index < rawArgs.length; index++) {
     const current = rawArgs[index];
     if (!current.startsWith("-")) {
@@ -1087,89 +1154,22 @@ function parseArgs(rawArgs) {
           index++;
           continue;
         default:
-          break;
+          throw new Error(`Unknown CLI option: ${current}`);
       }
     }
-    if (next !== undefined && !next.startsWith("-")) {
-      switch (current) {
-        case "--workspace":
-        case "--workspace-id":
-        case "--repository-id":
-        case "--output":
-        case "--index":
-        case "--query":
-        case "--policy":
-        case "--inventory":
-        case "--dir":
-        case "--write-mode":
-        case "--module":
-        case "--responsibility":
-        case "--code-file":
-        case "--authority-file":
-        case "--authority-dir":
-        case "--authority-complete":
-        case "--authority-output":
-        case "--reviews-dir":
-        case "--know-how-dir":
-        case "--healing-dir":
-        case "--template-contract":
-        case "--binding":
-        case "--violation-bindings":
-        case "--strategy-doc":
-        case "--modules":
-        case "--request":
-        case "--manifest":
-        case "--authorities":
-        case "--layout":
-        case "--authentication-entry":
-        case "--messaging":
-        case "--theme":
-        case "--subject":
-        case "--purpose":
-        case "--audience":
-        case "--server":
-        case "--database":
-        case "--connection-env":
-        case "--port":
-        case "--historical-authority-file":
-        case "--successor-file":
-        case "--related-files":
-        case "--succession-evidence":
-        case "--subject-id":
-        case "--feature-authority-file":
-        case "--feature-id":
-        case "--scenario-id":
-        case "--responsibility-id":
-        case "--obligation-id":
-        case "--authority-evidence-files":
-        case "--executable-evidence-files":
-        case "--wiring-evidence":
-        case "--known-gaps-file":
-        case "--cluster-id":
-        case "--feature-id-hint":
-        case "--know-how-evidence-files":
-        case "--symbols":
-        case "--root-module-path":
-        case "--runtime-module-prefix":
-          flags[normalizeLongOption(current)] = next;
-          index++;
-          continue;
+    if (longValueOptions.has(current)) {
+      if (next === undefined || next.startsWith("-")) {
+        throw new Error(`Missing value for CLI option: ${current}`);
       }
+      flags[normalizeLongOption(current)] = next;
+      index++;
+      continue;
     }
-    switch (current) {
-      case "--pretty":
-      case "--summary":
-      case "--prove":
-      case "--project":
-      case "--gate":
-      case "--write":
-      case "--write-receipt":
-        flags[current.slice(2)] = true;
-        break;
-      default:
-        flags[current] = true;
-        break;
+    if (booleanOptions.has(current)) {
+      flags[current.slice(2)] = true;
+      continue;
     }
+    throw new Error(`Unknown CLI option: ${current}`);
   }
     return { flags, positional };
 }
@@ -1199,6 +1199,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se query [--index <file>] --query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se query \"<sql>\" [--pretty]\n`);
   stream.write(`  source-facts-se call-graph [--index <file>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se generate-docs [--report <file>] [--graph <file>] [--index <file>] [--output <file>] [--summary]\n`);
   stream.write(`  source-facts-se web inventory --policy <contracts/web-know.workspace.json> [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web project --policy <contracts/web-know.workspace.json> [--inventory <file>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se web query [--index <file>] --query \"<sql>\" [--pretty]\n`);

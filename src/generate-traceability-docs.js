@@ -7,9 +7,55 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
   const index = JSON.parse(readFileSync(indexPath, "utf8"));
 
   const timestamp = new Date().toISOString();
-  const reportIndexId = report.indexId ?? "unknown";
-  const reportScanId = report.manifest?.scanId ?? "unknown";
+  const reportIndexId = report.index?.indexId ?? report.indexId ?? "unknown";
+  const reportScanId = report.index?.scanId ?? report.manifest?.scanId ?? "unknown";
   const graphIndexId = graph.indexId ?? "unknown";
+  const repositoryId = report.repository?.repositoryId ?? report.index?.subject?.repositoryId ?? report.manifest?.scanRequest?.workspaceId ?? "unknown";
+  const scenarioConformance = report.scenarioConformance?.summary ?? report.scenarioConformance ?? {};
+  const featureCoverage = report.featureCoverage?.summary ?? report.featureCoverage ?? {};
+  const evidence = report.evidence?.summary ?? report.evidence ?? {};
+  const authority = report.authority?.summary ?? report.authority ?? {};
+  const findings = report.findings?.summary ?? report.findings ?? {};
+  const evaluationLimits = report.evaluationLimits?.summary ?? report.evaluationLimits ?? {};
+
+  const canonicalScenarioCount = scenarioConformance.canonicalScenarioCount
+    ?? report.scenarioConformance?.canonicalScenarioCount
+    ?? 0;
+  const structurallyClosedCount = scenarioConformance.structurallyClosedCount
+    ?? report.scenarioConformance?.structurallyClosedCount
+    ?? 0;
+  const executionEvaluatedCount = scenarioConformance.executionEvaluatedCount
+    ?? report.scenarioConformance?.executionEvaluatedCount
+    ?? 0;
+  const conformantCount = scenarioConformance.conformantCount
+    ?? report.scenarioConformance?.conformantCount
+    ?? 0;
+
+  const canonicalFeatureCount = featureCoverage.canonicalFeatureCount
+    ?? report.featureCoverage?.canonicalFeatureCount
+    ?? 0;
+  const proposedFeatureCount = featureCoverage.proposedFeatureCount
+    ?? report.featureCoverage?.proposedFeatureCount
+    ?? 0;
+
+  const canonicalMechanicsCount = evidence.canonicalMechanicsCount ?? report.evidence?.canonicalMechanicsCount ?? 0;
+  const proposedMechanicsCount = evidence.proposedMechanicsCount ?? report.evidence?.proposedMechanicsCount ?? 0;
+  const ambiguousMechanicsCount = evidence.ambiguousMechanicsCount ?? report.evidence?.ambiguousMechanicsCount ?? 0;
+  const unlinkedMechanicsCount = evidence.unlinkedMechanicsCount ?? report.evidence?.unlinkedMechanicsCount ?? 0;
+  const unresolvedClustersCount = evidence.unresolvedClustersCount ?? report.evidence?.unresolvedClustersCount ?? 0;
+
+  const canonicalLinageCount = authority.canonicalLinageCount ?? authority.canonicalLineageCount
+    ?? report.authority?.canonicalLinageCount ?? report.authority?.canonicalLineageCount ?? 0;
+  const proposedLineageCount = authority.proposedLineageCount ?? report.authority?.proposedLineageCount ?? 0;
+  const missingLineageCount = authority.missingLineageCount ?? report.authority?.missingLineageCount ?? 0;
+
+  const implementationVariantsCount = findings.implementationVariantsCount ?? report.findings?.implementationVariantsCount ?? 0;
+  const multipleOwnersCount = findings.multipleOwnersCount ?? report.findings?.multipleOwnersCount ?? 0;
+  const projectionGapsCount = findings.projectionGapsCount ?? report.findings?.projectionGapsCount ?? 0;
+
+  const authorityDepthCount = evaluationLimits.authorityDepthCount ?? report.evaluationLimits?.authorityDepthCount ?? 0;
+  const bodyOutOfScopeCount = evaluationLimits.bodyOutOfScopeCount ?? report.evaluationLimits?.bodyOutOfScopeCount ?? 0;
+  const bodyNotObservedCount = evaluationLimits.bodyNotObservedCount ?? report.evaluationLimits?.bodyNotObservedCount ?? 0;
 
   const symbolCounts = countSymbolsByKind(index.symbols ?? []);
 
@@ -19,7 +65,7 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 **Report Index ID:** \`${reportIndexId}\`
 **Report Scan ID:** \`${reportScanId}\`
 **Call Graph Index ID:** \`${graphIndexId}\`
-**Repository:** ${report.manifest?.scanRequest?.workspaceId ?? "unknown"}
+**Repository:** ${repositoryId}
 
 ---
 
@@ -59,15 +105,15 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 
 | Measure | Value |
 |---|---:|
-| Canonical features | ${report.featureCoverage?.canonicalFeatureCount ?? 0} |
-| Proposed features | ${report.featureCoverage?.proposedFeatureCount ?? 0} |
-| Canonical scenarios | ${report.scenarioConformance?.canonicalScenarioCount ?? 0} |
-| Scenarios structurally closed | ${report.scenarioConformance?.structurallyClosedCount ?? 0} |
-| Scenarios with execution evaluated | ${report.scenarioConformance?.executionEvaluatedCount ?? 0} |
-| Scenarios runtime conformant | ${report.scenarioConformance?.conformantCount ?? 0} |
+| Canonical features | ${canonicalFeatureCount} |
+| Proposed features | ${proposedFeatureCount} |
+| Canonical scenarios | ${canonicalScenarioCount} |
+| Scenarios structurally closed | ${structurallyClosedCount} |
+| Scenarios with execution evaluated | ${executionEvaluatedCount} |
+| Scenarios runtime conformant | ${conformantCount} |
 
-**Structural Closure Rate:** \`${calculateRate(report.scenarioConformance?.structurallyClosedCount, report.scenarioConformance?.canonicalScenarioCount)}%\`
-**Runtime Conformance Rate:** \`${calculateRate(report.scenarioConformance?.conformantCount, report.scenarioConformance?.canonicalScenarioCount)}%\`
+**Structural Closure Rate:** \`${calculateRate(structurallyClosedCount, canonicalScenarioCount)}%\`
+**Runtime Conformance Rate:** \`${calculateRate(conformantCount, canonicalScenarioCount)}%\`
 
 ---
 
@@ -75,11 +121,11 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 
 | Lineage Type | Count |
 |---|---:|
-| Mechanics with canonical scenario lineage | ${report.evidence?.canonicalMechanicsCount ?? 0} |
-| Mechanics with proposed scenario lineage | ${report.evidence?.proposedMechanicsCount ?? 0} |
-| Mechanics with ambiguous lineage | ${report.evidence?.ambiguousMechanicsCount ?? 0} |
-| Mechanics without scenario lineage | ${report.evidence?.unlinkedMechanicsCount ?? 0} |
-| Unresolved responsibility clusters | ${report.evidence?.unresolvedClustersCount ?? 0} |
+| Mechanics with canonical scenario lineage | ${canonicalMechanicsCount} |
+| Mechanics with proposed scenario lineage | ${proposedMechanicsCount} |
+| Mechanics with ambiguous lineage | ${ambiguousMechanicsCount} |
+| Mechanics without scenario lineage | ${unlinkedMechanicsCount} |
+| Unresolved responsibility clusters | ${unresolvedClustersCount} |
 
 ---
 
@@ -87,9 +133,9 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 
 | Status | Count |
 |---|---:|
-| With canonical scenario lineage | ${report.authority?.canonicalLinageCount ?? 0} |
-| With proposed scenario lineage | ${report.authority?.proposedLineageCount ?? 0} |
-| Without scenario lineage | ${report.authority?.missingLineageCount ?? 0} |
+| With canonical scenario lineage | ${canonicalLinageCount} |
+| With proposed scenario lineage | ${proposedLineageCount} |
+| Without scenario lineage | ${missingLineageCount} |
 
 ---
 
@@ -99,10 +145,10 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 |---|---|---|---|
 | Inventory completeness | \`I\` | Measured | 100% |
 | Reachability closure | \`R\` | ${((graph.summary.reachableCallableCount / graph.summary.runtimeCallableCount) * 100).toFixed(1)}% | 100% |
-| Canonical lineage coverage | \`L\` | ${calculateRate(report.evidence?.canonicalMechanicsCount, report.evidence?.unlinkedMechanicsCount + (report.evidence?.canonicalMechanicsCount ?? 0))}% | 100% |
+| Canonical lineage coverage | \`L\` | ${calculateRate(canonicalMechanicsCount, unlinkedMechanicsCount + canonicalMechanicsCount)}% | 100% |
 | Capability mapping | \`C\` | Pending | 100% |
-| Structural closure | \`S\` | ${calculateRate(report.scenarioConformance?.structurallyClosedCount, report.scenarioConformance?.canonicalScenarioCount)}% | 100% |
-| Runtime proof coverage | \`P\` | ${calculateRate(report.scenarioConformance?.conformantCount, report.scenarioConformance?.canonicalScenarioCount)}% | 100% |
+| Structural closure | \`S\` | ${calculateRate(structurallyClosedCount, canonicalScenarioCount)}% | 100% |
+| Runtime proof coverage | \`P\` | ${calculateRate(conformantCount, canonicalScenarioCount)}% | 100% |
 
 **Strict Traceability Score:** \`min(I, R, L, C, S, P) = TBD\`
 
@@ -112,9 +158,9 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 
 | Finding | Count |
 |---|---:|
-| Implementation variants declared as distinct responsibilities | ${report.findings?.implementationVariantsCount ?? 0} |
-| Multiple responsibility owners requiring review | ${report.findings?.multipleOwnersCount ?? 0} |
-| Projection obligations without projecting relationship | ${report.findings?.projectionGapsCount ?? 0} |
+| Implementation variants declared as distinct responsibilities | ${implementationVariantsCount} |
+| Multiple responsibility owners requiring review | ${multipleOwnersCount} |
+| Projection obligations without projecting relationship | ${projectionGapsCount} |
 
 ---
 
@@ -122,9 +168,9 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 
 | Limit Type | Count |
 |---|---:|
-| Authority wiring not evaluated (depth limit) | ${report.evaluationLimits?.authorityDepthCount ?? 0} |
-| Body not evaluated outside subject | ${report.evaluationLimits?.bodyOutOfScopeCount ?? 0} |
-| Body not statically observed | ${report.evaluationLimits?.bodyNotObservedCount ?? 0} |
+| Authority wiring not evaluated (depth limit) | ${authorityDepthCount} |
+| Body not evaluated outside subject | ${bodyOutOfScopeCount} |
+| Body not statically observed | ${bodyNotObservedCount} |
 
 ---
 

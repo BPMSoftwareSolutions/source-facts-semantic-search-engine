@@ -173,8 +173,12 @@ export async function projectSourceFactsWorkspace(options) {
   const jsonDocuments = await projectsJsonWorkspace(workspaceRoot);
   for (const document of jsonDocuments) {
     const projected = projectsDocumentFacts({ document, referenceById, sourceReferences });
-    documents.push(...projected.facts);
-    governanceRules.push(...projectsGovernanceRules(document, projected.factsByPointer));
+    for (const fact of projected.facts) {
+      documents.push(fact);
+    }
+    for (const rule of projectsGovernanceRules(document, projected.factsByPointer)) {
+      governanceRules.push(rule);
+    }
   }
 
   const totalUnknown = files.reduce((sum, file) => sum + file.counts.unknownSyntax, 0);

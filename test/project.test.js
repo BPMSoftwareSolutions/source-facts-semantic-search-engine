@@ -53,6 +53,25 @@ test("projects schema-valid, source-addressable governance rules", async () => {
   }
 });
 
+test("projects large JSON documents without call-stack overflow", async () => {
+  const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-json-large-"));
+  try {
+    const largeReport = {
+      records: Array.from({ length: 70000 }, (_, index) => index),
+    };
+    fs.writeFileSync(path.join(workspaceRoot, "large-report.json"), JSON.stringify(largeReport), "utf8");
+
+    const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: "large-json-fixture" });
+    await validatesSourceFactIndex(index);
+
+    const reportDocumentFacts = index.documents.filter((document) => document.relativePath === "large-report.json");
+    assert.ok(reportDocumentFacts.length > 70000);
+    assert.ok(reportDocumentFacts.some((documentFact) => documentFact.pointer === "/records"));
+  } finally {
+    fs.rmSync(workspaceRoot, { recursive: true, force: true });
+  }
+});
+
 test("keeps logical symbol identity across comments, line movement, and body-only changes", async () => {
   const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-identity-"));
   try {
