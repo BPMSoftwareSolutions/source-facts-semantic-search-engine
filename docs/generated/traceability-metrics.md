@@ -1,6 +1,6 @@
 # Traceability Metrics Report
 
-**Generated:** 2026-08-04T13:29:42.281Z
+**Generated:** 2026-08-04T13:48:52.456Z
 **Report Index ID:** `unknown`
 **Report Scan ID:** `unknown`
 **Call Graph Index ID:** `sha256:323891e7cc2dc48c8d12eba5b176d791b7d97da90ddeae8136530b12155bfaf4`
@@ -12,9 +12,11 @@
 
 | Metric | Value |
 |---|---:|
-| Command roots discovered | 15 |
+| CLI command roots | 15 |
+| Exported function roots | 0 |
+| Total entry points | 15 |
 | Runtime callable functions | 667 |
-| Reachable from CLI | 535 |
+| Reachable from entry points | 535 |
 | Unreachable (dead code) | 132 |
 | Invocation edges | 6126 |
 | Resolved edges | 1361 |
@@ -117,7 +119,7 @@ This report ties metrics to three versioned artifacts:
 
 1. **Source-facts index:** `unknown` (scan: `unknown`)
 2. **Call-graph index:** `sha256:323891e7cc2dc48c8d12eba5b176d791b7d97da90ddeae8136530b12155bfaf4`
-3. **Report generation:** 2026-08-04T13:29:42.281Z
+3. **Report generation:** 2026-08-04T13:48:52.456Z
 
 Metrics should be regenerated whenever the source-facts index changes. This document should not be manually edited; update the generator script in `src/generate-traceability-docs.js` instead.
 

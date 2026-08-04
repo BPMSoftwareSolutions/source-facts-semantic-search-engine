@@ -27,9 +27,11 @@ export async function generatesTraceabilityDocs(reportPath, graphPath, indexPath
 
 | Metric | Value |
 |---|---:|
-| Command roots discovered | ${graph.summary.commandRootCount} |
+| CLI command roots | ${graph.summary.commandRootCount} |
+| Exported function roots | ${graph.summary.exportedFunctionRootCount ?? 0} |
+| Total entry points | ${graph.summary.totalRootCount ?? graph.summary.commandRootCount} |
 | Runtime callable functions | ${graph.summary.runtimeCallableCount} |
-| Reachable from CLI | ${graph.summary.reachableCallableCount} |
+| Reachable from entry points | ${graph.summary.reachableCallableCount} |
 | Unreachable (dead code) | ${graph.summary.unreachableCallableCount} |
 | Invocation edges | ${graph.summary.invocationEdgeCount} |
 | Resolved edges | ${graph.summary.resolvedInvocationEdgeCount} |
