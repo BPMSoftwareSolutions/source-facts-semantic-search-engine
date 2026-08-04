@@ -92,6 +92,25 @@ function healingBelongsToSubject(batch, workspaceRelativePrefix, knownModulePath
   return candidates.some((candidate) => pathBelongsToSubject(candidate, workspaceRelativePrefix, knownModulePaths));
 }
 
+function scopeItemId(entry, fallback) {
+  return normalizesPath(entry?.filePath)
+    ?? entry?.document?.proposalId
+    ?? entry?.document?.evaluationId
+    ?? entry?.document?.knowHowId
+    ?? entry?.document?.draft?.draftId
+    ?? fallback;
+}
+
+function recordsScopeItems(evidenceClass, discovered, included, includedReason, excludedReason) {
+  const includedEntries = new Set(included);
+  return discovered.map((entry, index) => Object.freeze({
+    evidenceClass,
+    itemId: scopeItemId(entry, `${evidenceClass}:${index + 1}`),
+    disposition: includedEntries.has(entry) ? "IN_SUBJECT" : "EXCLUDED",
+    scopeReason: includedEntries.has(entry) ? includedReason : excludedReason,
+  }));
+}
+
 /**
  * Establishes one report subject before any coverage or semantic-volume
  * calculation. Repository-level discovery is deliberately broad; judgment is
@@ -140,6 +159,51 @@ export function scopesSelfGovernanceSubject({
   const inScopeHealing = healingDraftBatches.filter(
     (batch) => healingBelongsToSubject(batch, prefix, knownModulePaths),
   );
+  const scopeItems = [
+    ...recordsScopeItems(
+      "authority-document",
+      authorityDocuments,
+      authorityScope.inScope,
+      "document lives in or claims a target in the bounded subject",
+      "document neither lives in nor claims a target in the bounded subject",
+    ),
+    ...recordsScopeItems(
+      "semantic-overlap-proposal",
+      semanticOverlapProposalBatches,
+      inScopeProposals,
+      "proposal authority or declared source resolves inside the bounded subject",
+      "proposal authority and declared sources resolve outside the bounded subject",
+    ),
+    ...recordsScopeItems(
+      "feature-coverage-proposal",
+      featureCoverageProposalBatches,
+      inScopeFeatureCoverageProposals,
+      "proposal cites a source file in the bounded subject",
+      "proposal cites no source file in the bounded subject",
+    ),
+    ...recordsScopeItems(
+      "feature-inference-evaluation",
+      featureCoverageInferenceEvaluationBatches,
+      inScopeFeatureCoverageInferenceEvaluations,
+      "evaluation candidate cites a source file in the bounded subject",
+      "evaluation candidate cites no source file in the bounded subject",
+    ),
+    ...recordsScopeItems(
+      "know-how",
+      knowHowRegistry.admittedKnowHow ?? [],
+      admittedKnowHow,
+      "record descends from an in-subject inference batch",
+      "record does not descend from an in-subject inference batch",
+    ),
+    ...recordsScopeItems(
+      "healing-draft",
+      healingDraftBatches,
+      inScopeHealing,
+      "draft evidence or target resolves inside the bounded subject",
+      "draft evidence and targets resolve outside the bounded subject",
+    ),
+  ].sort((left, right) => left.evidenceClass.localeCompare(right.evidenceClass)
+    || left.itemId.localeCompare(right.itemId));
 
   return Object.freeze({
     workspaceRelativePrefix: prefix,
@@ -154,6 +218,7 @@ export function scopesSelfGovernanceSubject({
       authorityRemediationCandidates: Object.freeze(authorityRemediationCandidates),
     }),
     healingDraftBatches: Object.freeze(inScopeHealing),
+    scopeItems: Object.freeze(scopeItems),
     summary: Object.freeze({
       authorityDocumentsDiscovered: authorityDocuments.length,
       authorityDocumentsInScope: authorityScope.inScope.length,

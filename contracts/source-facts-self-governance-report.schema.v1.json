@@ -28,6 +28,16 @@
   ],
   "additionalProperties": false,
   "$defs": {
+    "drillDown": {
+      "type": "object",
+      "required": ["queryId", "label", "parameterBindings"],
+      "additionalProperties": false,
+      "properties": {
+        "queryId": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "parameterBindings": { "type": "object" }
+      }
+    },
     "posture": {
       "enum": [
         "GOVERNED_BY_SEMANTIC_AUTHORITY",
@@ -137,6 +147,20 @@
         "healingDraftsDiscovered": { "type": "integer", "minimum": 0 },
         "healingDraftsInScope": { "type": "integer", "minimum": 0 },
         "healingDraftsExcluded": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "subjectBoundaryItems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["evidenceClass", "itemId", "disposition", "scopeReason"],
+        "additionalProperties": false,
+        "properties": {
+          "evidenceClass": { "type": "string", "minLength": 1 },
+          "itemId": { "type": "string", "minLength": 1 },
+          "disposition": { "enum": ["IN_SUBJECT", "EXCLUDED"] },
+          "scopeReason": { "type": "string", "minLength": 1 }
+        }
       }
     },
     "scenarioConformance": {
@@ -764,11 +788,12 @@
     },
     "queryLineage": {
       "type": "object",
-      "required": ["documentKind", "invariant", "catalog", "registeredQueries", "queryReceipts", "claims", "reconciliation"],
+      "required": ["documentKind", "invariant", "drillDownInvariant", "catalog", "registeredQueries", "queryReceipts", "claims", "reconciliation"],
       "additionalProperties": false,
       "properties": {
         "documentKind": { "const": "source-facts-report-query-lineage.v1" },
         "invariant": { "const": "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT" },
+        "drillDownInvariant": { "const": "EVERY_RENDERED_FACT_HAS_PROVING_QUERY_AND_INSPECTABLE_DRILL_DOWN_PATH" },
         "catalog": {
           "type": "object",
           "required": ["catalogId", "catalogVersion", "catalogHash"],
@@ -784,7 +809,7 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["queryId", "section", "queryText", "inputCollections", "expectedResultSchema", "queryVersion", "scopePolicy", "queryHash"],
+            "required": ["queryId", "section", "queryText", "inputCollections", "expectedResultSchema", "depth", "parameters", "drillDowns", "terminal", "queryVersion", "scopePolicy", "queryHash"],
             "additionalProperties": false,
             "properties": {
               "queryId": { "type": "string", "minLength": 1 },
@@ -792,6 +817,23 @@
               "queryText": { "type": "string", "minLength": 1 },
               "inputCollections": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
               "expectedResultSchema": { "type": "string", "minLength": 1 },
+              "depth": { "type": "integer", "minimum": 0, "maximum": 6 },
+              "parameters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "type", "required", "nullable"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": { "type": "string", "minLength": 1 },
+                    "type": { "const": "string" },
+                    "required": { "type": "boolean" },
+                    "nullable": { "type": "boolean" }
+                  }
+                }
+              },
+              "drillDowns": { "type": "array", "items": { "$ref": "#/$defs/drillDown" } },
+              "terminal": { "type": "boolean" },
               "queryVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
               "scopePolicy": { "type": "string", "minLength": 1 },
               "queryHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
@@ -803,13 +845,15 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["documentKind", "queryId", "queryVersion", "queryHash", "index", "execution", "result"],
+            "required": ["documentKind", "queryId", "queryVersion", "queryHash", "index", "parameterBindings", "drillDowns", "execution", "result"],
             "additionalProperties": false,
             "properties": {
               "documentKind": { "const": "source-facts-query-receipt.v1" },
               "queryId": { "type": "string", "minLength": 1 },
               "queryVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
               "queryHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+              "parameterBindings": { "type": "object" },
+              "drillDowns": { "type": "array", "items": { "$ref": "#/$defs/drillDown" } },
               "index": {
                 "type": "object",
                 "required": ["indexId", "scanId"],
@@ -843,7 +887,7 @@
           "minItems": 1,
           "items": {
             "type": "object",
-            "required": ["claimId", "claimType", "queryId", "reportPointer", "valuePointer"],
+            "required": ["claimId", "claimType", "queryId", "reportPointer", "valuePointer", "drillDowns"],
             "additionalProperties": false,
             "properties": {
               "claimId": { "type": "string", "minLength": 1 },
@@ -851,6 +895,7 @@
               "queryId": { "type": "string", "minLength": 1 },
               "reportPointer": { "type": "string", "pattern": "^/" },
               "valuePointer": { "type": "string", "pattern": "^/" }
+              ,"drillDowns": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/drillDown" } }
             }
           }
         },
@@ -860,7 +905,10 @@
             "disposition", "claimCount", "claimsWithQueryPointers", "missingQueryPointers",
             "unsupportedFactualClaims", "staleReceipts", "indexMismatches", "scopeMismatches",
             "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
-            "deterministicRerunMismatches", "receiptsExecuted", "receiptsValid"
+            "deterministicRerunMismatches", "receiptsExecuted", "receiptsValid",
+            "claimsWithRequiredDrillDownPath", "claimsLackingDrillDownPath",
+            "brokenDrillDownQueryReferences", "invalidDrillDownParameterBindings",
+            "drillDownResultSchemaFailures"
           ],
           "additionalProperties": false,
           "properties": {
@@ -876,6 +924,11 @@
             "resultHashFailures": { "const": 0 },
             "renderedValueMismatches": { "const": 0 },
             "deterministicRerunMismatches": { "const": 0 },
+            "claimsWithRequiredDrillDownPath": { "type": "integer", "minimum": 1 },
+            "claimsLackingDrillDownPath": { "const": 0 },
+            "brokenDrillDownQueryReferences": { "const": 0 },
+            "invalidDrillDownParameterBindings": { "const": 0 },
+            "drillDownResultSchemaFailures": { "const": 0 },
             "receiptsExecuted": { "type": "integer", "minimum": 1 },
             "receiptsValid": { "type": "integer", "minimum": 1 }
           }

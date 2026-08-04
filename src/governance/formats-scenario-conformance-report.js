@@ -37,6 +37,18 @@ function formatsReceiptSummary(report, queryId) {
   return `${formatsQueryLink(queryId)} — ${formatsCount(receipt.execution.rowCount)} row(s), result \`${receipt.execution.resultHash}\``;
 }
 
+function formatsDrillDownLink(drillDown) {
+  const bindings = Object.keys(drillDown.parameterBindings ?? {}).length === 0
+    ? ""
+    : ` ${Object.entries(drillDown.parameterBindings).map(([key, value]) => `\`${key}=${value}\``).join(" ")}`;
+  return `${formatsQueryLink(drillDown.queryId, drillDown.label)}${bindings}`;
+}
+
+function formatsNextQueries(report, queryId) {
+  const receipt = receiptFor(report, queryId);
+  return receipt.drillDowns.map(formatsDrillDownLink).join(" · ");
+}
+
 function formatsScenarioConformanceFeatures(report) {
   const queryId = "scenario-conformance.drilldown.v1";
   const lines = [
@@ -176,6 +188,19 @@ function pushesCountBreakdown(lines, heading, values, queryId) {
   }
 }
 
+function addsExecutiveDrillDownColumn(lines, report) {
+  const header = lines.indexOf("| Dimension | Count | Query |");
+  if (header < 0) return;
+  lines[header] = "| Dimension | Count | Proving query | Drill down |";
+  lines[header + 1] = "|---|---:|---|---|";
+  for (let index = header + 2; index < lines.length; index++) {
+    if (!lines[index].startsWith("|")) break;
+    const match = lines[index].match(/\[`([^`]+)`\]\(#query-result-[^)]+\) \|$/);
+    if (!match) continue;
+    lines[index] = lines[index].replace(/ \|$/, ` | ${formatsNextQueries(report, match[1])} |`);
+  }
+}
+
 function formatsQueryEvidenceAppendix(report, receiptDirectory) {
   const lines = [
     "## Query Evidence Appendix",
@@ -189,6 +214,17 @@ function formatsQueryEvidenceAppendix(report, receiptDirectory) {
   for (const receipt of report.queryLineage.queryReceipts) {
     const query = registrations.get(receipt.queryId);
     lines.push(`| ${formatsQueryLink(receipt.queryId)} | ${query?.section ?? "(unregistered)"} | ${receipt.execution.rowCount} | \`${receipt.queryHash}\` | \`${receipt.execution.resultHash}\` | \`${receipt.execution.disposition}\` |`);
+  }
+  lines.push("", "### Drill-Down Query Register", "");
+  lines.push("| Parent query | Depth | Next query | Parameter bindings | Purpose |");
+  lines.push("|---|---:|---|---|---|");
+  for (const query of report.queryLineage.registeredQueries) {
+    for (const drillDown of query.drillDowns) {
+      const bindings = Object.keys(drillDown.parameterBindings).length === 0
+        ? "none"
+        : Object.entries(drillDown.parameterBindings).map(([key, value]) => `\`${key}=${value}\``).join(", ");
+      lines.push(`| ${formatsQueryLink(query.queryId)} | ${query.depth} | ${formatsQueryLink(drillDown.queryId)} | ${bindings} | ${drillDown.label} |`);
+    }
   }
   lines.push("", "### Registered Queries and Results", "");
   for (const query of report.queryLineage.registeredQueries) {
@@ -210,6 +246,7 @@ function formatsQueryEvidenceAppendix(report, receiptDirectory) {
     lines.push(`| Rows | ${receipt.execution.rowCount} |`);
     lines.push(`| Execution | \`${receipt.execution.disposition}\` |`);
     lines.push(`| Full receipt artifact | [Open query, rows, and claim pointers](${artifactLink}) |`);
+    lines.push(`| Next queries | ${receipt.drillDowns.length === 0 ? "terminal physical/healing evidence" : receipt.drillDowns.map(formatsDrillDownLink).join("<br>")} |`);
     lines.push("", "```sql", query.queryText, "```", "");
     if (receipt.execution.rowCount <= 20 && resultJson.length <= 20_000) {
       lines.push(`<details><summary>Inspect ${receipt.execution.rowCount} result row(s) inline</summary>`, "", "```json", resultJson, "```", "", "</details>", "");
@@ -243,6 +280,11 @@ function formatsClaimReconciliation(report) {
     "|---|---:|",
     `| Registered factual claim values | ${value.claimCount} |`,
     `| Claims with query pointers | ${value.claimsWithQueryPointers} |`,
+    `| Claims with required drill-down path | ${value.claimsWithRequiredDrillDownPath} |`,
+    `| Claims lacking drill-down path | ${value.claimsLackingDrillDownPath} |`,
+    `| Broken drill-down query references | ${value.brokenDrillDownQueryReferences} |`,
+    `| Invalid parameter bindings | ${value.invalidDrillDownParameterBindings} |`,
+    `| Drill-down result-schema failures | ${value.drillDownResultSchemaFailures} |`,
     `| Missing query pointers | ${value.missingQueryPointers} |`,
     `| Unsupported factual claims | ${value.unsupportedFactualClaims} |`,
     `| Stale receipts | ${value.staleReceipts} |`,
@@ -332,6 +374,7 @@ export function formatsScenarioConformanceReportMarkdown(report, { receiptDirect
   pushesCountBreakdown(lines, "Scenarios with structural blocker", summary.byStructuralBlocker, "scenario-conformance.summary.v1");
   pushesCountBreakdown(lines, "Scenarios with evaluation limit", summary.byEvaluationLimit, "scenario-conformance.summary.v1");
   pushesCountBreakdown(lines, "Scenarios with lineage-quality finding", summary.byLineageQualityFinding, "scenario-conformance.summary.v1");
+  addsExecutiveDrillDownColumn(lines, report);
 
   lines.push("");
   lines.push("**Query evidence**");

@@ -194,10 +194,15 @@ test("projectsSelfGovernanceReport binds rendered facts to inspectable registere
   });
 
   assert.equal(report.queryLineage.invariant, "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT");
+  assert.equal(report.queryLineage.drillDownInvariant, "EVERY_RENDERED_FACT_HAS_PROVING_QUERY_AND_INSPECTABLE_DRILL_DOWN_PATH");
   assert.equal(report.queryLineage.catalog.catalogId, "self-governance-query-catalog.v1");
   assert.match(report.queryLineage.catalog.catalogHash, /^sha256:[0-9a-f]{64}$/);
   assert.equal(report.queryLineage.reconciliation.disposition, "PASSED");
   assert.equal(report.queryLineage.reconciliation.missingQueryPointers, 0);
+  assert.equal(report.queryLineage.reconciliation.claimsLackingDrillDownPath, 0);
+  assert.equal(report.queryLineage.reconciliation.brokenDrillDownQueryReferences, 0);
+  assert.equal(report.queryLineage.reconciliation.invalidDrillDownParameterBindings, 0);
+  assert.ok(report.queryLineage.claims.every((claim) => claim.drillDowns.length > 0));
   assert.ok(report.queryLineage.claims.length > 0);
   const receipt = report.queryLineage.queryReceipts.find((entry) => entry.queryId === "feature-coverage.summary.v1");
   assert.equal(receipt.index.indexId, report.index.indexId);
@@ -209,6 +214,19 @@ test("projectsSelfGovernanceReport binds rendered facts to inspectable registere
   const rerun = rerunsRegisteredReportQuery(report, "feature-coverage.summary.v1");
   assert.equal(rerun.resultHash, receipt.execution.resultHash);
   assert.deepEqual(rerun.rows, receipt.result.rows);
+
+  const branchFiles = rerunsRegisteredReportQuery(
+    report,
+    "feature-coverage.unlined-mechanics-by-file.v1",
+    { mechanic: "fallback" },
+  );
+  assert.ok(branchFiles.rows.length > 0);
+  assert.ok(branchFiles.rows.every((row) => row.mechanic === "fallback"));
+  assert.ok(branchFiles.rows.every((row) => row.drillDowns.some((drillDown) => drillDown.queryId === "feature-coverage.unlined-occurrences.v1")));
+  assert.throws(
+    () => rerunsRegisteredReportQuery(report, "feature-coverage.unlined-mechanics-by-file.v1", { unsupported: "value" }),
+    (error) => error instanceof FactQueryLineageError && error.disposition === "FACT_DRILLDOWN_PARAMETER_INVALID",
+  );
 
   const artifact = projectsReportQueryReceiptArtifacts(report)
     .find((entry) => entry.document.queryReceipt.queryId === "feature-coverage.summary.v1");
@@ -236,6 +254,8 @@ test("self-governance Markdown exposes inline query identities, receipts, exact 
   assert.match(markdown, /## Report Claim Reconciliation/);
   assert.match(markdown, /## Query Evidence Appendix/);
   assert.match(markdown, /### Query Evidence Register/);
+  assert.match(markdown, /### Drill-Down Query Register/);
+  assert.match(markdown, /\| Dimension \| Count \| Proving query \| Drill down \|/);
   assert.match(markdown, /### Registered Queries and Results/);
   assert.match(markdown, /\[\d+\]\(#query-result-feature-coverage-summary-v1\)/);
   assert.match(markdown, /<a id="query-result-feature-coverage-summary-v1"><\/a>/);
@@ -1460,6 +1480,13 @@ test("projectsSelfGovernanceReport separates canonical, proposed, structural, an
   assert.equal(report.scenarioConformance.features[0].classifications[0].relationship, "SOURCE_LINEAGE_CLASSIFICATION");
   assert.equal(report.scenarioConformance.features[0].scenarios[0].structuralStatus, "STRUCTURALLY_CLOSED");
   assert.equal(report.scenarioConformance.features[0].scenarios[0].runtimeConformance, "NOT_EVALUATED");
+  const scenarioPaths = rerunsRegisteredReportQuery(
+    report,
+    "scenario-conformance.scenario-call-paths.v1",
+    { scenarioId: report.scenarioConformance.features[0].scenarios[0].scenarioId },
+  );
+  assert.ok(scenarioPaths.rows.length > 0, "an unreachable responsibility must still return an explicit reachability row");
+  assert.ok(scenarioPaths.rows.every((row) => row.scenarioId === report.scenarioConformance.features[0].scenarios[0].scenarioId));
 });
 
 test("canonical lineage quality findings expose projection mismatches and implementation variants", async () => {
@@ -1511,6 +1538,20 @@ test("projectsSelfGovernanceReport excludes broader repository authority from a 
   assert.equal(report.subjectScope.authorityDocumentsDiscovered, 2);
   assert.equal(report.subjectScope.authorityDocumentsInScope, 1);
   assert.equal(report.subjectScope.authorityDocumentsExcluded, 1);
+  assert.deepEqual(
+    report.subjectBoundaryItems.filter((item) => item.evidenceClass === "authority-document")
+      .map((item) => [item.itemId, item.disposition]),
+    [
+      ["contracts/root.authority.json", "EXCLUDED"],
+      ["source-facts-query-console/contracts/local.authority.json", "IN_SUBJECT"],
+    ],
+  );
+  const excluded = rerunsRegisteredReportQuery(
+    report,
+    "subject-boundary.items-by-disposition.v1",
+    { disposition: "EXCLUDED" },
+  );
+  assert.deepEqual(excluded.rows.map((item) => item.itemId), ["contracts/root.authority.json"]);
   assert.equal(report.contractSemanticVolume.length, 1);
   assert.equal(report.contractSemanticVolume[0].authorityFile, "source-facts-query-console/contracts/local.authority.json");
 });

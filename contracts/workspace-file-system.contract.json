@@ -68,6 +68,7 @@
     { "directoryId": "artifacts-indexes-directory", "relativePath": "artifacts/indexes", "required": false },
     { "directoryId": "artifacts-call-graphs-directory", "relativePath": "artifacts/call-graphs", "required": false },
     { "directoryId": "artifacts-governance-directory", "relativePath": "artifacts/governance", "required": false },
+    { "directoryId": "artifacts-governance-self-report-receipts-directory", "relativePath": "artifacts/governance/source-facts-self-governance-report.receipts", "required": false },
 
     { "directoryId": "evidence-directory", "relativePath": "evidence", "required": false },
     { "directoryId": "evidence-know-how-directory", "relativePath": "evidence/know-how", "required": false },

@@ -290,6 +290,7 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
       scopeMode: subject.scopeMode,
       ...subject.summary,
     }),
+    subjectBoundaryItems: subject.scopeItems,
     scenarioConformance,
     featureCoverage,
     unclassifiedInventory: Object.freeze({

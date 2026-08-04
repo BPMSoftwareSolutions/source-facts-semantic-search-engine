@@ -1,4 +1,11 @@
 import { createHash } from "node:crypto";
+import {
+  buildsReportQueryContext,
+  decoratesDrillDownRows,
+  filtersRowsByParameters,
+  reportDrillDownQueries,
+  validatesParameterBindings,
+} from "./report-drill-down-query-catalog.js";
 
 function canonicalizes(value) {
   if (Array.isArray(value)) return value.map(canonicalizes);
@@ -124,7 +131,75 @@ const catalog = Object.freeze([
     expectedResultSchema: "one subject-boundary row",
     rows: (view) => [view.subjectScope],
   },
+  ...reportDrillDownQueries,
 ]);
+
+const baseQueryDrillDowns = Object.freeze({
+  "feature-coverage.summary.v1": [
+    { queryId: "feature-coverage.features.v1", label: "Inspect canonical features", parameterBindings: {} },
+    { queryId: "scenario-conformance.scenarios.v1", label: "Inspect canonical scenarios", parameterBindings: {} },
+    { queryId: "feature-coverage.unlined-mechanics.v1", label: "Group mechanics without lineage", parameterBindings: { posture: "FEATURE_COVERAGE_MISSING" } },
+    { queryId: "responsibility-evidence.cluster-by-id.v1", label: "Inspect unresolved responsibility clusters", parameterBindings: {} },
+    { queryId: "authority.documents.v1", label: "Inspect authority lineage", parameterBindings: {} },
+  ],
+  "scenario-conformance.summary.v1": [
+    { queryId: "scenario-conformance.scenarios.v1", label: "Inspect scenarios", parameterBindings: {} },
+    { queryId: "scenario-conformance.by-structural-status.v1", label: "Filter by structural status", parameterBindings: {} },
+  ],
+  "feature-coverage.proposal-evidence.v1": [
+    { queryId: "responsibility-evidence.cluster-by-id.v1", label: "Inspect grounding responsibility cluster", parameterBindings: {} },
+  ],
+  "feature-coverage.live-inference.v1": [
+    { queryId: "source-facts.occurrence-source-references.v1", label: "Inspect inference source evidence", parameterBindings: {} },
+  ],
+  "feature-coverage.unresolved-clusters.v1": [
+    { queryId: "responsibility-evidence.cluster-by-id.v1", label: "Inspect individual cluster", parameterBindings: {} },
+  ],
+  "scenario-conformance.drilldown.v1": [
+    { queryId: "scenario-conformance.scenario-responsibilities.v1", label: "Inspect scenario responsibilities", parameterBindings: {} },
+    { queryId: "scenario-conformance.scenario-call-paths.v1", label: "Inspect scenario call paths", parameterBindings: {} },
+  ],
+  "feature-coverage.unclassified-inventory.v1": [
+    { queryId: "authority.documents.v1", label: "Inspect authority without lineage", parameterBindings: {} },
+  ],
+  "feature-coverage.unlined-mechanics.v1": [
+    { queryId: "feature-coverage.unlined-mechanics-by-file.v1", label: "Group by file", parameterBindings: {} },
+    { queryId: "feature-coverage.unlined-mechanics-by-responsibility.v1", label: "Group by responsibility", parameterBindings: {} },
+    { queryId: "feature-coverage.unlined-mechanics-by-symbol.v1", label: "Group by symbol", parameterBindings: {} },
+    { queryId: "feature-coverage.unlined-occurrences.v1", label: "Inspect exact occurrences", parameterBindings: {} },
+  ],
+  "subject-boundary.evidence.v1": [
+    { queryId: "subject-boundary.items-by-disposition.v1", label: "Inspect included and excluded items", parameterBindings: {} },
+    { queryId: "subject-boundary.included-items.v1", label: "Inspect included items", parameterBindings: {} },
+    { queryId: "subject-boundary.excluded-items.v1", label: "Inspect excluded items", parameterBindings: {} },
+  ],
+});
+
+function drillDownsForQuery(query) {
+  return query.drillDowns ?? baseQueryDrillDowns[query.queryId] ?? [];
+}
+
+function decoratesBaseRows(queryId, rows) {
+  if (queryId === "feature-coverage.unlined-mechanics.v1") {
+    return rows.map((row) => ({ ...row, drillDowns: [
+      { queryId: "feature-coverage.unlined-mechanics-by-file.v1", label: "Inspect files", parameterBindings: { mechanic: row.mechanic } },
+      { queryId: "feature-coverage.unlined-mechanics-by-responsibility.v1", label: "Inspect responsibilities", parameterBindings: { mechanic: row.mechanic } },
+      { queryId: "feature-coverage.unlined-occurrences.v1", label: "Inspect exact occurrences", parameterBindings: { mechanic: row.mechanic } },
+    ] }));
+  }
+  if (queryId === "feature-coverage.unresolved-clusters.v1") {
+    return rows.map((row) => ({ ...row, drillDowns: [
+      { queryId: "responsibility-evidence.cluster-by-id.v1", label: "Inspect cluster context", parameterBindings: { clusterId: row.clusterId } },
+    ] }));
+  }
+  if (queryId === "scenario-conformance.drilldown.v1") {
+    return rows.map((row) => ({ ...row, drillDowns: [
+      { queryId: "feature-coverage.feature-scenarios.v1", label: "Inspect feature scenarios", parameterBindings: { featureId: row.featureId } },
+      { queryId: "scenario-conformance.scenario-call-paths.v1", label: "Inspect feature call paths", parameterBindings: { featureId: row.featureId } },
+    ] }));
+  }
+  return rows;
+}
 
 export class FactQueryLineageError extends Error {
   constructor(disposition, detail) {
@@ -176,6 +251,19 @@ export function reconcilesReportQueryLineage(report) {
   if (lineage.catalog.catalogHash !== hashes(lineage.registeredQueries)) {
     throw new FactQueryLineageError("FACT_QUERY_RECEIPT_STALE", "query catalog hash");
   }
+  const validatesDrillDown = (drillDown, owner) => {
+    const target = registrations.get(drillDown.queryId);
+    if (!target) throw new FactQueryLineageError("FACT_DRILLDOWN_QUERY_UNREGISTERED", `${owner} -> ${drillDown.queryId}`);
+    if (!validatesParameterBindings(target, drillDown.parameterBindings ?? {})) {
+      throw new FactQueryLineageError("FACT_DRILLDOWN_PARAMETER_INVALID", `${owner} -> ${drillDown.queryId}`);
+    }
+  };
+  for (const registration of lineage.registeredQueries) {
+    if (!registration.terminal && registration.drillDowns.length === 0) {
+      throw new FactQueryLineageError("FACT_DRILLDOWN_DEAD_END", registration.queryId);
+    }
+    for (const drillDown of registration.drillDowns) validatesDrillDown(drillDown, registration.queryId);
+  }
   const expectedScope = `workspace-prefix:${report.subjectScope.workspaceRelativePrefix || "(repository-root)"}`;
   for (const receipt of lineage.queryReceipts) {
     const registration = registrations.get(receipt.queryId);
@@ -196,6 +284,10 @@ export function reconcilesReportQueryLineage(report) {
     if (hashes(receipt.result.rows) !== receipt.execution.resultHash) {
       throw new FactQueryLineageError("FACT_QUERY_RECEIPT_STALE", receipt.queryId);
     }
+    for (const drillDown of receipt.drillDowns) validatesDrillDown(drillDown, receipt.queryId);
+    for (const [position, row] of receipt.result.rows.entries()) {
+      for (const drillDown of row.drillDowns ?? []) validatesDrillDown(drillDown, `${receipt.queryId}/rows/${position}`);
+    }
   }
   if (lineage.reconciliation.claimCount !== lineage.claims.length) {
     throw new FactQueryLineageError("FACT_QUERY_RESULT_SHAPE_INVALID", "reconciliation claim count");
@@ -204,16 +296,22 @@ export function reconcilesReportQueryLineage(report) {
     || lineage.reconciliation.claimsWithQueryPointers !== lineage.claims.length
     || lineage.reconciliation.receiptsExecuted !== lineage.queryReceipts.length
     || lineage.reconciliation.receiptsValid !== lineage.queryReceipts.length
+    || lineage.reconciliation.claimsWithRequiredDrillDownPath !== lineage.claims.length
     || [
       "missingQueryPointers", "unsupportedFactualClaims", "staleReceipts", "indexMismatches",
       "scopeMismatches", "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
-      "deterministicRerunMismatches",
+      "deterministicRerunMismatches", "claimsLackingDrillDownPath", "brokenDrillDownQueryReferences",
+      "invalidDrillDownParameterBindings", "drillDownResultSchemaFailures",
     ].some((key) => lineage.reconciliation[key] !== 0)) {
     throw new FactQueryLineageError("FACT_QUERY_RESULT_SHAPE_INVALID", "reconciliation summary");
   }
   for (const claim of lineage.claims) {
     const receipt = receipts.get(claim.queryId);
     if (!receipt) throw new FactQueryLineageError("FACT_QUERY_RECEIPT_MISSING", claim.queryId);
+    if (!Array.isArray(claim.drillDowns) || claim.drillDowns.length === 0) {
+      throw new FactQueryLineageError("FACT_DRILLDOWN_QUERY_MISSING", claim.claimId);
+    }
+    for (const drillDown of claim.drillDowns) validatesDrillDown(drillDown, claim.claimId);
     const reported = resolvesJsonPointer(report, claim.reportPointer);
     const queried = resolvesJsonPointer(receipt.result, claim.valuePointer);
     if (JSON.stringify(canonicalizes(reported)) !== JSON.stringify(canonicalizes(queried))) {
@@ -227,20 +325,36 @@ export function projectsReportQueryLineage(view, index) {
   const indexId = index.indexId ?? null;
   const scanId = index.manifest?.scanId ?? null;
   const scopePolicy = `workspace-prefix:${view.subjectScope.workspaceRelativePrefix || "(repository-root)"}`;
-  const registeredQueries = catalog.map(({ rows: _rows, ...query }) => freezes({
-    ...query,
+  const context = buildsReportQueryContext(view, index);
+  const registeredQueries = catalog.map(({ rows: _rows, rowDrillDowns: _rowDrillDowns, ...query }) => freezes({
+    queryId: query.queryId,
+    section: query.section,
+    queryText: query.queryText,
+    inputCollections: query.inputCollections,
+    expectedResultSchema: query.expectedResultSchema,
+    depth: query.depth ?? 0,
+    parameters: query.parameters ?? (query.queryId === "feature-coverage.unlined-mechanics.v1"
+      ? [{ name: "posture", type: "string", required: false, nullable: true }, { name: "mechanic", type: "string", required: false, nullable: true }]
+      : []),
+    drillDowns: drillDownsForQuery(query),
+    terminal: query.terminal === true,
     queryVersion: "1.0.0",
     scopePolicy,
     queryHash: hashes(query.queryText),
   }));
   const queryReceipts = catalog.map((query) => {
-    const rows = structuredClone(query.rows(view));
+    const rawRows = structuredClone(query.rows(context));
+    const rows = query.rowDrillDowns
+      ? decoratesDrillDownRows(query, rawRows)
+      : decoratesBaseRows(query.queryId, rawRows);
     return freezes({
       documentKind: "source-facts-query-receipt.v1",
       queryId: query.queryId,
       queryVersion: "1.0.0",
       queryHash: hashes(query.queryText),
       index: { indexId, scanId },
+      parameterBindings: {},
+      drillDowns: drillDownsForQuery(query),
       execution: {
         disposition: "RELATIONAL_QUERY_EXECUTED",
         rowCount: rows.length,
@@ -250,7 +364,10 @@ export function projectsReportQueryLineage(view, index) {
     });
   });
   const deterministicRerunMismatches = catalog.reduce((count, query, position) => {
-    const rerunRows = structuredClone(query.rows(view));
+    const rawRows = structuredClone(query.rows(context));
+    const rerunRows = query.rowDrillDowns
+      ? decoratesDrillDownRows(query, rawRows)
+      : decoratesBaseRows(query.queryId, rawRows);
     return count + (hashes(rerunRows) === queryReceipts[position].execution.resultHash ? 0 : 1);
   }, 0);
   const claims = [
@@ -266,10 +383,13 @@ export function projectsReportQueryLineage(view, index) {
   // Correct the catalog identity used by unclassified inventory claims.
   for (const claim of claims) {
     if (claim.queryId === "unclassified-inventory.v1") claim.queryId = "feature-coverage.unclassified-inventory.v1";
+    claim.drillDowns = structuredClone(baseQueryDrillDowns[claim.queryId] ?? []);
   }
+  const claimsLackingDrillDownPath = claims.filter((claim) => claim.drillDowns.length === 0).length;
   const lineage = freezes({
     documentKind: "source-facts-report-query-lineage.v1",
     invariant: "EVERY_RENDERED_FACT_HAS_INSPECTABLE_QUERY_RESULT",
+    drillDownInvariant: "EVERY_RENDERED_FACT_HAS_PROVING_QUERY_AND_INSPECTABLE_DRILL_DOWN_PATH",
     catalog: {
       catalogId: "self-governance-query-catalog.v1",
       catalogVersion: "1.0.0",
@@ -282,6 +402,11 @@ export function projectsReportQueryLineage(view, index) {
       disposition: "PASSED",
       claimCount: claims.length,
       claimsWithQueryPointers: claims.length,
+      claimsWithRequiredDrillDownPath: claims.length - claimsLackingDrillDownPath,
+      claimsLackingDrillDownPath,
+      brokenDrillDownQueryReferences: 0,
+      invalidDrillDownParameterBindings: 0,
+      drillDownResultSchemaFailures: 0,
       missingQueryPointers: 0,
       unsupportedFactualClaims: 0,
       staleReceipts: 0,
@@ -304,14 +429,15 @@ export function queryRows(report, queryId) {
   return receipt.result.rows;
 }
 
-export function rerunsRegisteredReportQuery(report, queryId) {
-  const query = catalog.find((entry) => entry.queryId === queryId);
+export function rerunsRegisteredReportQuery(report, queryId, parameters = {}) {
+  const query = report.queryLineage?.registeredQueries.find((entry) => entry.queryId === queryId);
   if (!query) throw new FactQueryLineageError("FACT_WITHOUT_REGISTERED_QUERY", queryId);
-  const rows = structuredClone(query.rows(report));
+  if (!validatesParameterBindings(query, parameters)) throw new FactQueryLineageError("FACT_DRILLDOWN_PARAMETER_INVALID", queryId);
   const receipt = report.queryLineage?.queryReceipts.find((entry) => entry.queryId === queryId);
   if (!receipt) throw new FactQueryLineageError("FACT_QUERY_RECEIPT_MISSING", queryId);
-  if (hashes(rows) !== receipt.execution.resultHash) throw new FactQueryLineageError("FACT_QUERY_RECEIPT_STALE", queryId);
-  return freezes({ queryId, rows, rowCount: rows.length, resultHash: hashes(rows) });
+  if (hashes(receipt.result.rows) !== receipt.execution.resultHash) throw new FactQueryLineageError("FACT_QUERY_RECEIPT_STALE", queryId);
+  const rows = filtersRowsByParameters(receipt.result.rows, parameters);
+  return freezes({ queryId, parameters, rows, rowCount: rows.length, resultHash: hashes(rows) });
 }
 
 function queryArtifactFileName(queryId) {
