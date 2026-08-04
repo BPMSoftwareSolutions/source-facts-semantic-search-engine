@@ -66,6 +66,25 @@ function buildsHealingDraft({ subjectId = "success-response-serialization", heal
   });
 }
 
+const admittedScenarioTarget = Object.freeze({
+  featureId: "serialize-successful-responses",
+  scenarioId: "serialize-successful-query-response",
+  responsibilityId: "project-query-success-response",
+  obligationId: "emit-canonical-query-result",
+});
+
+const admittedFeatureAuthority = Object.freeze({
+  contract: Object.freeze({ status: "admitted" }),
+  lineage: Object.freeze({
+    authorityType: "canonical-lineage-authority.v1",
+    projectId: "serves-query-console",
+    features: Object.freeze([{ featureId: "serialize-successful-responses" }]),
+    scenarios: Object.freeze([{ featureId: "serialize-successful-responses", scenarioId: "serialize-successful-query-response" }]),
+    obligations: Object.freeze([{ scenarioId: "serialize-successful-query-response", obligationId: "emit-canonical-query-result" }]),
+    responsibilities: Object.freeze([{ obligationId: "emit-canonical-query-result", responsibilityId: "project-query-success-response" }]),
+  }),
+});
+
 test("generatesConnectiveTissue builds a structured repair packet and preserves the returned draft", async () => {
   let capturedRequest;
   const responseDraft = {
@@ -85,6 +104,8 @@ test("generatesConnectiveTissue builds a structured repair packet and preserves 
 
   const batch = await generatesConnectiveTissue({
     subjectId: "success-response-serialization",
+    scenarioTarget: admittedScenarioTarget,
+    featureAuthority: admittedFeatureAuthority,
     authorityEvidence: [readsEvidenceFixture("contracts/serves-query-console.authority.json")],
     executableEvidence: [
       readsEvidenceFixture("src/console/serves-query-console.runtime.impl.mjs"),
@@ -121,11 +142,13 @@ test("generatesConnectiveTissue builds a structured repair packet and preserves 
   assert.equal(batch.documentKind, "connective-tissue-draft-batch.v1");
   assert.equal(batch.lifecycle, "DRAFT_NOT_ADMITTED");
   assert.equal(batch.subject.subjectId, "success-response-serialization");
+  assert.deepEqual(batch.subject.scenarioTarget, admittedScenarioTarget);
   assert.deepEqual(batch.subject.knownGaps, ["success-path JSON.stringify is duplicated inline"]);
   assert.equal(batch.draft.healingDisposition, "HEALING_DRAFT_GENERATED");
   assert.equal(batch.inference.resolvedModel, "gemini-flash-latest");
   assert.equal(capturedRequest.interaction.messages[1].content.includes("## Grounding manifest"), true);
   assert.equal(capturedRequest.interaction.messages[1].content.includes("success-response-serialization"), true);
+  assert.equal(capturedRequest.interaction.messages[1].content.includes("serialize-successful-query-response"), true);
   assert.equal(capturedRequest.interaction.messages[1].content.includes("serializesErrorResponse"), true);
   assert.equal(capturedRequest.interaction.messages[1].content.includes("serializesSuccessResponse"), false);
   assert.equal(capturedRequest.responsePolicy.maximumOutputTokens, 32768);
@@ -136,6 +159,8 @@ test("generatesConnectiveTissue rejects model responses that invent an unsupport
   await assert.rejects(
     () => generatesConnectiveTissue({
       subjectId: "success-response-serialization",
+      scenarioTarget: admittedScenarioTarget,
+      featureAuthority: admittedFeatureAuthority,
       authorityEvidence: [readsEvidenceFixture("contracts/serves-query-console.authority.json")],
       executableEvidence: [
         readsEvidenceFixture("src/console/serves-query-console.runtime.impl.mjs"),
@@ -189,6 +214,17 @@ test("generatesConnectiveTissue rejects model responses that invent an unsupport
   );
 });
 
+test("generatesConnectiveTissue refuses a floating technical subject without admitted scenario lineage", async () => {
+  await assert.rejects(
+    () => generatesConnectiveTissue({
+      subjectId: "floating-technical-subject",
+      executableEvidence: [readsEvidenceFixture("src/console/serves-query-console.runtime.impl.mjs")],
+      invoke: async () => { throw new Error("must not invoke"); },
+    }),
+    /scenarioTarget\.featureId is required/,
+  );
+});
+
 test("discoversHealingDrafts and summarizesHealingDraftRegistry count reviewed-only drafts without trusting unrelated JSON", async () => {
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "sfse-healing-"));
   try {
@@ -233,10 +269,9 @@ test("projectsSelfGovernanceReport and its formatters surface the healing draft 
 
   const markdown = formatsSelfGovernanceReportMarkdown(report);
   const summary = formatsSelfGovernanceReportSummary(report);
-  assert.equal(markdown.includes("## Generated Healing Candidates"), true);
+  assert.equal(markdown.includes("### Healing drafts awaiting a scenario target"), true);
   assert.equal(markdown.includes("success-response-serialization.connective-tissue-draft.json"), true);
-  assert.equal(summary.includes("Healing draft registry: 1 draft batch(es)"), true);
-  assert.equal(summary.includes("authorityCompletionDraft"), true);
+  assert.equal(summary.includes("Healing drafts without scenario target: 1"), true);
 });
 
 test("cli govern accepts the healing seam directories and repository override", async () => {

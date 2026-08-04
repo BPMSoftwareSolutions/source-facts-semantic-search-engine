@@ -10,6 +10,9 @@ import { resolvesAuthoritySuccession } from "./resolves-authority-succession.js"
 import { summarizesSemanticOverlapProposalBatch } from "./summarizes-semantic-overlap-proposals.js";
 import { summarizesKnowHowRegistry } from "./summarizes-know-how-registry.js";
 import { summarizesHealingDraftRegistry } from "./summarizes-healing-drafts.js";
+import { scopesSelfGovernanceSubject } from "./scopes-self-governance-subject.js";
+import { projectsScenarioConformance, resolvesOccurrenceScenarioLineage } from "./projects-scenario-conformance.js";
+import { projectsFeatureCoverage } from "./projects-feature-coverage.js";
 
 function compareOccurrences(left, right) {
   return left.modulePath.localeCompare(right.modulePath)
@@ -96,18 +99,27 @@ function fileBreakdownKey(mechanic, modulePath) {
  * Still observational only -- no gap remediation records or projection
  * actions are produced yet.
  */
-export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], workspaceRelativePrefix = "" }) {
+export async function projectsSelfGovernanceReport({ index, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], workspaceRelativePrefix = "" }) {
+  const subject = scopesSelfGovernanceSubject({
+    index,
+    workspaceRelativePrefix,
+    authorityDocuments,
+    semanticOverlapProposalBatches,
+    featureCoverageProposalBatches,
+    featureCoverageInferenceEvaluationBatches,
+    knowHowRegistry,
+    healingDraftBatches,
+  });
+  const scopedAuthorityDocuments = subject.authorityDocuments;
   const occurrences = resolvesBodyMechanicOccurrences(index, workspaceRelativePrefix);
-  const authorityDeclarationDocuments = authorityDocuments.filter((entry) => entry.documentKind === authorityDeclarationKind);
-  const otherAuthorityDocuments = authorityDocuments.filter((entry) => entry.documentKind !== authorityDeclarationKind);
+  const authorityDeclarationDocuments = scopedAuthorityDocuments.filter((entry) => entry.documentKind === authorityDeclarationKind);
+  const otherAuthorityDocuments = scopedAuthorityDocuments.filter((entry) => entry.documentKind !== authorityDeclarationKind);
   const declaredAuthorityMechanics = authorityDeclarationDocuments.flatMap(
     ({ document, filePath }) => extractsDeclaredAuthorityMechanics(document, filePath),
   );
-  const authorityHomeIndex = buildsAuthorityHomeIndex(authorityDocuments);
-  const knownModulePaths = new Set(
-    index.sourceReferences.map((reference) => joinsRepositoryRelativePath(workspaceRelativePrefix, reference.modulePath)),
-  );
-  const candidateAuthorityMechanics = authorityDocuments.flatMap(
+  const authorityHomeIndex = buildsAuthorityHomeIndex(scopedAuthorityDocuments);
+  const knownModulePaths = subject.knownModulePaths;
+  const candidateAuthorityMechanics = scopedAuthorityDocuments.flatMap(
     ({ document, filePath }) => extractsCandidateAuthorityMechanics(document, filePath),
   );
 
@@ -189,13 +201,76 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
       || left.modulePath.localeCompare(right.modulePath));
 
   const filesWithObservedMechanics = new Set(fileBreakdown.map((entry) => entry.modulePath));
-  const dataDrivenWiring = resolvesDataDrivenWiring(index, workspaceRelativePrefix, filesWithObservedMechanics);
+  const lineageBodyFiles = new Set();
+  for (const { document } of scopedAuthorityDocuments) {
+    if (document?.lineage?.authorityType !== "canonical-lineage-authority.v1") continue;
+    const artifactsById = new Map((document.artifacts ?? []).map((artifact) => [artifact.artifactId, artifact]));
+    for (const responsibility of document.lineage.responsibilities ?? []) {
+      const bodyFile = artifactsById.get(responsibility.artifactId)?.relativePath?.replaceAll("\\", "/");
+      if (knownModulePaths.has(bodyFile)) lineageBodyFiles.add(bodyFile);
+    }
+  }
+  const dataDrivenWiring = resolvesDataDrivenWiring(
+    index,
+    workspaceRelativePrefix,
+    new Set([...filesWithObservedMechanics, ...lineageBodyFiles]),
+  );
 
-  const contractSemanticVolume = measuresContractSemanticVolume(authorityDocuments, knownModulePaths);
-  const authoritySuccession = resolvesAuthoritySuccession({ authorityDocuments, occurrences, index, workspaceRelativePrefix, knownModulePaths });
-  const semanticOverlapProposals = semanticOverlapProposalBatches.map((batch) => summarizesSemanticOverlapProposalBatch(batch));
-  const knowHowRegistrySummary = summarizesKnowHowRegistry(knowHowRegistry);
-  const healingDraftRegistry = summarizesHealingDraftRegistry(healingDraftBatches);
+  const contractSemanticVolume = measuresContractSemanticVolume(scopedAuthorityDocuments, knownModulePaths);
+  const authoritySuccession = resolvesAuthoritySuccession({ authorityDocuments: scopedAuthorityDocuments, occurrences, index, workspaceRelativePrefix, knownModulePaths });
+  const semanticOverlapProposals = subject.semanticOverlapProposalBatches.map((batch) => summarizesSemanticOverlapProposalBatch(batch));
+  const knowHowRegistrySummary = summarizesKnowHowRegistry(subject.knowHowRegistry);
+  const healingDraftRegistry = summarizesHealingDraftRegistry(subject.healingDraftBatches);
+  const projectedScenarioConformance = projectsScenarioConformance({
+    authorityDocuments: scopedAuthorityDocuments,
+    knownModulePaths,
+    occurrences,
+    wiring: dataDrivenWiring,
+    authoritySuccession,
+    workspaceRelativePrefix: subject.workspaceRelativePrefix,
+  });
+  const classifiedOccurrencesWithLineage = classifiedOccurrences.map((occurrence) => Object.freeze({
+    ...occurrence,
+    ...resolvesOccurrenceScenarioLineage(occurrence.modulePath, projectedScenarioConformance.bodyScenarioIndex),
+  }));
+  const lineageDispositionCounts = {};
+  for (const occurrence of classifiedOccurrencesWithLineage) {
+    lineageDispositionCounts[occurrence.lineageDisposition] = (lineageDispositionCounts[occurrence.lineageDisposition] ?? 0) + 1;
+  }
+  const scenarioConformance = Object.freeze({
+    summary: projectedScenarioConformance.summary,
+    features: projectedScenarioConformance.features,
+    lineageAuthorityFiles: projectedScenarioConformance.lineageAuthorityFiles,
+  });
+  const featureCoverageProjection = projectsFeatureCoverage({
+    authorityDocuments: scopedAuthorityDocuments,
+    proposalBatches: subject.featureCoverageProposalBatches,
+    evaluationBatches: subject.featureCoverageInferenceEvaluationBatches,
+    occurrences: classifiedOccurrencesWithLineage,
+    scenarioConformance,
+    knowHowRegistry: knowHowRegistrySummary,
+    healingDraftRegistry,
+  });
+  const featureCoverage = Object.freeze({
+    summary: featureCoverageProjection.summary,
+    proposals: featureCoverageProjection.proposals,
+    liveInferenceEvaluations: featureCoverageProjection.liveInferenceEvaluations,
+    uncoveredClusters: featureCoverageProjection.uncoveredClusters,
+    entityCoverage: featureCoverageProjection.entityCoverage,
+  });
+  const lineageAuthorityFileSet = new Set(projectedScenarioConformance.lineageAuthorityFiles);
+  const unclassifiedAuthorityDocuments = scopedAuthorityDocuments
+    .filter((entry) => !lineageAuthorityFileSet.has(entry.filePath))
+    .map((entry) => Object.freeze({ authorityFile: entry.filePath, documentKind: entry.documentKind }));
+  const knowHowWithoutScenarioLineage = (subject.knowHowRegistry.admittedKnowHow ?? []).filter((entry) => {
+    const lineage = entry.document?.lineage;
+    return !(lineage?.featureId && lineage?.scenarioId && lineage?.obligationId);
+  }).length;
+  const healingDraftsWithoutScenarioTarget = subject.healingDraftBatches.filter((entry) => {
+    const scenarioTarget = entry.document?.subject?.scenarioTarget;
+    return !(scenarioTarget?.featureId && scenarioTarget?.scenarioId
+      && scenarioTarget?.responsibilityId && scenarioTarget?.obligationId);
+  }).length;
 
   return Object.freeze({
     reportType: "source-facts-self-governance-report.v1",
@@ -208,6 +283,21 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     index: Object.freeze({
       indexId: index.indexId ?? null,
       scanId: index.manifest?.scanId ?? null,
+    }),
+    subjectScope: Object.freeze({
+      workspaceRelativePrefix: subject.workspaceRelativePrefix,
+      scopeMode: subject.scopeMode,
+      ...subject.summary,
+    }),
+    scenarioConformance,
+    featureCoverage,
+    unclassifiedInventory: Object.freeze({
+      mechanicsByLineageDisposition: Object.freeze(lineageDispositionCounts),
+      mechanicsByFeatureCoveragePosture: featureCoverage.summary.byPosture,
+      unclassifiedAuthorityDocumentCount: unclassifiedAuthorityDocuments.length,
+      unclassifiedAuthorityDocuments: Object.freeze(unclassifiedAuthorityDocuments),
+      knowHowWithoutScenarioLineage,
+      healingDraftsWithoutScenarioTarget,
     }),
     authoritySources: Object.freeze(
       authorityDeclarationDocuments.map(({ document, filePath }) => Object.freeze({
@@ -242,7 +332,7 @@ export async function projectsSelfGovernanceReport({ index, repositoryId, author
     knowHowRegistry: knowHowRegistrySummary,
     healingDraftRegistry,
     automationReadiness: Object.freeze({ byDisposition: Object.freeze(byAutomationDisposition) }),
-    occurrences: Object.freeze(classifiedOccurrences),
+    occurrences: featureCoverageProjection.occurrences,
     disposition: "OBSERVATIONAL_NO_GATE_APPLIED",
   });
 }

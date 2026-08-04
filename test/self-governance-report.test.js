@@ -22,6 +22,9 @@ import { invokesLiveModelInference, ModelInvocationError } from "../src/governan
 import { proposesSemanticOverlap } from "../src/governance/proposes-semantic-overlap.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
+import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageProposals } from "../src/governance/discovers-feature-coverage-proposals.js";
+import { createsProposalFeatureFingerprint, validatesFeatureCoverageProposal } from "../src/governance/projects-feature-coverage.js";
+import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "../src/governance/proposes-feature-coverage.js";
 
 function buildsAuthorityDocument() {
   return {
@@ -1157,4 +1160,225 @@ test("projectsSelfGovernanceReport exposes semanticOverlapProposals as a purely 
   assert.equal(report.semanticOverlapProposals[0].inferenceQuality.proposalsGenerated, 3);
   // Untouched by the proposal batch -- this remains purely deterministic.
   assert.equal(report.executionMechanics.governed, 0);
+});
+
+function buildsFeatureCoverageProposal(overrides = {}) {
+  const document = {
+    documentKind: "feature-coverage-proposal.v1",
+    lifecycle: "INFERRED_NOT_ADMITTED",
+    proposalId: "handle-other-failure",
+    feature: {
+      candidateFeatureId: "handle-other-failure",
+      title: "Handle another failure",
+      narrative: { asA: "caller", iNeed: "a stable failure", soThat: "failure is observable" },
+    },
+    capabilityRelations: [],
+    scenarios: [{
+      candidateScenarioId: "reject-other",
+      title: "Reject another input",
+      given: ["an invalid input"],
+      when: ["the input is handled"],
+      then: ["the input is rejected"],
+      primaryObligationId: "reject-invalid-other",
+      observableResult: "a rejection",
+      conformanceSignal: "OTHER_REJECTED",
+    }],
+    responsibilities: [{
+      candidateResponsibilityId: "rejects-other",
+      scenarioId: "reject-other",
+      obligationId: "reject-invalid-other",
+      sourceFile: "src/other.js",
+      symbol: null,
+    }],
+    obligations: [{ candidateObligationId: "reject-invalid-other", scenarioId: "reject-other", statement: "Reject invalid other input." }],
+    evidence: { sourceFiles: ["src/other.js"], symbols: [], mechanics: ["throw"], authoritySubjects: [], knowHow: [] },
+    coverageTarget: { currentlyUncoveredOccurrences: 1, responsibilitiesCovered: 1 },
+    ...overrides,
+  };
+  document.featureFingerprint = createsProposalFeatureFingerprint(document);
+  return document;
+}
+
+function buildsCanonicalLineageContract() {
+  return {
+    contract: { contractId: "example-capability-contract", contractType: "governed-artifact-contract.v1" },
+    subject: { subjectId: "example-capability", purpose: "Exercise one example capability." },
+    lineage: {
+      authorityType: "canonical-lineage-authority.v1",
+      projectId: "example-capability",
+      features: [{ featureId: "resolve-example", projectId: "example-capability", purpose: "Resolve the example." }],
+      scenarios: [{ scenarioId: "resolve-valid-example", featureId: "resolve-example", purpose: "Resolve one valid example." }],
+      obligations: [{ obligationId: "produce-example", scenarioId: "resolve-valid-example", statement: "Produce the example result." }],
+      responsibilities: [{ responsibilityId: "resolves-example", obligationId: "produce-example", artifactId: "example-body", responsibilityType: "semantic-execution" }],
+    },
+    artifacts: [{ artifactId: "example-body", relativePath: "src/example.js", relationships: [], proof: { verifierIds: ["example-verifier"] } }],
+  };
+}
+
+test("validatesFeatureCoverageProposal enforces atomic scenario obligations and a stable fingerprint", () => {
+  const valid = buildsFeatureCoverageProposal();
+  assert.deepEqual(validatesFeatureCoverageProposal(valid), []);
+
+  const withDerivedCapability = buildsFeatureCoverageProposal({
+    capabilityRelations: [{
+      relationship: "FEATURE_CONTRIBUTES_TO_CAPABILITY",
+      lifecycle: "INFERRED_NOT_ADMITTED",
+      disposition: "CAPABILITY_RELATION_PROPOSED",
+      candidateCapabilityId: "operate-example",
+      name: "Operate the example",
+      supportedByFeatures: ["handle-other-failure"],
+      evidence: { sharedSubject: "example", sharedOutcome: "observable handling", sharedResponsibilities: ["rejects-other"] },
+    }],
+  });
+  assert.equal(withDerivedCapability.featureFingerprint, valid.featureFingerprint, "derived capability classification must not change feature identity");
+
+  const invalid = buildsFeatureCoverageProposal();
+  invalid.obligations.push({ candidateObligationId: "second", scenarioId: "reject-other", statement: "Do another thing." });
+  assert.equal(validatesFeatureCoverageProposal(invalid).some((finding) => finding.startsWith("SCENARIO_PRIMARY_OBLIGATION_NOT_ATOMIC")), true);
+});
+
+test("discoversFeatureCoverageProposals finds only feature proposal artifacts", async () => {
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), "sfse-feature-proposals-"));
+  try {
+    await writeFile(path.join(tempDir, "feature.json"), JSON.stringify(buildsFeatureCoverageProposal()), "utf8");
+    await writeFile(path.join(tempDir, "other.json"), JSON.stringify({ documentKind: "other.v1" }), "utf8");
+    const proposals = await discoversFeatureCoverageProposals(tempDir, { relativeTo: tempDir });
+    assert.deepEqual(proposals.map((proposal) => proposal.filePath), ["feature.json"]);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("proposesFeatureCoverage uses the bounded query receipt, authors a standalone feature, and leaves capability optional", async () => {
+  let capturedRequest;
+  const candidate = await proposesFeatureCoverage({
+    clusterId: "src/other.js#rejectsOther",
+    featureIdHint: "reject-other-input",
+    sourceEvidenceFiles: [{ path: "src/other.js", content: "export function rejectsOther() { throw new Error('rejected'); }" }],
+    authorityEvidenceFiles: [{ path: "contracts/other.authority.json", content: "{}" }],
+    mechanics: ["throw"],
+    symbols: ["rejectsOther"],
+    uncoveredOccurrences: 1,
+    queryEvidence: { inputHash: "sha256:query", resultHash: "sha256:result", commandText: "SELECT ...", rowCount: 1 },
+    requestId: "feature-request-1",
+    invoke: async (request) => {
+      capturedRequest = request;
+      return {
+        requestId: request.requestId,
+        invocationId: "invocation-1",
+        disposition: "MODEL_RESPONSE_OBTAINED",
+        resolvedAuthority: { providerAuthorityId: "primary-cognitive-provider", providerKind: "gemini", resolvedModel: "gemini-flash-latest" },
+        result: {
+          format: "json",
+          structuredValue: {
+            feature: {
+              candidateFeatureId: "reject-other-input",
+              title: "Reject another input",
+              narrative: { asA: "caller", iNeed: "invalid input rejected", soThat: "failure is observable" },
+            },
+            scenarios: [{
+              candidateScenarioId: "reject-other",
+              title: "Reject another input",
+              given: ["an invalid input"],
+              when: ["the input is handled"],
+              then: ["the input is rejected"],
+              primaryObligationId: "reject-invalid-other",
+              observableResult: "a rejection",
+              conformanceSignal: "OTHER_REJECTED",
+            }],
+            responsibilities: [{
+              candidateResponsibilityId: "rejects-other",
+              scenarioId: "reject-other",
+              obligationId: "reject-invalid-other",
+              sourceFile: "src/other.js",
+              symbol: "rejectsOther",
+            }],
+            obligations: [{ candidateObligationId: "reject-invalid-other", scenarioId: "reject-other", statement: "Reject invalid other input." }],
+            capabilityRelationDisposition: "NO_CAPABILITY_RELATION_DETECTED",
+            capabilityRelations: [],
+            confidence: 0.9,
+            rationale: "The bounded source and authority support one observable rejection feature.",
+          },
+        },
+        proof: { requestHash: "sha256:req", responseHash: "sha256:res", durationMilliseconds: 12 },
+        usage: { totalTokens: 123 },
+      };
+    },
+  });
+
+  assert.equal(candidate.feature.candidateFeatureId, "reject-other-input");
+  assert.equal(Object.hasOwn(candidate, "capability"), false);
+  assert.deepEqual(candidate.capabilityRelations, []);
+  assert.equal(candidate.queryEvidence.resultHash, "sha256:result");
+  assert.equal(validatesFeatureCoverageProposal(candidate).length, 0);
+  assert.match(capturedRequest.interaction.messages[1].content, /Query result hash: sha256:result/);
+  assert.match(capturedRequest.interaction.messages[0].content, /Feature is authored; capability is detected/);
+});
+
+test("live feature evaluations are discovered and compared without becoming feature coverage", async () => {
+  const proposal = buildsFeatureCoverageProposal();
+  proposal.inference = { resolvedModel: "gemini-flash-latest", requestId: "live-1", requestHash: "sha256:req", responseHash: "sha256:res", usage: { totalTokens: 50 }, durationMilliseconds: 10 };
+  proposal.queryEvidence = { inputHash: "sha256:q", resultHash: "sha256:r", rowCount: 1 };
+  const evaluation = wrapsFeatureCoverageInferenceEvaluation(proposal, { evaluationId: "evaluation-1" });
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), "sfse-feature-evaluations-"));
+  try {
+    await writeFile(path.join(tempDir, "live.feature-coverage-inference-evaluation.json"), JSON.stringify(evaluation), "utf8");
+    const discovered = await discoversFeatureCoverageInferenceEvaluations(tempDir, { relativeTo: tempDir });
+    assert.deepEqual(discovered.map((entry) => entry.filePath), ["live.feature-coverage-inference-evaluation.json"]);
+
+    const report = await projectsSelfGovernanceReport({
+      index: buildsSyntheticIndex(),
+      repositoryId: "live-feature-evaluation-test",
+      featureCoverageProposalBatches: [{ filePath: "reviews/other.feature.json", document: buildsFeatureCoverageProposal() }],
+      featureCoverageInferenceEvaluationBatches: discovered,
+    });
+    await validatesSelfGovernanceReport(report);
+    assert.equal(report.featureCoverage.summary.liveInferenceEvaluations, 1);
+    assert.equal(report.featureCoverage.liveInferenceEvaluations[0].comparisonDisposition, "DUPLICATE_FEATURE_PROPOSAL");
+    assert.equal(report.featureCoverage.summary.featureProposalsPendingReview, 1);
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("projectsSelfGovernanceReport makes canonical feature coverage primary and keeps inferred coverage review-required", async () => {
+  const index = buildsSyntheticIndex();
+  const canonical = buildsCanonicalLineageContract();
+  const authorityDocuments = [buildsAuthorityDocumentEntry("contracts/example-capability.json", canonical)];
+  const featureCoverageProposalBatches = [{ filePath: "reviews/handle-other.feature.json", document: buildsFeatureCoverageProposal() }];
+  const report = await projectsSelfGovernanceReport({
+    index,
+    repositoryId: "feature-coverage-test",
+    authorityDocuments,
+    featureCoverageProposalBatches,
+  });
+  await validatesSelfGovernanceReport(report);
+
+  assert.equal(report.featureCoverage.summary.canonicalFeatures, 1);
+  assert.equal(report.featureCoverage.summary.featureProposalsPendingReview, 1);
+  assert.equal(report.featureCoverage.proposals[0].fingerprintVerified, true);
+  assert.equal(report.featureCoverage.proposals[0].duplicateDisposition, "NEW_FEATURE_CANDIDATE");
+  assert.equal(report.occurrences.find((occurrence) => occurrence.modulePath === "src/example.js").featureCoveragePosture, "FEATURE_COVERED");
+  assert.equal(report.occurrences.find((occurrence) => occurrence.modulePath === "src/other.js").featureCoveragePosture, "FEATURE_PROPOSAL_REVIEW_REQUIRED");
+});
+
+test("projectsSelfGovernanceReport excludes broader repository authority from a bounded workspace subject", async () => {
+  const index = buildsSyntheticIndex({ modulePathPrefix: "" });
+  const rootAuthority = buildsAuthorityDocumentEntry("contracts/root.authority.json", buildsAuthorityDocument());
+  const localAuthorityDocument = buildsAuthorityDocument();
+  localAuthorityDocument.sourceFile = "source-facts-query-console/src/example.js";
+  localAuthorityDocument.authority.mechanics[0].sourceLocation = "source-facts-query-console/src/example.js:10-12";
+  const localAuthority = buildsAuthorityDocumentEntry("source-facts-query-console/contracts/local.authority.json", localAuthorityDocument);
+  const report = await projectsSelfGovernanceReport({
+    index,
+    repositoryId: "bounded-test",
+    authorityDocuments: [rootAuthority, localAuthority],
+    workspaceRelativePrefix: "source-facts-query-console",
+  });
+
+  assert.equal(report.subjectScope.authorityDocumentsDiscovered, 2);
+  assert.equal(report.subjectScope.authorityDocumentsInScope, 1);
+  assert.equal(report.subjectScope.authorityDocumentsExcluded, 1);
+  assert.equal(report.contractSemanticVolume.length, 1);
+  assert.equal(report.contractSemanticVolume[0].authorityFile, "source-facts-query-console/contracts/local.authority.json");
 });

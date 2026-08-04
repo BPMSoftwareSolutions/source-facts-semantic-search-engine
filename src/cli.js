@@ -35,8 +35,10 @@ import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolati
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
 import { discoversAuthorityDocumentsAcrossRoots } from "./governance/discovers-authority-documents.js";
 import { discoversSemanticOverlapProposalBatches } from "./governance/discovers-semantic-overlap-proposals.js";
+import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageProposals } from "./governance/discovers-feature-coverage-proposals.js";
 import { discoversKnowHowRegistry } from "./governance/discovers-know-how-registry.js";
 import { proposesSemanticOverlap } from "./governance/proposes-semantic-overlap.js";
+import { proposesFeatureCoverage, wrapsFeatureCoverageInferenceEvaluation } from "./governance/proposes-feature-coverage.js";
 import { generatesConnectiveTissue } from "./governance/generates-connective-tissue.js";
 import { discoversHealingDrafts } from "./governance/discovers-healing-drafts.js";
 import { projectsSelfGovernanceReport } from "./governance/projects-self-governance-report.js";
@@ -78,6 +80,8 @@ if (command === "project") {
   await runGovern(args.slice(1));
 } else if (command === "propose-semantic-overlap") {
   await runProposeSemanticOverlap(args.slice(1));
+} else if (command === "propose-feature-coverage") {
+  await runProposeFeatureCoverage(args.slice(1));
 } else if (command === "generate-connective-tissue") {
   await runGenerateConnectiveTissue(args.slice(1));
 } else if (command === "web") {
@@ -304,6 +308,8 @@ async function runGovern(rawArgs) {
 
   const reviewsDir = path.resolve(flags.reviewsDir ?? path.join(repositoryRoot, "reviews"));
   const semanticOverlapProposalBatches = await discoversSemanticOverlapProposalBatches(reviewsDir, { relativeTo: repositoryRoot });
+  const featureCoverageProposalBatches = await discoversFeatureCoverageProposals(reviewsDir, { relativeTo: repositoryRoot });
+  const featureCoverageInferenceEvaluationBatches = await discoversFeatureCoverageInferenceEvaluations(reviewsDir, { relativeTo: repositoryRoot });
 
   const knowHowDir = path.resolve(flags.knowHowDir ?? path.join(repositoryRoot, "know-how"));
   const knowHowRegistry = await discoversKnowHowRegistry(knowHowDir, { relativeTo: repositoryRoot });
@@ -316,6 +322,8 @@ async function runGovern(rawArgs) {
     repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
     authorityDocuments,
     semanticOverlapProposalBatches,
+    featureCoverageProposalBatches,
+    featureCoverageInferenceEvaluationBatches,
     knowHowRegistry,
     healingDraftBatches,
     workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
@@ -331,6 +339,95 @@ async function runGovern(rawArgs) {
   if (flags.summary === true) {
     process.stdout.write(formatsSelfGovernanceReportSummary(report));
   }
+}
+
+function parsesCommaSeparated(value) {
+  return typeof value === "string" ? value.split(",").map((entry) => entry.trim()).filter(Boolean) : [];
+}
+
+async function readsEvidenceFiles(fileNames) {
+  const evidence = [];
+  for (const fileName of fileNames) {
+    const absolutePath = path.resolve(repositoryRoot, fileName);
+    evidence.push({
+      path: path.relative(repositoryRoot, absolutePath).replaceAll("\\", "/"),
+      content: await fs.readFile(absolutePath, "utf8"),
+    });
+  }
+  return evidence;
+}
+
+/**
+ * Runs a deterministic relational query first, then gives exactly that
+ * bounded result and its source/authority evidence to the live model. The
+ * output is an observational evaluation artifact; govern reports it but does
+ * not count it as admitted or pending feature coverage.
+ */
+async function runProposeFeatureCoverage(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const required = ["index", "query", "clusterId", "featureIdHint"];
+  const missing = required.filter((name) => typeof flags[name] !== "string" || flags[name].length === 0);
+  if (missing.length > 0) {
+    process.stderr.write(`propose-feature-coverage requires ${missing.map((name) => `--${name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)} <value>`).join(", ")}\n`);
+    process.exitCode = 1;
+    return;
+  }
+
+  const indexPath = path.resolve(repositoryRoot, flags.index);
+  const sourceFactIndex = await readsJsonFile(indexPath);
+  const queryReceipt = await executeRelationalQuery(sourceFactIndex, flags.query);
+  if (queryReceipt.disposition !== "RELATIONAL_QUERY_EXECUTED") {
+    throw new Error(`Feature inference query failed: ${JSON.stringify(queryReceipt.findings ?? [])}`);
+  }
+  const rows = queryReceipt.result?.value?.rows;
+  if (!Array.isArray(rows) || rows.length === 0) throw new Error("Feature inference query returned no source-fact rows.");
+  const queriedModulePaths = [...new Set(rows.map((row) => row.modulePath).filter((value) => typeof value === "string" && value.length > 0))];
+  const queriedMechanics = [...new Set(rows.map((row) => row.mechanic).filter((value) => typeof value === "string" && value.length > 0))];
+  if (queriedModulePaths.length === 0 || queriedMechanics.length === 0) {
+    throw new Error("Feature inference query rows must expose modulePath and mechanic columns.");
+  }
+
+  const workspaceRoot = sourceFactIndex.manifest?.scanRequest?.workspaceRoot;
+  if (typeof workspaceRoot !== "string" || workspaceRoot.length === 0) throw new Error("The source-fact index does not declare its scanned workspace root.");
+  const sourceEvidenceFiles = await readsEvidenceFiles(queriedModulePaths.map((modulePath) => path.resolve(workspaceRoot, modulePath)));
+  const explicitSymbols = parsesCommaSeparated(flags.symbols);
+  const querySymbols = rows.map((row) => row.symbolName).filter(Boolean);
+  const discoveredSymbols = (sourceFactIndex.symbols ?? [])
+    .filter((symbol) => queriedModulePaths.includes(symbol.modulePath))
+    .map((symbol) => symbol.name)
+    .filter(Boolean);
+  const symbols = [...new Set(explicitSymbols.length > 0 ? explicitSymbols : [...querySymbols, ...discoveredSymbols])].sort();
+
+  const candidate = await proposesFeatureCoverage({
+    clusterId: flags.clusterId,
+    featureIdHint: flags.featureIdHint,
+    sourceEvidenceFiles,
+    authorityEvidenceFiles: await readsEvidenceFiles(parsesCommaSeparated(flags.authorityEvidenceFiles)),
+    knowHowEvidenceFiles: await readsEvidenceFiles(parsesCommaSeparated(flags.knowHowEvidenceFiles)),
+    mechanics: queriedMechanics,
+    symbols,
+    uncoveredOccurrences: rows.length,
+    queryEvidence: {
+      receiptType: queryReceipt.receiptType,
+      authorityHash: queryReceipt.authorityHash,
+      inputHash: queryReceipt.inputHash,
+      resultHash: queryReceipt.resultHash,
+      disposition: queryReceipt.disposition,
+      commandText: queryReceipt.result?.value?.commandText ?? flags.query,
+      rowCount: queryReceipt.result?.value?.rowCount ?? rows.length,
+    },
+  });
+  const evaluation = wrapsFeatureCoverageInferenceEvaluation(candidate, {
+    evaluationId: `${flags.featureIdHint}-${candidate.inference.requestId}`,
+  });
+  const defaultOutput = path.join("reviews", "live-evaluations", `${flags.featureIdHint}.feature-coverage-inference-evaluation.json`);
+  const outputPath = path.resolve(repositoryRoot, flags.output ?? defaultOutput);
+  await fs.mkdir(path.dirname(outputPath), { recursive: true });
+  await writesJsonFile(outputPath, evaluation, { pretty: true });
+
+  process.stdout.write(`${outputPath}\n`);
+  process.stdout.write(`${rows.length} queried occurrence(s) -> ${candidate.feature.candidateFeatureId} via ${candidate.inference.resolvedModel} (${candidate.inference.usage?.totalTokens ?? "?"} tokens, ${candidate.inference.durationMilliseconds ?? "?"}ms).\n`);
+  process.stdout.write("Lifecycle: OBSERVATIONAL_NOT_ADMISSIBLE -- the live candidate is reportable, but cannot establish feature authority or coverage.\n");
 }
 
 /**
@@ -398,8 +495,11 @@ async function runProposeSemanticOverlap(rawArgs) {
 async function runGenerateConnectiveTissue(rawArgs) {
   const { flags } = parseArgs(rawArgs);
 
-  if (typeof flags.subjectId !== "string" || typeof flags.executableEvidenceFiles !== "string") {
-    process.stderr.write("generate-connective-tissue requires --subject-id <string> and --executable-evidence-files <file,file,...>\n");
+  const requiredLineageFlags = ["featureId", "scenarioId", "responsibilityId", "obligationId"];
+  if (typeof flags.subjectId !== "string" || typeof flags.executableEvidenceFiles !== "string"
+    || typeof flags.featureAuthorityFile !== "string"
+    || requiredLineageFlags.some((flag) => typeof flags[flag] !== "string")) {
+    process.stderr.write("generate-connective-tissue requires --subject-id <string>, --feature-authority-file <file>, --feature-id <id>, --scenario-id <id>, --responsibility-id <id>, --obligation-id <id>, and --executable-evidence-files <file,file,...>\n");
     process.exitCode = 1;
     return;
   }
@@ -420,9 +520,17 @@ async function runGenerateConnectiveTissue(rawArgs) {
   const authorityEvidence = await readsEvidenceFiles(flags.authorityEvidenceFiles);
   const executableEvidence = await readsEvidenceFiles(flags.executableEvidenceFiles);
   const knownGaps = typeof flags.knownGapsFile === "string" ? await readsJsonFile(path.resolve(repositoryRoot, flags.knownGapsFile)) : [];
+  const featureAuthority = await readsJsonFile(path.resolve(repositoryRoot, flags.featureAuthorityFile));
 
   const batch = await generatesConnectiveTissue({
     subjectId: flags.subjectId,
+    scenarioTarget: {
+      featureId: flags.featureId,
+      scenarioId: flags.scenarioId,
+      responsibilityId: flags.responsibilityId,
+      obligationId: flags.obligationId,
+    },
+    featureAuthority,
     authorityEvidence,
     executableEvidence,
     existingWiring: flags.wiringEvidence ?? null,
@@ -967,10 +1075,19 @@ function parseArgs(rawArgs) {
         case "--related-files":
         case "--succession-evidence":
         case "--subject-id":
+        case "--feature-authority-file":
+        case "--feature-id":
+        case "--scenario-id":
+        case "--responsibility-id":
+        case "--obligation-id":
         case "--authority-evidence-files":
         case "--executable-evidence-files":
         case "--wiring-evidence":
         case "--known-gaps-file":
+        case "--cluster-id":
+        case "--feature-id-hint":
+        case "--know-how-evidence-files":
+        case "--symbols":
           flags[normalizeLongOption(current)] = next;
           index++;
           continue;
@@ -1032,7 +1149,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
   stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
-  stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);
+  stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);
+  stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --feature-authority-file <file> --feature-id <id> --scenario-id <id> --responsibility-id <id> --obligation-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);

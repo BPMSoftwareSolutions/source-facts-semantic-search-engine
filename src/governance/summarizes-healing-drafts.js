@@ -19,6 +19,7 @@ export function summarizesHealingDraft({ filePath, document }) {
     draftFile: filePath,
     lifecycle: typeof document.lifecycle === "string" ? document.lifecycle : "UNKNOWN",
     subjectId: document.subject?.subjectId ?? null,
+    scenarioTarget: document.subject?.scenarioTarget ?? null,
     healingDisposition: typeof draft.healingDisposition === "string" ? draft.healingDisposition : "UNKNOWN",
     confidence: typeof draft.confidence === "number" ? draft.confidence : null,
     missingTissue: Object.freeze(Array.isArray(draft.missingTissue) ? [...draft.missingTissue] : []),

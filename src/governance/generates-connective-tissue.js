@@ -421,6 +421,9 @@ ${repairPacket.repairPacketType}
 ## Subject
 ${repairPacket.subject.subjectId}
 
+## Admitted scenario target
+${JSON.stringify(repairPacket.subject.scenarioTarget, null, 2)}
+
 ## Authority evidence (what meaning already exists or is proposed)
 ${authorityEvidence}
 
@@ -456,6 +459,8 @@ Produce exactly one structured response covering every draft section. Mark inapp
  */
 export async function generatesConnectiveTissue({
   subjectId,
+  scenarioTarget,
+  featureAuthority,
   authorityEvidence,
   executableEvidence,
   existingWiring,
@@ -467,6 +472,25 @@ export async function generatesConnectiveTissue({
 }) {
   if (typeof subjectId !== "string" || subjectId.length === 0) {
     throw new Error("subjectId is required.");
+  }
+  const requiredTargetIds = ["featureId", "scenarioId", "responsibilityId", "obligationId"];
+  for (const targetId of requiredTargetIds) {
+    if (typeof scenarioTarget?.[targetId] !== "string" || scenarioTarget[targetId].length === 0) {
+      throw new Error(`scenarioTarget.${targetId} is required -- connective tissue may only be drafted inside admitted scenario lineage.`);
+    }
+  }
+  const lineage = featureAuthority?.lineage;
+  const featureMatches = lineage?.authorityType === "canonical-lineage-authority.v1" && (lineage.features ?? [])
+    .some((feature) => feature.featureId === scenarioTarget.featureId);
+  const scenarioMatches = featureMatches && (lineage.scenarios ?? [])
+    .some((scenario) => scenario.scenarioId === scenarioTarget.scenarioId && scenario.featureId === scenarioTarget.featureId);
+  const obligationMatches = scenarioMatches && (lineage.obligations ?? [])
+    .some((obligation) => obligation.obligationId === scenarioTarget.obligationId && obligation.scenarioId === scenarioTarget.scenarioId);
+  const responsibilityMatches = obligationMatches && (lineage.responsibilities ?? [])
+    .some((responsibility) => responsibility.responsibilityId === scenarioTarget.responsibilityId && responsibility.obligationId === scenarioTarget.obligationId);
+  const authorityAdmitted = featureAuthority?.contract?.status === "admitted";
+  if (!responsibilityMatches || !authorityAdmitted) {
+    throw new Error("scenarioTarget does not resolve through an admitted canonical feature authority; admit or extend feature coverage before generating connective tissue.");
   }
   if (!((typeof executableEvidence === "string" && executableEvidence.trim().length > 0) || (Array.isArray(executableEvidence) && executableEvidence.length > 0))) {
     throw new Error("executableEvidence is required -- connective tissue cannot be drafted without current code to ground it.");
@@ -503,7 +527,7 @@ export async function generatesConnectiveTissue({
 
   const repairPacket = Object.freeze({
     repairPacketType: "connective-tissue-repair-packet.v1",
-    subject: Object.freeze({ subjectId }),
+    subject: Object.freeze({ subjectId, scenarioTarget: Object.freeze({ ...scenarioTarget }) }),
     authorityEvidence: normalizesLocalEvidence(authorityEvidence, "authority-evidence"),
     executableEvidence: normalizesLocalEvidence(executableEvidence, "executable-evidence"),
     existingWiring: typeof existingWiring === "string" && existingWiring.trim().length > 0 ? existingWiring.trim() : null,
@@ -850,6 +874,9 @@ ${repairPacket.repairPacketType}
 ## Subject
 ${repairPacket.subject.subjectId}
 
+## Admitted scenario target
+${JSON.stringify(repairPacket.subject.scenarioTarget, null, 2)}
+
 ## Authority evidence (what meaning already exists or is proposed)
 ${formatsEvidenceFilesLocal(repairPacket.authorityEvidence)}
 
@@ -919,7 +946,7 @@ Produce exactly one structured response covering every draft section. Mark inapp
     documentKind: "connective-tissue-draft-batch.v1",
     lifecycle: "DRAFT_NOT_ADMITTED",
     note: "Draft connective tissue only. Nothing here has been applied, admitted as authority, or written to any source file. healing/ is never scanned by discoversAuthorityDocuments and no code in this repository writes collapsedBodyDraft.proposedSource anywhere.",
-    subject: Object.freeze({ subjectId, knownGaps: Object.freeze([...knownGaps]) }),
+    subject: Object.freeze({ subjectId, scenarioTarget: Object.freeze({ ...scenarioTarget }), knownGaps: Object.freeze([...knownGaps]) }),
     inference: Object.freeze({
       performedBy: "live model call via invokes-live-model-inference.js (generic-llm-connector)",
       providerAuthorityId: response.resolvedAuthority?.providerAuthorityId ?? null,

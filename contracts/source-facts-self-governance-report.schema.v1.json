@@ -7,6 +7,10 @@
     "generatedAtUtc",
     "repository",
     "index",
+    "subjectScope",
+    "scenarioConformance",
+    "featureCoverage",
+    "unclassifiedInventory",
     "authoritySources",
     "otherAuthorityDocuments",
     "executionMechanics",
@@ -84,6 +88,107 @@
       "properties": {
         "indexId": { "type": ["string", "null"] },
         "scanId": { "type": ["string", "null"] }
+      }
+    },
+    "subjectScope": {
+      "type": "object",
+      "required": [
+        "workspaceRelativePrefix",
+        "scopeMode",
+        "authorityDocumentsDiscovered",
+        "authorityDocumentsInScope",
+        "authorityDocumentsExcluded",
+        "proposalBatchesDiscovered",
+        "proposalBatchesInScope",
+        "proposalBatchesExcluded",
+        "featureCoverageProposalsDiscovered",
+        "featureCoverageProposalsInScope",
+        "featureCoverageProposalsExcluded",
+        "featureCoverageInferenceEvaluationsDiscovered",
+        "featureCoverageInferenceEvaluationsInScope",
+        "featureCoverageInferenceEvaluationsExcluded",
+        "knowHowRecordsDiscovered",
+        "knowHowRecordsInScope",
+        "knowHowRecordsExcluded",
+        "healingDraftsDiscovered",
+        "healingDraftsInScope",
+        "healingDraftsExcluded"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "workspaceRelativePrefix": { "type": "string" },
+        "scopeMode": { "enum": ["REPOSITORY_WIDE", "WORKSPACE_BOUNDED"] },
+        "authorityDocumentsDiscovered": { "type": "integer", "minimum": 0 },
+        "authorityDocumentsInScope": { "type": "integer", "minimum": 0 },
+        "authorityDocumentsExcluded": { "type": "integer", "minimum": 0 },
+        "proposalBatchesDiscovered": { "type": "integer", "minimum": 0 },
+        "proposalBatchesInScope": { "type": "integer", "minimum": 0 },
+        "proposalBatchesExcluded": { "type": "integer", "minimum": 0 },
+        "featureCoverageProposalsDiscovered": { "type": "integer", "minimum": 0 },
+        "featureCoverageProposalsInScope": { "type": "integer", "minimum": 0 },
+        "featureCoverageProposalsExcluded": { "type": "integer", "minimum": 0 },
+        "featureCoverageInferenceEvaluationsDiscovered": { "type": "integer", "minimum": 0 },
+        "featureCoverageInferenceEvaluationsInScope": { "type": "integer", "minimum": 0 },
+        "featureCoverageInferenceEvaluationsExcluded": { "type": "integer", "minimum": 0 },
+        "knowHowRecordsDiscovered": { "type": "integer", "minimum": 0 },
+        "knowHowRecordsInScope": { "type": "integer", "minimum": 0 },
+        "knowHowRecordsExcluded": { "type": "integer", "minimum": 0 },
+        "healingDraftsDiscovered": { "type": "integer", "minimum": 0 },
+        "healingDraftsInScope": { "type": "integer", "minimum": 0 },
+        "healingDraftsExcluded": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "scenarioConformance": {
+      "type": "object",
+      "required": ["summary", "features", "lineageAuthorityFiles"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": { "type": "object" },
+        "features": { "type": "array", "items": { "type": "object" } },
+        "lineageAuthorityFiles": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "featureCoverage": {
+      "type": "object",
+      "required": ["summary", "proposals", "liveInferenceEvaluations", "uncoveredClusters", "entityCoverage"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": { "type": "object" },
+        "proposals": { "type": "array", "items": { "type": "object" } },
+        "liveInferenceEvaluations": { "type": "array", "items": { "type": "object" } },
+        "uncoveredClusters": { "type": "array", "items": { "type": "object" } },
+        "entityCoverage": { "type": "object" }
+      }
+    },
+    "unclassifiedInventory": {
+      "type": "object",
+      "required": [
+        "mechanicsByLineageDisposition",
+        "mechanicsByFeatureCoveragePosture",
+        "unclassifiedAuthorityDocumentCount",
+        "unclassifiedAuthorityDocuments",
+        "knowHowWithoutScenarioLineage",
+        "healingDraftsWithoutScenarioTarget"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mechanicsByLineageDisposition": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "mechanicsByFeatureCoveragePosture": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+        "unclassifiedAuthorityDocumentCount": { "type": "integer", "minimum": 0 },
+        "unclassifiedAuthorityDocuments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["authorityFile", "documentKind"],
+            "additionalProperties": false,
+            "properties": {
+              "authorityFile": { "type": "string", "minLength": 1 },
+              "documentKind": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "knowHowWithoutScenarioLineage": { "type": "integer", "minimum": 0 },
+        "healingDraftsWithoutScenarioTarget": { "type": "integer", "minimum": 0 }
       }
     },
     "authoritySources": {
@@ -510,6 +615,7 @@
               "draftFile",
               "lifecycle",
               "subjectId",
+              "scenarioTarget",
               "healingDisposition",
               "confidence",
               "missingTissue",
@@ -521,6 +627,7 @@
               "draftFile": { "type": "string", "minLength": 1 },
               "lifecycle": { "type": "string", "minLength": 1 },
               "subjectId": { "type": ["string", "null"] },
+              "scenarioTarget": { "type": ["object", "null"] },
               "healingDisposition": { "type": "string", "minLength": 1 },
               "confidence": { "type": ["number", "null"] },
               "missingTissue": { "type": "array", "items": { "type": "string" } },
@@ -600,7 +707,14 @@
           "missingTissue",
           "candidateAuthorityFile",
           "candidateMechanicId",
-          "candidateCoverageDisposition"
+          "candidateCoverageDisposition",
+          "lineageDisposition",
+          "featureClassificationIds",
+          "featureIds",
+          "scenarioIds",
+          "obligationIds",
+          "lineageResponsibilityIds",
+          "featureCoveragePosture"
         ],
         "additionalProperties": false,
         "properties": {
@@ -620,7 +734,32 @@
           "missingTissue": { "type": "array", "items": { "$ref": "#/$defs/missingTissue" } },
           "candidateAuthorityFile": { "type": ["string", "null"] },
           "candidateMechanicId": { "type": ["string", "null"] },
-          "candidateCoverageDisposition": { "type": ["string", "null"] }
+          "candidateCoverageDisposition": { "type": ["string", "null"] },
+          "lineageDisposition": {
+            "enum": [
+              "LINEAGE_CONFIRMED",
+              "LINEAGE_INFERRED_PENDING_REVIEW",
+              "MULTIPLE_CANDIDATE_SCENARIOS",
+              "NO_SCENARIO_LINEAGE",
+              "CROSS_CUTTING_PLATFORM_RESPONSIBILITY",
+              "POLLUTION_OR_ORPHAN"
+            ]
+          },
+          "featureClassificationIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "featureIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "scenarioIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "obligationIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "lineageResponsibilityIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "featureCoveragePosture": {
+            "enum": [
+              "FEATURE_COVERED",
+              "FEATURE_COVERAGE_PROPOSED",
+              "FEATURE_PROPOSAL_REVIEW_REQUIRED",
+              "FEATURE_LINEAGE_AMBIGUOUS",
+              "FEATURE_COVERAGE_MISSING",
+              "NOT_CAPABILITY_MEANING"
+            ]
+          }
         }
       }
     },

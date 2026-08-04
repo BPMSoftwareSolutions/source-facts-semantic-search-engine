@@ -605,6 +605,7 @@ function formatsHealingDraftRegistry(report) {
 }
 
 export function formatsSelfGovernanceReportMarkdown(report) {
+  if (report.scenarioConformance !== undefined) return formatsScenarioConformanceReportMarkdown(report);
   const { executionMechanics, authoritySources, otherAuthorityDocuments, repository, index, disposition, generatedAtUtc } = report;
   const observed = executionMechanics.observed;
   const danglingSources = findsDanglingAuthoritySources(report);
@@ -751,6 +752,7 @@ export function formatsSelfGovernanceReportMarkdown(report) {
 }
 
 export function formatsSelfGovernanceReportSummary(report) {
+  if (report.scenarioConformance !== undefined) return formatsScenarioConformanceReportSummary(report);
   const { executionMechanics, authoritySources, otherAuthorityDocuments, dataDrivenWiring, contractSemanticVolume, authoritySuccession, semanticOverlapProposals, knowHowRegistry, healingDraftRegistry, automationReadiness, repository, disposition, generatedAtUtc } = report;
   const lines = [
     "Source Facts Self-Governance Report",
@@ -867,3 +869,7 @@ export function formatsSelfGovernanceReportSummary(report) {
 
   return `${lines.join("\n")}\n`;
 }
+import {
+  formatsScenarioConformanceReportMarkdown,
+  formatsScenarioConformanceReportSummary,
+} from "./formats-scenario-conformance-report.js";

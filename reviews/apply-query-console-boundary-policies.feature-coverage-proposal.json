@@ -1,0 +1,128 @@
+{
+  "documentKind": "feature-coverage-proposal.v1",
+  "lifecycle": "INFERRED_NOT_ADMITTED",
+  "proposalId": "apply-query-console-boundary-policies",
+  "featureFingerprint": "sha256:2ecc8b28b9d8df67feea8dad2e9cca4c57faf22659e9c494f3b5412185062c19",
+  "feature": {
+    "candidateFeatureId": "apply-query-console-boundary-policies",
+    "title": "Apply query-console boundary policies",
+    "narrative": {
+      "asA": "query-console operator",
+      "iNeed": "console boundary decisions to execute from admitted semantic policies",
+      "soThat": "network admission, route dispatch, and browser access remain explicit and reviewable"
+    }
+  },
+  "capabilityRelationDisposition": "NO_CAPABILITY_RELATION_DETECTED",
+  "capabilityRelations": [],
+  "scenarios": [
+    {
+      "candidateScenarioId": "admit-loopback-bind-target",
+      "title": "Admit only a loopback bind target",
+      "given": ["a requested query-console bind hostname"],
+      "when": ["the bind target is classified"],
+      "then": [
+        "only an admitted loopback hostname is accepted",
+        "a non-loopback hostname produces the declared rejection disposition"
+      ],
+      "primaryObligationId": "enforce-loopback-bind-policy",
+      "observableResult": "a loopback admission or declared rejection disposition",
+      "conformanceSignal": "LOOPBACK_BIND_POLICY_APPLIED"
+    },
+    {
+      "candidateScenarioId": "dispatch-admitted-console-route",
+      "title": "Dispatch only an admitted console route",
+      "given": ["a query-console method and pathname"],
+      "when": ["the route request is classified"],
+      "then": [
+        "an admitted method and pathname resolve to their canonical route",
+        "an unsupported route produces the declared rejection disposition"
+      ],
+      "primaryObligationId": "enforce-console-route-policy",
+      "observableResult": "a canonical route identifier or declared rejection disposition",
+      "conformanceSignal": "CONSOLE_ROUTE_POLICY_APPLIED"
+    },
+    {
+      "candidateScenarioId": "project-restrictive-console-csp",
+      "title": "Project the restrictive query-console CSP",
+      "given": ["the query console is preparing an HTTP response"],
+      "when": ["the content-security policy is projected"],
+      "then": [
+        "the canonical query-console CSP is returned",
+        "no undeclared third-party origin is admitted"
+      ],
+      "primaryObligationId": "emit-canonical-console-csp",
+      "observableResult": "the canonical restrictive Content-Security-Policy value",
+      "conformanceSignal": "QUERY_CONSOLE_CSP_PROJECTED"
+    }
+  ],
+  "responsibilities": [
+    {
+      "candidateResponsibilityId": "classify-loopback-bind",
+      "scenarioId": "admit-loopback-bind-target",
+      "obligationId": "enforce-loopback-bind-policy",
+      "sourceFile": "source-facts-query-console/src/loopback-bind-adapter.mjs",
+      "symbol": "classifiesLoopbackBind"
+    },
+    {
+      "candidateResponsibilityId": "classify-console-route",
+      "scenarioId": "dispatch-admitted-console-route",
+      "obligationId": "enforce-console-route-policy",
+      "sourceFile": "source-facts-query-console/src/route-dispatch-adapter.mjs",
+      "symbol": "classifiesRoute"
+    },
+    {
+      "candidateResponsibilityId": "project-console-csp",
+      "scenarioId": "project-restrictive-console-csp",
+      "obligationId": "emit-canonical-console-csp",
+      "sourceFile": "source-facts-query-console/src/csp-policy-adapter.mjs",
+      "symbol": "projectsCspPolicy"
+    }
+  ],
+  "obligations": [
+    {
+      "candidateObligationId": "enforce-loopback-bind-policy",
+      "scenarioId": "admit-loopback-bind-target",
+      "statement": "Admit only the declared loopback bind target and reject every non-loopback target."
+    },
+    {
+      "candidateObligationId": "enforce-console-route-policy",
+      "scenarioId": "dispatch-admitted-console-route",
+      "statement": "Resolve only declared query-console method and pathname combinations."
+    },
+    {
+      "candidateObligationId": "emit-canonical-console-csp",
+      "scenarioId": "project-restrictive-console-csp",
+      "statement": "Emit the canonical restrictive Content-Security-Policy value for query-console responses."
+    }
+  ],
+  "evidence": {
+    "sourceFiles": [
+      "source-facts-query-console/src/csp-policy-adapter.mjs",
+      "source-facts-query-console/src/loopback-bind-adapter.mjs",
+      "source-facts-query-console/src/route-dispatch-adapter.mjs"
+    ],
+    "symbols": ["classifiesLoopbackBind", "classifiesRoute", "projectsCspPolicy"],
+    "mechanics": ["object-construction"],
+    "authoritySubjects": [
+      "source-facts-query-console/contracts/query-console-csp-policy.authority.json",
+      "source-facts-query-console/contracts/loopback-bind.authority.json",
+      "source-facts-query-console/contracts/route-dispatch.authority.json"
+    ],
+    "knowHow": [],
+    "inferenceBatches": [],
+    "healingDrafts": []
+  },
+  "coverageTarget": {
+    "currentlyUncoveredOccurrences": 4,
+    "responsibilitiesCovered": 3
+  },
+  "duplicateCheck": {
+    "requestedDisposition": "NEW_FEATURE_CANDIDATE",
+    "comparisonBasis": "scenario obligations + responsibility identities + semantic authority subjects"
+  },
+  "inference": {
+    "sourceModel": "Codex",
+    "promotionBasis": "A bounded feature inference over the query-console adapter cluster and its local semantic authority documents.",
+    "lifecycleNote": "This proposal is not authority. Human review, amendment, and admission are required before it can provide canonical feature coverage."
+  }
+}

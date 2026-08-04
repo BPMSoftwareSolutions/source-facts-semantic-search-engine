@@ -1,0 +1,122 @@
+{
+  "documentKind": "feature-coverage-proposal.v1",
+  "lifecycle": "INFERRED_NOT_ADMITTED",
+  "proposalId": "serialize-successful-query-console-responses",
+  "featureFingerprint": "sha256:9ec5470fca11c60808c3dd8f161b7588a3b2bdb95a4af258b1a0bd1d4c4e1970",
+  "feature": {
+    "candidateFeatureId": "serialize-successful-responses",
+    "title": "Serialize successful query-console responses",
+    "narrative": {
+      "asA": "query-console consumer",
+      "iNeed": "successful responses to use one canonical serialization policy",
+      "soThat": "every successful route emits a consistent and governed result shape"
+    }
+  },
+  "capabilityRelationDisposition": "NO_CAPABILITY_RELATION_DETECTED",
+  "capabilityRelations": [],
+  "scenarios": [
+    {
+      "candidateScenarioId": "serialize-successful-index-information-response",
+      "title": "Serialize a successful index-information response",
+      "given": ["index information has been resolved"],
+      "when": ["the successful response is projected"],
+      "then": [
+        "the canonical index-information result is serialized",
+        "the serialization disposition is recorded"
+      ],
+      "primaryObligationId": "emit-canonical-index-information-result",
+      "observableResult": "a canonical serialized index-information response",
+      "conformanceSignal": "INDEX_INFORMATION_SUCCESS_RESPONSE_SERIALIZED"
+    },
+    {
+      "candidateScenarioId": "serialize-successful-query-response",
+      "title": "Serialize a successful query response",
+      "given": ["a query result has been resolved"],
+      "when": ["the successful response is projected"],
+      "then": [
+        "the canonical query result is serialized",
+        "the serialization disposition is recorded"
+      ],
+      "primaryObligationId": "emit-canonical-query-result",
+      "observableResult": "a canonical serialized query response",
+      "conformanceSignal": "QUERY_SUCCESS_RESPONSE_SERIALIZED"
+    },
+    {
+      "candidateScenarioId": "serialize-successful-snippet-response",
+      "title": "Serialize a successful snippet response",
+      "given": ["a snippet result has been resolved"],
+      "when": ["the successful response is projected"],
+      "then": [
+        "the canonical snippet result is serialized",
+        "the serialization disposition is recorded"
+      ],
+      "primaryObligationId": "emit-canonical-snippet-result",
+      "observableResult": "a canonical serialized snippet response",
+      "conformanceSignal": "SNIPPET_SUCCESS_RESPONSE_SERIALIZED"
+    }
+  ],
+  "responsibilities": [
+    {
+      "candidateResponsibilityId": "project-index-information-success-response",
+      "scenarioId": "serialize-successful-index-information-response",
+      "obligationId": "emit-canonical-index-information-result",
+      "sourceFile": "src/console/serves-query-console.runtime.impl.mjs",
+      "symbol": "handleIndexInfo"
+    },
+    {
+      "candidateResponsibilityId": "project-query-success-response",
+      "scenarioId": "serialize-successful-query-response",
+      "obligationId": "emit-canonical-query-result",
+      "sourceFile": "src/console/serves-query-console.runtime.impl.mjs",
+      "symbol": "handleQuery"
+    },
+    {
+      "candidateResponsibilityId": "project-snippet-success-response",
+      "scenarioId": "serialize-successful-snippet-response",
+      "obligationId": "emit-canonical-snippet-result",
+      "sourceFile": "src/console/serves-query-console.runtime.impl.mjs",
+      "symbol": "handleSnippet"
+    }
+  ],
+  "obligations": [
+    {
+      "candidateObligationId": "emit-canonical-index-information-result",
+      "scenarioId": "serialize-successful-index-information-response",
+      "statement": "Emit the canonical serialized index-information result."
+    },
+    {
+      "candidateObligationId": "emit-canonical-query-result",
+      "scenarioId": "serialize-successful-query-response",
+      "statement": "Emit the canonical serialized query result."
+    },
+    {
+      "candidateObligationId": "emit-canonical-snippet-result",
+      "scenarioId": "serialize-successful-snippet-response",
+      "statement": "Emit the canonical serialized snippet result."
+    }
+  ],
+  "evidence": {
+    "sourceFiles": ["src/console/serves-query-console.runtime.impl.mjs"],
+    "symbols": ["handleIndexInfo", "handleQuery", "handleSnippet"],
+    "mechanics": ["serialization"],
+    "authoritySubjects": ["error-response-serialization", "success-response-serialization"],
+    "knowHow": ["success-path-serialization-duplicated-inline"],
+    "inferenceBatches": ["reviews/serves-query-console.authority-complete.semantic-overlap-proposals.json"],
+    "healingDrafts": ["healing/success-response-serialization.connective-tissue-draft.json"]
+  },
+  "coverageTarget": {
+    "currentlyUncoveredOccurrences": 20,
+    "serializationOccurrencesInSourceFile": 30,
+    "responsibilitiesCovered": 3
+  },
+  "duplicateCheck": {
+    "requestedDisposition": "NEW_FEATURE_CANDIDATE",
+    "comparisonBasis": "scenario obligations + responsibility identities + semantic authority subjects"
+  },
+  "inference": {
+    "sourceModel": "gemini-flash-latest",
+    "sourceInferenceBatch": "reviews/serves-query-console.authority-complete.semantic-overlap-proposals.json",
+    "promotionBasis": "The reviewed model inference identified the success-path serialization gap; the feature package is structured under the human-supplied feature-coverage doctrine.",
+    "lifecycleNote": "This proposal is not authority. Human review, amendment, and admission are required before it can provide canonical feature coverage."
+  }
+}

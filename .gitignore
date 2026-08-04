@@ -1,5 +1,7 @@
 node_modules/
 *.json
+!reviews/**/*.feature-coverage-proposal.json
+!reviews/**/*.feature-coverage-inference-evaluation.json
 !package.json
 !package-lock.json
 !contracts/**/*.json
