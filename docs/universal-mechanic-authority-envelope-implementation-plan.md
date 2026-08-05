@@ -1903,6 +1903,19 @@ only artifacts required to execute the projection. The initial implementation is
 an integrity seal (`DIGEST_SEALED_NOT_SIGNED`), intentionally distinct from a
 future authenticated digital signature.
 
+### Canonical test and feature closure program
+
+Canonical proof coverage is scenario coverage, not a synonym for source-line
+coverage or a passing handwritten suite. Script 019 establishes four independent
+planes: admitted test vectors and expectations, current test-structure
+observations, non-admitted candidate bindings, and execution testimony tied to a
+current test-closure seal. Every current test receives an explicit posture; no
+observed match becomes authority. The current closure views must report missing
+scenario proof, unprojectable vectors, stale execution lineage, and unbound tests
+directly from SQL. Subsequent slices admit reviewed vectors, add transitive
+test-to-production reachability, project target-framework tests, and record
+differential execution against the same closure seal.
+
 The capability is complete only when:
 
 1. The Gherkin feature is admitted.

@@ -40,6 +40,8 @@ import { projectsRepositorySemanticAnalysis } from "./repository-semantics.js";
 import { loadsRepositorySemanticAnalysisIntoSqlServer } from "./sqlserver/repository-semantics.js";
 import { projectsCanonicalIntentRegistryFromRepositoryImage } from "./repository-lineage-seal.js";
 import { refreshesRepositoryLineageSealInSqlServer, validatesRepositoryLineageSealInSqlServer } from "./sqlserver/repository-lineage-seal.js";
+import { projectsRepositoryTestKnowledge } from "./repository-test-knowledge.js";
+import { loadsRepositoryTestKnowledgeIntoSqlServer, queriesCurrentRepositoryTestClosure } from "./sqlserver/repository-test-knowledge.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -146,6 +148,10 @@ if (command === "project") {
   await runSealRepository(args.slice(1));
 } else if (command === "validate-repository-seal") {
   await runValidateRepositorySeal(args.slice(1));
+} else if (command === "analyze-tests") {
+  await runAnalyzeTests(args.slice(1));
+} else if (command === "test-closure") {
+  await runTestClosure(args.slice(1));
 } else if (command === "ingest") {
   await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
@@ -876,6 +882,47 @@ async function runValidateRepositorySeal(rawArgs) {
   if (receipt.disposition !== "REPOSITORY_LINEAGE_SEAL_VALID") process.exitCode = 1;
 }
 
+async function runAnalyzeTests(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const applicationId = flags.applicationId ?? flags.rootId;
+  const connection = resolvesSqlServerConnection(flags);
+  const image = await extractsRepositoryImageFromSqlServer({ rootId: flags.rootId, connection });
+  const analysis = projectsRepositoryTestKnowledge(image, { applicationId });
+  const receipt = await loadsRepositoryTestKnowledgeIntoSqlServer({ analysis, connection });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${receipt.rootId}\n`);
+    process.stdout.write(`Test analysis: ${receipt.analysisDigest}\n`);
+    process.stdout.write(`Test closure seal: ${receipt.testClosureSealDigest}\n`);
+    process.stdout.write(`Test artifacts: ${receipt.testArtifactCount}\n`);
+    process.stdout.write(`Test cases: ${receipt.testCaseCount}\n`);
+    process.stdout.write(`Assertions: ${receipt.assertionCount}\n`);
+    process.stdout.write(`Candidate tests: ${receipt.candidateTestCount}\n`);
+    process.stdout.write(`Unbound tests: ${receipt.unboundTestCount}\n`);
+    process.stdout.write("Authority admission: NONE_FROM_OBSERVATION\n");
+  }
+}
+
+async function runTestClosure(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const closure = await queriesCurrentRepositoryTestClosure({ rootId: flags.rootId, connection });
+  process.stdout.write(`${closure.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${closure.rootId}\n`);
+    process.stdout.write(`Repository test disposition: ${closure.repositoryTestDisposition ?? "MISSING"}\n`);
+    process.stdout.write(`Test artifacts: ${closure.testArtifactCount ?? 0}\n`);
+    process.stdout.write(`Test cases: ${closure.testCaseCount ?? 0}\n`);
+    process.stdout.write(`Assertions: ${closure.assertionCount ?? 0}\n`);
+    process.stdout.write(`Candidate tests: ${closure.candidateTestCount ?? 0}\n`);
+    process.stdout.write(`Unbound tests: ${closure.unboundTestCount ?? 0}\n`);
+    process.stdout.write(`Admitted scenarios closed: ${closure.closedScenarioCount ?? 0}/${closure.admittedScenarioCount ?? 0}\n`);
+    if (closure.testClosureSealDigest) process.stdout.write(`Test closure seal: ${closure.testClosureSealDigest}\n`);
+  }
+}
+
 async function preparesSelfGovernanceReportArtifacts(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const pretty = flags.pretty === true;
@@ -1524,6 +1571,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se analyze-repository --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--output <analysis.json>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se seal-repository --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se validate-repository-seal --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se analyze-tests --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se test-closure --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
@@ -1550,6 +1599,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se analyze-repository --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se seal-repository --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se validate-repository-seal --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se analyze-tests --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se test-closure --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }
 

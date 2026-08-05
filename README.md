@@ -330,6 +330,33 @@ is closed. The stored value is explicitly `DIGEST_SEALED_NOT_SIGNED`: SHA-256
 provides integrity identity, not signer authenticity. A future signing service can
 sign this stable database digest without changing the inexpensive query boundary.
 
+### Canonical test and feature closure
+
+Apply `scripts/sql/019-create-canonical-test-closure.sql` to create separate test
+authority, observation, candidate-binding, execution-testimony, and current
+closure planes. The first database-origin inventory reads test bytes from the SQL
+repository image—never the original workspace—and observes test artifacts,
+suites, cases, assertions, fixture usage, mock usage, and direct invocations:
+
+```powershell
+node src/cli.js analyze-tests `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+
+node src/cli.js test-closure `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+Observed symbol matches produce only `CANDIDATE_NOT_ADMITTED` bindings. Existing
+tests remain `REGRESSION_CANDIDATE` or `UNBOUND_TEST` until reviewed canonical test
+vectors, expectations, and proof requirements are admitted. The observation is
+bound to the current repository lineage by a second SQL-only SHA-256 closure seal.
+`projection.CurrentScenarioTestClosure`, `CurrentFeatureTestClosure`, and
+`CurrentRepositoryTestClosure` expose missing proof without generating files.
+
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
 then load an admitted governed contract beside a generated self-governance report:
@@ -371,6 +398,8 @@ node src/cli.js extract-repository --root-id <id> --output <empty-dir> (--connec
 node src/cli.js analyze-repository --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--output <analysis.json>] [--pretty] [--summary]
 node src/cli.js seal-repository --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js validate-repository-seal --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js analyze-tests --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js test-closure --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js ingest --workspace <dir> [--workspace-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js web query --index <web-surface-index.json> "<sql>" [--pretty]
 node src/cli.js web gallery plan --index <file> --inventory <file> --query <id> --output <dir>

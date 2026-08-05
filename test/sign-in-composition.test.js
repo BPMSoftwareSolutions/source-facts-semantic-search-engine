@@ -53,7 +53,7 @@ test("projects a compatible reviewed sign-in composition through contract, desig
     assert.match(ast, /AuthenticationRegion/);
     assert.ok(fs.existsSync(path.join(outputDirectory, "composition-projection-receipt.json")));
   } finally {
-    fs.rmSync(workspace, { recursive: true, force: true });
+    fs.rmSync(workspace, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
 });
 
@@ -83,7 +83,7 @@ test("fails closed with an explicit compatibility report when a required port is
     assert.ok(fs.existsSync(path.join(outputDirectory, "compatibility-report.json")));
     assert.equal(fs.existsSync(path.join(outputDirectory, "previews", "composed-sign-in", "index.html")), false);
   } finally {
-    fs.rmSync(workspace, { recursive: true, force: true });
+    fs.rmSync(workspace, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
 });
 
@@ -114,7 +114,7 @@ test("fails closed when reviewed authority evidence is not present in the select
     assert.ok(result.compatibilityReport.checks.some((check) => check.category === "source-binding" && check.disposition === "FAILED"));
     assert.equal(fs.existsSync(path.join(outputDirectory, "candidate-composition-contract.json")), false);
   } finally {
-    fs.rmSync(workspace, { recursive: true, force: true });
+    fs.rmSync(workspace, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
 });
 
@@ -160,7 +160,7 @@ test("an incompatible overwrite removes every stale runnable candidate artifact"
       assert.equal(fs.existsSync(path.join(outputDirectory, stalePath)), false, `${stalePath} must not survive an incompatible overwrite`);
     }
   } finally {
-    fs.rmSync(workspace, { recursive: true, force: true });
+    fs.rmSync(workspace, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
 });
 

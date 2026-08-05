@@ -166,8 +166,25 @@ BEGIN
         -- The lineage seal is derived from that analysis and must be removed
         -- first so no stale receipt survives and its foreign key cannot block
         -- replacement of the current analysis.
+        IF OBJECT_ID('testexecution.RepositoryTestClosureSeal', 'U') IS NOT NULL
+            DELETE FROM testexecution.RepositoryTestClosureSeal WHERE RootId = @RootId;
         IF OBJECT_ID('projection.RepositoryLineageSeal', 'U') IS NOT NULL
             DELETE FROM projection.RepositoryLineageSeal WHERE RootId = @RootId;
+        -- Current test structure and candidate bindings are observations of the
+        -- exact image. Authority vectors and historical execution testimony are
+        -- intentionally retained; only current observations are invalidated.
+        IF OBJECT_ID('testbinding.TestVectorArtifact', 'U') IS NOT NULL
+            DELETE FROM testbinding.TestVectorArtifact WHERE RootId = @RootId;
+        IF OBJECT_ID('testbinding.TestCaseCandidate', 'U') IS NOT NULL
+            DELETE FROM testbinding.TestCaseCandidate WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.Assertion', 'U') IS NOT NULL DELETE FROM testobservation.Assertion WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.FixtureUsage', 'U') IS NOT NULL DELETE FROM testobservation.FixtureUsage WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.MockUsage', 'U') IS NOT NULL DELETE FROM testobservation.MockUsage WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.TestInvocation', 'U') IS NOT NULL DELETE FROM testobservation.TestInvocation WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.TestCase', 'U') IS NOT NULL DELETE FROM testobservation.TestCase WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.TestSuite', 'U') IS NOT NULL DELETE FROM testobservation.TestSuite WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.TestArtifact', 'U') IS NOT NULL DELETE FROM testobservation.TestArtifact WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.RepositoryTestAnalysis', 'U') IS NOT NULL DELETE FROM testobservation.RepositoryTestAnalysis WHERE RootId = @RootId;
         IF OBJECT_ID('observation.RepositorySemanticFact', 'U') IS NOT NULL
             DELETE FROM observation.RepositorySemanticFact WHERE RootId = @RootId;
         IF OBJECT_ID('observation.RepositoryArtifactSemanticCoverage', 'U') IS NOT NULL

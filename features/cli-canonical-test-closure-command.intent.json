@@ -1,0 +1,37 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-canonical-test-closure",
+  "featureFile": "features/cli-canonical-test-closure-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-canonical-test-closure",
+  "purpose": "Relationally account for all repository tests as SQL-origin observations before canonical proof admission",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-canonical-test-closure.observe-from-sql-image",
+      "scenarioAnchor": "&scenario:source-facts.cli-canonical-test-closure.observe-from-sql-image",
+      "responsibilityId": "repository-test-knowledge-observation",
+      "obligationId": "observe-complete-test-structure-without-admission",
+      "givenId": "current-repository-image-and-intent-exist-in-sql",
+      "whenId": "analyze-tests-command-invoked",
+      "thenId": "test-structure-is-normalized-as-observation",
+      "andId": "observations-are-not-auto-admitted",
+      "implementationSymbols": ["runAnalyzeTests", "projectsRepositoryTestKnowledge", "loadsRepositoryTestKnowledgeIntoSqlServer"],
+      "purpose": "Recover test structure and candidate lineage entirely from SQL repository bytes"
+    },
+    {
+      "scenarioId": "source-facts.cli-canonical-test-closure.query-current-closure",
+      "scenarioAnchor": "&scenario:source-facts.cli-canonical-test-closure.query-current-closure",
+      "responsibilityId": "repository-test-closure-query",
+      "obligationId": "return-truthful-current-test-closure",
+      "givenId": "current-test-observation-is-sealed-in-sql",
+      "whenId": "test-closure-command-invoked",
+      "thenId": "scenario-proof-gaps-are-explicit",
+      "andId": "no-proof-files-are-created",
+      "implementationSymbols": ["runTestClosure", "queriesCurrentRepositoryTestClosure"],
+      "purpose": "Expose scenario proof closure and unbound test posture through a bounded SQL query"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runAnalyzeTests",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-05T00:00:00Z"
+}
