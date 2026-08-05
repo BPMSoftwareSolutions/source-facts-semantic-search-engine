@@ -28,6 +28,18 @@
       "andId": "no-proof-files-are-created",
       "implementationSymbols": ["runTestClosure", "queriesCurrentRepositoryTestClosure"],
       "purpose": "Expose scenario proof closure and unbound test posture through a bounded SQL query"
+    },
+    {
+      "scenarioId": "source-facts.cli-canonical-test-closure.prove-one-vector",
+      "scenarioAnchor": "&scenario:source-facts.cli-canonical-test-closure.prove-one-vector",
+      "responsibilityId": "canonical-test-vector-execution",
+      "obligationId": "prove-one-vector-with-independent-expectation-evaluation",
+      "givenId": "admitted-test-vector-and-current-closure-seal-exist",
+      "whenId": "prove-test-vector-command-invoked",
+      "thenId": "observed-signal-is-compared-outside-execution-path",
+      "andId": "execution-testimony-is-stored-only-in-sql",
+      "implementationSymbols": ["runProveTestVector", "executesCanonicalTestVector", "recordsCanonicalTestExecutionInSqlServer"],
+      "purpose": "Project an ephemeral Vitest embodiment, independently compare its observed signal, and store testimony in SQL"
     }
   ],
   "interfaceRoot": "src/cli.js#runAnalyzeTests",

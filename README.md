@@ -357,6 +357,26 @@ bound to the current repository lineage by a second SQL-only SHA-256 closure sea
 `projection.CurrentScenarioTestClosure`, `CurrentFeatureTestClosure`, and
 `CurrentRepositoryTestClosure` expose missing proof without generating files.
 
+Apply `scripts/sql/020-admit-reference-test-vector.sql` for the first reviewed
+vertical slice. It admits one fixture, execution authority, expectation, proof
+policy, and `vitest.v1` vector for
+`source-facts.classify-mechanic-authority-family`. Then execute it from SQL
+authority:
+
+```powershell
+node src/cli.js prove-test-vector `
+  --root-id source-facts-semantic-search-engine `
+  --test-vector-id classify-mechanic-authority-family.v1 `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+The ephemeral Vitest body receives fixture inputs and execution authority but not
+the expected outputs. It emits an observed signal; a separate evaluator compares
+that signal with SQL expectation authority and records the projected artifact,
+fixture, profile, runtime-plan, output, repository-seal, and test-closure-seal
+digests in SQL. The ephemeral workspace is removed after execution.
+
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
 then load an admitted governed contract beside a generated self-governance report:
@@ -400,6 +420,7 @@ node src/cli.js seal-repository --root-id <id> [--application-id <id>] (--connec
 node src/cli.js validate-repository-seal --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js analyze-tests --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js test-closure --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js prove-test-vector --root-id <id> --test-vector-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js ingest --workspace <dir> [--workspace-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js web query --index <web-surface-index.json> "<sql>" [--pretty]
 node src/cli.js web gallery plan --index <file> --inventory <file> --query <id> --output <dir>

@@ -42,6 +42,8 @@ import { projectsCanonicalIntentRegistryFromRepositoryImage } from "./repository
 import { refreshesRepositoryLineageSealInSqlServer, validatesRepositoryLineageSealInSqlServer } from "./sqlserver/repository-lineage-seal.js";
 import { projectsRepositoryTestKnowledge } from "./repository-test-knowledge.js";
 import { loadsRepositoryTestKnowledgeIntoSqlServer, queriesCurrentRepositoryTestClosure } from "./sqlserver/repository-test-knowledge.js";
+import { executesCanonicalTestVector } from "./canonical-test-vector.js";
+import { extractsCanonicalTestVectorFromSqlServer, recordsCanonicalTestExecutionInSqlServer } from "./sqlserver/canonical-test-vector.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -152,6 +154,8 @@ if (command === "project") {
   await runAnalyzeTests(args.slice(1));
 } else if (command === "test-closure") {
   await runTestClosure(args.slice(1));
+} else if (command === "prove-test-vector") {
+  await runProveTestVector(args.slice(1));
 } else if (command === "ingest") {
   await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
@@ -923,6 +927,31 @@ async function runTestClosure(rawArgs) {
   }
 }
 
+async function runProveTestVector(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  if (typeof flags.testVectorId !== "string") throw new Error("--test-vector-id <id> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const [authority, image] = await Promise.all([
+    extractsCanonicalTestVectorFromSqlServer({ rootId: flags.rootId, testVectorId: flags.testVectorId, connection }),
+    extractsRepositoryImageFromSqlServer({ rootId: flags.rootId, connection }),
+  ]);
+  const result = await executesCanonicalTestVector({ authority, image });
+  const receipt = await recordsCanonicalTestExecutionInSqlServer({ result, connection });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Test vector: ${authority.testVectorId}\n`);
+    process.stdout.write(`Scenario: ${authority.scenarioId}\n`);
+    process.stdout.write(`Projected artifact: ${result.projectedTestArtifactDigest}\n`);
+    process.stdout.write(`Observed output: ${result.outputDigest}\n`);
+    process.stdout.write(`Conformance: ${receipt.conformanceDisposition}\n`);
+    process.stdout.write(`Test run: ${receipt.testRunId}\n`);
+    process.stdout.write("Proof storage: SQL_ONLY\n");
+    process.stdout.write("Ephemeral workspace: REMOVED\n");
+  }
+  if (receipt.conformanceDisposition !== "CANONICAL_EXPECTATION_CONFORMS") process.exitCode = 1;
+}
+
 async function preparesSelfGovernanceReportArtifacts(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const pretty = flags.pretty === true;
@@ -1406,6 +1435,7 @@ function parseArgs(rawArgs) {
     "--workspace",
     "--workspace-id",
     "--root-id",
+    "--test-vector-id",
     "--application-id",
     "--repository-id",
     "--output",
@@ -1573,6 +1603,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se validate-repository-seal --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se analyze-tests --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se test-closure --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se prove-test-vector --root-id <id> --test-vector-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
@@ -1601,6 +1632,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se validate-repository-seal --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se analyze-tests --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se test-closure --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se prove-test-vector --root-id source-facts-semantic-search-engine --test-vector-id classify-mechanic-authority-family.v1 --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }
 

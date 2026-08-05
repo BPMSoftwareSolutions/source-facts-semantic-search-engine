@@ -30,3 +30,18 @@ Feature: Account for repository tests against canonical feature intent
 
     &and:no-proof-files-are-created
     And no proof files or sidecar receipts are created
+
+  &scenario:source-facts.cli-canonical-test-closure.prove-one-vector
+  Scenario: Project and independently prove one admitted test vector
+
+    &given:admitted-test-vector-and-current-closure-seal-exist
+    Given one admitted canonical test vector and the current test-closure seal exist in SQL
+
+    &when:prove-test-vector-command-invoked
+    When the user invokes the prove-test-vector command
+
+    &then:observed-signal-is-compared-outside-execution-path
+    Then the projected test emits an observed signal that an independent evaluator compares with canonical expectation authority
+
+    &and:execution-testimony-is-stored-only-in-sql
+    And execution testimony is stored only in SQL and the projected workspace is removed

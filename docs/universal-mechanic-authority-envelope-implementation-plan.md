@@ -1916,6 +1916,15 @@ directly from SQL. Subsequent slices admit reviewed vectors, add transitive
 test-to-production reachability, project target-framework tests, and record
 differential execution against the same closure seal.
 
+The first admitted reference vector proves
+`source-facts.classify-mechanic-authority-family`. Its execution surface contains
+no canonical expected output: fixture plus execution authority produces an
+observed signal, and an independent conformance evaluator reads expectation
+authority afterward. Script 020 binds the test-authority-set digest into the v2
+test-closure seal and stores execution testimony against that seal. Acceptance is
+`SCENARIO_PROOF_CLOSED` for exactly one admitted scenario while the remaining
+admitted scenarios stay explicitly incomplete.
+
 The capability is complete only when:
 
 1. The Gherkin feature is admitted.

@@ -125,10 +125,11 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(commandNames.includes("validate-repository-seal"));
   assert.ok(commandNames.includes("analyze-tests"));
   assert.ok(commandNames.includes("test-closure"));
+  assert.ok(commandNames.includes("prove-test-vector"));
   assert.ok(commandNames.includes("project-governed-console-contract"));
-  assert.equal(projection.summary.observedCliCommandHandlers, 26);
-  assert.equal(projection.summary.observedCliCommandTokens, 27);
-  assert.equal(projection.summary.distinctCliExecutionSlices, 26);
+  assert.equal(projection.summary.observedCliCommandHandlers, 27);
+  assert.equal(projection.summary.observedCliCommandTokens, 28);
+  assert.equal(projection.summary.distinctCliExecutionSlices, 27);
   assert.equal(projection.summary.aliasedCliCommandTokens, 2);
   assert.equal(projection.commands.find((row) => row.commandName === "project-console-contract").executionSliceDisposition, "MULTIPLE_INTERFACE_ALIASES_ONE_EXECUTION_SLICE");
   assert.equal(projection.summary.admittedCliCommands, 0);
@@ -196,7 +197,7 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(governGraph.rows[0].summary.actionableInternalClosureDebt < governGraph.rows[0].summary.unresolvedInvocationEdgeCount);
 
   const packets = rerunsRegisteredReportQuery(report, "cli.feature-intent-proposal-packets.v1", {});
-  assert.equal(packets.rowCount, 26);
+  assert.equal(packets.rowCount, 27);
   assert.deepEqual(packets.rows.find((row) => row.handler === "runProjectConsoleContract").commandAliases, ["project-console-contract", "project-governed-console-contract"]);
   const callGraphPacket = packets.rows.find((row) => row.commandId === "call-graph");
   assert.equal(callGraphPacket.proposalDisposition, "FEATURE_INTENT_EXECUTION_GRAPH_BOUND");

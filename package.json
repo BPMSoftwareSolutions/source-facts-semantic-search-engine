@@ -26,13 +26,16 @@
     "gate:workspace": "workspace-fs evaluate --contract ./contracts/workspace-file-system.contract.json"
   },
   "dependencies": {
-    "@deterministic-solutions/source-code-taxonomy-scanner": "file:../source-code-taxonomy-scanner",
     "@deterministic-solutions/sej-runtime-query": "file:../sej-runtime-query",
     "@deterministic-solutions/semantic-kernel": "file:../semantic-kernel",
+    "@deterministic-solutions/source-code-taxonomy-scanner": "file:../source-code-taxonomy-scanner",
     "@deterministic-solutions/workspace-file-system-governor": "file:../workspace-file-system-governor",
-    "webpage-classification-scanner": "file:../webpage-classification-scanner",
     "ajv": "^8.17.1",
     "playwright": "^1.48.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "webpage-classification-scanner": "file:../webpage-classification-scanner"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
   }
 }

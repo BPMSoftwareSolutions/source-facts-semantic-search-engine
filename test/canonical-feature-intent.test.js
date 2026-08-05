@@ -87,9 +87,9 @@ test("discovers the complete canonical-intent registry and projects queryable tr
   };
   const plane = projectsCanonicalFeatureQueryPlane(discovery, index);
   assert.equal(plane.canonicalFeatures.features.length, 11);
-  assert.equal(plane.canonicalFeatures.scenarios.length, 22);
-  assert.equal(plane.canonicalFeatures.steps.length, 81);
-  assert.equal(plane.canonicalIntents.responsibilities.length, 22);
+  assert.equal(plane.canonicalFeatures.scenarios.length, 23);
+  assert.equal(plane.canonicalFeatures.steps.length, 85);
+  assert.equal(plane.canonicalIntents.responsibilities.length, 23);
   assert.equal(plane.canonicalTraces.featureToInterface.find((row) => row.featureId === "source-facts.cli-query").interfaceDisposition, "INTERFACE_ROOT_RESOLVED");
   assert.deepEqual(plane.canonicalTraces.featureToCallgraph.filter((row) => row.featureId === "source-facts.cli-query").map((row) => row.callableId), ["src/cli.js#runQuery", "src/query.js#executeRelationalQuery"]);
   assert.equal(plane.canonicalTraces.obligationToMechanics.find((row) => row.obligationId === "execute-semantic-search-query").mechanicLocation.sourceReferenceId, "query-mechanic-ref");
