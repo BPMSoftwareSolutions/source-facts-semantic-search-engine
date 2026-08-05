@@ -1,0 +1,25 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-sync-self-governance",
+  "featureFile": "features/cli-sync-self-governance-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-sync-self-governance",
+  "purpose": "Generate the self-governance report and sync the governed contract plus canonical intent registry into SQL Server in one command",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-sync-self-governance.generate-and-sync",
+      "scenarioAnchor": "&scenario:source-facts.cli-sync-self-governance.generate-and-sync",
+      "responsibilityId": "cli-self-governance-sync",
+      "obligationId": "synchronize-self-governance-to-database",
+      "givenId": "self-governance-inputs-and-sql-connection-ready",
+      "whenId": "sync-self-governance-command-invoked",
+      "thenId": "self-governance-report-is-written",
+      "andId": "canonical-governance-snapshots-are-loaded",
+      "implementationSymbols": ["runSyncSelfGovernance"],
+      "purpose": "User can produce the self-governance report and synchronize the canonical governed contract and intent registry to SQL Server without a separate two-step workflow"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runSyncSelfGovernance",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-05T00:00:00Z"
+}

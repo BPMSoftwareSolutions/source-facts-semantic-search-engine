@@ -16,6 +16,7 @@
     "call-graph": "node src/cli.js call-graph",
     "generate-docs": "node src/cli.js generate-docs",
     "govern": "node src/cli.js govern",
+    "sync-self-governance": "node src/cli.js sync-self-governance",
     "start": "node src/cli.js",
     "build": "npm run gate:workspace",
     "check:deps": "node ./scripts/check-deps.mjs",

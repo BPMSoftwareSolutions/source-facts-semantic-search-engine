@@ -260,6 +260,16 @@ node src/cli.js load-engineering-truth `
   --summary
 ```
 
+If you want to generate the report and sync the canonical governed contract plus
+intent registry in one step, use:
+
+```powershell
+node src/cli.js sync-self-governance `
+  --workspace ./src `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
 `reporting.FeatureTestDisposition` answers whether each canonical responsibility
 has mapped test lineage. `reporting.FeatureEngineeringClosure` joins the canonical
 feature spine to explicitly bound commands, reachable callables, tests, and proof

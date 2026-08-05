@@ -109,6 +109,8 @@ if (command === "project") {
   await runProjectConsoleContract(args.slice(1));
 } else if (command === "govern") {
   await runGovern(args.slice(1));
+} else if (command === "sync-self-governance") {
+  await runSyncSelfGovernance(args.slice(1));
 } else if (command === "report-query") {
   await runReportQuery(args.slice(1));
 } else if (command === "propose-semantic-overlap") {
@@ -365,72 +367,34 @@ async function runProjectConsoleContract(rawArgs) {
 }
 
 async function runGovern(rawArgs) {
-  const { flags } = parseArgs(rawArgs);
-  const pretty = flags.pretty === true;
+  const reportArtifacts = await preparesSelfGovernanceReportArtifacts(rawArgs);
+  await writesSelfGovernanceReportArtifacts(reportArtifacts);
+}
 
-  let index;
-  let workspaceRoot;
-  if (typeof flags.index === "string") {
-    index = await readsJsonFile(path.resolve(flags.index));
-    workspaceRoot = index.manifest?.scanRequest?.workspaceRoot ?? null;
-  } else {
-    workspaceRoot = path.resolve(flags.workspace ?? path.join(repositoryRoot, "src"));
-    const workspaceId = flags.workspaceId ?? path.basename(workspaceRoot);
-    index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId, languageId: "typescript" });
-    await validatesSourceFactIndex(index);
-  }
+async function runSyncSelfGovernance(rawArgs) {
+  const reportArtifacts = await preparesSelfGovernanceReportArtifacts(rawArgs);
+  await writesSelfGovernanceReportArtifacts(reportArtifacts);
 
-  const authorityDir = path.resolve(flags.authorityDir ?? path.join(repositoryRoot, "contracts"));
-  const authorityRoots = [authorityDir, ...(typeof workspaceRoot === "string" ? [workspaceRoot] : [])];
-  const authorityDocuments = await discoversAuthorityDocumentsAcrossRoots(authorityRoots, { relativeTo: repositoryRoot });
-
-  const reviewsDir = path.resolve(flags.reviewsDir ?? path.join(repositoryRoot, "reviews"));
-  const semanticOverlapProposalBatches = await discoversSemanticOverlapProposalBatches(reviewsDir, { relativeTo: repositoryRoot });
-  const featureCoverageProposalBatches = await discoversFeatureCoverageProposals(reviewsDir, { relativeTo: repositoryRoot });
-  const featureCoverageInferenceEvaluationBatches = await discoversFeatureCoverageInferenceEvaluations(reviewsDir, { relativeTo: repositoryRoot });
-
-  const knowHowDir = path.resolve(flags.knowHowDir ?? path.join(repositoryRoot, "know-how"));
-  const knowHowRegistry = await discoversKnowHowRegistry(knowHowDir, { relativeTo: repositoryRoot });
-
-  const healingDir = path.resolve(flags.healingDir ?? path.join(repositoryRoot, "healing"));
-  const healingDraftBatches = await discoversHealingDrafts(healingDir, { relativeTo: repositoryRoot });
-  const authoringContractMapRoot = path.resolve(flags.contractMapRoot
-    ?? path.join(repositoryRoot, "..", "contract-driven-artifact-governance-engine"));
-  const authoringContractMap = await discoversAuthorityAuthoringContractMap(authoringContractMapRoot);
-  const canonicalFeatureIntents = await discoversCanonicalFeatureIntents(path.join(repositoryRoot, "features"), { relativeTo: repositoryRoot });
-  const testWorkspaceRoot = path.resolve(flags.testWorkspace ?? path.join(repositoryRoot, "test"));
-  const testIndex = await projectSourceFactsWorkspace({ workspaceRoot: testWorkspaceRoot, workspaceId: `${index.workspace?.workspaceId ?? "workspace"}-tests`, languageId: "typescript" });
-  await validatesSourceFactIndex(testIndex);
-
-  const report = await projectsSelfGovernanceReport({
-    index,
-    testIndex,
-    repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
-    authorityDocuments,
-    semanticOverlapProposalBatches,
-    featureCoverageProposalBatches,
-    featureCoverageInferenceEvaluationBatches,
-    knowHowRegistry,
-    healingDraftBatches,
-    authoringContractMap,
-    canonicalFeatureIntents,
-    workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
+  const authorities = await collectsEngineeringTruthAuthorities(reportArtifacts.flags, {
+    defaultContractPath: path.join(repositoryRoot, "contracts", "serves-query-console.governed.contract.json"),
+    defaultIntentDir: path.join(repositoryRoot, "features"),
   });
-  await validatesSelfGovernanceReport(report);
-
-  const outputPath = path.resolve(flags.output ?? path.join(process.cwd(), "source-facts-self-governance-report.json"));
-  const summaryPath = outputPath.replace(/\.json$/i, ".md");
-  const receiptDirectoryName = `${path.basename(outputPath, path.extname(outputPath))}.receipts`;
-  const receiptDirectoryPath = path.join(path.dirname(outputPath), receiptDirectoryName);
-  await writesJsonFile(outputPath, report, { pretty });
-  for (const artifact of projectsReportQueryReceiptArtifacts(report)) {
-    await writesJsonFile(path.join(receiptDirectoryPath, artifact.fileName), artifact.document, { pretty: true });
-  }
-  await fs.writeFile(summaryPath, formatsSelfGovernanceReportMarkdown(report, { receiptDirectory: receiptDirectoryName }), "utf8");
-
-  process.stdout.write(`${outputPath}\n${summaryPath}\n`);
-  if (flags.summary === true) {
-    process.stdout.write(formatsSelfGovernanceReportSummary(report));
+  const connection = resolvesSqlServerConnection(reportArtifacts.flags);
+  for (const authority of authorities) {
+    const receipt = await loadsEngineeringTruthIntoSqlServer({
+      contract: authority.contract,
+      report: reportArtifacts.report,
+      contractSourcePath: authority.sourcePath,
+      reportSourcePath: reportArtifacts.outputPath,
+      connection,
+    });
+    process.stdout.write(`${receipt.disposition}\n`);
+    if (reportArtifacts.summary === true) {
+      process.stdout.write(`Contract snapshot: ${receipt.contractSnapshotId}\n`);
+      process.stdout.write(`Observation snapshot: ${receipt.observationSnapshotId}\n`);
+      for (const [name, count] of Object.entries(receipt.projectedCounts)) process.stdout.write(`Projected ${name}: ${count}\n`);
+      for (const [name, count] of Object.entries(receipt.databaseCounts)) process.stdout.write(`Database ${name}: ${count}\n`);
+    }
   }
 }
 
@@ -745,24 +709,10 @@ async function runLoadSqlServer(rawArgs) {
 
 async function runLoadEngineeringTruth(rawArgs) {
   const { flags } = parseArgs(rawArgs);
-  if (typeof flags.contract !== "string" && typeof flags.intentDir !== "string") throw new Error("At least one of --contract <governed-artifact-contract.json> or --intent-dir <directory> is required.");
   if (typeof flags.report !== "string") throw new Error("--report <source-facts-self-governance-report.json> is required.");
   const reportPath = path.resolve(flags.report);
   const report = await readsJsonFile(reportPath);
-  const authorities = [];
-  if (typeof flags.contract === "string") {
-    const contractPath = path.resolve(flags.contract);
-    authorities.push({ contract: await readsJsonFile(contractPath), sourcePath: contractPath });
-  }
-  if (typeof flags.intentDir === "string") {
-    const intentDirectory = path.resolve(flags.intentDir);
-    const names = (await fs.readdir(intentDirectory)).filter((name) => name.endsWith(".intent.json")).sort();
-    const intents = await Promise.all(names.map((name) => readsJsonFile(path.join(intentDirectory, name))));
-    authorities.push({
-      contract: projectsCanonicalIntentRegistryContract({ intents, projectId: flags.projectId ?? path.basename(process.cwd()) }),
-      sourcePath: intentDirectory,
-    });
-  }
+  const authorities = await collectsEngineeringTruthAuthorities(flags);
   const connection = resolvesSqlServerConnection(flags);
   for (const authority of authorities) {
     const receipt = await loadsEngineeringTruthIntoSqlServer({ contract: authority.contract, report, contractSourcePath: authority.sourcePath, reportSourcePath: reportPath, connection });
@@ -774,6 +724,99 @@ async function runLoadEngineeringTruth(rawArgs) {
       for (const [name, count] of Object.entries(receipt.databaseCounts)) process.stdout.write(`Database ${name}: ${count}\n`);
     }
   }
+}
+
+async function preparesSelfGovernanceReportArtifacts(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const pretty = flags.pretty === true;
+
+  let index;
+  let workspaceRoot;
+  if (typeof flags.index === "string") {
+    index = await readsJsonFile(path.resolve(flags.index));
+    workspaceRoot = index.manifest?.scanRequest?.workspaceRoot ?? null;
+  } else {
+    workspaceRoot = path.resolve(flags.workspace ?? path.join(repositoryRoot, "src"));
+    const workspaceId = flags.workspaceId ?? path.basename(workspaceRoot);
+    index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId, languageId: "typescript" });
+    await validatesSourceFactIndex(index);
+  }
+
+  const authorityDir = path.resolve(flags.authorityDir ?? path.join(repositoryRoot, "contracts"));
+  const authorityRoots = [authorityDir, ...(typeof workspaceRoot === "string" ? [workspaceRoot] : [])];
+  const authorityDocuments = await discoversAuthorityDocumentsAcrossRoots(authorityRoots, { relativeTo: repositoryRoot });
+
+  const reviewsDir = path.resolve(flags.reviewsDir ?? path.join(repositoryRoot, "reviews"));
+  const semanticOverlapProposalBatches = await discoversSemanticOverlapProposalBatches(reviewsDir, { relativeTo: repositoryRoot });
+  const featureCoverageProposalBatches = await discoversFeatureCoverageProposals(reviewsDir, { relativeTo: repositoryRoot });
+  const featureCoverageInferenceEvaluationBatches = await discoversFeatureCoverageInferenceEvaluations(reviewsDir, { relativeTo: repositoryRoot });
+
+  const knowHowDir = path.resolve(flags.knowHowDir ?? path.join(repositoryRoot, "know-how"));
+  const knowHowRegistry = await discoversKnowHowRegistry(knowHowDir, { relativeTo: repositoryRoot });
+
+  const healingDir = path.resolve(flags.healingDir ?? path.join(repositoryRoot, "healing"));
+  const healingDraftBatches = await discoversHealingDrafts(healingDir, { relativeTo: repositoryRoot });
+  const authoringContractMapRoot = path.resolve(flags.contractMapRoot
+    ?? path.join(repositoryRoot, "..", "contract-driven-artifact-governance-engine"));
+  const authoringContractMap = await discoversAuthorityAuthoringContractMap(authoringContractMapRoot);
+  const canonicalFeatureIntents = await discoversCanonicalFeatureIntents(path.join(repositoryRoot, "features"), { relativeTo: repositoryRoot });
+  const testWorkspaceRoot = path.resolve(flags.testWorkspace ?? path.join(repositoryRoot, "test"));
+  const testIndex = await projectSourceFactsWorkspace({ workspaceRoot: testWorkspaceRoot, workspaceId: `${index.workspace?.workspaceId ?? "workspace"}-tests`, languageId: "typescript" });
+  await validatesSourceFactIndex(testIndex);
+
+  const report = await projectsSelfGovernanceReport({
+    index,
+    testIndex,
+    repositoryId: flags.repositoryId ?? index.workspace?.workspaceId ?? "source-facts-semantic-search-engine",
+    authorityDocuments,
+    semanticOverlapProposalBatches,
+    featureCoverageProposalBatches,
+    featureCoverageInferenceEvaluationBatches,
+    knowHowRegistry,
+    healingDraftBatches,
+    authoringContractMap,
+    canonicalFeatureIntents,
+    workspaceRelativePrefix: resolvesWorkspaceRelativePrefix(repositoryRoot, workspaceRoot),
+  });
+  await validatesSelfGovernanceReport(report);
+
+  const outputPath = path.resolve(typeof flags.output === "string" ? flags.output : (typeof flags.report === "string" ? flags.report : path.join(process.cwd(), "source-facts-self-governance-report.json")));
+  const summaryPath = outputPath.replace(/\.json$/i, ".md");
+  const receiptDirectoryName = `${path.basename(outputPath, path.extname(outputPath))}.receipts`;
+  const receiptDirectoryPath = path.join(path.dirname(outputPath), receiptDirectoryName);
+  return { flags, pretty, report, outputPath, summaryPath, receiptDirectoryName, receiptDirectoryPath, summary: flags.summary === true };
+}
+
+async function writesSelfGovernanceReportArtifacts({ report, outputPath, summaryPath, receiptDirectoryName, receiptDirectoryPath, pretty, summary }) {
+  await writesJsonFile(outputPath, report, { pretty });
+  for (const artifact of projectsReportQueryReceiptArtifacts(report)) {
+    await writesJsonFile(path.join(receiptDirectoryPath, artifact.fileName), artifact.document, { pretty: true });
+  }
+  await fs.writeFile(summaryPath, formatsSelfGovernanceReportMarkdown(report, { receiptDirectory: receiptDirectoryName }), "utf8");
+
+  process.stdout.write(`${outputPath}\n${summaryPath}\n`);
+  if (summary === true) {
+    process.stdout.write(formatsSelfGovernanceReportSummary(report));
+  }
+}
+
+async function collectsEngineeringTruthAuthorities(flags, { defaultContractPath = null, defaultIntentDir = null } = {}) {
+  const authorities = [];
+  const contractPath = typeof flags.contract === "string" ? path.resolve(flags.contract) : defaultContractPath;
+  if (contractPath !== null) {
+    authorities.push({ contract: await readsJsonFile(contractPath), sourcePath: contractPath });
+  }
+  const intentDirectoryPath = typeof flags.intentDir === "string" ? path.resolve(flags.intentDir) : defaultIntentDir;
+  if (intentDirectoryPath !== null) {
+    const names = (await fs.readdir(intentDirectoryPath)).filter((name) => name.endsWith(".intent.json")).sort();
+    const intents = await Promise.all(names.map((name) => readsJsonFile(path.join(intentDirectoryPath, name))));
+    authorities.push({
+      contract: projectsCanonicalIntentRegistryContract({ intents, projectId: flags.projectId ?? path.basename(process.cwd()) }),
+      sourcePath: intentDirectoryPath,
+    });
+  }
+  if (authorities.length === 0) throw new Error("At least one of --contract <governed-artifact-contract.json> or --intent-dir <directory> is required.");
+  return authorities;
 }
 
 async function runIngest(rawArgs) {
@@ -1220,6 +1263,7 @@ function parseArgs(rawArgs) {
     "--feature-id-hint",
     "--know-how-evidence-files",
     "--symbols",
+    "--test-workspace",
     "--root-module-path",
     "--runtime-module-prefix",
     "--report",
@@ -1307,7 +1351,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
-  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--test-workspace <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se sync-self-governance [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--test-workspace <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--contract <governed-contract.json>] [--intent-dir <directory>] [--project-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se report-query --report <file> [--query-id trace.feature-complete-lineage.v1] --feature-id <id> [--output <file>] [--receipt-output <file>] [--pretty]\n`);
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
   stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);
@@ -1331,6 +1376,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --project --summary\n`);
   stream.write(`  source-facts-se project-console-contract --output ./contracts/serves-query-console.governed.contract.json --gate --summary\n`);
   stream.write(`  source-facts-se govern --workspace ./src --output ./source-facts-self-governance-report.json --summary\n`);
+  stream.write(`  source-facts-se sync-self-governance --workspace ./src --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se report-query --report ./source-facts-self-governance-report.json --feature-id source-facts.cli-call-graph --pretty\n`);
   stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
   stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
