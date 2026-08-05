@@ -37,6 +37,7 @@ export async function projectSourceFactsWorkspace(options) {
   const documents = [];
   const governanceRules = [];
   const bodyMechanics = [];
+  const textMeaningCandidates = [];
   const referenceById = new Set();
   const declarationsByModule = new Map();
   const sourceTextCache = new Map();
@@ -149,7 +150,7 @@ export async function projectSourceFactsWorkspace(options) {
     }
 
     for (const syntax of file.syntaxFacts) {
-      addSourceReference({
+      const sourceReference = addSourceReference({
         kind: "syntax",
         sourceKind: syntax.sourceKind,
         location: syntax.location,
@@ -158,6 +159,16 @@ export async function projectSourceFactsWorkspace(options) {
         referenceById,
         sourceReferences,
       });
+      if (["StringLiteral", "NoSubstitutionTemplateLiteral", "TemplateExpression"].includes(syntax.sourceKind)) {
+        textMeaningCandidates.push(Object.freeze({
+          modulePath: file.relativePath,
+          rootId,
+          sourceReferenceId: sourceReference.referenceId,
+          fromSymbolId: syntax.enclosingCallableStart === undefined
+            ? null
+            : declarationRows.find((declaration) => declaration.start === syntax.enclosingCallableStart)?.symbolId ?? null,
+        }));
+      }
     }
 
     for (const unknown of file.unknownSyntax) {
@@ -182,6 +193,15 @@ export async function projectSourceFactsWorkspace(options) {
     for (const rule of projectsGovernanceRules(document, projected.factsByPointer)) {
       governanceRules.push(rule);
     }
+  }
+
+  for (const candidate of textMeaningCandidates) {
+    if (!governanceRules.some((rule) => appliesTextMeaningRule(rule, candidate))) continue;
+    bodyMechanics.push(createsBodyMechanic({
+      mechanic: "meaning-hidden-in-text",
+      ...candidate,
+      evidenceKind: "governed-text-literal",
+    }));
   }
 
   const totalUnknown = files.reduce((sum, file) => sum + file.counts.unknownSyntax, 0);
@@ -433,12 +453,17 @@ function projectsRelationshipMechanics(relationship, modulePath, rootId) {
     if (relationship.operator === "BarBarToken" || relationship.operator === "QuestionQuestionToken") mechanics.push("fallback");
     if (relationship.operator?.includes("Assignment") || relationship.operator === "EqualsToken") mechanics.push("state-mutation");
   }
+  if (
+    relationship.relationshipKind === "unary-operation"
+    && (relationship.operator === "PlusPlusToken" || relationship.operator === "MinusMinusToken")
+  ) mechanics.push("state-mutation");
   if (relationship.relationshipKind === "invocation" && typeof relationship.toSymbolCandidate === "string") {
-    const candidate = relationship.toSymbolCandidate.toLowerCase();
-    if (/stringify|serializ|tojson/u.test(candidate)) mechanics.push("serialization");
-    if (/normaliz|canonicaliz/u.test(candidate)) mechanics.push("normalization");
-    if (/validat|assert/u.test(candidate)) mechanics.push("validation");
-    if (/retry/u.test(candidate)) mechanics.push("retry");
+    const callee = readsCalleeName(relationship.toSymbolCandidate);
+    if (/^(?:stringify|serialize|serializes|tojson)$/u.test(callee)) mechanics.push("serialization");
+    if (/^(?:normalize|normalizes|canonicalize|canonicalizes)/u.test(callee)) mechanics.push("normalization");
+    if (/^(?:validate|validates|assert|asserts)/u.test(callee)) mechanics.push("validation");
+    if (/^(?:retry|retries|withretry|executewithretry)$/u.test(callee)) mechanics.push("retry");
+    if (/^(?:set|add|delete|push|pop|splice)$/u.test(callee)) mechanics.push("state-mutation");
   }
   return mechanics.map((mechanic) => createsBodyMechanic({
     mechanic,
@@ -448,6 +473,19 @@ function projectsRelationshipMechanics(relationship, modulePath, rootId) {
     fromSymbolId: relationship.fromSymbolId,
     evidenceKind: relationship.relationshipKind,
   }));
+}
+
+function appliesTextMeaningRule(rule, candidate) {
+  if (rule.mechanic !== "meaning-hidden-in-text") return false;
+  return rule.applicability === candidate.modulePath
+    || rule.applicability === `module:${candidate.modulePath}`
+    || rule.applicability === candidate.sourceReferenceId
+    || rule.applicability === `source-reference:${candidate.sourceReferenceId}`;
+}
+
+function readsCalleeName(candidate) {
+  const identifiers = candidate.match(/[A-Za-z_$][\w$]*/gu) ?? [];
+  return (identifiers.at(-1) ?? "").toLowerCase();
 }
 
 function projectsControlMechanics({ control, rootId, modulePath, sourceReferenceId, fromSymbolId }) {

@@ -51,7 +51,7 @@ test("projects schema-valid, source-addressable governance rules", async () => {
         && ["function", "method", "constructor"].includes(symbol?.kind);
     }));
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    fs.rmSync(workspaceRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
   }
 });
 
@@ -70,7 +70,54 @@ test("projects large JSON documents without call-stack overflow", async () => {
     assert.ok(reportDocumentFacts.length > 70000);
     assert.ok(reportDocumentFacts.some((documentFact) => documentFact.pointer === "/records"));
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    fs.rmSync(workspaceRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
+  }
+});
+
+test("classifies mutation and retry by operator and callee identity without detector self-matches", async () => {
+  const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-mechanic-fidelity-"));
+  try {
+    fs.writeFileSync(path.join(workspaceRoot, "mechanics.mjs"), [
+      "export function changes(values, cache) {",
+      "  let index = 0;",
+      "  index++;",
+      "  --index;",
+      "  values.push(index);",
+      "  cache.set('index', index);",
+      "  retry();",
+      "  return /retry/u.test('inert text');",
+      "}",
+      "function retry() {}",
+      "",
+    ].join("\n"), "utf8");
+    const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: "mechanic-fidelity" });
+    const mechanics = index.bodyMechanics.filter((fact) => fact.modulePath === "mechanics.mjs");
+    assert.ok(mechanics.filter((fact) => fact.mechanic === "state-mutation").length >= 4);
+    assert.equal(mechanics.filter((fact) => fact.mechanic === "retry").length, 1);
+  } finally {
+    fs.rmSync(workspaceRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
+  }
+});
+
+test("projects text meaning only when an applicable governance rule authorizes the literal classification", async () => {
+  const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "source-facts-text-meaning-"));
+  try {
+    fs.writeFileSync(path.join(workspaceRoot, "governed.mjs"), "export const governed = 'EXECUTE_ME';\n", "utf8");
+    fs.writeFileSync(path.join(workspaceRoot, "inert.mjs"), "export const inert = 'EXECUTE_ME';\n", "utf8");
+    fs.writeFileSync(path.join(workspaceRoot, "profile.json"), JSON.stringify({
+      textMeaning: {
+        forbiddenExecutableMechanics: ["meaning-hidden-in-text"],
+        executionPortEffect: "execute-semantic-authority",
+        applicability: "module:governed.mjs",
+      },
+    }), "utf8");
+    const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: "text-meaning-fidelity" });
+    const textMechanics = index.bodyMechanics.filter((fact) => fact.mechanic === "meaning-hidden-in-text");
+    assert.ok(textMechanics.length > 0);
+    assert.ok(textMechanics.every((fact) => fact.modulePath === "governed.mjs"));
+    assert.equal(index.bodyMechanics.some((fact) => fact.mechanic === "meaning-hidden-in-text" && fact.modulePath === "inert.mjs"), false);
+  } finally {
+    fs.rmSync(workspaceRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
   }
 });
 
@@ -88,6 +135,6 @@ test("keeps logical symbol identity across comments, line movement, and body-onl
     assert.equal(firstSymbol?.symbolVersionId, secondSymbol?.symbolVersionId);
     assert.notEqual(firstSymbol?.moduleHash, secondSymbol?.moduleHash);
   } finally {
-    fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    fs.rmSync(workspaceRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
   }
 });

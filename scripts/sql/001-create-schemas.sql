@@ -23,4 +23,5 @@ IF SCHEMA_ID('binding') IS NULL EXEC('CREATE SCHEMA binding');
 IF SCHEMA_ID('test') IS NULL EXEC('CREATE SCHEMA test');
 IF SCHEMA_ID('proof') IS NULL EXEC('CREATE SCHEMA proof');
 IF SCHEMA_ID('enterprise') IS NULL EXEC('CREATE SCHEMA enterprise');
+IF SCHEMA_ID('projection') IS NULL EXEC('CREATE SCHEMA projection');
 GO

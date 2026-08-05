@@ -291,7 +291,22 @@
           "applicability": { "type": ["string", "null"] },
           "executionPortEffect": { "type": "string" },
           "semanticAuthorityLocation": { "type": ["string", "null"] },
-          "mechanic": { "type": "string" },
+          "mechanic": {
+            "enum": [
+              "branch",
+              "iteration",
+              "exception-handling",
+              "throw",
+              "object-construction",
+              "serialization",
+              "normalization",
+              "validation",
+              "fallback",
+              "retry",
+              "state-mutation",
+              "meaning-hidden-in-text"
+            ]
+          },
           "sourceReferenceId": { "type": "string" }
         },
         "additionalProperties": false
@@ -305,7 +320,22 @@
         "properties": {
           "mechanicId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
           "rootId": { "type": "string", "minLength": 1 },
-          "mechanic": { "type": "string" },
+          "mechanic": {
+            "enum": [
+              "branch",
+              "iteration",
+              "exception-handling",
+              "throw",
+              "object-construction",
+              "serialization",
+              "normalization",
+              "validation",
+              "fallback",
+              "retry",
+              "state-mutation",
+              "meaning-hidden-in-text"
+            ]
+          },
           "modulePath": { "type": "string" },
           "sourceReferenceId": { "type": "string" },
           "fromSymbolId": { "type": ["string", "null"] },

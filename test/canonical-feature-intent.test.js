@@ -69,11 +69,11 @@ for (const fixtureName of ["cli-project-command", "cli-query-command", "cli-call
   });
 }
 
-test("discovers the complete CLI canonical-intent registry and projects queryable trace rows", async () => {
+test("discovers the complete canonical-intent registry and projects queryable trace rows", async () => {
   const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
   const discovery = await discoversCanonicalFeatureIntents(fileURLToPath(new URL("../features", import.meta.url)), { relativeTo: repositoryRoot });
   assert.equal(discovery.disposition, "CANONICAL_FEATURE_INTENTS_VALID");
-  assert.equal(discovery.pairs.length, 6);
+  assert.equal(discovery.pairs.length, 7);
   assert.deepEqual(discovery.findings, []);
 
   const index = {
@@ -86,10 +86,10 @@ test("discovers the complete CLI canonical-intent registry and projects queryabl
     bodyMechanics: [{ bodyMechanicId: "query-branch", fromSymbolId: "query-child", sourceReferenceId: "query-mechanic-ref", mechanic: "branch" }],
   };
   const plane = projectsCanonicalFeatureQueryPlane(discovery, index);
-  assert.equal(plane.canonicalFeatures.features.length, 6);
-  assert.equal(plane.canonicalFeatures.scenarios.length, 7);
-  assert.equal(plane.canonicalFeatures.steps.length, 28);
-  assert.equal(plane.canonicalIntents.responsibilities.length, 7);
+  assert.equal(plane.canonicalFeatures.features.length, 7);
+  assert.equal(plane.canonicalFeatures.scenarios.length, 14);
+  assert.equal(plane.canonicalFeatures.steps.length, 49);
+  assert.equal(plane.canonicalIntents.responsibilities.length, 14);
   assert.equal(plane.canonicalTraces.featureToInterface.find((row) => row.featureId === "source-facts.cli-query").interfaceDisposition, "INTERFACE_ROOT_RESOLVED");
   assert.deepEqual(plane.canonicalTraces.featureToCallgraph.filter((row) => row.featureId === "source-facts.cli-query").map((row) => row.callableId), ["src/cli.js#runQuery", "src/query.js#executeRelationalQuery"]);
   assert.equal(plane.canonicalTraces.obligationToMechanics.find((row) => row.obligationId === "execute-semantic-search-query").mechanicLocation.sourceReferenceId, "query-mechanic-ref");

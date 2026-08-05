@@ -1,0 +1,85 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.project-authority-from-execution-mechanics",
+  "featureFile": "features/project-authority-from-execution-mechanics.feature",
+  "featureAnchor": "&feature:source-facts.project-authority-from-execution-mechanics",
+  "purpose": "Project observed mechanics into reviewable authority data, persist admitted envelopes, project a target body, and prove equivalence.",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.classify-mechanic-authority-family",
+      "scenarioAnchor": "&scenario:source-facts.classify-mechanic-authority-family",
+      "responsibilityId": "classifies-execution-mechanic-authority-family",
+      "obligationId": "every-observed-mechanic-has-one-authority-family",
+      "givenId": "observed-mechanic-available",
+      "whenId": "authority-family-classified",
+      "thenId": "one-family-or-unsupported-returned",
+      "implementationSymbols": ["resolvesAuthorityFamily"],
+      "purpose": "Classify every observed mechanic into one canonical family or an unsupported disposition."
+    },
+    {
+      "scenarioId": "source-facts.project-mechanic-authority-data",
+      "scenarioAnchor": "&scenario:source-facts.project-mechanic-authority-data",
+      "responsibilityId": "projects-execution-mechanic-authority-data",
+      "obligationId": "every-classified-mechanic-produces-one-authority-data-result",
+      "givenId": "classified-mechanic-context-available",
+      "whenId": "authority-data-projected",
+      "thenId": "standard-candidate-row-returned",
+      "implementationSymbols": ["projectsExecutionMechanicAuthorityData"],
+      "purpose": "Return one deterministic non-admitted candidate row with named missing fields."
+    },
+    {
+      "scenarioId": "source-facts.query-mechanic-authority-projections",
+      "scenarioAnchor": "&scenario:source-facts.query-mechanic-authority-projections",
+      "responsibilityId": "queries-execution-mechanic-authority-projections",
+      "obligationId": "authority-data-is-returned-as-native-query-results",
+      "givenId": "observed-mechanics-exist",
+      "whenId": "authority-projections-queried",
+      "thenId": "native-authority-rows-returned",
+      "purpose": "Expose projected candidate authority data as the direct result of one read-only SQL query."
+    },
+    {
+      "scenarioId": "source-facts.persist-projected-mechanic-authority",
+      "scenarioAnchor": "&scenario:source-facts.persist-projected-mechanic-authority",
+      "responsibilityId": "persists-projected-execution-mechanic-authority",
+      "obligationId": "every-admitted-authority-has-a-durable-relational-home",
+      "givenId": "reviewed-envelope-available",
+      "whenId": "authority-admitted-and-loaded",
+      "thenId": "authority-and-occurrence-persisted",
+      "purpose": "Persist reviewed authority and preserve its exact occurrence binding."
+    },
+    {
+      "scenarioId": "source-facts.query-complete-responsibility-authority",
+      "scenarioAnchor": "&scenario:source-facts.query-complete-responsibility-authority",
+      "responsibilityId": "queries-complete-responsibility-authority",
+      "obligationId": "one-query-returns-all-authority-required-to-project-a-responsibility",
+      "givenId": "responsibility-authority-admitted",
+      "whenId": "responsibility-projection-queried",
+      "thenId": "closed-ordered-slice-returned",
+      "purpose": "Return one closed and ordered target-sufficient authority slice."
+    },
+    {
+      "scenarioId": "source-facts.project-body-from-responsibility-authority",
+      "scenarioAnchor": "&scenario:source-facts.project-body-from-responsibility-authority",
+      "responsibilityId": "projects-execution-body-from-responsibility-authority",
+      "obligationId": "complete-responsibility-authority-produces-one-target-body",
+      "givenId": "closed-slice-and-supported-profile",
+      "whenId": "language-projector-applied",
+      "thenId": "executable-body-projected",
+      "purpose": "Project one executable target body solely from a closed authority slice."
+    },
+    {
+      "scenarioId": "source-facts.prove-projected-body-equivalence",
+      "scenarioAnchor": "&scenario:source-facts.prove-projected-body-equivalence",
+      "responsibilityId": "proves-projected-body-equivalence",
+      "obligationId": "projected-execution-matches-declared-authority",
+      "givenId": "authority-and-projected-body-available",
+      "whenId": "semantic-and-projected-execution-evaluated",
+      "thenId": "results-effects-and-terminals-equal",
+      "purpose": "Prove projected behavior against admitted results, effects, failures, and terminal dispositions."
+    }
+  ],
+  "interfaceRoot": "src/governance/projects-execution-mechanic-authority-data.js#projectsExecutionMechanicAuthorityData",
+  "lifecycle": "FEATURE_INTENT_ADMITTED",
+  "authorityStatus": "FEATURE_LINEAGE_CLOSED",
+  "createdAt": "2026-08-05T00:00:00Z"
+}

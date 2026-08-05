@@ -97,11 +97,11 @@ test("detectsAuthorityDocumentKind recognizes schemas beyond authority-declarati
   assert.equal(detectsAuthorityDocumentKind(null), null);
 });
 
-test("resolvesAuthorityFamily maps known mechanics and falls back for unknown ones", () => {
-  assert.equal(resolvesAuthorityFamily("branch"), "decision");
-  assert.equal(resolvesAuthorityFamily("object-construction"), "projection-mapping");
-  assert.equal(resolvesAuthorityFamily("state-mutation"), "state-transition");
-  assert.equal(resolvesAuthorityFamily("not-a-real-mechanic"), "unclassified");
+test("resolvesAuthorityFamily maps known mechanics and rejects unknown ones", () => {
+  assert.equal(resolvesAuthorityFamily("branch"), "decision-authority");
+  assert.equal(resolvesAuthorityFamily("object-construction"), "projection-authority");
+  assert.equal(resolvesAuthorityFamily("state-mutation"), "state-transition-authority");
+  assert.equal(resolvesAuthorityFamily("not-a-real-mechanic"), null);
 });
 
 test("CLI-first closure inventories every command, classifies every callable, and isolates the unreachable remainder", async () => {
@@ -290,7 +290,7 @@ test("projectsSelfGovernanceReport classifies observed mechanics against admitte
   assert.equal(report.executionMechanics.byPosture.UNKNOWN_CLASSIFICATION, 2);
 
   const branchSummary = report.executionMechanics.byMechanicType.find((entry) => entry.mechanic === "branch");
-  assert.equal(branchSummary.authorityFamily, "decision");
+  assert.equal(branchSummary.authorityFamily, "decision-authority");
   assert.equal(branchSummary.observed, 1);
   assert.equal(branchSummary.governed, 1);
   assert.equal(branchSummary.files, 1);
@@ -299,7 +299,7 @@ test("projectsSelfGovernanceReport classifies observed mechanics against admitte
   const governedOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "branch");
   assert.equal(governedOccurrence.posture, "GOVERNED_BY_SEMANTIC_AUTHORITY");
   assert.equal(governedOccurrence.governingMechanicId, "resolve-example-decision");
-  assert.equal(governedOccurrence.authorityFamily, "decision");
+  assert.equal(governedOccurrence.authorityFamily, "decision-authority");
   assert.equal(governedOccurrence.authorityHomeStatus, "AUTHORITY_HOME_EXISTS");
   assert.equal(governedOccurrence.authorityHomeFile, "contracts/example.authority.json");
 
