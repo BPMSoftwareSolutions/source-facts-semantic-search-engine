@@ -247,6 +247,24 @@ node src/cli.js ingest --workspace ./src --workspace-id self --connection-env so
 
 `reporting.*` views (`ForbiddenExecutableMechanic`, `FunctionMechanicSummary`, `UnresolvedRelationship`, `UngovernedBody`) give SSMS ready-made starting points over the loaded facts; see [`sql/`](sql/) for the full schema and loader procedures.
 
+Canonical authority, call-graph observations, and test evidence have a separate
+snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
+then load an admitted governed contract beside a generated self-governance report:
+
+```powershell
+node src/cli.js load-engineering-truth `
+  --contract ./contracts/serves-query-console.governed.contract.json `
+  --report ./artifacts/governance/source-facts-self-governance-report.json `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+`reporting.FeatureTestDisposition` answers whether each canonical responsibility
+has mapped test lineage. `reporting.FeatureEngineeringClosure` joins the canonical
+feature spine to explicitly bound commands, reachable callables, tests, and proof
+dispositions. A matching text identifier alone never promotes observed evidence
+into canonical authority; only cross-plane binding rows create that join.
+
 ## Other commands
 
 ```text

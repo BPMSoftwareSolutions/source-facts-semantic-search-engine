@@ -31,6 +31,7 @@ import {
 import { compositionArtifactNames, writesSignInComposition } from "./composition/writes-sign-in-composition.js";
 import { northStarArtifactNames, runsSignInNorthStar } from "./composition/runs-sign-in-north-star.js";
 import { loadsSourceFactIndexIntoSqlServer } from "./sqlserver/load-sqlserver.js";
+import { loadsEngineeringTruthIntoSqlServer } from "./sqlserver/load-engineering-truth.js";
 import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./sqlserver/resolves-sql-connection.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
@@ -122,6 +123,8 @@ if (command === "project") {
   await runConsole(args.slice(1));
 } else if (command === "load-sqlserver") {
   await runLoadSqlServer(args.slice(1));
+} else if (command === "load-engineering-truth") {
+  await runLoadEngineeringTruth(args.slice(1));
 } else if (command === "ingest") {
   await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
@@ -740,6 +743,29 @@ async function runLoadSqlServer(rawArgs) {
   if (flags.summary === true) process.stdout.write(formatsSqlServerLoadSummary(receipt));
 }
 
+async function runLoadEngineeringTruth(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.contract !== "string") throw new Error("--contract <governed-artifact-contract.json> is required.");
+  if (typeof flags.report !== "string") throw new Error("--report <source-facts-self-governance-report.json> is required.");
+  const contractPath = path.resolve(flags.contract);
+  const reportPath = path.resolve(flags.report);
+  const [contract, report] = await Promise.all([readsJsonFile(contractPath), readsJsonFile(reportPath)]);
+  const receipt = await loadsEngineeringTruthIntoSqlServer({
+    contract,
+    report,
+    contractSourcePath: contractPath,
+    reportSourcePath: reportPath,
+    connection: resolvesSqlServerConnection(flags),
+  });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Contract snapshot: ${receipt.contractSnapshotId}\n`);
+    process.stdout.write(`Observation snapshot: ${receipt.observationSnapshotId}\n`);
+    for (const [name, count] of Object.entries(receipt.projectedCounts)) process.stdout.write(`Projected ${name}: ${count}\n`);
+    for (const [name, count] of Object.entries(receipt.databaseCounts)) process.stdout.write(`Database ${name}: ${count}\n`);
+  }
+}
+
 async function runIngest(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const workspaceRoot = path.resolve(flags.workspace ?? process.cwd());
@@ -1145,6 +1171,7 @@ function parseArgs(rawArgs) {
     "--know-how-dir",
     "--healing-dir",
     "--template-contract",
+    "--contract",
     "--binding",
     "--violation-bindings",
     "--strategy-doc",
@@ -1275,6 +1302,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --feature-authority-file <file> --feature-id <id> --scenario-id <id> --responsibility-id <id> --obligation-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se load-engineering-truth --contract <governed-contract.json> --report <self-governance-report.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
@@ -1294,6 +1322,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se report-query --report ./source-facts-self-governance-report.json --feature-id source-facts.cli-call-graph --pretty\n`);
   stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
   stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se load-engineering-truth --contract ./contracts/serves-query-console.governed.contract.json --report ./artifacts/governance/source-facts-self-governance-report.json --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }
 
