@@ -30,3 +30,18 @@ Feature: Persist and reconstruct a complete repository from SQL
 
     &and:projected-image-digest-agrees
     And every projected byte length, content digest, and repository image digest agrees
+
+  &scenario:source-facts.cli-repository-projection.analyze-current-image
+  Scenario: Normalize repository knowledge from the SQL-backed current image
+
+    &given:complete-current-repository-image-is-in-sql
+    Given every governed repository artifact and its exact bytes are available from SQL
+
+    &when:analyze-repository-command-invoked
+    When the user invokes the analyze-repository command for the durable root identity
+
+    &then:typed-repository-knowledge-is-persisted
+    Then typed SQL, Gherkin, Markdown, JSON, package, and runtime facts are persisted as current observations
+
+    &and:every-artifact-has-semantic-coverage
+    And every artifact has an explicit projected, delegated, exact-only, binary, or failed analysis disposition

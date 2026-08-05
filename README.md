@@ -279,6 +279,29 @@ The resulting files are exact current-state projections. Their behavioral meanin
 becomes canonical only through the separate feature, mechanic, and governed-contract
 admission planes.
 
+After loading the exact image, `analyze-repository` reads that image back from SQL
+and projects normalized current-state knowledge without consulting the original
+workspace:
+
+```powershell
+node src/cli.js analyze-repository `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --output C:\lab\temp\source-facts-repository-semantics.json `
+  --pretty `
+  --summary
+```
+
+The first analyzer profile projects SQL object declarations and references,
+Gherkin features/scenarios/steps and anchors, Markdown headings/links/code blocks,
+JSON scalar paths, and package scripts/engines/dependencies/locked packages.
+JavaScript and TypeScript are explicitly delegated to the deeper source-fact engine.
+Every remaining artifact receives `EXACT_CONTENT_ONLY`, `BINARY_CONTENT`, or
+`ANALYZER_FAILED`; nothing silently disappears. Query
+`reporting.CurrentRepositorySemanticCoverage` and
+`reporting.CurrentRepositoryKnowledge` in SQL Server. All projected facts remain
+`OBSERVED_NOT_ADMITTED` until separately bound to admitted authority.
+
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
 then load an admitted governed contract beside a generated self-governance report:
@@ -317,6 +340,7 @@ node src/cli.js console serve --index <source-fact-index.json> [--workspace <dir
 node src/cli.js load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js load-repository --workspace <dir> --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js extract-repository --root-id <id> --output <empty-dir> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js analyze-repository --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--output <analysis.json>] [--pretty] [--summary]
 node src/cli.js ingest --workspace <dir> [--workspace-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js web query --index <web-surface-index.json> "<sql>" [--pretty]
 node src/cli.js web gallery plan --index <file> --inventory <file> --query <id> --output <dir>

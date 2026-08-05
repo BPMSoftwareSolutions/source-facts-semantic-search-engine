@@ -13,4 +13,6 @@ test("repository image schema keeps one current root image and deduplicates exac
   assert.match(sql, /AuthorityDisposition = 'OBSERVED_NOT_ADMITTED'/u);
   assert.match(sql, /CREATE OR ALTER PROCEDURE ingestion\.LoadRepositoryImage/u);
   assert.match(sql, /DELETE FROM inventory\.RepositoryArtifact WHERE RootId = @RootId/u);
+  assert.match(sql, /DELETE FROM observation\.RepositorySemanticAnalysis WHERE RootId = @RootId/u);
+  assert.match(sql, /REPOSITORY_CURRENT_IMAGE_ADMITTED/u);
 });

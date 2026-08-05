@@ -36,6 +36,23 @@
         "projectsRepositoryImageToWorkspace"
       ],
       "purpose": "User can reconstruct an exact complete workspace in an empty directory without reading the original repository"
+    },
+    {
+      "scenarioId": "source-facts.cli-repository-projection.analyze-current-image",
+      "scenarioAnchor": "&scenario:source-facts.cli-repository-projection.analyze-current-image",
+      "responsibilityId": "cli-current-repository-semantic-analysis",
+      "obligationId": "normalize-every-current-repository-artifact-with-explicit-coverage",
+      "givenId": "complete-current-repository-image-is-in-sql",
+      "whenId": "analyze-repository-command-invoked",
+      "thenId": "typed-repository-knowledge-is-persisted",
+      "andId": "every-artifact-has-semantic-coverage",
+      "implementationSymbols": [
+        "runAnalyzeRepository",
+        "extractsRepositoryImageFromSqlServer",
+        "projectsRepositorySemanticAnalysis",
+        "loadsRepositorySemanticAnalysisIntoSqlServer"
+      ],
+      "purpose": "User can normalize current repository knowledge solely from database-backed artifact content with no silent coverage gaps"
     }
   ],
   "interfaceRoot": "src/cli.js#runLoadRepository",

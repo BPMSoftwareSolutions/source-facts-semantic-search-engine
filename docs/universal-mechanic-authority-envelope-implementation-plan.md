@@ -112,6 +112,44 @@ mechanic projection. A fully runnable remote deployment still requires pinned
 toolchain/dependency provisioning followed by the declared workspace gates and
 tests.
 
+### Repository semantic normalization implemented on 2026-08-05
+
+Normalized repository knowledge is now projected from the SQL-backed current image,
+not from the original disk workspace:
+
+~~~text
+inventory.RepositoryImage + inventory.RepositoryContent
+  -> analyze-repository
+  -> repository-semantic-analysis.v1
+  -> observation.RepositoryArtifactSemanticCoverage
+  -> observation.RepositorySemanticFact
+  -> reporting.CurrentRepositoryKnowledge
+~~~
+
+The initial analyzer registry covers:
+
+| Artifact format | Normalized knowledge |
+| --- | --- |
+| SQL Server scripts | batches, object declarations, and object references |
+| Gherkin | anchors, features, scenarios, backgrounds, and steps |
+| Markdown | headings, links, and fenced code-block boundaries |
+| JSON | scalar values with JSON-pointer identities |
+| `package.json` | scripts, engines, dependencies, executable entrypoints, and package metadata |
+| `package-lock.json` | lockfile version and locked-package identities/integrity |
+| JavaScript/TypeScript | explicit delegation to the existing source-fact engine |
+| Other UTF-8 and binary content | explicit exact-only or binary coverage disposition |
+
+Every current artifact receives exactly one semantic coverage row. Analyzer failures
+are retained as named coverage failures instead of aborting or disappearing. Every
+fact remains `OBSERVED_NOT_ADMITTED`; normalization does not perform semantic
+admission.
+
+Migration: `scripts/sql/017-create-repository-semantics.sql`.
+
+The next deployment milestone after this is runtime/toolchain provisioning from
+declared package and execution authority, followed by database-origin test and gate
+execution.
+
 ## 2. Scope
 
 ### In scope

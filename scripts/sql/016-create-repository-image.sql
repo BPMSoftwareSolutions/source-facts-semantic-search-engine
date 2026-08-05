@@ -161,6 +161,15 @@ BEGIN
         WHERE NOT EXISTS (SELECT 1 FROM inventory.RepositoryContent target WHERE target.ContentDigest = source.ContentDigest)
         GROUP BY source.ContentDigest;
 
+        -- Semantic analysis is derived from the exact current image. Replacing
+        -- that image invalidates the derived rows before artifact replacement.
+        IF OBJECT_ID('observation.RepositorySemanticFact', 'U') IS NOT NULL
+            DELETE FROM observation.RepositorySemanticFact WHERE RootId = @RootId;
+        IF OBJECT_ID('observation.RepositoryArtifactSemanticCoverage', 'U') IS NOT NULL
+            DELETE FROM observation.RepositoryArtifactSemanticCoverage WHERE RootId = @RootId;
+        IF OBJECT_ID('observation.RepositorySemanticAnalysis', 'U') IS NOT NULL
+            DELETE FROM observation.RepositorySemanticAnalysis WHERE RootId = @RootId;
+
         DELETE FROM inventory.RepositoryArtifact WHERE RootId = @RootId;
         MERGE inventory.RepositoryImage AS target
         USING (SELECT @RootId AS RootId) AS source ON source.RootId = target.RootId
@@ -186,7 +195,7 @@ BEGIN
         THROW;
     END CATCH;
 
-    SELECT @RootId AS RootId, @ImageDigest AS ImageDigest, @ArtifactCount AS ArtifactCount,
-           @TotalByteLength AS TotalByteLength, 'REPOSITORY_CURRENT_IMAGE_ADMITTED' AS Disposition;
+    SELECT CONCAT('R|', @ImageDigest, '|', @ArtifactCount, '|', @TotalByteLength,
+                  '|REPOSITORY_CURRENT_IMAGE_ADMITTED') AS ResultLine;
 END;
 GO

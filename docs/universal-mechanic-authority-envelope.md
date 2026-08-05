@@ -67,6 +67,22 @@ deduplicated by digest rather than copied for every path. Database-only extracti
 must verify all content digests and the complete image digest before projection into
 an empty workspace.
 
+Normalized repository knowledge is a third, still observational plane:
+
+```text
+repository-current-image.v1
+    -> repository-semantic-analysis.v1
+    -> explicit artifact coverage + typed observed facts
+    -> human or governed admission workflow
+    -> canonical authority
+```
+
+The analysis must originate from the database-backed image, cover every artifact,
+and preserve failures and unsupported formats as explicit dispositions. SQL,
+Gherkin, Markdown, JSON, and package/runtime manifests have initial typed analyzers;
+JavaScript and TypeScript delegate to Source Facts. No analyzer output is authority
+until a separate admission binds it to canonical lineage.
+
 # The universal mechanic-authority envelope
 
 Every data counterpart should use the same outer shape:

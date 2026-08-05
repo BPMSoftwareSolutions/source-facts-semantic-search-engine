@@ -36,6 +36,8 @@ import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./s
 import { extractsContractAuthorityDocumentFromSqlServer } from "./sqlserver/contract-authority-document.js";
 import { capturesRepositoryImage, projectsRepositoryImageToWorkspace } from "./repository-image.js";
 import { extractsRepositoryImageFromSqlServer, loadsRepositoryImageIntoSqlServer } from "./sqlserver/repository-image.js";
+import { projectsRepositorySemanticAnalysis } from "./repository-semantics.js";
+import { loadsRepositorySemanticAnalysisIntoSqlServer } from "./sqlserver/repository-semantics.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -136,6 +138,8 @@ if (command === "project") {
   await runLoadRepository(args.slice(1));
 } else if (command === "extract-repository") {
   await runExtractRepository(args.slice(1));
+} else if (command === "analyze-repository") {
+  await runAnalyzeRepository(args.slice(1));
 } else if (command === "ingest") {
   await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
@@ -797,6 +801,31 @@ async function runExtractRepository(rawArgs) {
   }
 }
 
+async function runAnalyzeRepository(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const image = await extractsRepositoryImageFromSqlServer({ rootId: flags.rootId, connection });
+  const analysis = projectsRepositorySemanticAnalysis(image);
+  const receipt = await loadsRepositorySemanticAnalysisIntoSqlServer({ analysis, connection });
+  if (typeof flags.output === "string") {
+    const outputPath = path.resolve(flags.output);
+    await writesJsonFile(outputPath, analysis, { pretty: flags.pretty === true });
+    process.stdout.write(`${outputPath}\n`);
+  }
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${receipt.rootId}\n`);
+    process.stdout.write(`Repository image: ${receipt.imageDigest}\n`);
+    process.stdout.write(`Semantic analysis: ${receipt.analysisDigest}\n`);
+    process.stdout.write(`Artifacts covered: ${receipt.artifactCount}\n`);
+    process.stdout.write(`Semantic facts: ${receipt.semanticFactCount}\n`);
+    for (const [disposition, count] of Object.entries(analysis.summary.byDisposition)) {
+      process.stdout.write(`Coverage ${disposition}: ${count}\n`);
+    }
+  }
+}
+
 async function preparesSelfGovernanceReportArtifacts(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const pretty = flags.pretty === true;
@@ -1441,6 +1470,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se extract-contract (--contract-id <id> | --contract-snapshot-id <digest>) --output <contract.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se load-repository [--workspace <dir>] [--root-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se extract-repository --root-id <id> --output <empty-dir> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se analyze-repository --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--output <analysis.json>] [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
@@ -1464,6 +1494,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se load-engineering-truth --contract ./contracts/serves-query-console.governed.contract.json --intent-dir ./features --report ./artifacts/governance/source-facts-self-governance-report.json --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se load-repository --workspace . --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se extract-repository --root-id source-facts-semantic-search-engine --output ../source-facts-projected --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se analyze-repository --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }
 

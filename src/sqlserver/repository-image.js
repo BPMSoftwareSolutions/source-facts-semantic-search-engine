@@ -12,9 +12,7 @@ export async function loadsRepositoryImageIntoSqlServer({ image, connection, sql
   const payload = JSON.stringify(image);
   const query = `SET NOCOUNT ON;
 DECLARE @PayloadJson nvarchar(max) = ${sqlStringLiteral(payload)};
-DECLARE @Result TABLE (RootId nvarchar(400), ImageDigest varchar(80), ArtifactCount int, TotalByteLength bigint, Disposition varchar(80));
-INSERT INTO @Result EXEC ingestion.LoadRepositoryImage @PayloadJson = @PayloadJson;
-SELECT CONCAT('R|', ImageDigest, '|', ArtifactCount, '|', TotalByteLength, '|', Disposition) FROM @Result;`;
+EXEC ingestion.LoadRepositoryImage @PayloadJson = @PayloadJson;`;
   const lines = await queryRunner({ connection, sqlcmdPath, query });
   const result = lines.find((line) => line.startsWith("R|"));
   if (!result) throw new Error("SQL Server returned no repository image load result.");
