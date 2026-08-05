@@ -10,12 +10,25 @@ export async function loadsRepositoryTestKnowledgeIntoSqlServer({ analysis, conn
   const lines = await queryRunner({ connection, sqlcmdPath, query });
   const result = lines.find((line) => line.startsWith("R|"));
   if (!result) throw new Error("SQL Server returned no repository test knowledge result.");
-  const [, analysisDigest, testArtifactCount, testCaseCount, assertionCount, candidateTestCount, unboundTestCount, disposition] = result.split("|");
+  const [, analysisDigest, testArtifactCount, testCaseCount, assertionCount, candidateTestCount, unboundTestCount, meaningRecommendationCount, unresolvedMeaningCount, disposition] = result.split("|");
   if (analysisDigest !== analysis.analysisDigest) throw new Error("SQL Server test analysis identity does not match the requested analysis.");
   const sealResult = lines.find((line) => line.startsWith("S|"));
   if (!sealResult) throw new Error("SQL Server returned no repository test closure seal result.");
   const [, testClosureSealDigest] = sealResult.split("|");
-  return Object.freeze({ rootId: analysis.rootId, analysisDigest, testClosureSealDigest, testArtifactCount: Number(testArtifactCount), testCaseCount: Number(testCaseCount), assertionCount: Number(assertionCount), candidateTestCount: Number(candidateTestCount), unboundTestCount: Number(unboundTestCount), disposition });
+  return Object.freeze({ rootId: analysis.rootId, analysisDigest, testClosureSealDigest, testArtifactCount: Number(testArtifactCount), testCaseCount: Number(testCaseCount), assertionCount: Number(assertionCount), candidateTestCount: Number(candidateTestCount), unboundTestCount: Number(unboundTestCount), meaningRecommendationCount: Number(meaningRecommendationCount), unresolvedMeaningCount: Number(unresolvedMeaningCount), disposition });
+}
+
+export async function queriesCurrentTestMeaningCoverage({ rootId, connection, sqlcmdPath = "sqlcmd", queryRunner = runsSqlcmdQuery } = {}) {
+  verifiesConnection(connection);
+  if (typeof rootId !== "string" || rootId.length === 0) throw new Error("rootId is required.");
+  const query = `SET NOCOUNT ON;
+SELECT CONCAT('M|',ObservedTestCount,'|',MeaningRecommendationCount,'|',ReviewedPostureCount,'|',UnresolvedTestCount,'|',CandidateMissingIntentCount,'|',DuplicateOrInactiveTestCount,'|',ActiveCanonicalVectorCount,'|',ProjectableCanonicalVectorCount,'|',CanonicalScenarioCount,'|',ScenarioRequirementDeclaredCount,'|',ProofClosedScenarioCount,'|',TestMeaningCoverageDisposition)
+FROM projection.CurrentTestMeaningCoverage WHERE RootId=${sqlStringLiteral(rootId)};`;
+  const lines = await queryRunner({ connection, sqlcmdPath, query });
+  const row = lines.find((line) => line.startsWith("M|"));
+  if (!row) return Object.freeze({ rootId, disposition: "TEST_MEANING_COVERAGE_MISSING" });
+  const [, observedTestCount, meaningRecommendationCount, reviewedPostureCount, unresolvedTestCount, candidateMissingIntentCount, duplicateOrInactiveTestCount, activeCanonicalVectorCount, projectableCanonicalVectorCount, canonicalScenarioCount, scenarioRequirementDeclaredCount, proofClosedScenarioCount, testMeaningCoverageDisposition] = row.split("|");
+  return Object.freeze({ rootId, observedTestCount: Number(observedTestCount), meaningRecommendationCount: Number(meaningRecommendationCount), reviewedPostureCount: Number(reviewedPostureCount), unresolvedTestCount: Number(unresolvedTestCount), candidateMissingIntentCount: Number(candidateMissingIntentCount), duplicateOrInactiveTestCount: Number(duplicateOrInactiveTestCount), activeCanonicalVectorCount: Number(activeCanonicalVectorCount), projectableCanonicalVectorCount: Number(projectableCanonicalVectorCount), canonicalScenarioCount: Number(canonicalScenarioCount), scenarioRequirementDeclaredCount: Number(scenarioRequirementDeclaredCount), proofClosedScenarioCount: Number(proofClosedScenarioCount), testMeaningCoverageDisposition, disposition: "TEST_MEANING_COVERAGE_QUERIED" });
 }
 
 export async function queriesCurrentRepositoryTestClosure({ rootId, connection, sqlcmdPath = "sqlcmd", queryRunner = runsSqlcmdQuery } = {}) {

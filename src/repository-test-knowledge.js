@@ -3,6 +3,7 @@ import path from "node:path";
 import ts from "typescript";
 import { verifiesRepositoryImage } from "./repository-image.js";
 import { projectsCanonicalIntentRegistryContract, projectsEngineeringTruthSqlPayload } from "./sqlserver/load-engineering-truth.js";
+import { classifiesTestMeaning } from "./classifies-test-meaning.js";
 
 const testCallNames = new Set(["test", "it"]);
 const suiteCallNames = new Set(["describe", "suite"]);
@@ -106,14 +107,25 @@ export function projectsRepositoryTestKnowledge(image, { applicationId = image?.
   const uniqueMocks = uniqueBy(mockUsages, "mockUsageId");
   const uniqueInvocations = uniqueBy(invocations, "invocationId");
   const uniqueCandidates = uniqueBy(candidates, "candidateId");
+  const meaningClassifications = uniqueTests.map((testCase) => classifiesTestMeaning({
+    testCase,
+    invocations: uniqueInvocations.filter((row) => row.testId === testCase.testId),
+    assertions: uniqueAssertions.filter((row) => row.testId === testCase.testId),
+    fixtureUsages: uniqueFixtures.filter((row) => row.testId === testCase.testId),
+    mockUsages: uniqueMocks.filter((row) => row.testId === testCase.testId),
+    candidates: uniqueCandidates.filter((row) => row.testId === testCase.testId),
+  }));
   const analysis = {
-    analysisType: "repository-test-knowledge.v1", rootId: image.rootId, applicationId, imageDigest: image.imageDigest, contractSnapshotId,
+    analysisType: "repository-test-knowledge.v2", rootId: image.rootId, applicationId, imageDigest: image.imageDigest, contractSnapshotId,
     artifacts, suites: uniqueSuites, testCases: uniqueTests, assertions: uniqueAssertions, fixtureUsages: uniqueFixtures, mockUsages: uniqueMocks, invocations: uniqueInvocations, candidates: uniqueCandidates,
+    meaningClassifications,
     summary: {
       testArtifacts: artifacts.length, testCases: uniqueTests.length, suites: uniqueSuites.length, assertions: uniqueAssertions.length,
       fixtureUsages: uniqueFixtures.length, mockUsages: uniqueMocks.length, invocations: uniqueInvocations.length,
       candidateTests: uniqueTests.filter((row) => row.currentPosture === "REGRESSION_CANDIDATE").length,
       unboundTests: uniqueTests.filter((row) => row.currentPosture === "UNBOUND_TEST").length,
+      meaningRecommendations: meaningClassifications.length,
+      unresolvedMeanings: meaningClassifications.filter((row) => row.recommendedProofType === "NOISE_OR_UNRESOLVED").length,
     },
   };
   analysis.analysisDigest = digest(analysis);
@@ -121,9 +133,10 @@ export function projectsRepositoryTestKnowledge(image, { applicationId = image?.
 }
 
 export function verifiesRepositoryTestKnowledge(analysis) {
-  if (analysis?.analysisType !== "repository-test-knowledge.v1") throw new Error("A repository-test-knowledge.v1 payload is required.");
+  if (analysis?.analysisType !== "repository-test-knowledge.v2") throw new Error("A repository-test-knowledge.v2 payload is required.");
   if (digest(Object.fromEntries(Object.entries(analysis).filter(([key]) => key !== "analysisDigest"))) !== analysis.analysisDigest) throw new Error("Repository test knowledge digest is invalid.");
   if (analysis.testCases.length !== analysis.summary.testCases || analysis.artifacts.length !== analysis.summary.testArtifacts) throw new Error("Repository test knowledge counts are invalid.");
+  if (analysis.meaningClassifications.length !== analysis.testCases.length || analysis.summary.meaningRecommendations !== analysis.testCases.length) throw new Error("Every observed test must receive one meaning recommendation.");
   return analysis;
 }
 

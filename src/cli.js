@@ -41,7 +41,7 @@ import { loadsRepositorySemanticAnalysisIntoSqlServer } from "./sqlserver/reposi
 import { projectsCanonicalIntentRegistryFromRepositoryImage } from "./repository-lineage-seal.js";
 import { refreshesRepositoryLineageSealInSqlServer, validatesRepositoryLineageSealInSqlServer } from "./sqlserver/repository-lineage-seal.js";
 import { projectsRepositoryTestKnowledge } from "./repository-test-knowledge.js";
-import { loadsRepositoryTestKnowledgeIntoSqlServer, queriesCurrentRepositoryTestClosure } from "./sqlserver/repository-test-knowledge.js";
+import { loadsRepositoryTestKnowledgeIntoSqlServer, queriesCurrentRepositoryTestClosure, queriesCurrentTestMeaningCoverage } from "./sqlserver/repository-test-knowledge.js";
 import { executesCanonicalTestVector } from "./canonical-test-vector.js";
 import { extractsCanonicalTestVectorFromSqlServer, recordsCanonicalTestExecutionInSqlServer } from "./sqlserver/canonical-test-vector.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
@@ -154,6 +154,8 @@ if (command === "project") {
   await runAnalyzeTests(args.slice(1));
 } else if (command === "test-closure") {
   await runTestClosure(args.slice(1));
+} else if (command === "test-meaning") {
+  await runTestMeaning(args.slice(1));
 } else if (command === "prove-test-vector") {
   await runProveTestVector(args.slice(1));
 } else if (command === "ingest") {
@@ -904,6 +906,8 @@ async function runAnalyzeTests(rawArgs) {
     process.stdout.write(`Assertions: ${receipt.assertionCount}\n`);
     process.stdout.write(`Candidate tests: ${receipt.candidateTestCount}\n`);
     process.stdout.write(`Unbound tests: ${receipt.unboundTestCount}\n`);
+    process.stdout.write(`Meaning recommendations: ${receipt.meaningRecommendationCount}\n`);
+    process.stdout.write(`Unresolved meanings: ${receipt.unresolvedMeaningCount}\n`);
     process.stdout.write("Authority admission: NONE_FROM_OBSERVATION\n");
   }
 }
@@ -924,6 +928,28 @@ async function runTestClosure(rawArgs) {
     process.stdout.write(`Unbound tests: ${closure.unboundTestCount ?? 0}\n`);
     process.stdout.write(`Admitted scenarios closed: ${closure.closedScenarioCount ?? 0}/${closure.admittedScenarioCount ?? 0}\n`);
     if (closure.testClosureSealDigest) process.stdout.write(`Test closure seal: ${closure.testClosureSealDigest}\n`);
+  }
+}
+
+async function runTestMeaning(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const coverage = await queriesCurrentTestMeaningCoverage({ rootId: flags.rootId, connection });
+  process.stdout.write(`${coverage.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${coverage.rootId}\n`);
+    process.stdout.write(`Meaning coverage: ${coverage.testMeaningCoverageDisposition ?? "MISSING"}\n`);
+    process.stdout.write(`Observed tests: ${coverage.observedTestCount ?? 0}\n`);
+    process.stdout.write(`Meaning recommendations: ${coverage.meaningRecommendationCount ?? 0}\n`);
+    process.stdout.write(`Reviewed postures: ${coverage.reviewedPostureCount ?? 0}\n`);
+    process.stdout.write(`Unresolved meanings: ${coverage.unresolvedTestCount ?? 0}\n`);
+    process.stdout.write(`Candidate missing intent: ${coverage.candidateMissingIntentCount ?? 0}\n`);
+    process.stdout.write(`Duplicate or inactive: ${coverage.duplicateOrInactiveTestCount ?? 0}\n`);
+    process.stdout.write(`Projectable canonical vectors: ${coverage.projectableCanonicalVectorCount ?? 0}/${coverage.activeCanonicalVectorCount ?? 0}\n`);
+    process.stdout.write(`Declared scenario requirements: ${coverage.scenarioRequirementDeclaredCount ?? 0}/${coverage.canonicalScenarioCount ?? 0}\n`);
+    process.stdout.write(`Proof-closed scenarios: ${coverage.proofClosedScenarioCount ?? 0}/${coverage.canonicalScenarioCount ?? 0}\n`);
+    process.stdout.write("Classification authority: RECOMMENDATION_NOT_ADMISSION\n");
   }
 }
 
@@ -1603,6 +1629,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se validate-repository-seal --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se analyze-tests --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se test-closure --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se test-meaning --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id <id> --test-vector-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
@@ -1632,6 +1659,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se validate-repository-seal --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se analyze-tests --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se test-closure --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se test-meaning --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id source-facts-semantic-search-engine --test-vector-id classify-mechanic-authority-family.v1 --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }

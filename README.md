@@ -377,6 +377,26 @@ that signal with SQL expectation authority and records the projected artifact,
 fixture, profile, runtime-plan, output, repository-seal, and test-closure-seal
 digests in SQL. The ephemeral workspace is removed after execution.
 
+Apply `scripts/sql/021-create-canonical-test-meaning-coverage.sql` to turn the
+complete observed test inventory into an evidence-backed meaning work queue.
+Every current test receives exactly one deterministic recommendation from the
+SQL repository image, while reviewed meaning remains a separate authority plane:
+
+```powershell
+node src/cli.js test-meaning `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+`projection.CurrentTestMeaning` exposes test identity, observed invocations,
+assertions, fixtures, candidate lineage, recommended proof type, ontology lane,
+confidence, evidence, and review disposition. `CurrentTestMeaningCoverage`
+provides the inexpensive iteration dashboard, and `CurrentCapabilityBacklog`
+isolates asserted or operational behavior with missing canonical intent. A
+recommendation is always `DETERMINISTIC_RECOMMENDATION_NOT_ADMITTED`; only an
+exact-analysis `TestMeaningReview` row can establish reviewed meaning authority.
+
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
 then load an admitted governed contract beside a generated self-governance report:

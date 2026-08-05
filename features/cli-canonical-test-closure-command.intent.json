@@ -40,6 +40,18 @@
       "andId": "execution-testimony-is-stored-only-in-sql",
       "implementationSymbols": ["runProveTestVector", "executesCanonicalTestVector", "recordsCanonicalTestExecutionInSqlServer"],
       "purpose": "Project an ephemeral Vitest embodiment, independently compare its observed signal, and store testimony in SQL"
+    },
+    {
+      "scenarioId": "source-facts.cli-canonical-test-closure.query-test-meaning",
+      "scenarioAnchor": "&scenario:source-facts.cli-canonical-test-closure.query-test-meaning",
+      "responsibilityId": "repository-test-meaning-query",
+      "obligationId": "every-observed-test-has-explicit-meaning-and-review-posture",
+      "givenId": "current-test-meaning-recommendations-exist-in-sql",
+      "whenId": "test-meaning-command-invoked",
+      "thenId": "meaning-coverage-and-review-gaps-are-explicit",
+      "andId": "recommendations-do-not-become-authority",
+      "implementationSymbols": ["runTestMeaning", "queriesCurrentTestMeaningCoverage", "classifiesTestMeaning"],
+      "purpose": "Expose complete evidence-backed test-meaning recommendations while preserving separate reviewed authority"
     }
   ],
   "interfaceRoot": "src/cli.js#runAnalyzeTests",

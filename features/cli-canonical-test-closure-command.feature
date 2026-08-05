@@ -45,3 +45,18 @@ Feature: Account for repository tests against canonical feature intent
 
     &and:execution-testimony-is-stored-only-in-sql
     And execution testimony is stored only in SQL and the projected workspace is removed
+
+  &scenario:source-facts.cli-canonical-test-closure.query-test-meaning
+  Scenario: Query the current meaning coverage of every observed test
+
+    &given:current-test-meaning-recommendations-exist-in-sql
+    Given every current observed test has one evidence-backed meaning recommendation in SQL
+
+    &when:test-meaning-command-invoked
+    When the user invokes the test-meaning command
+
+    &then:meaning-coverage-and-review-gaps-are-explicit
+    Then meaning coverage, ontology lanes, candidate intent, and review gaps are returned explicitly
+
+    &and:recommendations-do-not-become-authority
+    And deterministic recommendations remain separate from reviewed test-meaning authority

@@ -21,5 +21,8 @@ test("accounts for test structure from repository image bytes without admitting 
     assert.equal(analysis.testCases[0].currentPosture, "REGRESSION_CANDIDATE");
     assert.equal(analysis.testCases[0].canonicalBindingDisposition, "UNBOUND_TEST");
     assert.equal(analysis.candidates[0].bindingDisposition, "CANDIDATE_NOT_ADMITTED");
+    assert.equal(analysis.meaningClassifications.length, 1);
+    assert.equal(analysis.meaningClassifications[0].recommendedProofType, "SCENARIO_TEST");
+    assert.equal(analysis.meaningClassifications[0].reviewDisposition, "REVIEW_REQUIRED");
   } finally { await rm(root, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 }); }
 });
