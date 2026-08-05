@@ -235,7 +235,7 @@ node src/cli.js console serve --index ./self-index.json --workspace ./src
 
 ## Loading facts into SQL Server
 
-Past a certain point, a custom query runtime and UI are the wrong home for ad hoc analysis — SQL Server is. `load-sqlserver` projects nothing itself; it takes an already-produced `source-fact-index.v1` and loads it table-by-table into a declared SQL Server database (`sql/`), so SSMS, saved views, and ordinary joins become the query surface instead of a bespoke language. Each table is its own step, its own committed statement, and its own timed progress line — not one all-or-nothing transaction across tens of thousands of rows. Loading is idempotent: an index whose content hasn't changed is a no-op (`LOAD_ALREADY_ADMITTED`), never a duplicate insert.
+Past a certain point, a custom query runtime and UI are the wrong home for ad hoc analysis — SQL Server is. `load-sqlserver` projects nothing itself; it takes an already-produced `source-fact-index.v1` and loads it into a declared SQL Server database (`sql/`), so SSMS, saved views, and ordinary joins become the query surface instead of a bespoke language. A durable `inventory.SourceRoot` has exactly one current `inventory.Scan`; rescanning that root atomically replaces its prior file and fact graph. Only lightweight ingestion receipts remain as load history. Loading the unchanged current index is a no-op (`LOAD_ALREADY_ADMITTED`).
 
 Both a local trusted (Windows-integrated) connection and Azure SQL (SQL authentication via an ADO.NET connection string held in an environment variable) are supported; the password never appears on the command line or in a log.
 
@@ -245,7 +245,7 @@ node src/cli.js load-sqlserver --index ./self-index.json --connection-env source
 node src/cli.js ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary
 ```
 
-`reporting.*` views (`ForbiddenExecutableMechanic`, `FunctionMechanicSummary`, `UnresolvedRelationship`, `UngovernedBody`) give SSMS ready-made starting points over the loaded facts; see [`sql/`](sql/) for the full schema and loader procedures.
+Query `inventory.CurrentSourceFile` for current root-scoped files. `reporting.*` views (`ForbiddenExecutableMechanic`, `FunctionMechanicSummary`, `UnresolvedRelationship`, `UngovernedBody`) give SSMS ready-made starting points over the loaded facts; see [`sql/`](sql/) for the full schema and loader procedures.
 
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,

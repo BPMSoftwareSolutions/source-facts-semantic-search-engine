@@ -41,11 +41,23 @@ IF OBJECT_ID('source.Symbol', 'U') IS NOT NULL DROP TABLE source.Symbol;
 IF OBJECT_ID('source.SourceReference', 'U') IS NOT NULL DROP TABLE source.SourceReference;
 IF OBJECT_ID('inventory.SourceFile', 'U') IS NOT NULL DROP TABLE inventory.SourceFile;
 IF OBJECT_ID('inventory.Scan', 'U') IS NOT NULL DROP TABLE inventory.Scan;
+IF OBJECT_ID('inventory.SourceRoot', 'U') IS NOT NULL DROP TABLE inventory.SourceRoot;
+GO
+
+CREATE TABLE inventory.SourceRoot
+(
+    RootId             nvarchar(400)  NOT NULL,
+    WorkspaceRoot      nvarchar(1024) NULL,
+    CreatedAtUtc       datetime2(7)   NOT NULL CONSTRAINT DF_SourceRoot_CreatedAtUtc DEFAULT SYSUTCDATETIME(),
+    UpdatedAtUtc       datetime2(7)   NOT NULL CONSTRAINT DF_SourceRoot_UpdatedAtUtc DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT PK_SourceRoot PRIMARY KEY (RootId)
+);
 GO
 
 CREATE TABLE inventory.Scan
 (
     IndexId                 varchar(120)   NOT NULL,   -- index.indexId
+    RootId                  nvarchar(400)  NOT NULL,   -- durable source-root identity
     ScanId                  varchar(200)   NOT NULL,   -- index.manifest.scanId
     IndexType                varchar(80)   NOT NULL,
     IndexSchemaVersion       varchar(40)   NOT NULL,
@@ -69,7 +81,10 @@ CREATE TABLE inventory.Scan
     DataflowCount        int NOT NULL,
     UnknownSyntaxRatio   decimal(9, 6) NOT NULL,
     ObservedAtUtc        datetime2(7) NOT NULL CONSTRAINT DF_Scan_ObservedAtUtc DEFAULT SYSUTCDATETIME(),
-    CONSTRAINT PK_Scan PRIMARY KEY (IndexId)
+    CONSTRAINT PK_Scan PRIMARY KEY (IndexId),
+    CONSTRAINT UQ_Scan_RootId UNIQUE (RootId),
+    CONSTRAINT UQ_Scan_IndexId_RootId UNIQUE (IndexId, RootId),
+    CONSTRAINT FK_Scan_SourceRoot FOREIGN KEY (RootId) REFERENCES inventory.SourceRoot(RootId)
 );
 GO
 
@@ -79,14 +94,16 @@ CREATE TABLE inventory.SourceFile
     RootId             nvarchar(400)   NOT NULL,
     FileId             varchar(120)   NOT NULL,
     RelativePath       nvarchar(1024) NOT NULL,
+    SourceFilePathKey  AS CONVERT(varbinary(32), HASHBYTES('SHA2_256', IndexId + N'|' + RootId + N'|' + RelativePath)) PERSISTED,
     ContentHash        varchar(120)   NOT NULL,
     DeclarationCount   int NOT NULL,
     RelationshipCount  int NOT NULL,
     ControlFlowCount   int NOT NULL,
     SyntaxCount        int NOT NULL,
     UnknownSyntaxCount int NOT NULL,
-    CONSTRAINT PK_SourceFile PRIMARY KEY (IndexId, RootId, FileId),
-    CONSTRAINT FK_SourceFile_Scan FOREIGN KEY (IndexId) REFERENCES inventory.Scan(IndexId)
+    CONSTRAINT PK_SourceFile PRIMARY KEY NONCLUSTERED (IndexId, RootId, FileId),
+    CONSTRAINT UQ_SourceFile_Path UNIQUE (SourceFilePathKey),
+    CONSTRAINT FK_SourceFile_ScanRoot FOREIGN KEY (IndexId, RootId) REFERENCES inventory.Scan(IndexId, RootId)
 );
 GO
 
@@ -207,8 +224,8 @@ CREATE TABLE fact.ExecutableMechanic
     EvidenceKind                varchar(80) NULL,
     Classification               varchar(80) NOT NULL,
     VerificationDisposition      varchar(80) NOT NULL,
-    CONSTRAINT PK_ExecutableMechanic PRIMARY KEY (IndexId, RootId, ExecutableMechanicFactId),
-    CONSTRAINT FK_ExecutableMechanic_Scan FOREIGN KEY (IndexId) REFERENCES inventory.Scan(IndexId),
+    CONSTRAINT PK_ExecutableMechanic PRIMARY KEY NONCLUSTERED (IndexId, RootId, ExecutableMechanicFactId),
+    CONSTRAINT FK_ExecutableMechanic_ScanRoot FOREIGN KEY (IndexId, RootId) REFERENCES inventory.Scan(IndexId, RootId),
     CONSTRAINT FK_ExecutableMechanic_SourceReference FOREIGN KEY (SourceReferenceKey) REFERENCES source.SourceReference(SourceReferenceKey),
     CONSTRAINT FK_ExecutableMechanic_FromSymbol FOREIGN KEY (FromSymbolKey) REFERENCES source.Symbol(SymbolKey),
     -- Kept in sync with the mechanic kinds src/project.js can actually emit

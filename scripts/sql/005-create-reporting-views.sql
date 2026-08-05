@@ -6,6 +6,30 @@
 -- is a separate, unrelated capability of this repository), so there is nothing to
 -- align fact.ExecutableMechanic against yet. Add the view once that data is loaded.
 
+CREATE OR ALTER VIEW inventory.CurrentSourceFile
+AS
+SELECT
+    root.RootId,
+    root.WorkspaceRoot,
+    scan.IndexId,
+    scan.ScanId,
+    scan.ObservedAtUtc,
+    sourceFile.FileId,
+    sourceFile.RelativePath,
+    sourceFile.ContentHash,
+    sourceFile.DeclarationCount,
+    sourceFile.RelationshipCount,
+    sourceFile.ControlFlowCount,
+    sourceFile.SyntaxCount,
+    sourceFile.UnknownSyntaxCount
+FROM inventory.SourceRoot AS root
+JOIN inventory.Scan AS scan
+  ON scan.RootId = root.RootId
+JOIN inventory.SourceFile AS sourceFile
+  ON sourceFile.IndexId = scan.IndexId
+ AND sourceFile.RootId = scan.RootId;
+GO
+
 IF OBJECT_ID('reporting.ForbiddenExecutableMechanic', 'V') IS NOT NULL DROP VIEW reporting.ForbiddenExecutableMechanic;
 GO
 CREATE VIEW reporting.ForbiddenExecutableMechanic AS

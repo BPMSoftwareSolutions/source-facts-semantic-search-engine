@@ -2,6 +2,10 @@
 -- The result rows are the product: this script creates no query-run, report,
 -- receipt, proof, or projected-body persistence.
 
+IF SCHEMA_ID('projection') IS NULL EXEC('CREATE SCHEMA projection');
+IF SCHEMA_ID('authority') IS NULL EXEC('CREATE SCHEMA authority');
+GO
+
 IF OBJECT_ID('projection.ExecutionMechanicAuthority', 'V') IS NOT NULL
     DROP VIEW projection.ExecutionMechanicAuthority;
 GO
@@ -59,7 +63,7 @@ BEGIN
         ResponsibilityId nvarchar(160) NOT NULL,
         ContextAuthorityDigest varchar(80) NOT NULL,
         ReviewDisposition varchar(80) NOT NULL,
-        CONSTRAINT PK_MechanicCanonicalLineage PRIMARY KEY (IndexId, RootId, ExecutableMechanicFactId),
+        CONSTRAINT PK_MechanicCanonicalLineage PRIMARY KEY NONCLUSTERED (IndexId, RootId, ExecutableMechanicFactId),
         CONSTRAINT FK_MechanicCanonicalLineage_Mechanic FOREIGN KEY (IndexId, RootId, ExecutableMechanicFactId)
             REFERENCES fact.ExecutableMechanic(IndexId, RootId, ExecutableMechanicFactId),
         CONSTRAINT FK_MechanicCanonicalLineage_Responsibility FOREIGN KEY (ContractSnapshotId, ResponsibilityId)
@@ -171,12 +175,12 @@ CandidateBase AS
       ON sourceReference.SourceReferenceKey = mechanic.SourceReferenceKey
     OUTER APPLY
     (
-        SELECT TOP (1) file.ContentHash
-        FROM inventory.SourceFile AS file
-        WHERE file.IndexId = mechanic.IndexId
-          AND file.RootId = mechanic.RootId
-          AND file.RelativePath = mechanic.ModulePath
-        ORDER BY file.FileId
+        SELECT TOP (1) sourceFileRow.ContentHash
+        FROM inventory.SourceFile AS sourceFileRow
+        WHERE sourceFileRow.IndexId = mechanic.IndexId
+          AND sourceFileRow.RootId = mechanic.RootId
+          AND sourceFileRow.RelativePath = mechanic.ModulePath
+        ORDER BY sourceFileRow.FileId
     ) AS sourceFile
     LEFT JOIN WinningLineage AS selectedLineage
       ON selectedLineage.IndexId = mechanic.IndexId
@@ -242,26 +246,39 @@ SELECT
     CASE
         WHEN candidate.AuthorityFamily IS NULL THEN 'AUTHORITY_FAMILY_UNSUPPORTED'
         WHEN candidate.LineageCandidateCount > 1 THEN 'LINEAGE_CONTEXT_AMBIGUOUS'
-        WHEN candidate.SourceReferenceId IS NULL OR candidate.SourceFileDigest IS NULL THEN 'SOURCE_EVIDENCE_INCOMPLETE'
-        WHEN candidate.ApplicationId IS NULL OR candidate.FeatureId IS NULL OR candidate.ScenarioId IS NULL
-          OR candidate.ObligationId IS NULL OR candidate.ResponsibilityId IS NULL THEN 'LINEAGE_CONTEXT_INCOMPLETE'
+        WHEN NULLIF(candidate.FeatureId, '') IS NULL OR NULLIF(candidate.ScenarioId, '') IS NULL
+          OR NULLIF(candidate.ObligationId, '') IS NULL OR NULLIF(candidate.ResponsibilityId, '') IS NULL THEN 'LINEAGE_CONTEXT_INCOMPLETE'
+        WHEN candidate.MechanicOccurrenceId IS NULL OR candidate.SourceReferenceId IS NULL OR candidate.RootId IS NULL THEN 'SOURCE_EVIDENCE_INCOMPLETE'
         ELSE 'HUMAN_SEMANTIC_COMPLETION_REQUIRED'
     END AS ProjectionDisposition,
-    JSON_QUERY(CASE candidate.MechanicKind
-        WHEN 'branch' THEN '["executionOrdinal","inputs","rules","outcomes","noMatchDisposition"]'
-        WHEN 'iteration' THEN '["executionOrdinal","collectionInputId","itemBindingId","ordering","continuation","termination"]'
-        WHEN 'exception-handling' THEN '["executionOrdinal","observedFailures","dispositions","unhandledDisposition"]'
-        WHEN 'throw' THEN '["executionOrdinal","terminalDisposition","resultOutputId"]'
-        WHEN 'object-construction' THEN '["executionOrdinal","projectionId","fieldMappings","unmappedFieldDisposition"]'
-        WHEN 'serialization' THEN '["executionOrdinal","profileId","mediaType","encoding","rules"]'
-        WHEN 'normalization' THEN '["executionOrdinal","inputId","outputId","operations","ambiguityDisposition"]'
-        WHEN 'validation' THEN '["executionOrdinal","inputIds","constraints","validOutcome","invalidOutcome"]'
-        WHEN 'fallback' THEN '["executionOrdinal","alternatives","selectionOrder","exhaustedDisposition"]'
-        WHEN 'retry' THEN '["executionOrdinal","operationId","maximumAttempts","retryableDispositions","backoff","exhaustedDisposition"]'
-        WHEN 'state-mutation' THEN '["executionOrdinal","stateId","fromStates","transitions","guards","effectId"]'
-        WHEN 'meaning-hidden-in-text' THEN '["executionOrdinal","vocabularyId","meanings","templates","unknownTextDisposition"]'
-        ELSE '["executionOrdinal"]'
-    END) AS MissingFields,
+    JSON_QUERY((
+        SELECT CONCAT('[', STRING_AGG(CONCAT('"', STRING_ESCAPE(missing.FieldName, 'json'), '"'), ',')
+            WITHIN GROUP (ORDER BY missing.Ordinal), ']')
+        FROM
+        (
+            SELECT 1 AS Ordinal, 'featureId' AS FieldName WHERE NULLIF(candidate.FeatureId, '') IS NULL
+            UNION ALL SELECT 2, 'scenarioId' WHERE NULLIF(candidate.ScenarioId, '') IS NULL
+            UNION ALL SELECT 3, 'obligationId' WHERE NULLIF(candidate.ObligationId, '') IS NULL
+            UNION ALL SELECT 4, 'responsibilityId' WHERE NULLIF(candidate.ResponsibilityId, '') IS NULL
+            UNION ALL
+            SELECT 10 + CONVERT(int, shape.[key]), CONVERT(varchar(120), shape.value)
+            FROM OPENJSON(CASE candidate.MechanicKind
+                WHEN 'branch' THEN '["executionOrdinal","inputs","rules","outcomes","noMatchDisposition"]'
+                WHEN 'iteration' THEN '["executionOrdinal","collectionInputId","itemBindingId","ordering","continuation","termination"]'
+                WHEN 'exception-handling' THEN '["executionOrdinal","observedFailures","dispositions","unhandledDisposition"]'
+                WHEN 'throw' THEN '["executionOrdinal","terminalDisposition","resultOutputId"]'
+                WHEN 'object-construction' THEN '["executionOrdinal","projectionId","fieldMappings","unmappedFieldDisposition"]'
+                WHEN 'serialization' THEN '["executionOrdinal","profileId","mediaType","encoding","rules"]'
+                WHEN 'normalization' THEN '["executionOrdinal","inputId","outputId","operations","ambiguityDisposition"]'
+                WHEN 'validation' THEN '["executionOrdinal","inputIds","constraints","validOutcome","invalidOutcome"]'
+                WHEN 'fallback' THEN '["executionOrdinal","alternatives","selectionOrder","exhaustedDisposition"]'
+                WHEN 'retry' THEN '["executionOrdinal","operationId","maximumAttempts","retryableDispositions","backoff","exhaustedDisposition"]'
+                WHEN 'state-mutation' THEN '["executionOrdinal","stateId","fromStates","transitions","guards","effectId"]'
+                WHEN 'meaning-hidden-in-text' THEN '["executionOrdinal","vocabularyId","meanings","templates","unknownTextDisposition"]'
+                ELSE '["executionOrdinal"]'
+            END) AS shape
+        ) AS missing
+    )) AS MissingFields,
     JSON_QUERY('[{"FieldPath":"SourceOrderKey","Derivation":"deterministic"},{"FieldPath":"ObservedOrdinal","Derivation":"deterministic"},{"FieldPath":"ExecutionOrdinal","Derivation":"unresolved"},{"FieldPath":"AuthorityData.candidateAuthorityId","Derivation":"deterministic"}]') AS FieldDerivations
 FROM CandidateBase AS candidate;
 GO

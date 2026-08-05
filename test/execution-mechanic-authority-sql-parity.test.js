@@ -48,20 +48,20 @@ test("SQL and JavaScript candidate projection produce identical canonical row di
   writeFileSync(queryPath, `SET NOCOUNT ON;
 IF OBJECT_ID('projection.ExecutionMechanicAuthority', 'V') IS NULL
     THROW 51000, 'projection.ExecutionMechanicAuthority is not installed.', 1;
-SELECT TOP (100) *
-FROM projection.ExecutionMechanicAuthority
-WHERE ProjectionDisposition <> 'SOURCE_EVIDENCE_INCOMPLETE'
-ORDER BY SourceOrderKey
-FOR JSON PATH, INCLUDE_NULL_VALUES;
+SELECT TOP (100)
+       (SELECT candidate.* FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES) AS CandidateJson
+FROM projection.ExecutionMechanicAuthority AS candidate
+WHERE candidate.ProjectionDisposition <> 'SOURCE_EVIDENCE_INCOMPLETE'
+ORDER BY candidate.SourceOrderKey;
 `, "utf8");
   try {
-    const result = spawnSync("sqlcmd", [...connection.buildsArgs(), "-i", queryPath, "-h", "-1", "-w", "65535", "-b"], {
+    const result = spawnSync("sqlcmd", [...connection.buildsArgs(), "-i", queryPath, "-h", "-1", "-w", "8000", "-y", "8000", "-b"], {
       encoding: "utf8",
       windowsHide: true,
       env: childEnvironment,
     });
     assert.equal(result.status, 0, result.stderr || result.stdout);
-    const sqlRows = JSON.parse(result.stdout.trim());
+    const sqlRows = result.stdout.split(/\r?\n/u).map((line) => line.trim()).filter(Boolean).map((line) => JSON.parse(line));
     assert.ok(sqlRows.length > 0, "the live parity corpus must contain at least one candidate row");
     for (const sqlRow of sqlRows) {
       const occurrence = {

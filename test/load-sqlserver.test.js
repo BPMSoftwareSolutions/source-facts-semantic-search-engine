@@ -15,7 +15,8 @@ const skipReason = hasConnection ? false : `${connectionEnvVar} env var not set;
 test("loads a fresh index table-by-table, reports LOAD_ADMITTED, and is idempotent on repeat", { skip: skipReason }, async () => {
   const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "load-sqlserver-source-"));
   const connection = resolvesSqlAuthConnectionFromEnv(connectionEnvVar);
-  let indexId;
+  const rootId = `sqlserver-test-${Date.now()}`;
+  const indexIds = [];
   try {
     fs.writeFileSync(path.join(workspaceRoot, "body.mjs"), [
       "export function execute(request) {",
@@ -24,8 +25,8 @@ test("loads a fresh index table-by-table, reports LOAD_ADMITTED, and is idempote
       "}",
       "",
     ].join("\n"), "utf8");
-    const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: `sqlserver-test-${Date.now()}` });
-    indexId = index.indexId;
+    const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: rootId });
+    indexIds.push(index.indexId);
 
     const steps = [];
     const firstReceipt = await loadsSourceFactIndexIntoSqlServer({ index, connection, onStep: (step) => steps.push(step) });
@@ -41,32 +42,45 @@ test("loads a fresh index table-by-table, reports LOAD_ADMITTED, and is idempote
     assert.equal(secondReceipt.disposition, "LOAD_ALREADY_ADMITTED");
     assert.equal(secondReceipt.alreadyLoaded, true);
     assert.deepEqual(secondReceipt.counts, firstReceipt.counts);
+
+    fs.appendFileSync(path.join(workspaceRoot, "body.mjs"), "// replacement scan\n", "utf8");
+    const replacement = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: rootId });
+    indexIds.push(replacement.indexId);
+    assert.notEqual(replacement.indexId, index.indexId);
+    const replacementReceipt = await loadsSourceFactIndexIntoSqlServer({ index: replacement, connection });
+    assert.equal(replacementReceipt.disposition, "LOAD_ADMITTED");
+    assert.equal(replacementReceipt.alreadyLoaded, false);
   } finally {
     fs.rmSync(workspaceRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
-    if (indexId !== undefined) await deletesLoadedIndex(connection, indexId);
+    if (indexIds.length > 0) await deletesLoadedRoot(connection, rootId, indexIds);
   }
 });
 
-async function deletesLoadedIndex(connection, indexId) {
+async function deletesLoadedRoot(connection, rootId, indexIds) {
   const { spawn } = await import("node:child_process");
   const { mkdtemp, rm, writeFile } = await import("node:fs/promises");
   const { tmpdir } = await import("node:os");
   const path = (await import("node:path")).default;
   const workDirectory = await mkdtemp(path.join(tmpdir(), "source-facts-sqlcleanup-"));
   const scriptPath = path.join(workDirectory, "cleanup.sql");
-  const literal = `'${indexId.replace(/'/g, "''")}'`;
+  const rootLiteral = `'${rootId.replace(/'/g, "''")}'`;
+  const indexList = indexIds.map((indexId) => `'${indexId.replace(/'/g, "''")}'`).join(", ");
   const script = `SET NOCOUNT ON;
 SET ANSI_NULLS ON; SET ANSI_PADDING ON; SET ANSI_WARNINGS ON; SET ARITHABORT ON; SET CONCAT_NULL_YIELDS_NULL ON; SET QUOTED_IDENTIFIER ON; SET NUMERIC_ROUNDABORT OFF;
-DELETE FROM fact.GovernanceRule WHERE IndexId = ${literal};
-DELETE FROM fact.Document WHERE IndexId = ${literal};
-DELETE FROM fact.ExecutableMechanic WHERE IndexId = ${literal};
-DELETE FROM fact.DataFlow WHERE IndexId = ${literal};
-DELETE FROM fact.Relationship WHERE IndexId = ${literal};
-DELETE FROM source.Symbol WHERE IndexId = ${literal};
-DELETE FROM source.SourceReference WHERE IndexId = ${literal};
-DELETE FROM inventory.SourceFile WHERE IndexId = ${literal};
-DELETE FROM ingestion.Receipt WHERE IndexId = ${literal};
-DELETE FROM inventory.Scan WHERE IndexId = ${literal};
+DECLARE @CurrentIndexId varchar(120) = (SELECT IndexId FROM inventory.Scan WHERE RootId = ${rootLiteral});
+IF OBJECT_ID('authority.MechanicCanonicalLineage', 'U') IS NOT NULL
+    EXEC sp_executesql N'DELETE FROM authority.MechanicCanonicalLineage WHERE IndexId = @IndexId;', N'@IndexId varchar(120)', @IndexId = @CurrentIndexId;
+DELETE FROM fact.GovernanceRule WHERE IndexId = @CurrentIndexId;
+DELETE FROM fact.Document WHERE IndexId = @CurrentIndexId;
+DELETE FROM fact.ExecutableMechanic WHERE IndexId = @CurrentIndexId;
+DELETE FROM fact.DataFlow WHERE IndexId = @CurrentIndexId;
+DELETE FROM fact.Relationship WHERE IndexId = @CurrentIndexId;
+DELETE FROM source.Symbol WHERE IndexId = @CurrentIndexId;
+DELETE FROM source.SourceReference WHERE IndexId = @CurrentIndexId;
+DELETE FROM inventory.SourceFile WHERE IndexId = @CurrentIndexId;
+DELETE FROM inventory.Scan WHERE IndexId = @CurrentIndexId;
+DELETE FROM inventory.SourceRoot WHERE RootId = ${rootLiteral};
+DELETE FROM ingestion.Receipt WHERE IndexId IN (${indexList});
 `;
   try {
     await writeFile(scriptPath, script, "utf8");

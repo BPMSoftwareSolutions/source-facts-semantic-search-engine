@@ -6,9 +6,9 @@ import { validatesLoadReceipt } from "./validates-load-receipt.js";
 
 const sqlcmdOutputWidth = 8000;
 
-// One table, one step, one round trip -- each step is independently timed and
-// reported before the next one starts, and each is its own committed statement
-// rather than one all-or-nothing transaction across the whole index. Loads via
+// One root, one current index, one transaction. A rescan replaces the prior
+// root-scoped fact graph atomically, while ingestion receipts retain lightweight
+// load history. Loads via
 // sqlcmd rather than a driver dependency: this repo's SQL Server access is a local
 // trusted (Windows-integrated) connection, which tedious/mssql cannot use without an
 // additional native driver; sqlcmd already does this with zero extra dependencies.
@@ -54,45 +54,19 @@ export async function loadsSourceFactIndexIntoSqlServer({
     });
   }
 
-  const steps = [];
-
-  const scanStep = await timesStep(() => runsLoadScan(runner, index));
-  reportsStep({ table: "inventory.Scan", rows: scanStep.result.FilesObserved ?? 1, elapsedMs: scanStep.elapsedMs, alreadyLoaded: false });
-  steps.push({ table: "inventory.Scan", rows: scanStep.result.FilesObserved ?? 1, elapsedMs: scanStep.elapsedMs });
-
-  const counts = {};
-  const stepKeyByTable = {
-    "inventory.SourceFile": "files",
-    "source.SourceReference": "sourceReferences",
-    "source.Symbol": "symbols",
-    "fact.Relationship": "relationships",
-    "fact.DataFlow": "dataflows",
-    "fact.ExecutableMechanic": "bodyMechanics",
-    "fact.Document": "documents",
-    "fact.GovernanceRule": "governanceRules",
-  };
-
-  for (const step of arraySteps) {
-    const arrayValue = index[step.jsonKey] ?? [];
-    const timed = await timesStep(() => runsArrayLoadStep(runner, { indexId, arrayValue, procedure: step.procedure, jsonParam: step.jsonParam }));
-    reportsStep({ table: step.table, rows: timed.result.RecordCount ?? 0, elapsedMs: timed.elapsedMs, alreadyLoaded: false });
-    steps.push({ table: step.table, rows: timed.result.RecordCount ?? 0, elapsedMs: timed.elapsedMs });
-    counts[stepKeyByTable[step.table]] = timed.result.RecordCount ?? 0;
-  }
-
-  const totalElapsedMs = Date.now() - startedAt;
+  const loaded = await runsAtomicIndexLoad(runner, index);
+  const steps = loaded.steps ?? [];
+  for (const step of steps) reportsStep({ ...step, alreadyLoaded: false });
   const finalCounts = {
-    files: counts.files ?? 0,
-    symbols: counts.symbols ?? 0,
-    relationships: counts.relationships ?? 0,
-    dataflows: counts.dataflows ?? 0,
-    sourceReferences: counts.sourceReferences ?? 0,
-    documents: counts.documents ?? 0,
-    governanceRules: counts.governanceRules ?? 0,
-    bodyMechanics: counts.bodyMechanics ?? 0,
+    files: loaded.files ?? 0,
+    symbols: loaded.symbols ?? 0,
+    relationships: loaded.relationships ?? 0,
+    dataflows: loaded.dataflows ?? 0,
+    sourceReferences: loaded.sourceReferences ?? 0,
+    documents: loaded.documents ?? 0,
+    governanceRules: loaded.governanceRules ?? 0,
+    bodyMechanics: loaded.bodyMechanics ?? 0,
   };
-
-  await recordsReceipt(runner, { indexId, disposition: "LOAD_ADMITTED", alreadyLoaded: false, counts: finalCounts, steps, totalElapsedMs });
 
   return await validatesLoadReceipt({
     receiptType: "sql-server-load-receipt.v1",
@@ -101,14 +75,83 @@ export async function loadsSourceFactIndexIntoSqlServer({
     alreadyLoaded: false,
     counts: finalCounts,
     steps,
-    totalElapsedMs,
+    totalElapsedMs: loaded.totalElapsedMs ?? Date.now() - startedAt,
   });
 }
 
-async function timesStep(runsStep) {
-  const start = Date.now();
-  const result = await runsStep();
-  return { result, elapsedMs: Date.now() - start };
+async function runsAtomicIndexLoad(runner, index) {
+  return await runsScriptForJsonRow(runner, buildsAtomicLoadScript(index));
+}
+
+function buildsAtomicLoadScript(index) {
+  const header = { indexId: index.indexId, indexType: index.indexType, manifest: index.manifest, workspace: index.workspace, coverage: index.coverage };
+  const countVariableByKey = new Map();
+  const declarations = [`DECLARE @Payload NVARCHAR(MAX) = ${sqlStringLiteral(JSON.stringify(header))};`];
+  const loadBlocks = [];
+  for (const [ordinal, step] of arraySteps.entries()) {
+    const variableStem = `${step.jsonKey[0].toUpperCase()}${step.jsonKey.slice(1)}`;
+    const jsonVariable = `@${variableStem}Json`;
+    const countVariable = `@${variableStem}Count`;
+    countVariableByKey.set(step.jsonKey, countVariable);
+    declarations.push(`DECLARE ${jsonVariable} NVARCHAR(MAX) = ${sqlStringLiteral(JSON.stringify(index[step.jsonKey] ?? []))};`);
+    loadBlocks.push(`
+    SET @StepStartedAt = SYSUTCDATETIME();
+    DECLARE @${variableStem}Result TABLE (RecordCount int);
+    INSERT INTO @${variableStem}Result
+    EXEC ${step.procedure} @IndexId = @IndexId, ${step.jsonParam} = ${jsonVariable};
+    DECLARE ${countVariable} int = COALESCE((SELECT TOP (1) RecordCount FROM @${variableStem}Result), 0);
+    INSERT INTO @Steps (StepOrdinal, [Table], [Rows], ElapsedMs)
+    VALUES (${ordinal + 2}, N'${step.table}', ${countVariable}, DATEDIFF(millisecond, @StepStartedAt, SYSUTCDATETIME()));`);
+  }
+  const count = (key) => countVariableByKey.get(key);
+  return `SET NOCOUNT ON;
+SET XACT_ABORT ON;
+${declarations.join("\n")}
+DECLARE @IndexId varchar(120) = ${sqlStringLiteral(index.indexId)};
+DECLARE @LoadStartedAt datetime2(7) = SYSUTCDATETIME();
+DECLARE @StepStartedAt datetime2(7);
+DECLARE @Steps TABLE (StepOrdinal int NOT NULL, [Table] nvarchar(200) NOT NULL, [Rows] int NOT NULL, ElapsedMs int NOT NULL);
+
+BEGIN TRY
+    BEGIN TRANSACTION;
+    SET @StepStartedAt = SYSUTCDATETIME();
+    DECLARE @ScanResult TABLE (IndexId varchar(120), RootId nvarchar(400), ScanId varchar(200), WorkspaceId nvarchar(400), FilesObserved int);
+    INSERT INTO @ScanResult
+    EXEC ingestion.LoadScan @Payload = @Payload;
+    INSERT INTO @Steps (StepOrdinal, [Table], [Rows], ElapsedMs)
+    SELECT 1, N'inventory.Scan', FilesObserved, DATEDIFF(millisecond, @StepStartedAt, SYSUTCDATETIME()) FROM @ScanResult;
+${loadBlocks.join("\n")}
+
+    DECLARE @TotalElapsedMs int = DATEDIFF(millisecond, @LoadStartedAt, SYSUTCDATETIME());
+    DECLARE @StepsJson nvarchar(max) = (SELECT [Table] AS [table], [Rows] AS [rows], ElapsedMs AS elapsedMs FROM @Steps ORDER BY StepOrdinal FOR JSON PATH);
+    DECLARE @ReceiptResult TABLE (ReceiptId uniqueidentifier, LoadedAtUtc datetime2(7));
+    INSERT INTO @ReceiptResult
+    EXEC ingestion.RecordLoadReceipt
+        @IndexId = @IndexId, @Disposition = 'LOAD_ADMITTED', @AlreadyLoaded = 0,
+        @FilesLoaded = ${count("files")}, @SymbolsLoaded = ${count("symbols")}, @RelationshipsLoaded = ${count("relationships")},
+        @DataflowsLoaded = ${count("dataflows")}, @SourceReferencesLoaded = ${count("sourceReferences")},
+        @DocumentsLoaded = ${count("documents")}, @GovernanceRulesLoaded = ${count("governanceRules")},
+        @BodyMechanicsLoaded = ${count("bodyMechanics")}, @StepsJson = @StepsJson, @TotalElapsedMs = @TotalElapsedMs;
+    COMMIT TRANSACTION;
+
+    SELECT (SELECT
+        ${count("files")} AS files,
+        ${count("symbols")} AS symbols,
+        ${count("relationships")} AS relationships,
+        ${count("dataflows")} AS dataflows,
+        ${count("sourceReferences")} AS sourceReferences,
+        ${count("documents")} AS documents,
+        ${count("governanceRules")} AS governanceRules,
+        ${count("bodyMechanics")} AS bodyMechanics,
+        JSON_QUERY(@StepsJson) AS steps,
+        @TotalElapsedMs AS totalElapsedMs
+    FOR JSON PATH, WITHOUT_ARRAY_WRAPPER) AS StepJson;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+    THROW;
+END CATCH;
+`;
 }
 
 async function checksExistingLoad(runner, indexId) {
@@ -131,46 +174,6 @@ async function checksExistingLoad(runner, indexId) {
       bodyMechanics: row.BodyMechanicsLoaded ?? 0,
     },
   };
-}
-
-async function runsLoadScan(runner, index) {
-  const header = { indexId: index.indexId, indexType: index.indexType, manifest: index.manifest, workspace: index.workspace, coverage: index.coverage };
-  const script = buildsStepScript({
-    declarations: [`DECLARE @Payload NVARCHAR(MAX) = ${sqlStringLiteral(JSON.stringify(header))};`],
-    resultColumns: "IndexId varchar(120), ScanId varchar(200), WorkspaceId nvarchar(400), FilesObserved int",
-    execStatement: "EXEC ingestion.LoadScan @Payload = @Payload",
-  });
-  return await runsScriptForJsonRow(runner, script);
-}
-
-async function runsArrayLoadStep(runner, { indexId, arrayValue, procedure, jsonParam }) {
-  const script = buildsStepScript({
-    declarations: [
-      `DECLARE @IndexId VARCHAR(120) = ${sqlStringLiteral(indexId)};`,
-      `DECLARE @Json NVARCHAR(MAX) = ${sqlStringLiteral(JSON.stringify(arrayValue))};`,
-    ],
-    resultColumns: "RecordCount int",
-    execStatement: `EXEC ${procedure} @IndexId = @IndexId, ${jsonParam} = @Json`,
-  });
-  return await runsScriptForJsonRow(runner, script);
-}
-
-async function recordsReceipt(runner, { indexId, disposition, alreadyLoaded, counts, steps, totalElapsedMs }) {
-  const script = buildsStepScript({
-    declarations: [
-      `DECLARE @IndexId VARCHAR(120) = ${sqlStringLiteral(indexId)};`,
-      `DECLARE @Disposition VARCHAR(40) = ${sqlStringLiteral(disposition)};`,
-      `DECLARE @StepsJson NVARCHAR(MAX) = ${sqlStringLiteral(JSON.stringify(steps))};`,
-    ],
-    resultColumns: "ReceiptId uniqueidentifier, LoadedAtUtc datetime2(7)",
-    execStatement: `EXEC ingestion.RecordLoadReceipt
-        @IndexId = @IndexId, @Disposition = @Disposition, @AlreadyLoaded = ${alreadyLoaded ? 1 : 0},
-        @FilesLoaded = ${counts.files}, @SymbolsLoaded = ${counts.symbols}, @RelationshipsLoaded = ${counts.relationships},
-        @DataflowsLoaded = ${counts.dataflows}, @SourceReferencesLoaded = ${counts.sourceReferences},
-        @DocumentsLoaded = ${counts.documents}, @GovernanceRulesLoaded = ${counts.governanceRules},
-        @BodyMechanicsLoaded = ${counts.bodyMechanics}, @StepsJson = @StepsJson, @TotalElapsedMs = ${Math.trunc(totalElapsedMs)}`,
-  });
-  return await runsScriptForJsonRow(runner, script);
 }
 
 function buildsStepScript({ declarations, resultColumns, execStatement }) {
