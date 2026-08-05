@@ -1891,6 +1891,18 @@ does not invoke the target projector.
 
 ## 16. Definition of done
 
+### Database-native proof boundary
+
+Repository-wide proof is a current SQL closure, not a directory of generated
+evidence files. `projection.RepositoryLineageSeal` binds the current repository
+image digest, semantic-analysis digest, normalized canonical feature-intent
+snapshot, coverage counts, and governance disposition. The corresponding current
+view recomputes the digest and detects replaced images, analyses, or authority in
+one bounded query. Projection outputs carry these database identities; disk holds
+only artifacts required to execute the projection. The initial implementation is
+an integrity seal (`DIGEST_SEALED_NOT_SIGNED`), intentionally distinct from a
+future authenticated digital signature.
+
 The capability is complete only when:
 
 1. The Gherkin feature is admitted.

@@ -941,6 +941,14 @@ observed mechanic
 
 # The critical standard
 
+Repository projection follows an inexpensive proof rule: compute lineage when
+authority changes, persist the current closure in SQL, and validate by digest
+comparison. Do not emit per-run proof bundles to disk. An executable projection
+must carry the repository image, semantic analysis, canonical intent snapshot,
+and lineage-seal identities needed to query its provenance from the database.
+SHA-256 sealing proves identity integrity; signer authenticity remains a separate
+explicit capability.
+
 The final invariant should be:
 
 > **Every forbidden executable mechanic occurrence must be bound to one source-backed mechanic authority whose kind-specific data is sufficient to re-express the same meaning through the semantic kernel and a target-language projector.**

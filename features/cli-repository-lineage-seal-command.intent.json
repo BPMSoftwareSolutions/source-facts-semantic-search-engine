@@ -1,0 +1,37 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-repository-lineage-seal",
+  "featureFile": "features/cli-repository-lineage-seal-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-repository-lineage-seal",
+  "purpose": "Provide inexpensive database-native lineage sealing and validation without disk proof sprawl",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-repository-lineage-seal.refresh-from-database-origin",
+      "scenarioAnchor": "&scenario:source-facts.cli-repository-lineage-seal.refresh-from-database-origin",
+      "responsibilityId": "repository-lineage-seal-refresh",
+      "obligationId": "seal-current-database-origin-lineage",
+      "givenId": "repository-image-analysis-and-intent-are-current-in-sql",
+      "whenId": "seal-repository-command-invoked",
+      "thenId": "lineage-digest-is-stored-in-sql",
+      "andId": "no-disk-proof-receipt-is-created",
+      "implementationSymbols": ["runSealRepository", "projectsCanonicalIntentRegistryFromRepositoryImage", "refreshesRepositoryLineageSealInSqlServer"],
+      "purpose": "Bind the SQL repository image, semantic analysis, and canonical intent registry in one current SQL seal"
+    },
+    {
+      "scenarioId": "source-facts.cli-repository-lineage-seal.validate-current-closure",
+      "scenarioAnchor": "&scenario:source-facts.cli-repository-lineage-seal.validate-current-closure",
+      "responsibilityId": "repository-lineage-seal-validation",
+      "obligationId": "validate-current-lineage-inexpensively",
+      "givenId": "repository-lineage-seal-exists-in-sql",
+      "whenId": "validate-repository-seal-command-invoked",
+      "thenId": "current-identities-and-seal-are-compared",
+      "andId": "governance-completeness-remains-explicit",
+      "implementationSymbols": ["runValidateRepositorySeal", "validatesRepositoryLineageSealInSqlServer"],
+      "purpose": "Validate current lineage with a bounded SQL closure lookup while reporting incomplete authority honestly"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runSealRepository",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-05T00:00:00Z"
+}

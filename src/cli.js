@@ -38,6 +38,8 @@ import { capturesRepositoryImage, projectsRepositoryImageToWorkspace } from "./r
 import { extractsRepositoryImageFromSqlServer, loadsRepositoryImageIntoSqlServer } from "./sqlserver/repository-image.js";
 import { projectsRepositorySemanticAnalysis } from "./repository-semantics.js";
 import { loadsRepositorySemanticAnalysisIntoSqlServer } from "./sqlserver/repository-semantics.js";
+import { projectsCanonicalIntentRegistryFromRepositoryImage } from "./repository-lineage-seal.js";
+import { refreshesRepositoryLineageSealInSqlServer, validatesRepositoryLineageSealInSqlServer } from "./sqlserver/repository-lineage-seal.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -140,6 +142,10 @@ if (command === "project") {
   await runExtractRepository(args.slice(1));
 } else if (command === "analyze-repository") {
   await runAnalyzeRepository(args.slice(1));
+} else if (command === "seal-repository") {
+  await runSealRepository(args.slice(1));
+} else if (command === "validate-repository-seal") {
+  await runValidateRepositorySeal(args.slice(1));
 } else if (command === "ingest") {
   await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
@@ -826,6 +832,50 @@ async function runAnalyzeRepository(rawArgs) {
   }
 }
 
+async function runSealRepository(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const applicationId = flags.applicationId ?? flags.rootId;
+  const connection = resolvesSqlServerConnection(flags);
+  const image = await extractsRepositoryImageFromSqlServer({ rootId: flags.rootId, connection });
+  const authority = projectsCanonicalIntentRegistryFromRepositoryImage(image, { applicationId });
+  const truthReceipt = await loadsEngineeringTruthIntoSqlServer({
+    contract: authority.contract,
+    report: authority.report,
+    contractSourcePath: `sql://repository/${encodeURIComponent(flags.rootId)}/features/*.intent.json`,
+    reportSourcePath: `sql://repository/${encodeURIComponent(flags.rootId)}/lineage-observation`,
+    connection,
+  });
+  const receipt = await refreshesRepositoryLineageSealInSqlServer({ rootId: flags.rootId, applicationId, connection });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${receipt.rootId}\n`);
+    process.stdout.write(`Application: ${receipt.applicationId}\n`);
+    process.stdout.write(`Seal: ${receipt.sealDigest}\n`);
+    process.stdout.write(`Signing: ${receipt.signingDisposition}\n`);
+    process.stdout.write(`Governance: ${receipt.governanceDisposition}\n`);
+    process.stdout.write(`Features closed: ${receipt.closedFeatureCount}/${receipt.featureCount}\n`);
+    process.stdout.write(`Canonical intent snapshot: ${truthReceipt.contractSnapshotId}\n`);
+    process.stdout.write("Proof storage: SQL_ONLY\n");
+  }
+}
+
+async function runValidateRepositorySeal(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const receipt = await validatesRepositoryLineageSealInSqlServer({ rootId: flags.rootId, connection });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${receipt.rootId}\n`);
+    process.stdout.write(`Integrity: ${receipt.sealIntegrityDisposition}\n`);
+    if (receipt.governanceDisposition) process.stdout.write(`Governance: ${receipt.governanceDisposition}\n`);
+    if (receipt.sealDigest) process.stdout.write(`Seal: ${receipt.sealDigest}\n`);
+    process.stdout.write("Validation source: SQL_CURRENT_CLOSURE\n");
+  }
+  if (receipt.disposition !== "REPOSITORY_LINEAGE_SEAL_VALID") process.exitCode = 1;
+}
+
 async function preparesSelfGovernanceReportArtifacts(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const pretty = flags.pretty === true;
@@ -1309,6 +1359,7 @@ function parseArgs(rawArgs) {
     "--workspace",
     "--workspace-id",
     "--root-id",
+    "--application-id",
     "--repository-id",
     "--output",
     "--index",
@@ -1471,6 +1522,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se load-repository [--workspace <dir>] [--root-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se extract-repository --root-id <id> --output <empty-dir> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se analyze-repository --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--output <analysis.json>] [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se seal-repository --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se validate-repository-seal --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
@@ -1495,6 +1548,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se load-repository --workspace . --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se extract-repository --root-id source-facts-semantic-search-engine --output ../source-facts-projected --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se analyze-repository --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se seal-repository --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se validate-repository-seal --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }
 

@@ -163,6 +163,11 @@ BEGIN
 
         -- Semantic analysis is derived from the exact current image. Replacing
         -- that image invalidates the derived rows before artifact replacement.
+        -- The lineage seal is derived from that analysis and must be removed
+        -- first so no stale receipt survives and its foreign key cannot block
+        -- replacement of the current analysis.
+        IF OBJECT_ID('projection.RepositoryLineageSeal', 'U') IS NOT NULL
+            DELETE FROM projection.RepositoryLineageSeal WHERE RootId = @RootId;
         IF OBJECT_ID('observation.RepositorySemanticFact', 'U') IS NOT NULL
             DELETE FROM observation.RepositorySemanticFact WHERE RootId = @RootId;
         IF OBJECT_ID('observation.RepositoryArtifactSemanticCoverage', 'U') IS NOT NULL

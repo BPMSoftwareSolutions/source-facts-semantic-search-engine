@@ -302,6 +302,34 @@ Every remaining artifact receives `EXACT_CONTENT_ONLY`, `BINARY_CONTENT`, or
 `reporting.CurrentRepositoryKnowledge` in SQL Server. All projected facts remain
 `OBSERVED_NOT_ADMITTED` until separately bound to admitted authority.
 
+### Inexpensive database-native lineage sealing
+
+Apply `scripts/sql/018-create-repository-lineage-seal.sql` after the repository
+image, semantic-analysis, and engineering-truth schemas. `seal-repository` reads
+the current image from SQL, reconstructs its canonical feature-intent registry
+from those database bytes, normalizes it into authority tables, and stores one
+current SHA-256 lineage seal. It creates no receipt, proof, or sidecar file:
+
+```powershell
+node src/cli.js seal-repository `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+
+node src/cli.js validate-repository-seal `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+Validation is a bounded lookup over
+`projection.CurrentRepositoryGovernanceClosure`; it does not rescan artifacts or
+re-run analyzers. `LINEAGE_SEAL_VALID` proves the stored identities and digest
+agree. `GovernanceDisposition` separately reports whether all feature authority
+is closed. The stored value is explicitly `DIGEST_SEALED_NOT_SIGNED`: SHA-256
+provides integrity identity, not signer authenticity. A future signing service can
+sign this stable database digest without changing the inexpensive query boundary.
+
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
 then load an admitted governed contract beside a generated self-governance report:
@@ -341,6 +369,8 @@ node src/cli.js load-sqlserver --index <source-fact-index.json> (--connection-en
 node src/cli.js load-repository --workspace <dir> --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js extract-repository --root-id <id> --output <empty-dir> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js analyze-repository --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--output <analysis.json>] [--pretty] [--summary]
+node src/cli.js seal-repository --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js validate-repository-seal --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js ingest --workspace <dir> [--workspace-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js web query --index <web-surface-index.json> "<sql>" [--pretty]
 node src/cli.js web gallery plan --index <file> --inventory <file> --query <id> --output <dir>
