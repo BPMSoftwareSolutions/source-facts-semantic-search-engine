@@ -19,6 +19,10 @@ const sourceArtifactProofVerifierIds = Object.freeze([
   "artifact-provenance-verifier.v1",
   "authority-closure-verifier.v1",
   "content-digest-verifier.v1",
+  "mechanic-authority-envelope-verifier.v1",
+  "mechanic-authority-closure-verifier.v1",
+  "responsibility-authority-query-verifier.v1",
+  "projected-body-equivalence-verifier.v1",
   "source-token-structure-verifier.v1",
 ]);
 
@@ -460,6 +464,7 @@ function buildSemanticAuthority({
       ...functionResponsibilities,
     ]),
     semanticEdges: Object.freeze(semanticEdges),
+    mechanicAuthorities: Object.freeze([]),
     decisions: Object.freeze(decisions),
     iterations: Object.freeze(iterations),
     failurePolicies: Object.freeze(failurePolicies),
@@ -1650,7 +1655,7 @@ function buildsConsoleGovernedContract({
     contractType: "governed-artifact-contract.v1",
     contractId: "serves-query-console-governed-contract",
     status: "admitted",
-    contractVersion: "1.14.0",
+    contractVersion: "1.15.0",
   });
   contract.subject = Object.freeze({
     subjectType: "console-module-family",

@@ -26,24 +26,47 @@ function copiesAuthorityData(shape, authorityKind, mechanicOccurrenceId) {
   });
 }
 
+function sourceLocation(occurrence, context) {
+  const sourceReferenceId = occurrence.sourceReferenceId ?? null;
+  const match = typeof sourceReferenceId === "string"
+    ? /^(.*):(\d+):(\d+)$/u.exec(sourceReferenceId)
+    : null;
+  return {
+    modulePath: occurrence.modulePath ?? context.modulePath ?? match?.[1] ?? null,
+    startLine: occurrence.sourceStartLine ?? context.sourceStartLine ?? (match === null ? null : Number(match[2])),
+    startColumn: occurrence.sourceStartColumn ?? context.sourceStartColumn ?? (match === null ? null : Number(match[3])),
+  };
+}
+
+export function derivesCanonicalSourceOrderKey(occurrence, context = {}) {
+  const mechanicOccurrenceId = occurrence.mechanicId ?? occurrence.mechanicOccurrenceId ?? null;
+  const rootId = occurrence.rootId ?? context.rootId ?? null;
+  const { modulePath, startLine, startColumn } = sourceLocation(occurrence, context);
+  if ([rootId, modulePath, startLine, startColumn, mechanicOccurrenceId].some((value) => value === null)) return null;
+  return `${rootId}|${modulePath}|${String(startLine).padStart(10, "0")}:${String(startColumn).padStart(10, "0")}|${mechanicOccurrenceId}`;
+}
+
 export function projectsExecutionMechanicAuthorityData(occurrence, context = {}) {
   const mechanicKind = occurrence.mechanic ?? occurrence.mechanicKind ?? null;
   const mechanicOccurrenceId = occurrence.mechanicId ?? occurrence.mechanicOccurrenceId ?? null;
   const authorityFamily = resolvesAuthorityFamily(mechanicKind);
   const authorityKind = resolvesMechanicAuthorityKind(mechanicKind);
   const shape = authorityShapes[mechanicKind];
+  const lineageAmbiguous = (context.lineageCandidateCount ?? 0) > 1;
+  const effectiveContext = lineageAmbiguous
+    ? { ...context, featureId: null, scenarioId: null, obligationId: null, responsibilityId: null }
+    : context;
   const lineageFields = ["featureId", "scenarioId", "obligationId", "responsibilityId"];
-  const missingLineage = lineageFields.filter((field) => typeof context[field] !== "string" || context[field].length === 0);
+  const missingLineage = lineageFields.filter((field) => typeof effectiveContext[field] !== "string" || effectiveContext[field].length === 0);
   const rootId = occurrence.rootId ?? context.rootId ?? null;
   const sourceReferenceId = occurrence.sourceReferenceId ?? null;
-  const sourceOrderKey = context.sourceOrderKey
-    ?? (rootId === null || sourceReferenceId === null || mechanicOccurrenceId === null
-      ? null
-      : `${rootId}|${sourceReferenceId}|${mechanicOccurrenceId}`);
+  const sourceOrderKey = context.sourceOrderKey ?? derivesCanonicalSourceOrderKey(occurrence, context);
 
   let projectionDisposition = "HUMAN_SEMANTIC_COMPLETION_REQUIRED";
   if (authorityFamily === null || authorityKind === null || shape === undefined) {
     projectionDisposition = "AUTHORITY_FAMILY_UNSUPPORTED";
+  } else if (lineageAmbiguous) {
+    projectionDisposition = "LINEAGE_CONTEXT_AMBIGUOUS";
   } else if (missingLineage.length > 0) {
     projectionDisposition = "LINEAGE_CONTEXT_INCOMPLETE";
   } else if (mechanicOccurrenceId === null || sourceReferenceId === null || rootId === null) {
@@ -51,14 +74,14 @@ export function projectsExecutionMechanicAuthorityData(occurrence, context = {})
   }
 
   return Object.freeze({
-    ApplicationId: context.applicationId ?? null,
+    ApplicationId: effectiveContext.applicationId ?? null,
     MechanicOccurrenceId: mechanicOccurrenceId,
     MechanicKind: mechanicKind,
     AuthorityFamily: authorityFamily,
-    FeatureId: context.featureId ?? null,
-    ScenarioId: context.scenarioId ?? null,
-    ObligationId: context.obligationId ?? null,
-    ResponsibilityId: context.responsibilityId ?? null,
+    FeatureId: effectiveContext.featureId ?? null,
+    ScenarioId: effectiveContext.scenarioId ?? null,
+    ObligationId: effectiveContext.obligationId ?? null,
+    ResponsibilityId: effectiveContext.responsibilityId ?? null,
     SourceFactIndexId: context.sourceFactIndexId ?? context.indexId ?? null,
     RootId: rootId,
     SourceReferenceId: sourceReferenceId,
@@ -85,8 +108,16 @@ export function projectsExecutionMechanicAuthorityData(occurrence, context = {})
 }
 
 export function projectsExecutionMechanicAuthorityRows(occurrences, contextByOccurrence = new Map()) {
-  return Object.freeze(occurrences.map((occurrence, index) => projectsExecutionMechanicAuthorityData(
+  const ordered = occurrences.map((occurrence) => {
+    const context = contextByOccurrence.get(occurrence.mechanicId) ?? {};
+    return { occurrence, context, sourceOrderKey: derivesCanonicalSourceOrderKey(occurrence, context) };
+  }).sort((left, right) => {
+    if (left.sourceOrderKey === null) return right.sourceOrderKey === null ? 0 : 1;
+    if (right.sourceOrderKey === null) return -1;
+    return left.sourceOrderKey.localeCompare(right.sourceOrderKey, "en", { sensitivity: "variant" });
+  });
+  return Object.freeze(ordered.map(({ occurrence, context }, index) => projectsExecutionMechanicAuthorityData(
     occurrence,
-    { observedOrdinal: (index + 1) * 10, ...(contextByOccurrence.get(occurrence.mechanicId) ?? {}) },
+    { ...context, observedOrdinal: (index + 1) * 10 },
   )));
 }

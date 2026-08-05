@@ -111,14 +111,28 @@ RankedLineage AS
 (
     SELECT
         candidate.*,
-        ROW_NUMBER() OVER (
+        MIN(candidate.BindingPriority) OVER (
             PARTITION BY candidate.IndexId, candidate.RootId, candidate.ExecutableMechanicFactId
-            ORDER BY candidate.BindingPriority, contractSnapshot.LoadedAtUtc DESC,
-                     candidate.ContractSnapshotId, candidate.ResponsibilityId
-        ) AS CandidateRank
+        ) AS WinningPriority,
+        contractSnapshot.LoadedAtUtc
     FROM LineageCandidates AS candidate
     JOIN authority.ContractSnapshot AS contractSnapshot
       ON contractSnapshot.ContractSnapshotId = candidate.ContractSnapshotId
+),
+WinningLineage AS
+(
+    SELECT
+        candidate.*,
+        COUNT(*) OVER (
+            PARTITION BY candidate.IndexId, candidate.RootId, candidate.ExecutableMechanicFactId
+        ) AS CandidateCount,
+        ROW_NUMBER() OVER (
+            PARTITION BY candidate.IndexId, candidate.RootId, candidate.ExecutableMechanicFactId
+            ORDER BY candidate.LoadedAtUtc DESC,
+                     candidate.ContractSnapshotId, candidate.ResponsibilityId
+        ) AS CandidateRank
+    FROM RankedLineage AS candidate
+    WHERE candidate.BindingPriority = candidate.WinningPriority
 ),
 CandidateBase AS
 (
@@ -137,15 +151,17 @@ CandidateBase AS
         sourceReference.StartLine,
         sourceReference.StartColumn,
         sourceFile.ContentHash AS SourceFileDigest,
+        COALESCE(selectedLineage.CandidateCount, 0) AS LineageCandidateCount,
         family.AuthorityKind,
         CAST(NULL AS int) AS SourceStartOffset,
-        CONCAT(mechanic.ModulePath, N'|',
+        CONCAT(mechanic.RootId, N'|', mechanic.ModulePath, N'|',
                RIGHT(REPLICATE('0', 10) + CONVERT(varchar(10), sourceReference.StartLine), 10), N':',
                RIGHT(REPLICATE('0', 10) + CONVERT(varchar(10), sourceReference.StartColumn), 10), N'|',
                mechanic.ExecutableMechanicFactId) AS SourceOrderKey,
         ROW_NUMBER() OVER (
-            PARTITION BY mechanic.IndexId, responsibility.ResponsibilityId
-            ORDER BY sourceReference.StartLine, sourceReference.StartColumn,
+            PARTITION BY mechanic.IndexId
+            ORDER BY mechanic.RootId, mechanic.ModulePath,
+                     sourceReference.StartLine, sourceReference.StartColumn,
                      mechanic.ExecutableMechanicFactId
         ) * 10 AS ObservedOrdinal
     FROM fact.ExecutableMechanic AS mechanic
@@ -162,7 +178,7 @@ CandidateBase AS
           AND file.RelativePath = mechanic.ModulePath
         ORDER BY file.FileId
     ) AS sourceFile
-    LEFT JOIN RankedLineage AS selectedLineage
+    LEFT JOIN WinningLineage AS selectedLineage
       ON selectedLineage.IndexId = mechanic.IndexId
      AND selectedLineage.RootId = mechanic.RootId
      AND selectedLineage.ExecutableMechanicFactId = mechanic.ExecutableMechanicFactId
@@ -170,6 +186,7 @@ CandidateBase AS
     LEFT JOIN lineage.Responsibility AS responsibility
       ON responsibility.ContractSnapshotId = selectedLineage.ContractSnapshotId
      AND responsibility.ResponsibilityId = selectedLineage.ResponsibilityId
+     AND selectedLineage.CandidateCount = 1
     LEFT JOIN lineage.Obligation AS obligation
       ON obligation.ContractSnapshotId = responsibility.ContractSnapshotId
      AND obligation.ObligationId = responsibility.ObligationId
@@ -181,6 +198,7 @@ CandidateBase AS
      AND feature.FeatureId = scenario.FeatureId
     LEFT JOIN authority.ContractSnapshot AS contractSnapshot
       ON contractSnapshot.ContractSnapshotId = selectedLineage.ContractSnapshotId
+     AND selectedLineage.CandidateCount = 1
     OUTER APPLY
     (
         SELECT TOP (1) snapshot.ApplicationId
@@ -223,6 +241,7 @@ SELECT
     END) AS AuthorityData,
     CASE
         WHEN candidate.AuthorityFamily IS NULL THEN 'AUTHORITY_FAMILY_UNSUPPORTED'
+        WHEN candidate.LineageCandidateCount > 1 THEN 'LINEAGE_CONTEXT_AMBIGUOUS'
         WHEN candidate.SourceReferenceId IS NULL OR candidate.SourceFileDigest IS NULL THEN 'SOURCE_EVIDENCE_INCOMPLETE'
         WHEN candidate.ApplicationId IS NULL OR candidate.FeatureId IS NULL OR candidate.ScenarioId IS NULL
           OR candidate.ObligationId IS NULL OR candidate.ResponsibilityId IS NULL THEN 'LINEAGE_CONTEXT_INCOMPLETE'

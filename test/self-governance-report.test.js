@@ -412,7 +412,7 @@ test("authority authoring bundles bind every healing candidate to contract maps,
     path.resolve(process.cwd(), "..", "contract-driven-artifact-governance-engine"),
   );
   assert.equal(authoringContractMap.disposition, "AUTHORING_CONTRACT_MAP_BOUND");
-  assert.equal(authoringContractMap.engineVersion, "0.21.0");
+  assert.equal(authoringContractMap.engineVersion, "0.22.0");
   assert.ok(authoringContractMap.entries.some((row) => row.authorityFacet === "decision"));
   assert.ok(authoringContractMap.entries.some((row) => row.authorityFacet === "projection-mapping"));
 

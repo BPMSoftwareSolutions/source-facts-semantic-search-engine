@@ -8,6 +8,7 @@ import {
   resolvesMechanicAuthorityKind,
 } from "../src/governance/mechanic-authority-families.js";
 import {
+  derivesCanonicalSourceOrderKey,
   projectsExecutionMechanicAuthorityData,
   projectsExecutionMechanicAuthorityRows,
 } from "../src/governance/projects-execution-mechanic-authority-data.js";
@@ -26,6 +27,9 @@ function occurrence(mechanicKind, ordinal = 1) {
     mechanicId: `sha256:mechanic-${ordinal}`,
     mechanic: mechanicKind,
     rootId: "workspace-root",
+    modulePath: "src/example.js",
+    sourceStartLine: ordinal,
+    sourceStartColumn: 1,
     sourceReferenceId: `src/example.js:${ordinal}:1`,
   });
 }
@@ -62,6 +66,24 @@ test("candidate projection returns explicit lineage, evidence, and unsupported d
     projectsExecutionMechanicAuthorityData({ ...mechanic, mechanic: "unknown" }, completeContext).ProjectionDisposition,
     "AUTHORITY_FAMILY_UNSUPPORTED",
   );
+  const ambiguous = projectsExecutionMechanicAuthorityData(mechanic, { ...completeContext, lineageCandidateCount: 2 });
+  assert.equal(ambiguous.ProjectionDisposition, "LINEAGE_CONTEXT_AMBIGUOUS");
+  assert.equal(ambiguous.ResponsibilityId, null);
+});
+
+test("canonical source order is independent of caller order and agrees with its ordinal", () => {
+  const occurrences = [
+    { ...occurrence("branch", 8), modulePath: "src/z.js", sourceReferenceId: "src/z.js:8:1" },
+    { ...occurrence("iteration", 2), modulePath: "src/a.js", sourceReferenceId: "src/a.js:2:1" },
+    { ...occurrence("throw", 1), rootId: "another-root", modulePath: "src/a.js", sourceReferenceId: "src/a.js:1:1" },
+  ];
+  const contexts = new Map(occurrences.map((item) => [item.mechanicId, completeContext]));
+  const forward = projectsExecutionMechanicAuthorityRows(occurrences, contexts);
+  const shuffled = projectsExecutionMechanicAuthorityRows([occurrences[1], occurrences[0], occurrences[2]], contexts);
+  assert.deepEqual(shuffled, forward);
+  assert.deepEqual(forward.map((row) => row.ObservedOrdinal), [10, 20, 30]);
+  assert.deepEqual(forward.map((row) => row.SourceOrderKey), [...forward.map((row) => row.SourceOrderKey)].sort());
+  assert.equal(forward[0].SourceOrderKey, derivesCanonicalSourceOrderKey(occurrences[2], completeContext));
 });
 
 test("repeated candidate projection reports observed order without claiming execution order", () => {
@@ -84,6 +106,10 @@ test("SQL script 010 exposes one read-only native view and the same twelve-famil
   const viewBody = sql.slice(sql.indexOf("CREATE VIEW projection.ExecutionMechanicAuthority"));
   assert.doesNotMatch(viewBody, /\b(?:INSERT|UPDATE|DELETE|MERGE|EXEC(?:UTE)?)\b/iu);
   assert.match(viewBody, /AS ObservedOrdinal/u);
+  assert.match(viewBody, /COUNT\(\*\) OVER[\s\S]*AS CandidateCount/u);
+  assert.match(viewBody, /selectedLineage\.CandidateCount = 1/u);
+  assert.match(viewBody, /LINEAGE_CONTEXT_AMBIGUOUS/u);
+  assert.match(viewBody, /CONCAT\(mechanic\.RootId, N'\|', mechanic\.ModulePath/u);
   assert.match(viewBody, /CAST\(NULL AS int\) AS ExecutionOrdinal/u);
   assert.match(viewBody, /HUMAN_CLASSIFICATION_REQUIRED/u);
   for (const entry of mechanicAuthorityFamilies) {
@@ -112,4 +138,9 @@ test("the candidate-row schema closes every family and forbids semantic executio
     assert.equal(validate(row), true, JSON.stringify(validate.errors));
     assert.equal(row.ExecutionOrdinal, null);
   }
+  const unsupported = projectsExecutionMechanicAuthorityData(
+    { ...occurrence("unknown", 99), mechanic: "unknown" },
+    { ...completeContext, observedOrdinal: 10 },
+  );
+  assert.equal(validate(unsupported), true, JSON.stringify(validate.errors));
 });

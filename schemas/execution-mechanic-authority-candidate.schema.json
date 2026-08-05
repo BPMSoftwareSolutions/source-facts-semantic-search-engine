@@ -15,7 +15,7 @@
   "properties": {
     "ApplicationId": { "$ref": "#/$defs/nullableId" },
     "MechanicOccurrenceId": { "$ref": "#/$defs/nullableId" },
-    "MechanicKind": { "enum": ["branch", "iteration", "exception-handling", "throw", "object-construction", "serialization", "normalization", "validation", "fallback", "retry", "state-mutation", "meaning-hidden-in-text"] },
+    "MechanicKind": { "type": "string", "minLength": 1 },
     "AuthorityFamily": { "type": ["string", "null"] },
     "FeatureId": { "$ref": "#/$defs/nullableId" },
     "ScenarioId": { "$ref": "#/$defs/nullableId" },
@@ -37,9 +37,10 @@
       { "$ref": "#/$defs/objectConstruction" }, { "$ref": "#/$defs/serialization" },
       { "$ref": "#/$defs/normalization" }, { "$ref": "#/$defs/validation" },
       { "$ref": "#/$defs/fallback" }, { "$ref": "#/$defs/retry" },
-      { "$ref": "#/$defs/stateMutation" }, { "$ref": "#/$defs/meaningHiddenInText" }
+      { "$ref": "#/$defs/stateMutation" }, { "$ref": "#/$defs/meaningHiddenInText" },
+      { "type": "null" }
     ] },
-    "ProjectionDisposition": { "enum": ["HUMAN_SEMANTIC_COMPLETION_REQUIRED", "AUTHORITY_FAMILY_UNSUPPORTED", "LINEAGE_CONTEXT_INCOMPLETE", "SOURCE_EVIDENCE_INCOMPLETE"] },
+    "ProjectionDisposition": { "enum": ["HUMAN_SEMANTIC_COMPLETION_REQUIRED", "AUTHORITY_FAMILY_UNSUPPORTED", "LINEAGE_CONTEXT_AMBIGUOUS", "LINEAGE_CONTEXT_INCOMPLETE", "SOURCE_EVIDENCE_INCOMPLETE"] },
     "MissingFields": {
       "type": "array", "uniqueItems": true,
       "contains": { "const": "executionOrdinal" },
@@ -69,7 +70,11 @@
     { "if": { "properties": { "MechanicKind": { "const": "fallback" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "alternative-selection-authority" }, "AuthorityData": { "$ref": "#/$defs/fallback" } } } },
     { "if": { "properties": { "MechanicKind": { "const": "retry" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "retry-policy-authority" }, "AuthorityData": { "$ref": "#/$defs/retry" } } } },
     { "if": { "properties": { "MechanicKind": { "const": "state-mutation" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "state-transition-authority" }, "AuthorityData": { "$ref": "#/$defs/stateMutation" } } } },
-    { "if": { "properties": { "MechanicKind": { "const": "meaning-hidden-in-text" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "text-meaning-authority" }, "AuthorityData": { "$ref": "#/$defs/meaningHiddenInText" } } } }
+    { "if": { "properties": { "MechanicKind": { "const": "meaning-hidden-in-text" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "text-meaning-authority" }, "AuthorityData": { "$ref": "#/$defs/meaningHiddenInText" } } } },
+    {
+      "if": { "properties": { "MechanicKind": { "not": { "enum": ["branch", "iteration", "exception-handling", "throw", "object-construction", "serialization", "normalization", "validation", "fallback", "retry", "state-mutation", "meaning-hidden-in-text"] } } }, "required": ["MechanicKind"] },
+      "then": { "properties": { "AuthorityFamily": { "type": "null" }, "AuthorityData": { "type": "null" }, "ProjectionDisposition": { "const": "AUTHORITY_FAMILY_UNSUPPORTED" } } }
+    }
   ],
   "$defs": {
     "nullableId": { "type": ["string", "null"], "minLength": 1 },
