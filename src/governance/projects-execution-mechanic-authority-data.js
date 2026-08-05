@@ -34,13 +34,19 @@ export function projectsExecutionMechanicAuthorityData(occurrence, context = {})
   const shape = authorityShapes[mechanicKind];
   const lineageFields = ["featureId", "scenarioId", "obligationId", "responsibilityId"];
   const missingLineage = lineageFields.filter((field) => typeof context[field] !== "string" || context[field].length === 0);
+  const rootId = occurrence.rootId ?? context.rootId ?? null;
+  const sourceReferenceId = occurrence.sourceReferenceId ?? null;
+  const sourceOrderKey = context.sourceOrderKey
+    ?? (rootId === null || sourceReferenceId === null || mechanicOccurrenceId === null
+      ? null
+      : `${rootId}|${sourceReferenceId}|${mechanicOccurrenceId}`);
 
   let projectionDisposition = "HUMAN_SEMANTIC_COMPLETION_REQUIRED";
   if (authorityFamily === null || authorityKind === null || shape === undefined) {
     projectionDisposition = "AUTHORITY_FAMILY_UNSUPPORTED";
   } else if (missingLineage.length > 0) {
     projectionDisposition = "LINEAGE_CONTEXT_INCOMPLETE";
-  } else if (mechanicOccurrenceId === null || occurrence.sourceReferenceId == null || (occurrence.rootId ?? context.rootId) == null) {
+  } else if (mechanicOccurrenceId === null || sourceReferenceId === null || rootId === null) {
     projectionDisposition = "SOURCE_EVIDENCE_INCOMPLETE";
   }
 
@@ -54,14 +60,26 @@ export function projectsExecutionMechanicAuthorityData(occurrence, context = {})
     ObligationId: context.obligationId ?? null,
     ResponsibilityId: context.responsibilityId ?? null,
     SourceFactIndexId: context.sourceFactIndexId ?? context.indexId ?? null,
-    RootId: occurrence.rootId ?? context.rootId ?? null,
-    SourceReferenceId: occurrence.sourceReferenceId ?? null,
-    ExecutionOrdinal: context.executionOrdinal ?? null,
+    RootId: rootId,
+    SourceReferenceId: sourceReferenceId,
+    SourceStartOffset: occurrence.sourceStartOffset ?? context.sourceStartOffset ?? null,
+    SourceOrderKey: sourceOrderKey,
+    ObservedOrdinal: context.observedOrdinal ?? null,
+    ExecutionOrdinal: null,
+    OccurrenceApplicabilityDisposition:
+      context.occurrenceApplicabilityDisposition ?? "HUMAN_CLASSIFICATION_REQUIRED",
     AuthorityData: shape === undefined ? null : copiesAuthorityData(shape, authorityKind, mechanicOccurrenceId),
     ProjectionDisposition: projectionDisposition,
     MissingFields: Object.freeze([
       ...missingLineage,
+      "executionOrdinal",
       ...(shape?.missing ?? []),
+    ]),
+    FieldDerivations: Object.freeze([
+      Object.freeze({ FieldPath: "SourceOrderKey", Derivation: "deterministic" }),
+      Object.freeze({ FieldPath: "ObservedOrdinal", Derivation: "deterministic" }),
+      Object.freeze({ FieldPath: "ExecutionOrdinal", Derivation: "unresolved" }),
+      Object.freeze({ FieldPath: "AuthorityData.candidateAuthorityId", Derivation: "deterministic" }),
     ]),
   });
 }
@@ -69,6 +87,6 @@ export function projectsExecutionMechanicAuthorityData(occurrence, context = {})
 export function projectsExecutionMechanicAuthorityRows(occurrences, contextByOccurrence = new Map()) {
   return Object.freeze(occurrences.map((occurrence, index) => projectsExecutionMechanicAuthorityData(
     occurrence,
-    { executionOrdinal: (index + 1) * 10, ...(contextByOccurrence.get(occurrence.mechanicId) ?? {}) },
+    { observedOrdinal: (index + 1) * 10, ...(contextByOccurrence.get(occurrence.mechanicId) ?? {}) },
   )));
 }

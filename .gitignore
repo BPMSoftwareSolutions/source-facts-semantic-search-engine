@@ -6,6 +6,7 @@ node_modules/
 !package-lock.json
 !contracts/**/*.json
 !features/**/*.json
+!schemas/**/*.json
 .env
 .env.local
 .DS_Store

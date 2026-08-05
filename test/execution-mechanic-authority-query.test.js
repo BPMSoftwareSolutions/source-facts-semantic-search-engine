@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import Ajv2020 from "ajv/dist/2020.js";
 import {
   mechanicAuthorityFamilies,
   resolvesAuthorityFamily,
@@ -63,13 +64,16 @@ test("candidate projection returns explicit lineage, evidence, and unsupported d
   );
 });
 
-test("repeated candidate projection is byte-identical and stably ordered", () => {
+test("repeated candidate projection reports observed order without claiming execution order", () => {
   const occurrences = mechanicAuthorityFamilies.slice(0, 3).map((entry, index) => occurrence(entry.mechanicKind, index + 1));
   const contexts = new Map(occurrences.map((item) => [item.mechanicId, completeContext]));
   const first = projectsExecutionMechanicAuthorityRows(occurrences, contexts);
   const second = projectsExecutionMechanicAuthorityRows(occurrences, contexts);
   assert.equal(JSON.stringify(first), JSON.stringify(second));
-  assert.deepEqual(first.map((row) => row.ExecutionOrdinal), [10, 20, 30]);
+  assert.deepEqual(first.map((row) => row.ObservedOrdinal), [10, 20, 30]);
+  assert.deepEqual(first.map((row) => row.ExecutionOrdinal), [null, null, null]);
+  assert.equal(first.every((row) => row.MissingFields.includes("executionOrdinal")), true);
+  assert.equal(first.every((row) => typeof row.SourceOrderKey === "string"), true);
 });
 
 test("SQL script 010 exposes one read-only native view and the same twelve-family registry", async () => {
@@ -79,6 +83,9 @@ test("SQL script 010 exposes one read-only native view and the same twelve-famil
   assert.doesNotMatch(sql, /(?:reporting|proof)\./u);
   const viewBody = sql.slice(sql.indexOf("CREATE VIEW projection.ExecutionMechanicAuthority"));
   assert.doesNotMatch(viewBody, /\b(?:INSERT|UPDATE|DELETE|MERGE|EXEC(?:UTE)?)\b/iu);
+  assert.match(viewBody, /AS ObservedOrdinal/u);
+  assert.match(viewBody, /CAST\(NULL AS int\) AS ExecutionOrdinal/u);
+  assert.match(viewBody, /HUMAN_CLASSIFICATION_REQUIRED/u);
   for (const entry of mechanicAuthorityFamilies) {
     assert.ok(sql.includes(`'${entry.mechanicKind}'`));
     assert.ok(sql.includes(`'${entry.authorityFamily}'`));
@@ -89,4 +96,20 @@ test("the SourceFacts JSON schema closes over exactly the canonical mechanic reg
   const schema = JSON.parse(await readFile(new URL("../contracts/source-fact-index.schema.v1.json", import.meta.url), "utf8"));
   const schemaKinds = schema.properties.bodyMechanics.items.properties.mechanic.enum;
   assert.deepEqual(schemaKinds, mechanicAuthorityFamilies.map((entry) => entry.mechanicKind));
+});
+
+test("the candidate-row schema closes every family and forbids semantic execution order claims", async () => {
+  const schema = JSON.parse(await readFile(
+    new URL("../schemas/execution-mechanic-authority-candidate.schema.json", import.meta.url),
+    "utf8",
+  ));
+  const validate = new Ajv2020({ allErrors: true, strict: true }).compile(schema);
+  for (const [index, entry] of mechanicAuthorityFamilies.entries()) {
+    const row = projectsExecutionMechanicAuthorityData(
+      occurrence(entry.mechanicKind, index + 1),
+      { ...completeContext, observedOrdinal: (index + 1) * 10 },
+    );
+    assert.equal(validate(row), true, JSON.stringify(validate.errors));
+    assert.equal(row.ExecutionOrdinal, null);
+  }
 });

@@ -138,11 +138,16 @@ CandidateBase AS
         sourceReference.StartColumn,
         sourceFile.ContentHash AS SourceFileDigest,
         family.AuthorityKind,
+        CAST(NULL AS int) AS SourceStartOffset,
+        CONCAT(mechanic.ModulePath, N'|',
+               RIGHT(REPLICATE('0', 10) + CONVERT(varchar(10), sourceReference.StartLine), 10), N':',
+               RIGHT(REPLICATE('0', 10) + CONVERT(varchar(10), sourceReference.StartColumn), 10), N'|',
+               mechanic.ExecutableMechanicFactId) AS SourceOrderKey,
         ROW_NUMBER() OVER (
             PARTITION BY mechanic.IndexId, responsibility.ResponsibilityId
             ORDER BY sourceReference.StartLine, sourceReference.StartColumn,
                      mechanic.ExecutableMechanicFactId
-        ) * 10 AS ExecutionOrdinal
+        ) * 10 AS ObservedOrdinal
     FROM fact.ExecutableMechanic AS mechanic
     LEFT JOIN authority.MechanicAuthorityFamily AS family
       ON family.MechanicKind = mechanic.MechanicKind
@@ -196,7 +201,11 @@ SELECT
     candidate.SourceFactIndexId,
     candidate.RootId,
     candidate.SourceReferenceId,
-    candidate.ExecutionOrdinal,
+    candidate.SourceStartOffset,
+    candidate.SourceOrderKey,
+    candidate.ObservedOrdinal,
+    CAST(NULL AS int) AS ExecutionOrdinal,
+    'HUMAN_CLASSIFICATION_REQUIRED' AS OccurrenceApplicabilityDisposition,
     JSON_QUERY(CASE candidate.MechanicKind
         WHEN 'branch' THEN (SELECT candidate.AuthorityKind AS authorityKind, CONCAT('candidate-', candidate.MechanicOccurrenceId) AS candidateAuthorityId, JSON_QUERY('[]') AS inputs, JSON_QUERY('[]') AS rules, JSON_QUERY('[]') AS outcomes, NULL AS noMatchDisposition FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES)
         WHEN 'iteration' THEN (SELECT candidate.AuthorityKind AS authorityKind, CONCAT('candidate-', candidate.MechanicOccurrenceId) AS candidateAuthorityId, NULL AS collectionInputId, NULL AS itemBindingId, NULL AS ordering, NULL AS continuation, NULL AS termination FOR JSON PATH, WITHOUT_ARRAY_WRAPPER, INCLUDE_NULL_VALUES)
@@ -220,19 +229,20 @@ SELECT
         ELSE 'HUMAN_SEMANTIC_COMPLETION_REQUIRED'
     END AS ProjectionDisposition,
     JSON_QUERY(CASE candidate.MechanicKind
-        WHEN 'branch' THEN '["inputs","rules","outcomes","noMatchDisposition"]'
-        WHEN 'iteration' THEN '["collectionInputId","itemBindingId","ordering","continuation","termination"]'
-        WHEN 'exception-handling' THEN '["observedFailures","dispositions","unhandledDisposition"]'
-        WHEN 'throw' THEN '["terminalDisposition","resultOutputId"]'
-        WHEN 'object-construction' THEN '["projectionId","fieldMappings","unmappedFieldDisposition"]'
-        WHEN 'serialization' THEN '["profileId","mediaType","encoding","rules"]'
-        WHEN 'normalization' THEN '["inputId","outputId","operations","ambiguityDisposition"]'
-        WHEN 'validation' THEN '["inputIds","constraints","validOutcome","invalidOutcome"]'
-        WHEN 'fallback' THEN '["alternatives","selectionOrder","exhaustedDisposition"]'
-        WHEN 'retry' THEN '["operationId","maximumAttempts","retryableDispositions","backoff","exhaustedDisposition"]'
-        WHEN 'state-mutation' THEN '["stateId","fromStates","transitions","guards","effectId"]'
-        WHEN 'meaning-hidden-in-text' THEN '["vocabularyId","meanings","templates","unknownTextDisposition"]'
-        ELSE '[]'
-    END) AS MissingFields
+        WHEN 'branch' THEN '["executionOrdinal","inputs","rules","outcomes","noMatchDisposition"]'
+        WHEN 'iteration' THEN '["executionOrdinal","collectionInputId","itemBindingId","ordering","continuation","termination"]'
+        WHEN 'exception-handling' THEN '["executionOrdinal","observedFailures","dispositions","unhandledDisposition"]'
+        WHEN 'throw' THEN '["executionOrdinal","terminalDisposition","resultOutputId"]'
+        WHEN 'object-construction' THEN '["executionOrdinal","projectionId","fieldMappings","unmappedFieldDisposition"]'
+        WHEN 'serialization' THEN '["executionOrdinal","profileId","mediaType","encoding","rules"]'
+        WHEN 'normalization' THEN '["executionOrdinal","inputId","outputId","operations","ambiguityDisposition"]'
+        WHEN 'validation' THEN '["executionOrdinal","inputIds","constraints","validOutcome","invalidOutcome"]'
+        WHEN 'fallback' THEN '["executionOrdinal","alternatives","selectionOrder","exhaustedDisposition"]'
+        WHEN 'retry' THEN '["executionOrdinal","operationId","maximumAttempts","retryableDispositions","backoff","exhaustedDisposition"]'
+        WHEN 'state-mutation' THEN '["executionOrdinal","stateId","fromStates","transitions","guards","effectId"]'
+        WHEN 'meaning-hidden-in-text' THEN '["executionOrdinal","vocabularyId","meanings","templates","unknownTextDisposition"]'
+        ELSE '["executionOrdinal"]'
+    END) AS MissingFields,
+    JSON_QUERY('[{"FieldPath":"SourceOrderKey","Derivation":"deterministic"},{"FieldPath":"ObservedOrdinal","Derivation":"deterministic"},{"FieldPath":"ExecutionOrdinal","Derivation":"unresolved"},{"FieldPath":"AuthorityData.candidateAuthorityId","Derivation":"deterministic"}]') AS FieldDerivations
 FROM CandidateBase AS candidate;
 GO

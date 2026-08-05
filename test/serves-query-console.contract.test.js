@@ -5,11 +5,12 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import Ajv from "ajv";
+import Ajv2020 from "ajv/dist/2020.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cliPath = path.join(repoRoot, "src", "cli.js");
 const schemaPath = "C:/lab/repos/contract-driven-artifact-governance-engine/schemas/governed-artifact-contract.schema.json";
+const mechanicAuthoritySchemaPath = "C:/lab/repos/contract-driven-artifact-governance-engine/schemas/executable-mechanic-authority.schema.json";
 const expectedSourceArtifactPaths = [
   "src/console/console-authority-bundles.mjs",
   "src/console/console-routing-adapter.mjs",
@@ -64,8 +65,9 @@ test("project-console-contract writes a governed console contract draft", () => 
 
   const contract = JSON.parse(readFileSync(outputPath, "utf8"));
   const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
-  const ajv = new Ajv({ allErrors: true });
-  ajv.addMetaSchema({ $id: "https://json-schema.org/draft/2020-12/schema" });
+  const mechanicAuthoritySchema = JSON.parse(readFileSync(mechanicAuthoritySchemaPath, "utf8"));
+  const ajv = new Ajv2020({ allErrors: true, strict: true, strictTypes: false });
+  ajv.addSchema(mechanicAuthoritySchema);
   const validate = ajv.compile(schema);
 
   assert.ok(validate(contract), `Contract schema validation failed: ${ajv.errorsText(validate.errors)}`);

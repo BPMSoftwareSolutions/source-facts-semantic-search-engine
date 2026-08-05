@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://canonical.local/schemas/execution-mechanic-authority-candidate.schema.json",
+  "title": "Execution mechanic authority candidate row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ApplicationId", "MechanicOccurrenceId", "MechanicKind", "AuthorityFamily",
+    "FeatureId", "ScenarioId", "ObligationId", "ResponsibilityId",
+    "SourceFactIndexId", "RootId", "SourceReferenceId", "SourceStartOffset",
+    "SourceOrderKey", "ObservedOrdinal", "ExecutionOrdinal",
+    "OccurrenceApplicabilityDisposition", "AuthorityData", "ProjectionDisposition",
+    "MissingFields", "FieldDerivations"
+  ],
+  "properties": {
+    "ApplicationId": { "$ref": "#/$defs/nullableId" },
+    "MechanicOccurrenceId": { "$ref": "#/$defs/nullableId" },
+    "MechanicKind": { "enum": ["branch", "iteration", "exception-handling", "throw", "object-construction", "serialization", "normalization", "validation", "fallback", "retry", "state-mutation", "meaning-hidden-in-text"] },
+    "AuthorityFamily": { "type": ["string", "null"] },
+    "FeatureId": { "$ref": "#/$defs/nullableId" },
+    "ScenarioId": { "$ref": "#/$defs/nullableId" },
+    "ObligationId": { "$ref": "#/$defs/nullableId" },
+    "ResponsibilityId": { "$ref": "#/$defs/nullableId" },
+    "SourceFactIndexId": { "$ref": "#/$defs/nullableId" },
+    "RootId": { "$ref": "#/$defs/nullableId" },
+    "SourceReferenceId": { "$ref": "#/$defs/nullableId" },
+    "SourceStartOffset": { "type": ["integer", "null"], "minimum": 0 },
+    "SourceOrderKey": { "$ref": "#/$defs/nullableId" },
+    "ObservedOrdinal": { "type": ["integer", "null"], "minimum": 0 },
+    "ExecutionOrdinal": { "type": "null" },
+    "OccurrenceApplicabilityDisposition": {
+      "enum": ["AUTHORITY_REQUIRED", "MECHANICAL_ADAPTER", "SEMANTIC_KERNEL_PRIMITIVE", "GENERATED_PROJECTION_MECHANIC", "NOT_APPLICABLE", "FALSE_POSITIVE", "HUMAN_CLASSIFICATION_REQUIRED"]
+    },
+    "AuthorityData": { "oneOf": [
+      { "$ref": "#/$defs/branch" }, { "$ref": "#/$defs/iteration" },
+      { "$ref": "#/$defs/exceptionHandling" }, { "$ref": "#/$defs/throw" },
+      { "$ref": "#/$defs/objectConstruction" }, { "$ref": "#/$defs/serialization" },
+      { "$ref": "#/$defs/normalization" }, { "$ref": "#/$defs/validation" },
+      { "$ref": "#/$defs/fallback" }, { "$ref": "#/$defs/retry" },
+      { "$ref": "#/$defs/stateMutation" }, { "$ref": "#/$defs/meaningHiddenInText" }
+    ] },
+    "ProjectionDisposition": { "enum": ["HUMAN_SEMANTIC_COMPLETION_REQUIRED", "AUTHORITY_FAMILY_UNSUPPORTED", "LINEAGE_CONTEXT_INCOMPLETE", "SOURCE_EVIDENCE_INCOMPLETE"] },
+    "MissingFields": {
+      "type": "array", "uniqueItems": true,
+      "contains": { "const": "executionOrdinal" },
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "FieldDerivations": {
+      "type": "array", "minItems": 4, "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["FieldPath", "Derivation"],
+        "properties": {
+          "FieldPath": { "type": "string", "minLength": 1 },
+          "Derivation": { "enum": ["observed", "deterministic", "unresolved"] }
+        }
+      }
+    }
+  },
+  "allOf": [
+    { "if": { "properties": { "MechanicKind": { "const": "branch" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "decision-authority" }, "AuthorityData": { "$ref": "#/$defs/branch" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "iteration" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "iteration-authority" }, "AuthorityData": { "$ref": "#/$defs/iteration" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "exception-handling" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "failure-policy-authority" }, "AuthorityData": { "$ref": "#/$defs/exceptionHandling" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "throw" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "terminal-result-authority" }, "AuthorityData": { "$ref": "#/$defs/throw" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "object-construction" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "projection-authority" }, "AuthorityData": { "$ref": "#/$defs/objectConstruction" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "serialization" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "serialization-profile-authority" }, "AuthorityData": { "$ref": "#/$defs/serialization" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "normalization" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "normalization-authority" }, "AuthorityData": { "$ref": "#/$defs/normalization" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "validation" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "validation-authority" }, "AuthorityData": { "$ref": "#/$defs/validation" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "fallback" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "alternative-selection-authority" }, "AuthorityData": { "$ref": "#/$defs/fallback" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "retry" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "retry-policy-authority" }, "AuthorityData": { "$ref": "#/$defs/retry" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "state-mutation" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "state-transition-authority" }, "AuthorityData": { "$ref": "#/$defs/stateMutation" } } } },
+    { "if": { "properties": { "MechanicKind": { "const": "meaning-hidden-in-text" } }, "required": ["MechanicKind"] }, "then": { "properties": { "AuthorityFamily": { "const": "text-meaning-authority" }, "AuthorityData": { "$ref": "#/$defs/meaningHiddenInText" } } } }
+  ],
+  "$defs": {
+    "nullableId": { "type": ["string", "null"], "minLength": 1 },
+    "baseAuthority": {
+      "type": "object",
+      "required": ["authorityKind", "candidateAuthorityId"],
+      "properties": {
+        "authorityKind": { "type": "string", "minLength": 1 },
+        "candidateAuthorityId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "branch": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "inputs", "rules", "outcomes", "noMatchDisposition"], "properties": { "authorityKind": { "const": "decision-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "inputs": { "type": "array" }, "rules": { "type": "array" }, "outcomes": { "type": "array" }, "noMatchDisposition": { "type": "null" } } }] },
+    "iteration": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "collectionInputId", "itemBindingId", "ordering", "continuation", "termination"], "properties": { "authorityKind": { "const": "iteration-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "collectionInputId": { "type": "null" }, "itemBindingId": { "type": "null" }, "ordering": { "type": "null" }, "continuation": { "type": "null" }, "termination": { "type": "null" } } }] },
+    "exceptionHandling": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "observedFailures", "dispositions", "unhandledDisposition"], "properties": { "authorityKind": { "const": "failure-observation-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "observedFailures": { "type": "array" }, "dispositions": { "type": "array" }, "unhandledDisposition": { "type": "null" } } }] },
+    "throw": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "terminalDisposition", "resultOutputId"], "properties": { "authorityKind": { "const": "terminal-disposition-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "terminalDisposition": { "type": "null" }, "resultOutputId": { "type": "null" } } }] },
+    "objectConstruction": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "projectionId", "fieldMappings", "unmappedFieldDisposition"], "properties": { "authorityKind": { "const": "semantic-projection-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "projectionId": { "type": "null" }, "fieldMappings": { "type": "array" }, "unmappedFieldDisposition": { "type": "null" } } }] },
+    "serialization": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "profileId", "mediaType", "encoding", "rules"], "properties": { "authorityKind": { "const": "serialization-profile-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "profileId": { "type": "null" }, "mediaType": { "type": "null" }, "encoding": { "type": "null" }, "rules": { "type": "array" } } }] },
+    "normalization": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "inputId", "outputId", "operations", "ambiguityDisposition"], "properties": { "authorityKind": { "const": "canonicalization-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "inputId": { "type": "null" }, "outputId": { "type": "null" }, "operations": { "type": "array" }, "ambiguityDisposition": { "type": "null" } } }] },
+    "validation": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "inputIds", "constraints", "validOutcome", "invalidOutcome"], "properties": { "authorityKind": { "const": "constraint-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "inputIds": { "type": "array" }, "constraints": { "type": "array" }, "validOutcome": { "type": "null" }, "invalidOutcome": { "type": "null" } } }] },
+    "fallback": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "alternatives", "selectionOrder", "exhaustedDisposition"], "properties": { "authorityKind": { "const": "alternative-selection-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "alternatives": { "type": "array" }, "selectionOrder": { "type": "array" }, "exhaustedDisposition": { "type": "null" } } }] },
+    "retry": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "operationId", "maximumAttempts", "retryableDispositions", "backoff", "exhaustedDisposition"], "properties": { "authorityKind": { "const": "retry-policy-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "operationId": { "type": "null" }, "maximumAttempts": { "type": "null" }, "retryableDispositions": { "type": "array" }, "backoff": { "type": "null" }, "exhaustedDisposition": { "type": "null" } } }] },
+    "stateMutation": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "stateId", "fromStates", "transitions", "guards", "effectId"], "properties": { "authorityKind": { "const": "state-transition-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "stateId": { "type": "null" }, "fromStates": { "type": "array" }, "transitions": { "type": "array" }, "guards": { "type": "array" }, "effectId": { "type": "null" } } }] },
+    "meaningHiddenInText": { "allOf": [{ "$ref": "#/$defs/baseAuthority" }, { "type": "object", "additionalProperties": false, "required": ["authorityKind", "candidateAuthorityId", "vocabularyId", "meanings", "templates", "unknownTextDisposition"], "properties": { "authorityKind": { "const": "text-meaning-authority.v1" }, "candidateAuthorityId": { "type": "string" }, "vocabularyId": { "type": "null" }, "meanings": { "type": "array" }, "templates": { "type": "array" }, "unknownTextDisposition": { "type": "null" } } }] }
+  }
+}

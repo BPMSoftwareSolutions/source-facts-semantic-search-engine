@@ -237,7 +237,11 @@ The query result is a candidate projection, not an admitted authority.
   "SourceFactIndexId": "sha256:...",
   "RootId": "workspace-root",
   "SourceReferenceId": "src/file.js:1234:19",
-  "ExecutionOrdinal": 10,
+  "SourceStartOffset": 1234,
+  "SourceOrderKey": "src/file.js|0000000123:0000000001|sha256:...",
+  "ObservedOrdinal": 10,
+  "ExecutionOrdinal": null,
+  "OccurrenceApplicabilityDisposition": "HUMAN_CLASSIFICATION_REQUIRED",
   "AuthorityData": {
     "decisionId": "resolve-workspace-governance-disposition",
     "inputs": [],
@@ -247,11 +251,21 @@ The query result is a candidate projection, not an admitted authority.
   },
   "ProjectionDisposition": "HUMAN_SEMANTIC_COMPLETION_REQUIRED",
   "MissingFields": [
+    "executionOrdinal",
     "rules",
     "outcomes"
+  ],
+  "FieldDerivations": [
+    { "FieldPath": "ObservedOrdinal", "Derivation": "deterministic" },
+    { "FieldPath": "ExecutionOrdinal", "Derivation": "unresolved" }
   ]
 }
 ~~~
+
+ObservedOrdinal and SourceOrderKey describe deterministic source order only.
+They do not claim call-graph, control-flow, or semantic execution order.
+ExecutionOrdinal remains null and named in MissingFields until reviewed,
+admitted responsibility authority establishes it.
 
 Allowed projection dispositions:
 
@@ -282,15 +296,21 @@ SELECT
     SourceFactIndexId,
     RootId,
     SourceReferenceId,
+    SourceStartOffset,
+    SourceOrderKey,
+    ObservedOrdinal,
     ExecutionOrdinal,
+    OccurrenceApplicabilityDisposition,
     AuthorityData,
     ProjectionDisposition,
-    MissingFields
+    MissingFields,
+    FieldDerivations
 FROM projection.ExecutionMechanicAuthority
 WHERE ApplicationId = @ApplicationId
   AND MechanicKind = @MechanicKind
 ORDER BY ResponsibilityId,
-         ExecutionOrdinal,
+         ObservedOrdinal,
+         SourceOrderKey,
          MechanicOccurrenceId;
 ~~~
 
@@ -302,7 +322,8 @@ FROM projection.ExecutionMechanicAuthority
 WHERE ApplicationId = @ApplicationId
   AND ProjectionDisposition = 'HUMAN_SEMANTIC_COMPLETION_REQUIRED'
 ORDER BY ResponsibilityId,
-         ExecutionOrdinal,
+         ObservedOrdinal,
+         SourceOrderKey,
          MechanicOccurrenceId;
 ~~~
 
@@ -313,7 +334,8 @@ SELECT *
 FROM projection.ExecutionMechanicAuthority
 WHERE ApplicationId = @ApplicationId
   AND ResponsibilityId = @ResponsibilityId
-ORDER BY ExecutionOrdinal,
+ORDER BY ObservedOrdinal,
+         SourceOrderKey,
          MechanicOccurrenceId;
 ~~~
 
@@ -335,14 +357,24 @@ The downstream body projector uses admitted data, not candidate rows:
 
 ~~~sql
 SELECT *
+FROM projection.ResponsibilityAuthorityClosure
+WHERE ApplicationId = @ApplicationId
+  AND ResponsibilityId = @ResponsibilityId
+  AND TargetProfileId = @TargetProfileId;
+
+-- Only after ClosureDisposition = 'AUTHORITY_SLICE_CLOSED':
+SELECT *
 FROM projection.ResponsibilityExecutionAuthority
 WHERE ApplicationId = @ApplicationId
   AND ResponsibilityId = @ResponsibilityId
   AND TargetProfileId = @TargetProfileId
-  AND ClosureDisposition = 'AUTHORITY_SLICE_CLOSED'
 ORDER BY ExecutionOrdinal,
          MechanicAuthorityId;
 ~~~
+
+ResponsibilityAuthorityClosure returns exactly one status row, including its
+blocking subject IDs. ResponsibilityExecutionAuthority returns ordered rows
+only for an all-green closure status.
 
 This result must already contain ordered operations, decisions and rules,
 iterations and continuation, projections and field mappings, failure and
@@ -1004,10 +1036,12 @@ authority.MechanicProofRequirement
 authority.MechanicExecutionStep
 authority.MechanicPortBinding
 authority.MechanicEffectBinding
-binding.MechanicAuthorityOccurrence
+binding.MechanicAuthorityDiscoveryEvidence
+binding.AuthorityEmbodiment
 projection.TargetProfile
 projection.TargetProfileMechanic
 projection.TargetProfileOperation
+projection.ResponsibilityAuthorityClosure
 projection.ResponsibilityExecutionAuthority
 proof.MechanicEquivalenceProof
 ~~~
@@ -1043,11 +1077,18 @@ MechanicSourceEvidence
     (ContractSnapshotId, MechanicAuthorityId,
      SourceFactIndexId, RootId, ExecutableMechanicFactId)
 
-MechanicAuthorityOccurrence
-  diagnostic rows may be multiple;
+MechanicAuthorityDiscoveryEvidence
+  historical, immutable evidence that an observed legacy occurrence
+  discovered or motivated an admitted authority;
   filtered unique index permits at most one
   AUTHORITY_BINDING_ADMITTED row for:
     (SourceFactIndexId, RootId, ExecutableMechanicFactId)
+
+AuthorityEmbodiment
+  versioned current binding from authority snapshot
+  to projected artifact, projection digest, and current source observation;
+  authority identity remains anchored to canonical lineage and
+  MechanicAuthorityId, never to a transient occurrence
 
 MechanicExecutionStep
   primary key:
@@ -1114,8 +1155,8 @@ Load order:
 3. observation snapshot and enterprise context;
 4. mechanic authority common rows;
 5. kind-specific and ordered child rows;
-6. exact source-evidence rows;
-7. occurrence bindings;
+6. exact discovery-evidence rows;
+7. current embodiment bindings;
 8. target profiles.
 
 Missing foreign keys, digest mismatch, duplicate admitted bindings, and JSON
@@ -1124,10 +1165,27 @@ round-trip mismatch roll back the full admitted-authority load.
 The native candidate query remains read-only and is not part of this
 transaction.
 
-### 10.6 Responsibility closure
+### 10.6 Occurrence applicability and responsibility closure
 
-projection.ResponsibilityExecutionAuthority returns rows only when these checks
-pass:
+Every occurrence is classified as exactly one of:
+
+~~~text
+AUTHORITY_REQUIRED
+MECHANICAL_ADAPTER
+SEMANTIC_KERNEL_PRIMITIVE
+GENERATED_PROJECTION_MECHANIC
+NOT_APPLICABLE
+FALSE_POSITIVE
+HUMAN_CLASSIFICATION_REQUIRED
+~~~
+
+Only AUTHORITY_REQUIRED occurrences participate in mechanic-authority closure.
+HUMAN_CLASSIFICATION_REQUIRED blocks closure; the other dispositions require
+their own exact adapter, kernel, generation, exclusion, or false-positive
+evidence.
+
+projection.ResponsibilityAuthorityClosure returns one status row per requested
+responsibility and target profile after evaluating these checks:
 
 1. source index and contract snapshot are current;
 2. project-to-responsibility lineage is complete;
@@ -1158,6 +1216,9 @@ PROOF_REQUIREMENT_INCOMPLETE
 ~~~
 
 Only the all-green subject has AUTHORITY_SLICE_CLOSED.
+projection.ResponsibilityExecutionAuthority returns no rows unless that status
+exists, then returns the closed ordered authority rows without repeating status
+as if it were an execution row.
 
 ### 10.7 Reports are diagnostic consumers only
 
@@ -1488,20 +1549,26 @@ Complete phases in order. A later phase may not weaken an earlier gate.
 
 ### Phase 0 — admit feature IDs and freeze the pilot
 
-1. Add the feature and seven atomic scenarios from section 3 to canonical
-   lineage.
+1. Add the seven integration scenarios from section 3 to canonical lineage;
+   decompose their projection, missing-field, admission, persistence, binding,
+   result-proof, effect-proof, and divergence signals into atomic obligations.
 2. Use serves-query-console as the pilot responsibility family.
 3. Capture its current SourceFacts index, contract digest, file digests, inputs,
    outputs, terminal dispositions, and effect testimony.
 4. Add negative fixtures for missing lineage, unsupported family, incomplete
    semantic fields, missing binding, duplicate binding, stale file digest,
    unsupported retry, and behavior divergence.
+5. Inventory every pilot occurrence, applicability disposition, semantic
+   operation, required port or adapter, and target-profile disposition.
+6. Select a smaller pilot or admit every required digest-bound adapter until
+   no ADAPTER_REQUIRED or KERNEL_PRIMITIVE_REQUIRED subject remains.
 
 Exit:
 
 ~~~text
 FEATURE_LINEAGE_CLOSED
 PILOT_BASELINE_CAPTURED
+PILOT_TARGET_PROFILE_COVERAGE_CLOSED
 NEGATIVE_CONTROLS_DECLARED
 ~~~
 
@@ -1526,20 +1593,24 @@ DETECTOR_NEGATIVE_CONTROLS_PASS
 ### Phase 2 — deliver the native query first
 
 1. Create the single 12-kind family registry.
-2. Add SQL script 010.
-3. Shape one candidate AuthorityData object per mechanic family.
-4. Return MissingFields and ProjectionDisposition on every row.
-5. Query one occurrence, one responsibility, one mechanic family, and one
+2. Add schemas/execution-mechanic-authority-candidate.schema.json.
+3. Add SQL script 010.
+4. Shape one candidate AuthorityData object per mechanic family.
+5. Return MissingFields, FieldDerivations, applicability, observed order, and
+   ProjectionDisposition on every row; never infer ExecutionOrdinal.
+6. Query one occurrence, one responsibility, one mechanic family, and one
    application.
-6. Prove repeated identical SELECT operations return identical ordered rows.
-7. Prove the query creates no rows and changes no state.
-8. Prove it invokes no report, receipt, file writer, projector, or proof body.
+7. Prove repeated identical SELECT operations return identical ordered rows.
+8. Prove the query creates no rows and changes no state.
+9. Prove it invokes no report, receipt, file writer, projector, or proof body.
 
 Exit:
 
 ~~~text
 AUTHORITY_PROJECTION_QUERY_AVAILABLE
 ALL_TWELVE_FAMILIES_SHAPED
+CANDIDATE_ROW_SCHEMA_CLOSED
+OBSERVED_ORDER_DOES_NOT_CLAIM_EXECUTION_ORDER
 QUERY_IS_READ_ONLY
 QUERY_RESULT_IS_THE_PRODUCT
 ~~~
@@ -1571,7 +1642,8 @@ GOVERNANCE_ENGINE_0_22_INTERPRETS_V9
 4. Replace line-overlap matching with exact occurrence identity.
 5. Return explicit missing and ambiguous dispositions.
 6. Review and complete the serves-query-console envelopes.
-7. Admit only schema-valid, lineage-closed pilot authority.
+7. Admit only schema-valid, lineage-closed pilot authority after
+   PILOT_TARGET_PROFILE_COVERAGE_CLOSED.
 
 Exit:
 
@@ -1587,16 +1659,21 @@ PILOT_AUTHORITY_ADMITTED
 1. Apply SQL scripts 011 through 013.
 2. Extend the engineering-truth payload and transaction.
 3. Load the pilot index and 1.15 contract.
-4. Reconstitute every envelope and compare its canonical JSON digest.
-5. Query projection.ResponsibilityExecutionAuthority.
-6. Run every missing, ambiguous, stale, lineage, context, and unsupported-profile
+4. Preserve canonical authority bytes and digest; validate normalized SQL rows
+   for semantic equality without treating SQL JSON serialization as canonical.
+5. Query projection.ResponsibilityAuthorityClosure, then query
+   projection.ResponsibilityExecutionAuthority only for green status.
+6. Prove discovery evidence remains historical while AuthorityEmbodiment tracks
+   the current projected artifact and observation.
+7. Run every missing, ambiguous, stale, lineage, context, and unsupported-profile
    control.
 
 Exit:
 
 ~~~text
 MECHANIC_AUTHORITY_LOAD_ADMITTED
-AUTHORITY_JSON_ROUND_TRIP_EQUAL
+AUTHORITY_CANONICAL_BYTES_AND_DIGEST_PRESERVED
+NORMALIZED_AUTHORITY_SEMANTIC_EQUALITY_PROVEN
 PILOT_AUTHORITY_SLICE_CLOSED
 ALL_CLOSURE_NEGATIVE_CONTROLS_BLOCK
 ~~~
@@ -1628,13 +1705,17 @@ BYTE_IDENTICAL_REPROJECTION
 3. Compare normalized outputs, failures, terminal states, and effects.
 4. Run all proof negative controls.
 5. Persist the downstream equivalence record.
-6. Promote only PROJECTED_BODY_EQUIVALENT bytes.
-7. Rescan the promoted body and prove v9 body purity.
+6. Grade the first wrapper proof as SEMANTIC_RUNTIME_DELEGATION_EQUIVALENT;
+   reserve DIRECT_TARGET_LOWERING_EQUIVALENT for an independent direct-lowering
+   profile.
+7. Promote only PROJECTED_BODY_EQUIVALENT bytes.
+8. Rescan the promoted body and prove v9 body purity.
 
 Exit:
 
 ~~~text
 PROJECTED_BODY_EQUIVALENT
+SEMANTIC_RUNTIME_DELEGATION_EQUIVALENT
 PROOF_NEGATIVE_CONTROLS_PASS
 PROJECTED_BODY_PROMOTED
 PROJECTED_BODY_PURITY_CLOSED
@@ -1693,10 +1774,21 @@ npm run build
 
 Run the native candidate query from section 4.2 before applying admitted-
 authority scripts 011 through 014. It must return rows and create no state.
+At representative pilot scale, record and freeze maximum elapsed time, logical
+reads, required indexes, stable-plan identity, and absence of table scans. Every
+regression check also proves zero writes, zero report dependencies, and
+deterministic ordering.
 
 After loading admitted authority, run:
 
 ~~~sql
+SELECT *
+FROM projection.ResponsibilityAuthorityClosure
+WHERE ApplicationId = N'source-facts-semantic-search-engine'
+  AND ResponsibilityId = N'serves-query-console'
+  AND TargetProfileId = N'typescript.semantic-runtime-delegation.v1';
+
+-- Run only after the preceding row is AUTHORITY_SLICE_CLOSED.
 SELECT *
 FROM projection.ResponsibilityExecutionAuthority
 WHERE ApplicationId = N'source-facts-semantic-search-engine'
@@ -1727,9 +1819,11 @@ The capability is complete only when:
 6. That SELECT performs no writes and produces no report, receipt, sidecar,
    workflow, migration, body, or proof.
 7. Incomplete semantics are returned with named fields and never auto-admitted.
-8. Reviewed authority uses the universal envelope and exact occurrence binding.
-9. One responsibility query returns a closed, ordered, target-sufficient
-   authority slice.
+8. Reviewed authority uses the universal envelope, immutable discovery evidence,
+   and a versioned current embodiment binding.
+9. One closure-status query returns the exact disposition and blocking subjects;
+   a separate responsibility query returns a closed, ordered, target-sufficient
+   authority slice only for green status.
 10. Missing, ambiguous, stale, incomplete, and unsupported subjects are blocked.
 11. At least one TypeScript body is projected solely from the closed query
     result.
@@ -1766,7 +1860,7 @@ SELECT projection.ResponsibilityExecutionAuthority
 | --- | --- |
 | Query grows into a workflow | script 010 is a read-only view with rows as its only product |
 | Candidate is mistaken for admitted meaning | candidate dispositions can never satisfy AUTHORITY_ADMITTED |
-| Line movement breaks authority | bind by index, root, occurrence ID, and file digest |
+| Line movement breaks authority | preserve immutable discovery evidence; anchor authority identity to canonical lineage and track current embodiment separately |
 | Two authorities match | preserve diagnostics; responsibility closure returns AUTHORITY_BINDING_AMBIGUOUS |
 | Scanner misses a mechanic | detector fidelity and negative controls precede authority closure |
 | SQL order changes projection | explicit ordinal and stable-ID ordering |
