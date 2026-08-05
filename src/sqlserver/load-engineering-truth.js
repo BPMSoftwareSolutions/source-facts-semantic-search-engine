@@ -30,7 +30,7 @@ function validatesCanonicalLineage(contract) {
   for (const row of lineage.obligations ?? []) if (!scenarios.has(row.scenarioId)) throw new Error(`Obligation '${row.obligationId}' references unknown scenario '${row.scenarioId}'.`);
   for (const row of lineage.responsibilities ?? []) {
     if (!obligations.has(row.obligationId)) throw new Error(`Responsibility '${row.responsibilityId}' references unknown obligation '${row.obligationId}'.`);
-    if (!artifacts.has(row.artifactId)) throw new Error(`Responsibility '${row.responsibilityId}' references unknown artifact '${row.artifactId}'.`);
+    if (row.artifactId != null && !artifacts.has(row.artifactId)) throw new Error(`Responsibility '${row.responsibilityId}' references unknown artifact '${row.artifactId}'.`);
   }
   return lineage;
 }
@@ -99,6 +99,7 @@ export function projectsEngineeringTruthSqlPayload({ contract, report, contractS
   const artifactPathById = new Map((contract.artifacts ?? []).map((row) => [row.artifactId, String(row.relativePath).replaceAll("\\", "/")]));
   const ownedRoots = (lineage.responsibilities ?? []).flatMap((responsibility) => {
     const ownedPath = artifactPathById.get(responsibility.artifactId);
+    if (ownedPath === undefined) return [];
     return callables.filter((callable) => String(callable.modulePath ?? "").replaceAll("\\", "/") === ownedPath)
       .map((callable) => ({ responsibilityId: responsibility.responsibilityId, callableKey: callable.callableKey }));
   });
@@ -172,6 +173,38 @@ export function projectsEngineeringTruthSqlPayload({ contract, report, contractS
     responsibilities: (lineage.responsibilities ?? []).map((row) => ({ ...row, authorityDigest: rowDigest(row) })),
     callables, commands, commandReachability, responsibilityCommands, responsibilityCallables,
     tests, testProductionReachability, scenarioTestBindings, scenarioProofs,
+  };
+}
+
+export function projectsCanonicalIntentRegistryContract({ intents, projectId = "source-facts-semantic-search-engine" } = {}) {
+  if (!Array.isArray(intents) || intents.length === 0) throw new Error("At least one canonical feature intent is required.");
+  for (const intent of intents) {
+    if (intent?.documentKind !== "canonical-feature-intent.v1") throw new Error("Every intent must be canonical-feature-intent.v1.");
+  }
+  return {
+    contract: { contractId: "canonical-feature-intent-registry.v1", contractType: "canonical-feature-intent-registry.v1" },
+    subject: { subjectId: projectId },
+    artifacts: [],
+    lineage: {
+      authorityType: "canonical-lineage-authority.v1",
+      projectId,
+      features: intents.map((intent) => ({
+        featureId: intent.featureId, projectId, purpose: intent.purpose,
+        lifecycleStatus: intent.lifecycle ?? null, authorityStatus: intent.authorityStatus ?? null,
+      })),
+      scenarios: intents.flatMap((intent) => intent.scenarios.map((scenario) => ({
+        scenarioId: scenario.scenarioId, featureId: intent.featureId, purpose: scenario.purpose,
+      }))),
+      // The intent format identifies an obligation but does not declare a separate
+      // obligation statement. Preserve that absence instead of copying scenario prose.
+      obligations: intents.flatMap((intent) => intent.scenarios.map((scenario) => ({
+        obligationId: scenario.obligationId, scenarioId: scenario.scenarioId, statement: null,
+      }))),
+      responsibilities: intents.flatMap((intent) => intent.scenarios.map((scenario) => ({
+        responsibilityId: scenario.responsibilityId, obligationId: scenario.obligationId,
+        responsibilityType: "feature-intent", projectionProfileId: "implementation-symbol-binding.v1", artifactId: null,
+      }))),
+    },
   };
 }
 

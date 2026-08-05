@@ -609,6 +609,7 @@ The load command is:
 ```powershell
 node src/cli.js load-engineering-truth `
   --contract ./contracts/serves-query-console.governed.contract.json `
+  --intent-dir ./features `
   --report ./artifacts/governance/source-facts-self-governance-report.json `
   --connection-env source-facts-semantic-search-engine `
   --summary
@@ -632,7 +633,10 @@ remain distinct. Cross-plane rows are inserted only when both referenced identit
 exist. Owned-artifact path matches may establish observed implementation roots, but
 they remain explicitly classified bindings rather than canonical authority.
 
-The first live load correctly reports the current evidence gap: the governed console
-contract has observed implementation roots, while its seven canonical
-responsibilities have no admitted scenario-test bindings or executed proof receipts.
-That is now a durable query result rather than report-only logic.
+The repository load uses two independent authority snapshots: the governed console
+contract contributes three scenarios, and the canonical feature-intent registry
+contributes six more. Intent responsibilities deliberately retain nullable artifact
+ownership and obligation statements because that format does not declare either;
+their lifecycle remains `FEATURE_INTENT_PROPOSED`. This produces nine distinct
+repository scenarios without silently promoting proposed intent or inventing
+governed artifacts.

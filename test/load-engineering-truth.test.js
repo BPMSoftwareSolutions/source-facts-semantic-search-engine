@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { projectsEngineeringTruthSqlPayload } from "../src/sqlserver/load-engineering-truth.js";
+import { projectsCanonicalIntentRegistryContract, projectsEngineeringTruthSqlPayload } from "../src/sqlserver/load-engineering-truth.js";
 
 function fixture() {
   const contract = {
@@ -57,4 +57,19 @@ test("rejects a canonical responsibility whose owned artifact is absent", () => 
   const input = fixture();
   input.contract.lineage.responsibilities[0].artifactId = "missing.v1";
   assert.throws(() => projectsEngineeringTruthSqlPayload(input), /unknown artifact 'missing\.v1'/u);
+});
+
+test("projects the canonical intent registry without inventing artifact ownership or obligation prose", () => {
+  const intents = [
+    { documentKind: "canonical-feature-intent.v1", featureId: "feature.one", purpose: "One", lifecycle: "FEATURE_INTENT_PROPOSED", authorityStatus: "AUTHORITY_MISSING", scenarios: [
+      { scenarioId: "scenario.one", obligationId: "obligation.one", responsibilityId: "responsibility.one", purpose: "First scenario" },
+      { scenarioId: "scenario.two", obligationId: "obligation.two", responsibilityId: "responsibility.two", purpose: "Second scenario" },
+    ] },
+  ];
+  const contract = projectsCanonicalIntentRegistryContract({ intents, projectId: "project.one" });
+  assert.equal(contract.lineage.features.length, 1);
+  assert.equal(contract.lineage.scenarios.length, 2);
+  assert.equal(contract.lineage.features[0].lifecycleStatus, "FEATURE_INTENT_PROPOSED");
+  assert.equal(contract.lineage.obligations[0].statement, null);
+  assert.equal(contract.lineage.responsibilities[0].artifactId, null);
 });

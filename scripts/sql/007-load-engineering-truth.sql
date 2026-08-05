@@ -46,10 +46,10 @@ BEGIN
         SELECT @ContractSnapshotId, ProjectId, AuthorityDigest
         FROM OPENJSON(@PayloadJson, '$.projects') WITH (ProjectId nvarchar(160) '$.projectId', AuthorityDigest varchar(80) '$.authorityDigest');
 
-        INSERT lineage.Feature (ContractSnapshotId, FeatureId, ProjectId, Purpose, AuthorityDigest)
-        SELECT @ContractSnapshotId, FeatureId, ProjectId, Purpose, AuthorityDigest
+        INSERT lineage.Feature (ContractSnapshotId, FeatureId, ProjectId, Purpose, LifecycleStatus, AuthorityStatus, AuthorityDigest)
+        SELECT @ContractSnapshotId, FeatureId, ProjectId, Purpose, LifecycleStatus, AuthorityStatus, AuthorityDigest
         FROM OPENJSON(@PayloadJson, '$.features') WITH
-        (FeatureId nvarchar(160) '$.featureId', ProjectId nvarchar(160) '$.projectId', Purpose nvarchar(max) '$.purpose', AuthorityDigest varchar(80) '$.authorityDigest');
+        (FeatureId nvarchar(160) '$.featureId', ProjectId nvarchar(160) '$.projectId', Purpose nvarchar(max) '$.purpose', LifecycleStatus nvarchar(160) '$.lifecycleStatus', AuthorityStatus nvarchar(200) '$.authorityStatus', AuthorityDigest varchar(80) '$.authorityDigest');
 
         INSERT lineage.Scenario (ContractSnapshotId, ScenarioId, FeatureId, Purpose, AuthorityDigest)
         SELECT @ContractSnapshotId, ScenarioId, FeatureId, Purpose, AuthorityDigest

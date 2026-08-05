@@ -254,6 +254,7 @@ then load an admitted governed contract beside a generated self-governance repor
 ```powershell
 node src/cli.js load-engineering-truth `
   --contract ./contracts/serves-query-console.governed.contract.json `
+  --intent-dir ./features `
   --report ./artifacts/governance/source-facts-self-governance-report.json `
   --connection-env source-facts-semantic-search-engine `
   --summary
