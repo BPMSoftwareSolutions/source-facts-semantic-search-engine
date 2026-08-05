@@ -31,6 +31,9 @@ function buildsEnterpriseContext(enterpriseContext, { repositoryId, workspaceId 
     throw new Error("enterpriseContext must be an object when provided.");
   }
   const context = enterpriseContext ?? {};
+  const applicationId = enterpriseContext === null
+    ? repositoryId ?? workspaceId ?? null
+    : context.applicationId ?? null;
   if (context.repositoryId != null && repositoryId != null && context.repositoryId !== repositoryId) {
     throw new Error(`enterpriseContext.repositoryId (${context.repositoryId}) must match report.repository.repositoryId (${repositoryId}).`);
   }
@@ -41,7 +44,7 @@ function buildsEnterpriseContext(enterpriseContext, { repositoryId, workspaceId 
     enterpriseId: context.enterpriseId ?? null,
     portfolioId: context.portfolioId ?? null,
     domainId: context.domainId ?? null,
-    applicationId: context.applicationId ?? null,
+    applicationId,
     capabilityId: context.capabilityId ?? null,
     repositoryId: context.repositoryId ?? repositoryId ?? null,
     workspaceId: context.workspaceId ?? workspaceId ?? null,

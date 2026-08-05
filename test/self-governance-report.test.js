@@ -247,6 +247,26 @@ test("projectsSelfGovernanceReport rejects enterprise context repository or work
   );
 });
 
+test("projectsSelfGovernanceReport defaults application identity from repository identity", async () => {
+  const report = await projectsSelfGovernanceReport({
+    index: buildsSyntheticIndex(),
+    repositoryId: "governed-response-normalizer",
+  });
+
+  assert.equal(report.enterpriseContext.applicationId, "governed-response-normalizer");
+  assert.equal(report.enterpriseContext.repositoryId, "governed-response-normalizer");
+  assert.equal(report.enterpriseContext.workspaceId, "self-governance-test");
+  assert.equal(
+    report.enterpriseSubjects.find((row) => row.subjectType === "application")?.subjectId,
+    "governed-response-normalizer",
+  );
+  assert.ok(report.enterpriseSubjectRelationships.some((row) =>
+    row.fromSubjectType === "application"
+    && row.fromSubjectId === "governed-response-normalizer"
+    && row.toSubjectType === "repository"
+    && row.toSubjectId === "governed-response-normalizer"));
+});
+
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {
   const path = (name) => `${modulePathPrefix}${name}`;
   const sourceReferences = [

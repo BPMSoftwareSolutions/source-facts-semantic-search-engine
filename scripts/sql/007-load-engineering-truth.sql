@@ -76,6 +76,34 @@ BEGIN
         );
     END;
 
+    IF EXISTS
+    (
+        SELECT 1
+        FROM authority.ContractSnapshot existing
+        CROSS APPLY OPENJSON(@PayloadJson, '$.contract') WITH
+        (
+            ContractSnapshotId varchar(80) '$.contractSnapshotId',
+            ApplicationId nvarchar(160) '$.enterpriseContext.applicationId'
+        ) source
+        WHERE existing.ContractSnapshotId = source.ContractSnapshotId
+          AND existing.ApplicationId IS NOT NULL
+          AND source.ApplicationId IS NOT NULL
+          AND existing.ApplicationId <> source.ApplicationId
+    )
+        THROW 51000, 'Existing contract snapshot ApplicationId conflicts with the resolved enterprise context.', 1;
+
+    UPDATE existing
+    SET ApplicationId = source.ApplicationId
+    FROM authority.ContractSnapshot existing
+    CROSS APPLY OPENJSON(@PayloadJson, '$.contract') WITH
+    (
+        ContractSnapshotId varchar(80) '$.contractSnapshotId',
+        ApplicationId nvarchar(160) '$.enterpriseContext.applicationId'
+    ) source
+    WHERE existing.ContractSnapshotId = source.ContractSnapshotId
+      AND existing.ApplicationId IS NULL
+      AND source.ApplicationId IS NOT NULL;
+
     IF NOT EXISTS (SELECT 1 FROM observation.ObservationSnapshot WHERE ObservationSnapshotId = @ObservationSnapshotId)
     BEGIN
         INSERT observation.ObservationSnapshot
@@ -158,6 +186,33 @@ BEGIN
             WHERE existing.SubjectType = source.SubjectType AND existing.SubjectId = source.SubjectId
         );
 
+        IF EXISTS
+        (
+            SELECT 1
+            FROM enterprise.Subject existing
+            JOIN OPENJSON(@PayloadJson, '$.enterpriseSubjects') WITH
+            (
+                SubjectType nvarchar(40) '$.subjectType', SubjectId nvarchar(400) '$.subjectId',
+                ApplicationId nvarchar(160) '$.applicationId'
+            ) source ON existing.SubjectType = source.SubjectType AND existing.SubjectId = source.SubjectId
+            WHERE existing.ApplicationId IS NOT NULL
+              AND source.ApplicationId IS NOT NULL
+              AND existing.ApplicationId <> source.ApplicationId
+        )
+            THROW 51000, 'Existing enterprise subject ApplicationId conflicts with the resolved enterprise context.', 1;
+
+        UPDATE existing
+        SET ApplicationId = source.ApplicationId,
+            AuthorityDigest = source.AuthorityDigest
+        FROM enterprise.Subject existing
+        JOIN OPENJSON(@PayloadJson, '$.enterpriseSubjects') WITH
+        (
+            SubjectType nvarchar(40) '$.subjectType', SubjectId nvarchar(400) '$.subjectId',
+            ApplicationId nvarchar(160) '$.applicationId', AuthorityDigest varchar(80) '$.authorityDigest'
+        ) source ON existing.SubjectType = source.SubjectType AND existing.SubjectId = source.SubjectId
+        WHERE existing.ApplicationId IS NULL
+          AND source.ApplicationId IS NOT NULL;
+
         INSERT enterprise.SubjectRelationship
             (FromSubjectType, FromSubjectId, ToSubjectType, ToSubjectId, RelationshipType, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, RepositoryId, WorkspaceId, ContextAuthorityId, AuthorityDigest)
         SELECT source.FromSubjectType, source.FromSubjectId, source.ToSubjectType, source.ToSubjectId, source.RelationshipType, source.EnterpriseId, source.PortfolioId, source.DomainId, source.ApplicationId, source.CapabilityId, source.RepositoryId, source.WorkspaceId, source.ContextAuthorityId, source.AuthorityDigest
@@ -179,6 +234,42 @@ BEGIN
               AND existing.ToSubjectType = source.ToSubjectType AND existing.ToSubjectId = source.ToSubjectId
               AND existing.RelationshipType = source.RelationshipType
         );
+
+        IF EXISTS
+        (
+            SELECT 1
+            FROM enterprise.SubjectRelationship existing
+            JOIN OPENJSON(@PayloadJson, '$.enterpriseSubjectRelationships') WITH
+            (
+                FromSubjectType nvarchar(40) '$.fromSubjectType', FromSubjectId nvarchar(400) '$.fromSubjectId',
+                ToSubjectType nvarchar(40) '$.toSubjectType', ToSubjectId nvarchar(400) '$.toSubjectId',
+                RelationshipType nvarchar(80) '$.relationshipType', ApplicationId nvarchar(160) '$.applicationId'
+            ) source
+              ON existing.FromSubjectType = source.FromSubjectType AND existing.FromSubjectId = source.FromSubjectId
+             AND existing.ToSubjectType = source.ToSubjectType AND existing.ToSubjectId = source.ToSubjectId
+             AND existing.RelationshipType = source.RelationshipType
+            WHERE existing.ApplicationId IS NOT NULL
+              AND source.ApplicationId IS NOT NULL
+              AND existing.ApplicationId <> source.ApplicationId
+        )
+            THROW 51000, 'Existing enterprise subject relationship ApplicationId conflicts with the resolved enterprise context.', 1;
+
+        UPDATE existing
+        SET ApplicationId = source.ApplicationId,
+            AuthorityDigest = source.AuthorityDigest
+        FROM enterprise.SubjectRelationship existing
+        JOIN OPENJSON(@PayloadJson, '$.enterpriseSubjectRelationships') WITH
+        (
+            FromSubjectType nvarchar(40) '$.fromSubjectType', FromSubjectId nvarchar(400) '$.fromSubjectId',
+            ToSubjectType nvarchar(40) '$.toSubjectType', ToSubjectId nvarchar(400) '$.toSubjectId',
+            RelationshipType nvarchar(80) '$.relationshipType', ApplicationId nvarchar(160) '$.applicationId',
+            AuthorityDigest varchar(80) '$.authorityDigest'
+        ) source
+          ON existing.FromSubjectType = source.FromSubjectType AND existing.FromSubjectId = source.FromSubjectId
+         AND existing.ToSubjectType = source.ToSubjectType AND existing.ToSubjectId = source.ToSubjectId
+         AND existing.RelationshipType = source.RelationshipType
+        WHERE existing.ApplicationId IS NULL
+          AND source.ApplicationId IS NOT NULL;
     END;
 
     -- Cross-plane rows are admitted only when both independently loaded identities
