@@ -33,6 +33,7 @@ import { northStarArtifactNames, runsSignInNorthStar } from "./composition/runs-
 import { loadsSourceFactIndexIntoSqlServer } from "./sqlserver/load-sqlserver.js";
 import { loadsEngineeringTruthIntoSqlServer, projectsCanonicalIntentRegistryContract, validatesReportEnterpriseContextMatchesRepository } from "./sqlserver/load-engineering-truth.js";
 import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./sqlserver/resolves-sql-connection.js";
+import { extractsContractAuthorityDocumentFromSqlServer } from "./sqlserver/contract-authority-document.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -127,6 +128,8 @@ if (command === "project") {
   await runLoadSqlServer(args.slice(1));
 } else if (command === "load-engineering-truth") {
   await runLoadEngineeringTruth(args.slice(1));
+} else if (command === "extract-contract") {
+  await runExtractContract(args.slice(1));
 } else if (command === "ingest") {
   await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
@@ -729,6 +732,31 @@ async function runLoadEngineeringTruth(rawArgs) {
   }
 }
 
+async function runExtractContract(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.contractId !== "string" && typeof flags.contractSnapshotId !== "string") {
+    throw new Error("Either --contract-id <id> or --contract-snapshot-id <digest> is required.");
+  }
+  if (typeof flags.contractId === "string" && typeof flags.contractSnapshotId === "string") {
+    throw new Error("Use only one of --contract-id or --contract-snapshot-id.");
+  }
+  if (typeof flags.output !== "string") throw new Error("--output <contract.json> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const reconstructed = await extractsContractAuthorityDocumentFromSqlServer({
+    contractId: flags.contractId ?? null,
+    contractSnapshotId: flags.contractSnapshotId ?? null,
+    connection,
+  });
+  const outputPath = path.resolve(flags.output);
+  await writesJsonFile(outputPath, reconstructed.contract, { pretty: flags.pretty === true });
+  process.stdout.write(`${outputPath}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Contract snapshot: ${reconstructed.contractSnapshotId}\n`);
+    process.stdout.write(`Normalized authority nodes: ${reconstructed.nodeCount}\n`);
+    process.stdout.write("Disposition: CONTRACT_RECONSTRUCTED_FROM_SQL_AUTHORITY\n");
+  }
+}
+
 async function preparesSelfGovernanceReportArtifacts(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const pretty = flags.pretty === true;
@@ -1232,6 +1260,8 @@ function parseArgs(rawArgs) {
     "--healing-dir",
     "--template-contract",
     "--contract",
+    "--contract-id",
+    "--contract-snapshot-id",
     "--intent-dir",
     "--project-id",
     "--binding",
@@ -1367,6 +1397,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se load-engineering-truth [--contract <governed-contract.json>] [--intent-dir <directory>] --report <self-governance-report.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se extract-contract (--contract-id <id> | --contract-snapshot-id <digest>) --output <contract.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--pretty] [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);

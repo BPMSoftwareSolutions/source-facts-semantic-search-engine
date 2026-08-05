@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { projectsContractAuthorityDocument } from "./contract-authority-document.js";
 
 function digest(value) {
   return `sha256:${createHash("sha256").update(typeof value === "string" ? value : JSON.stringify(value), "utf8").digest("hex")}`;
@@ -193,6 +194,10 @@ export function projectsEngineeringTruthSqlPayload({ contract, report, contractS
   validatesEnterpriseContextConsistency(contractEnterpriseContext, reportEnterpriseContext);
   const enterpriseRegistry = buildsEnterpriseSubjectRegistry(contractEnterpriseContext, reportEnterpriseContext);
   const contractSnapshotId = digest(contract);
+  const contractAuthorityDocument = projectsContractAuthorityDocument(contract);
+  if (contractAuthorityDocument.contractDocument.authorityDigest !== contractSnapshotId) {
+    throw new Error("Normalized contract authority document does not match the contract snapshot digest.");
+  }
   const observationSnapshotId = digest(report);
   const callableKey = (symbolId) => digest(String(symbolId));
   const commandId = (command) => digest(`${command.commandName}\0${command.entryPointId}`);
@@ -305,6 +310,8 @@ export function projectsEngineeringTruthSqlPayload({ contract, report, contractS
       sourcePath: contractSourcePath,
       authorityDigest: contractSnapshotId,
     },
+    contractDocument: contractAuthorityDocument.contractDocument,
+    contractNodes: contractAuthorityDocument.contractNodes,
     observation: {
       observationSnapshotId,
       indexId: report.index?.indexId ?? null,
@@ -406,6 +413,7 @@ function payloadSummary(payload) {
       responsibilities: payload.responsibilities.length, artifacts: payload.artifacts.length, commands: payload.commands.length,
       callables: payload.callables.length, commandReachability: payload.commandReachability.length, tests: payload.tests.length,
       testProductionReachability: payload.testProductionReachability.length, scenarioTestBindings: payload.scenarioTestBindings.length,
+      contractNodes: payload.contractNodes.length,
       enterpriseSubjects: payload.enterpriseSubjects.length, enterpriseSubjectRelationships: payload.enterpriseSubjectRelationships.length,
     },
   };
@@ -413,7 +421,7 @@ function payloadSummary(payload) {
 
 function runsSqlcmd({ sqlcmdPath, connection, scriptPath }) {
   return new Promise((resolve, reject) => {
-    const args = [...connection.buildsArgs(), "-i", scriptPath, "-h", "-1", "-w", "8000", "-y", "8000", "-b"];
+    const args = [...connection.buildsArgs(), "-i", scriptPath, "-f", "65001", "-h", "-1", "-w", "8000", "-y", "8000", "-b"];
     const child = spawn(sqlcmdPath, args, { windowsHide: true, env: connection.appliesToChildEnv({ ...process.env }) });
     let stdout = "";
     let stderr = "";

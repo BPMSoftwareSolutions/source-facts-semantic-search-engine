@@ -1,0 +1,29 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-extract-contract",
+  "featureFile": "features/cli-extract-contract-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-extract-contract",
+  "purpose": "Reconstruct a complete admitted contract from durable normalized SQL authority without reading a contract from disk",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-extract-contract.reconstruct-from-normalized-authority",
+      "scenarioAnchor": "&scenario:source-facts.cli-extract-contract.reconstruct-from-normalized-authority",
+      "responsibilityId": "cli-contract-authority-extraction",
+      "obligationId": "reconstruct-contract-from-durable-sql-authority",
+      "givenId": "canonical-contract-document-and-normalized-nodes-are-loaded",
+      "whenId": "extract-contract-command-invoked",
+      "thenId": "contract-is-reconstructed-from-sql",
+      "andId": "canonical-and-normalized-digests-agree",
+      "implementationSymbols": [
+        "runExtractContract",
+        "extractsContractAuthorityDocumentFromSqlServer",
+        "reconstructsContractAuthorityDocument"
+      ],
+      "purpose": "User can extract a digest-verified governed contract using SQL as the only authority input"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runExtractContract",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-05T00:00:00Z"
+}

@@ -200,7 +200,7 @@ async function runsScriptForJsonRow(runner, script) {
 
 function runsSqlcmd({ sqlcmdPath, connection, scriptPath }) {
   return new Promise((resolve, reject) => {
-    const args = [...connection.buildsArgs(), "-i", scriptPath, "-h", "-1", "-w", String(sqlcmdOutputWidth), "-y", String(sqlcmdOutputWidth), "-b"];
+    const args = [...connection.buildsArgs(), "-i", scriptPath, "-f", "65001", "-h", "-1", "-w", String(sqlcmdOutputWidth), "-y", String(sqlcmdOutputWidth), "-b"];
     const env = connection.appliesToChildEnv({ ...process.env });
     const child = spawn(sqlcmdPath, args, { windowsHide: true, env });
     let stdout = "";

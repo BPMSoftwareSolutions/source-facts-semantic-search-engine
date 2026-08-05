@@ -1124,6 +1124,7 @@ Add after 009-create-enterprise-subject-registry.sql:
 3. scripts/sql/012-load-mechanic-authorities.sql
 4. scripts/sql/013-create-responsibility-authority-view.sql
 5. scripts/sql/014-create-mechanic-equivalence-proof.sql
+6. scripts/sql/015-create-contract-authority-document.sql
 
 010 alone delivers the inexpensive native candidate query. It must not depend
 on 011 through 014.
@@ -1151,13 +1152,14 @@ non-transactional authority loader.
 Load order:
 
 1. contract snapshot;
-2. artifact and canonical lineage;
-3. observation snapshot and enterprise context;
-4. mechanic authority common rows;
-5. kind-specific and ordered child rows;
-6. exact discovery-evidence rows;
-7. current embodiment bindings;
-8. target profiles.
+2. canonical contract document and complete normalized authority-node tree;
+3. artifact and canonical lineage;
+4. observation snapshot and enterprise context;
+5. mechanic authority common rows;
+6. kind-specific and ordered child rows;
+7. exact discovery-evidence rows;
+8. current embodiment bindings;
+9. target profiles.
 
 Missing foreign keys, digest mismatch, duplicate admitted bindings, and JSON
 round-trip mismatch roll back the full admitted-authority load.
@@ -1656,7 +1658,7 @@ PILOT_AUTHORITY_ADMITTED
 
 ### Phase 5 — persist and query complete responsibility authority
 
-1. Apply SQL scripts 011 through 013.
+1. Apply SQL scripts 011 through 015.
 2. Extend the engineering-truth payload and transaction.
 3. Load the pilot index and 1.15 contract.
 4. Preserve canonical authority bytes and digest; validate normalized SQL rows

@@ -46,10 +46,15 @@ function fixture() {
 }
 
 test("projects separate canonical, observed, binding, and proof planes", () => {
-  const payload = projectsEngineeringTruthSqlPayload(fixture());
+  const input = fixture();
+  const payload = projectsEngineeringTruthSqlPayload(input);
   assert.equal(payload.payloadType, "engineering-truth-sql-load.v1");
   assert.match(payload.contract.contractSnapshotId, /^sha256:[a-f0-9]{64}$/u);
   assert.match(payload.observation.observationSnapshotId, /^sha256:[a-f0-9]{64}$/u);
+  assert.equal(payload.contractDocument.authorityDigest, payload.contract.contractSnapshotId);
+  assert.equal(payload.contractDocument.canonicalJson, JSON.stringify(input.contract));
+  assert.ok(payload.contractNodes.length > 1);
+  assert.equal(payload.contractNodes[0].jsonPointer, "");
   assert.equal(payload.features.length, 1);
   assert.equal(payload.commandReachability.length, 1);
   assert.equal(payload.responsibilityCommands.length, 1);

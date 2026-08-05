@@ -763,7 +763,18 @@ mechanic authority
 
 # SQL shape
 
-Use one common table plus kind-specific tables.
+Preserve the admitted canonical contract document and normalize its complete
+ordered JSON authority tree before loading kind-specific query tables. The
+canonical document is the immutable byte authority; normalized nodes are the
+reconstructable and queryable semantic representation. Their digests must
+agree before projection.
+
+```text
+authority.ContractDocument
+authority.ContractNode
+```
+
+Use one common mechanic table plus kind-specific tables.
 
 ```text
 authority.ExecutableMechanicAuthority

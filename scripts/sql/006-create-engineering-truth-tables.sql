@@ -2,6 +2,8 @@
 -- Snapshot identifiers are content-derived in the Node loader. Nothing here
 -- promotes an observation into authority merely because the identifiers match.
 
+IF OBJECT_ID('authority.ContractNode', 'U') IS NOT NULL DROP TABLE authority.ContractNode;
+IF OBJECT_ID('authority.ContractDocument', 'U') IS NOT NULL DROP TABLE authority.ContractDocument;
 IF OBJECT_ID('proof.ScenarioProof', 'U') IS NOT NULL DROP TABLE proof.ScenarioProof;
 IF OBJECT_ID('enterprise.SubjectRelationship', 'U') IS NOT NULL DROP TABLE enterprise.SubjectRelationship;
 IF OBJECT_ID('enterprise.Subject', 'U') IS NOT NULL DROP TABLE enterprise.Subject;

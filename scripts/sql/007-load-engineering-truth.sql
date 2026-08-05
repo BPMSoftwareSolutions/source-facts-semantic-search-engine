@@ -10,9 +10,13 @@ BEGIN
     DECLARE @ObservationSnapshotId varchar(80) = JSON_VALUE(@PayloadJson, '$.observation.observationSnapshotId');
     IF @ContractSnapshotId IS NULL THROW 51000, 'contract.contractSnapshotId is required.', 1;
     IF @ObservationSnapshotId IS NULL THROW 51000, 'observation.observationSnapshotId is required.', 1;
+    IF JSON_VALUE(@PayloadJson, '$.contractDocument.authorityDigest') <> @ContractSnapshotId
+        THROW 51000, 'contractDocument.authorityDigest must match contract.contractSnapshotId.', 1;
 
     DECLARE @AlreadyLoaded bit = CASE
         WHEN EXISTS (SELECT 1 FROM authority.ContractSnapshot WHERE ContractSnapshotId = @ContractSnapshotId)
+         AND EXISTS (SELECT 1 FROM authority.ContractDocument WHERE ContractSnapshotId = @ContractSnapshotId)
+         AND EXISTS (SELECT 1 FROM authority.ContractNode WHERE ContractSnapshotId = @ContractSnapshotId)
          AND EXISTS (SELECT 1 FROM observation.ObservationSnapshot WHERE ObservationSnapshotId = @ObservationSnapshotId)
         THEN 1 ELSE 0 END;
 
@@ -103,6 +107,101 @@ BEGIN
     WHERE existing.ContractSnapshotId = source.ContractSnapshotId
       AND existing.ApplicationId IS NULL
       AND source.ApplicationId IS NOT NULL;
+
+    IF (SELECT COUNT(*) FROM OPENJSON(@PayloadJson, '$.contractDocument')) <> 1
+        THROW 51000, 'contractDocument must contain exactly one canonical contract document.', 1;
+
+    IF EXISTS (SELECT 1 FROM authority.ContractDocument WHERE ContractSnapshotId = @ContractSnapshotId)
+    BEGIN
+        IF EXISTS
+        (
+            SELECT 1
+            FROM authority.ContractDocument existing
+            CROSS APPLY OPENJSON(@PayloadJson, '$.contractDocument') WITH
+            (
+                CanonicalJson nvarchar(max) '$.canonicalJson',
+                CanonicalByteLength int '$.canonicalByteLength',
+                AuthorityDigest varchar(80) '$.authorityDigest'
+            ) source
+            WHERE existing.ContractSnapshotId = @ContractSnapshotId
+              AND (existing.CanonicalJson <> source.CanonicalJson
+                OR existing.CanonicalByteLength <> source.CanonicalByteLength
+                OR existing.AuthorityDigest <> source.AuthorityDigest)
+        )
+            THROW 51000, 'Existing canonical contract document conflicts with the admitted contract snapshot.', 1;
+    END
+    ELSE
+    BEGIN
+        INSERT authority.ContractDocument (ContractSnapshotId, CanonicalJson, CanonicalByteLength, AuthorityDigest)
+        SELECT @ContractSnapshotId, CanonicalJson, CanonicalByteLength, AuthorityDigest
+        FROM OPENJSON(@PayloadJson, '$.contractDocument') WITH
+        (
+            CanonicalJson nvarchar(max) '$.canonicalJson',
+            CanonicalByteLength int '$.canonicalByteLength',
+            AuthorityDigest varchar(80) '$.authorityDigest'
+        );
+    END;
+
+    DECLARE @PayloadContractNodeCount int = (SELECT COUNT(*) FROM OPENJSON(@PayloadJson, '$.contractNodes'));
+    IF @PayloadContractNodeCount = 0
+        THROW 51000, 'contractNodes must contain the complete normalized contract authority document.', 1;
+    IF @PayloadContractNodeCount <> (SELECT COUNT(DISTINCT PointerDigest) FROM OPENJSON(@PayloadJson, '$.contractNodes') WITH (PointerDigest varchar(80) '$.pointerDigest'))
+        THROW 51000, 'contractNodes must contain unique pointer identities.', 1;
+    IF 1 <> (SELECT COUNT(*) FROM OPENJSON(@PayloadJson, '$.contractNodes') WITH (NodeOrdinal int '$.nodeOrdinal', JsonPointer nvarchar(2048) '$.jsonPointer') WHERE NodeOrdinal = 0 AND JsonPointer = N'')
+        THROW 51000, 'contractNodes must contain exactly one root node.', 1;
+
+    IF EXISTS (SELECT 1 FROM authority.ContractNode WHERE ContractSnapshotId = @ContractSnapshotId)
+    BEGIN
+        IF @PayloadContractNodeCount <> (SELECT COUNT(*) FROM authority.ContractNode WHERE ContractSnapshotId = @ContractSnapshotId)
+            THROW 51000, 'Existing normalized contract authority node count conflicts with the admitted contract snapshot.', 1;
+        IF EXISTS
+        (
+            SELECT source.PointerDigest, source.NodeDigest
+            FROM OPENJSON(@PayloadJson, '$.contractNodes') WITH
+            (
+                PointerDigest varchar(80) '$.pointerDigest',
+                NodeDigest varchar(80) '$.nodeDigest'
+            ) source
+            EXCEPT
+            SELECT existing.PointerDigest, existing.NodeDigest
+            FROM authority.ContractNode existing
+            WHERE existing.ContractSnapshotId = @ContractSnapshotId
+        ) OR EXISTS
+        (
+            SELECT existing.PointerDigest, existing.NodeDigest
+            FROM authority.ContractNode existing
+            WHERE existing.ContractSnapshotId = @ContractSnapshotId
+            EXCEPT
+            SELECT source.PointerDigest, source.NodeDigest
+            FROM OPENJSON(@PayloadJson, '$.contractNodes') WITH
+            (
+                PointerDigest varchar(80) '$.pointerDigest',
+                NodeDigest varchar(80) '$.nodeDigest'
+            ) source
+        )
+            THROW 51000, 'Existing normalized contract authority nodes conflict with the admitted contract snapshot.', 1;
+    END
+    ELSE
+    BEGIN
+        INSERT authority.ContractNode
+        (
+            ContractSnapshotId, NodeOrdinal, JsonPointer, PointerDigest, ParentJsonPointer,
+            ParentPointerDigest, PathSegment, ArrayIndex, SiblingOrdinal, ValueType,
+            ScalarValue, NodeDigest
+        )
+        SELECT @ContractSnapshotId, NodeOrdinal, JsonPointer, PointerDigest, ParentJsonPointer,
+               ParentPointerDigest, PathSegment, ArrayIndex, SiblingOrdinal, ValueType,
+               ScalarValue, NodeDigest
+        FROM OPENJSON(@PayloadJson, '$.contractNodes') WITH
+        (
+            NodeOrdinal int '$.nodeOrdinal', JsonPointer nvarchar(2048) '$.jsonPointer',
+            PointerDigest varchar(80) '$.pointerDigest', ParentJsonPointer nvarchar(2048) '$.parentPointer',
+            ParentPointerDigest varchar(80) '$.parentPointerDigest', PathSegment nvarchar(2048) '$.pathSegment',
+            ArrayIndex int '$.arrayIndex', SiblingOrdinal int '$.siblingOrdinal',
+            ValueType varchar(20) '$.valueType', ScalarValue nvarchar(max) '$.scalarValue',
+            NodeDigest varchar(80) '$.nodeDigest'
+        );
+    END;
 
     IF NOT EXISTS (SELECT 1 FROM observation.ObservationSnapshot WHERE ObservationSnapshotId = @ObservationSnapshotId)
     BEGIN
