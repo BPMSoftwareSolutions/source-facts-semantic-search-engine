@@ -78,6 +78,31 @@
         "EXECUTION_BINDING_MISSING",
         "EQUIVALENCE_PROOF_MISSING"
       ]
+    },
+    "enterpriseContext": {
+      "type": "object",
+      "description": "Compact enterprise-context reference used to slice repository-local governance without embedding the full enterprise ontology.",
+      "additionalProperties": false,
+      "required": [
+        "enterpriseId",
+        "portfolioId",
+        "domainId",
+        "applicationId",
+        "capabilityId",
+        "repositoryId",
+        "workspaceId",
+        "contextAuthorityId"
+      ],
+      "properties": {
+        "enterpriseId": { "type": ["string", "null"], "minLength": 1 },
+        "portfolioId": { "type": ["string", "null"], "minLength": 1 },
+        "domainId": { "type": ["string", "null"], "minLength": 1 },
+        "applicationId": { "type": ["string", "null"], "minLength": 1 },
+        "capabilityId": { "type": ["string", "null"], "minLength": 1 },
+        "repositoryId": { "type": ["string", "null"], "minLength": 1 },
+        "workspaceId": { "type": ["string", "null"], "minLength": 1 },
+        "contextAuthorityId": { "type": ["string", "null"], "minLength": 1 }
+      }
     }
   },
   "properties": {
@@ -100,6 +125,81 @@
       "properties": {
         "indexId": { "type": ["string", "null"] },
         "scanId": { "type": ["string", "null"] }
+      }
+    },
+    "enterpriseContext": {
+      "$ref": "#/$defs/enterpriseContext"
+    },
+    "enterpriseSubjects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "subjectType",
+          "subjectId",
+          "enterpriseId",
+          "portfolioId",
+          "domainId",
+          "applicationId",
+          "capabilityId",
+          "repositoryId",
+          "workspaceId",
+          "contextAuthorityId",
+          "authorityDigest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "subjectType": { "type": "string", "minLength": 1 },
+          "subjectId": { "type": "string", "minLength": 1 },
+          "enterpriseId": { "type": ["string", "null"], "minLength": 1 },
+          "portfolioId": { "type": ["string", "null"], "minLength": 1 },
+          "domainId": { "type": ["string", "null"], "minLength": 1 },
+          "applicationId": { "type": ["string", "null"], "minLength": 1 },
+          "capabilityId": { "type": ["string", "null"], "minLength": 1 },
+          "repositoryId": { "type": ["string", "null"], "minLength": 1 },
+          "workspaceId": { "type": ["string", "null"], "minLength": 1 },
+          "contextAuthorityId": { "type": ["string", "null"], "minLength": 1 },
+          "authorityDigest": { "type": "string", "pattern": "^sha256:" }
+        }
+      }
+    },
+    "enterpriseSubjectRelationships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "fromSubjectType",
+          "fromSubjectId",
+          "toSubjectType",
+          "toSubjectId",
+          "relationshipType",
+          "enterpriseId",
+          "portfolioId",
+          "domainId",
+          "applicationId",
+          "capabilityId",
+          "repositoryId",
+          "workspaceId",
+          "contextAuthorityId",
+          "authorityDigest"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "fromSubjectType": { "type": "string", "minLength": 1 },
+          "fromSubjectId": { "type": "string", "minLength": 1 },
+          "toSubjectType": { "type": "string", "minLength": 1 },
+          "toSubjectId": { "type": "string", "minLength": 1 },
+          "relationshipType": { "type": "string", "minLength": 1 },
+          "enterpriseId": { "type": ["string", "null"], "minLength": 1 },
+          "portfolioId": { "type": ["string", "null"], "minLength": 1 },
+          "domainId": { "type": ["string", "null"], "minLength": 1 },
+          "applicationId": { "type": ["string", "null"], "minLength": 1 },
+          "capabilityId": { "type": ["string", "null"], "minLength": 1 },
+          "repositoryId": { "type": ["string", "null"], "minLength": 1 },
+          "workspaceId": { "type": ["string", "null"], "minLength": 1 },
+          "contextAuthorityId": { "type": ["string", "null"], "minLength": 1 },
+          "authorityDigest": { "type": "string", "pattern": "^sha256:" }
+        }
       }
     },
     "subjectScope": {

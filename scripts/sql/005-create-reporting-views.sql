@@ -11,6 +11,7 @@ GO
 CREATE VIEW reporting.ForbiddenExecutableMechanic AS
 SELECT
     f.IndexId,
+    f.RootId AS SourceRootId,
     f.RelativePath,
     s.Name              AS EnclosingSymbolName,
     s.SymbolKind         AS EnclosingSymbolKind,
@@ -24,7 +25,7 @@ SELECT
     r.EndColumn
 FROM fact.ExecutableMechanic AS m
 JOIN inventory.SourceFile AS f
-    ON f.IndexId = m.IndexId AND f.RelativePath = m.ModulePath
+    ON f.IndexId = m.IndexId AND f.RootId = m.RootId AND f.RelativePath = m.ModulePath
 JOIN source.SourceReference AS r
     ON r.SourceReferenceKey = m.SourceReferenceKey
 LEFT JOIN source.Symbol AS s
@@ -36,6 +37,7 @@ GO
 CREATE VIEW reporting.FunctionMechanicSummary AS
 SELECT
     m.IndexId,
+    m.RootId AS SourceRootId,
     m.ModulePath,
     s.Name                                                         AS EnclosingSymbolName,
     COUNT_BIG(*)                                                   AS MechanicOccurrenceCount,
@@ -54,7 +56,7 @@ SELECT
 FROM fact.ExecutableMechanic AS m
 LEFT JOIN source.Symbol AS s
     ON s.SymbolKey = m.FromSymbolKey
-GROUP BY m.IndexId, m.ModulePath, s.Name;
+GROUP BY m.IndexId, m.RootId, m.ModulePath, s.Name;
 GO
 
 IF OBJECT_ID('reporting.UnresolvedRelationship', 'V') IS NOT NULL DROP VIEW reporting.UnresolvedRelationship;
@@ -83,6 +85,7 @@ GO
 CREATE VIEW reporting.UngovernedBody AS
 SELECT
     m.IndexId,
+    m.RootId AS SourceRootId,
     m.ModulePath,
     s.Name                    AS EnclosingSymbolName,
     m.MechanicKind,

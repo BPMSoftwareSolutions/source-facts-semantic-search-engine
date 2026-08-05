@@ -140,9 +140,43 @@ test("CLI-first closure inventories every command, classifies every callable, an
     index,
     testIndex,
     repositoryId: "cli-execution-graph-test",
+    enterpriseContext: {
+      enterpriseId: "deterministic-solutions",
+      portfolioId: "engineering-intelligence",
+      domainId: "software-governance",
+      applicationId: "source-facts-semantic-search-engine",
+      contextAuthorityId: "source-facts-enterprise-context.v1",
+    },
     workspaceRelativePrefix: "src",
     canonicalFeatureIntents,
   });
+  assert.deepEqual(report.enterpriseContext, {
+    enterpriseId: "deterministic-solutions",
+    portfolioId: "engineering-intelligence",
+    domainId: "software-governance",
+    applicationId: "source-facts-semantic-search-engine",
+    capabilityId: null,
+    repositoryId: "cli-execution-graph-test",
+    workspaceId: index.workspace?.workspaceId ?? null,
+    contextAuthorityId: "source-facts-enterprise-context.v1",
+  });
+  const enterpriseContext = rerunsRegisteredReportQuery(report, "enterprise.context.v1", {
+    repositoryId: "cli-execution-graph-test",
+    workspaceId: index.workspace?.workspaceId ?? null,
+  });
+  assert.equal(enterpriseContext.rowCount, 1);
+  assert.equal(enterpriseContext.rows[0].repositoryId, "cli-execution-graph-test");
+  assert.equal(enterpriseContext.rows[0].workspaceId, index.workspace?.workspaceId ?? null);
+  const enterpriseSubjects = rerunsRegisteredReportQuery(report, "enterprise.subject-registry.v1", {
+    repositoryId: "cli-execution-graph-test",
+  });
+  assert.equal(enterpriseSubjects.rowCount, 6);
+  assert.ok(enterpriseSubjects.rows.every((row) => row.repositoryId === "cli-execution-graph-test"));
+  const enterpriseRelationships = rerunsRegisteredReportQuery(report, "enterprise.subject-relationships.v1", {
+    repositoryId: "cli-execution-graph-test",
+  });
+  assert.equal(enterpriseRelationships.rowCount, 5);
+  assert.ok(enterpriseRelationships.rows.every((row) => row.repositoryId === "cli-execution-graph-test"));
   const governGraph = rerunsRegisteredReportQuery(report, "cli.command-execution-graphs.v1", { commandName: "govern" });
   assert.equal(governGraph.rowCount, 1);
   assert.equal(governGraph.rows[0].handlerName, "runGovern");
@@ -191,6 +225,26 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.equal(boundReceiptArtifact.queryReceipt.execution.rowCount, 1);
   assert.equal(boundReceiptArtifact.queryReceipt.execution.resultHash, completeLineage.resultHash);
   assert.deepEqual(boundReceiptArtifact.queryReceipt.result.rows, completeLineage.rows);
+});
+
+test("projectsSelfGovernanceReport rejects enterprise context repository or workspace drift", async () => {
+  const index = { workspace: { workspaceId: "workspace-a" } };
+  await assert.rejects(
+    () => projectsSelfGovernanceReport({
+      index,
+      repositoryId: "repo-a",
+      enterpriseContext: { repositoryId: "repo-b" },
+    }),
+    /enterpriseContext\.repositoryId .* must match report\.repository\.repositoryId/i,
+  );
+  await assert.rejects(
+    () => projectsSelfGovernanceReport({
+      index,
+      repositoryId: "repo-a",
+      enterpriseContext: { workspaceId: "workspace-b" },
+    }),
+    /enterpriseContext\.workspaceId .* must match report\.repository\.workspaceId/i,
+  );
 });
 
 function buildsSyntheticIndex({ modulePathPrefix = "src/" } = {}) {

@@ -10,9 +10,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO fact.ExecutableMechanic (IndexId, ExecutableMechanicFactId, MechanicKind, ModulePath, SourceReferenceId, FromSymbolId, EvidenceKind, Classification, VerificationDisposition)
-    SELECT @IndexId, MechanicId, MechanicKind, ModulePath, SourceReferenceId, FromSymbolId, EvidenceKind, Classification, VerificationDisposition
+    INSERT INTO fact.ExecutableMechanic (IndexId, RootId, ExecutableMechanicFactId, MechanicKind, ModulePath, SourceReferenceId, FromSymbolId, EvidenceKind, Classification, VerificationDisposition)
+    SELECT @IndexId, COALESCE(source.RootId, scan.WorkspaceId), MechanicId, MechanicKind, ModulePath, SourceReferenceId, FromSymbolId, EvidenceKind, Classification, VerificationDisposition
     FROM OPENJSON(@BodyMechanicsJson) WITH (
+        RootId                   nvarchar(400) '$.rootId',
         MechanicId               varchar(120)   '$.mechanicId',
         MechanicKind             varchar(40)    '$.mechanic',
         ModulePath               nvarchar(1024) '$.modulePath',
@@ -21,7 +22,9 @@ BEGIN
         EvidenceKind             varchar(80)    '$.evidenceKind',
         Classification           varchar(80)    '$.classification',
         VerificationDisposition  varchar(80)    '$.verificationDisposition'
-    );
+    ) AS source
+    JOIN inventory.Scan AS scan
+        ON scan.IndexId = @IndexId;
 
     SELECT COUNT(*) AS RecordCount FROM fact.ExecutableMechanic WHERE IndexId = @IndexId;
 END

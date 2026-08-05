@@ -31,7 +31,7 @@ import {
 import { compositionArtifactNames, writesSignInComposition } from "./composition/writes-sign-in-composition.js";
 import { northStarArtifactNames, runsSignInNorthStar } from "./composition/runs-sign-in-north-star.js";
 import { loadsSourceFactIndexIntoSqlServer } from "./sqlserver/load-sqlserver.js";
-import { loadsEngineeringTruthIntoSqlServer, projectsCanonicalIntentRegistryContract } from "./sqlserver/load-engineering-truth.js";
+import { loadsEngineeringTruthIntoSqlServer, projectsCanonicalIntentRegistryContract, validatesReportEnterpriseContextMatchesRepository } from "./sqlserver/load-engineering-truth.js";
 import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./sqlserver/resolves-sql-connection.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
@@ -374,10 +374,12 @@ async function runGovern(rawArgs) {
 async function runSyncSelfGovernance(rawArgs) {
   const reportArtifacts = await preparesSelfGovernanceReportArtifacts(rawArgs);
   await writesSelfGovernanceReportArtifacts(reportArtifacts);
+  validatesReportEnterpriseContextMatchesRepository(reportArtifacts.report);
 
   const authorities = await collectsEngineeringTruthAuthorities(reportArtifacts.flags, {
     defaultContractPath: path.join(repositoryRoot, "contracts", "serves-query-console.governed.contract.json"),
     defaultIntentDir: path.join(repositoryRoot, "features"),
+    enterpriseContext: reportArtifacts.report.enterpriseContext,
   });
   const connection = resolvesSqlServerConnection(reportArtifacts.flags);
   for (const authority of authorities) {
@@ -712,7 +714,8 @@ async function runLoadEngineeringTruth(rawArgs) {
   if (typeof flags.report !== "string") throw new Error("--report <source-facts-self-governance-report.json> is required.");
   const reportPath = path.resolve(flags.report);
   const report = await readsJsonFile(reportPath);
-  const authorities = await collectsEngineeringTruthAuthorities(flags);
+  validatesReportEnterpriseContextMatchesRepository(report);
+  const authorities = await collectsEngineeringTruthAuthorities(flags, { enterpriseContext: report.enterpriseContext });
   const connection = resolvesSqlServerConnection(flags);
   for (const authority of authorities) {
     const receipt = await loadsEngineeringTruthIntoSqlServer({ contract: authority.contract, report, contractSourcePath: authority.sourcePath, reportSourcePath: reportPath, connection });
@@ -800,7 +803,7 @@ async function writesSelfGovernanceReportArtifacts({ report, outputPath, summary
   }
 }
 
-async function collectsEngineeringTruthAuthorities(flags, { defaultContractPath = null, defaultIntentDir = null } = {}) {
+async function collectsEngineeringTruthAuthorities(flags, { defaultContractPath = null, defaultIntentDir = null, enterpriseContext = null } = {}) {
   const authorities = [];
   const contractPath = typeof flags.contract === "string" ? path.resolve(flags.contract) : defaultContractPath;
   if (contractPath !== null) {
@@ -811,7 +814,11 @@ async function collectsEngineeringTruthAuthorities(flags, { defaultContractPath 
     const names = (await fs.readdir(intentDirectoryPath)).filter((name) => name.endsWith(".intent.json")).sort();
     const intents = await Promise.all(names.map((name) => readsJsonFile(path.join(intentDirectoryPath, name))));
     authorities.push({
-      contract: projectsCanonicalIntentRegistryContract({ intents, projectId: flags.projectId ?? path.basename(process.cwd()) }),
+      contract: projectsCanonicalIntentRegistryContract({
+        intents,
+        projectId: flags.projectId ?? path.basename(process.cwd()),
+        enterpriseContext,
+      }),
       sourcePath: intentDirectoryPath,
     });
   }

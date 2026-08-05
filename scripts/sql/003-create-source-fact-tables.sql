@@ -16,6 +16,10 @@
 -- the same content-addressing approach the engine itself uses everywhere else. Every
 -- fact table that references a source reference or symbol carries the matching
 -- computed hash column so the foreign key is still enforced.
+--
+-- inventory.SourceFile stays root-aware: RelativePath is always interpreted against
+-- a stable RootId so the same repository-relative path can be carried across an
+-- enterprise-wide inventory without implying a single folder identity.
 
 -- Required session-level SET options for creating indexes (including primary keys)
 -- on the persisted computed hash columns below.
@@ -72,6 +76,7 @@ GO
 CREATE TABLE inventory.SourceFile
 (
     IndexId            varchar(120)   NOT NULL,
+    RootId             nvarchar(400)   NOT NULL,
     FileId             varchar(120)   NOT NULL,
     RelativePath       nvarchar(1024) NOT NULL,
     ContentHash        varchar(120)   NOT NULL,
@@ -80,7 +85,7 @@ CREATE TABLE inventory.SourceFile
     ControlFlowCount   int NOT NULL,
     SyntaxCount        int NOT NULL,
     UnknownSyntaxCount int NOT NULL,
-    CONSTRAINT PK_SourceFile PRIMARY KEY (IndexId, FileId),
+    CONSTRAINT PK_SourceFile PRIMARY KEY (IndexId, RootId, FileId),
     CONSTRAINT FK_SourceFile_Scan FOREIGN KEY (IndexId) REFERENCES inventory.Scan(IndexId)
 );
 GO
@@ -191,6 +196,7 @@ GO
 CREATE TABLE fact.ExecutableMechanic
 (
     IndexId                   varchar(120)  NOT NULL,
+    RootId                    nvarchar(400) NOT NULL,
     ExecutableMechanicFactId  varchar(120)  NOT NULL,
     MechanicKind              varchar(40)   NOT NULL,
     ModulePath                nvarchar(1024) NOT NULL,
@@ -201,7 +207,7 @@ CREATE TABLE fact.ExecutableMechanic
     EvidenceKind                varchar(80) NULL,
     Classification               varchar(80) NOT NULL,
     VerificationDisposition      varchar(80) NOT NULL,
-    CONSTRAINT PK_ExecutableMechanic PRIMARY KEY (IndexId, ExecutableMechanicFactId),
+    CONSTRAINT PK_ExecutableMechanic PRIMARY KEY (IndexId, RootId, ExecutableMechanicFactId),
     CONSTRAINT FK_ExecutableMechanic_Scan FOREIGN KEY (IndexId) REFERENCES inventory.Scan(IndexId),
     CONSTRAINT FK_ExecutableMechanic_SourceReference FOREIGN KEY (SourceReferenceKey) REFERENCES source.SourceReference(SourceReferenceKey),
     CONSTRAINT FK_ExecutableMechanic_FromSymbol FOREIGN KEY (FromSymbolKey) REFERENCES source.Symbol(SymbolKey),
@@ -216,6 +222,7 @@ CREATE TABLE fact.ExecutableMechanic
 );
 CREATE INDEX IX_ExecutableMechanic_SourceReferenceKey ON fact.ExecutableMechanic(SourceReferenceKey);
 CREATE INDEX IX_ExecutableMechanic_FromSymbolKey ON fact.ExecutableMechanic(FromSymbolKey);
+CREATE INDEX IX_ExecutableMechanic_RootId_ModulePath ON fact.ExecutableMechanic(IndexId, RootId, ModulePath);
 GO
 
 CREATE TABLE fact.Document

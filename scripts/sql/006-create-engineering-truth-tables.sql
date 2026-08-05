@@ -3,6 +3,8 @@
 -- promotes an observation into authority merely because the identifiers match.
 
 IF OBJECT_ID('proof.ScenarioProof', 'U') IS NOT NULL DROP TABLE proof.ScenarioProof;
+IF OBJECT_ID('enterprise.SubjectRelationship', 'U') IS NOT NULL DROP TABLE enterprise.SubjectRelationship;
+IF OBJECT_ID('enterprise.Subject', 'U') IS NOT NULL DROP TABLE enterprise.Subject;
 IF OBJECT_ID('[test].ScenarioTestBinding', 'U') IS NOT NULL DROP TABLE [test].ScenarioTestBinding;
 IF OBJECT_ID('[test].TestProductionReachability', 'U') IS NOT NULL DROP TABLE [test].TestProductionReachability;
 IF OBJECT_ID('[test].TestCase', 'U') IS NOT NULL DROP TABLE [test].TestCase;
@@ -28,6 +30,14 @@ CREATE TABLE authority.ContractSnapshot
     ContractType nvarchar(160) NULL,
     ProjectId nvarchar(160) NOT NULL,
     SubjectId nvarchar(160) NULL,
+    EnterpriseId nvarchar(160) NULL,
+    PortfolioId nvarchar(160) NULL,
+    DomainId nvarchar(160) NULL,
+    ApplicationId nvarchar(160) NULL,
+    CapabilityId nvarchar(160) NULL,
+    RepositoryId nvarchar(400) NULL,
+    WorkspaceId nvarchar(400) NULL,
+    ContextAuthorityId nvarchar(160) NULL,
     SourcePath nvarchar(1024) NULL,
     AuthorityDigest varchar(80) NOT NULL,
     LoadedAtUtc datetime2(7) NOT NULL CONSTRAINT DF_ContractSnapshot_LoadedAtUtc DEFAULT SYSUTCDATETIME(),
@@ -65,6 +75,8 @@ CREATE TABLE lineage.Feature
     FeatureId nvarchar(160) NOT NULL,
     ProjectId nvarchar(160) NOT NULL,
     Purpose nvarchar(max) NOT NULL,
+    LifecycleStatus nvarchar(160) NULL,
+    AuthorityStatus nvarchar(200) NULL,
     AuthorityDigest varchar(80) NOT NULL,
     CONSTRAINT PK_LineageFeature PRIMARY KEY (ContractSnapshotId, FeatureId),
     CONSTRAINT FK_LineageFeature_Project FOREIGN KEY (ContractSnapshotId, ProjectId) REFERENCES lineage.Project(ContractSnapshotId, ProjectId)
@@ -112,6 +124,13 @@ CREATE TABLE observation.ObservationSnapshot
     IndexId varchar(120) NULL,
     ReportType nvarchar(160) NOT NULL,
     RepositoryId nvarchar(400) NULL,
+    EnterpriseId nvarchar(160) NULL,
+    PortfolioId nvarchar(160) NULL,
+    DomainId nvarchar(160) NULL,
+    ApplicationId nvarchar(160) NULL,
+    CapabilityId nvarchar(160) NULL,
+    WorkspaceId nvarchar(400) NULL,
+    ContextAuthorityId nvarchar(160) NULL,
     GeneratedAtUtc datetime2(7) NULL,
     SourcePath nvarchar(1024) NULL,
     ObservationDigest varchar(80) NOT NULL,

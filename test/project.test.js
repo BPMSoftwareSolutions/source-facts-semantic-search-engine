@@ -30,6 +30,8 @@ test("projects schema-valid, source-addressable governance rules", async () => {
 
     const index = await projectSourceFactsWorkspace({ workspaceRoot, workspaceId: "fixture" });
     await validatesSourceFactIndex(index);
+    assert.ok(index.files.every((file) => file.rootId === "fixture"));
+    assert.ok(index.bodyMechanics.every((fact) => fact.rootId === "fixture"));
     assert.deepEqual(index.governanceRules.map((rule) => rule.mechanic), ["branch", "serialization"]);
     const referenceById = new Map(index.sourceReferences.map((reference) => [reference.referenceId, reference]));
     for (const rule of index.governanceRules) {

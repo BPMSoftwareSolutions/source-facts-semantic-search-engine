@@ -17,12 +17,36 @@ import { projectsReportQueryLineage, reconcilesReportQueryLineage } from "./proj
 import { projectsInterfaceGovernance } from "./projects-interface-governance.js";
 import { projectsCanonicalFeatureQueryPlane } from "./canonical-feature-intent.js";
 import { projectsTestTraceability } from "./projects-test-traceability.js";
+import { buildsEnterpriseSubjectRegistry } from "../sqlserver/load-engineering-truth.js";
 
 function compareOccurrences(left, right) {
   return left.modulePath.localeCompare(right.modulePath)
     || (left.startLine ?? 0) - (right.startLine ?? 0)
     || (left.endLine ?? 0) - (right.endLine ?? 0)
     || left.mechanic.localeCompare(right.mechanic);
+}
+
+function buildsEnterpriseContext(enterpriseContext, { repositoryId, workspaceId }) {
+  if (enterpriseContext !== null && (typeof enterpriseContext !== "object" || Array.isArray(enterpriseContext))) {
+    throw new Error("enterpriseContext must be an object when provided.");
+  }
+  const context = enterpriseContext ?? {};
+  if (context.repositoryId != null && repositoryId != null && context.repositoryId !== repositoryId) {
+    throw new Error(`enterpriseContext.repositoryId (${context.repositoryId}) must match report.repository.repositoryId (${repositoryId}).`);
+  }
+  if (context.workspaceId != null && workspaceId != null && context.workspaceId !== workspaceId) {
+    throw new Error(`enterpriseContext.workspaceId (${context.workspaceId}) must match report.repository.workspaceId (${workspaceId}).`);
+  }
+  return Object.freeze({
+    enterpriseId: context.enterpriseId ?? null,
+    portfolioId: context.portfolioId ?? null,
+    domainId: context.domainId ?? null,
+    applicationId: context.applicationId ?? null,
+    capabilityId: context.capabilityId ?? null,
+    repositoryId: context.repositoryId ?? repositoryId ?? null,
+    workspaceId: context.workspaceId ?? workspaceId ?? null,
+    contextAuthorityId: context.contextAuthorityId ?? null,
+  });
 }
 
 /**
@@ -103,7 +127,11 @@ function fileBreakdownKey(mechanic, modulePath) {
  * Still observational only -- no gap remediation records or projection
  * actions are produced yet.
  */
-export async function projectsSelfGovernanceReport({ index, testIndex = null, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, canonicalFeatureIntents = { pairs: [], findings: [], disposition: "CANONICAL_FEATURE_INTENTS_NOT_DISCOVERED" }, workspaceRelativePrefix = "" }) {
+export async function projectsSelfGovernanceReport({ index, testIndex = null, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, canonicalFeatureIntents = { pairs: [], findings: [], disposition: "CANONICAL_FEATURE_INTENTS_NOT_DISCOVERED" }, enterpriseContext = null, workspaceRelativePrefix = "" }) {
+  const resolvedEnterpriseContext = buildsEnterpriseContext(enterpriseContext, {
+    repositoryId,
+    workspaceId: index.workspace?.workspaceId ?? null,
+  });
   const subject = scopesSelfGovernanceSubject({
     index,
     workspaceRelativePrefix,
@@ -291,6 +319,8 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
   const reportView = {
     reportType: "source-facts-self-governance-report.v1",
     generatedAtUtc: new Date().toISOString(),
+    enterpriseContext: resolvedEnterpriseContext,
+    ...buildsEnterpriseSubjectRegistry(resolvedEnterpriseContext),
     repository: Object.freeze({
       repositoryId,
       workspaceId: index.workspace?.workspaceId ?? null,

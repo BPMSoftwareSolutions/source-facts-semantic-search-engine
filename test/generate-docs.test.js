@@ -67,6 +67,18 @@ function buildsMinimalReport() {
   const report = {
     reportType: "source-facts-self-governance-report.v1",
     generatedAtUtc: "2026-01-01T00:00:00Z",
+    enterpriseContext: {
+      enterpriseId: null,
+      portfolioId: null,
+      domainId: null,
+      applicationId: null,
+      capabilityId: null,
+      repositoryId: null,
+      workspaceId: null,
+      contextAuthorityId: null,
+    },
+    enterpriseSubjects: [],
+    enterpriseSubjectRelationships: [],
     index: {
       indexId: FIXTURE_INDEX_ID,
       scanId: FIXTURE_SCAN_ID,

@@ -21,13 +21,17 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM authority.ContractSnapshot WHERE ContractSnapshotId = @ContractSnapshotId)
     BEGIN
         INSERT authority.ContractSnapshot
-            (ContractSnapshotId, ContractId, ContractType, ProjectId, SubjectId, SourcePath, AuthorityDigest)
-        SELECT ContractSnapshotId, ContractId, ContractType, ProjectId, SubjectId, SourcePath, AuthorityDigest
+            (ContractSnapshotId, ContractId, ContractType, ProjectId, SubjectId, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, RepositoryId, WorkspaceId, ContextAuthorityId, SourcePath, AuthorityDigest)
+        SELECT ContractSnapshotId, ContractId, ContractType, ProjectId, SubjectId, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, RepositoryId, WorkspaceId, ContextAuthorityId, SourcePath, AuthorityDigest
         FROM OPENJSON(@PayloadJson, '$.contract') WITH
         (
             ContractSnapshotId varchar(80) '$.contractSnapshotId', ContractId nvarchar(160) '$.contractId',
             ContractType nvarchar(160) '$.contractType', ProjectId nvarchar(160) '$.projectId',
-            SubjectId nvarchar(160) '$.subjectId', SourcePath nvarchar(1024) '$.sourcePath',
+            SubjectId nvarchar(160) '$.subjectId', EnterpriseId nvarchar(160) '$.enterpriseContext.enterpriseId',
+            PortfolioId nvarchar(160) '$.enterpriseContext.portfolioId', DomainId nvarchar(160) '$.enterpriseContext.domainId',
+            ApplicationId nvarchar(160) '$.enterpriseContext.applicationId', CapabilityId nvarchar(160) '$.enterpriseContext.capabilityId',
+            RepositoryId nvarchar(400) '$.enterpriseContext.repositoryId', WorkspaceId nvarchar(400) '$.enterpriseContext.workspaceId',
+            ContextAuthorityId nvarchar(160) '$.enterpriseContext.contextAuthorityId', SourcePath nvarchar(1024) '$.sourcePath',
             AuthorityDigest varchar(80) '$.authorityDigest'
         );
 
@@ -75,12 +79,16 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM observation.ObservationSnapshot WHERE ObservationSnapshotId = @ObservationSnapshotId)
     BEGIN
         INSERT observation.ObservationSnapshot
-            (ObservationSnapshotId, IndexId, ReportType, RepositoryId, GeneratedAtUtc, SourcePath, ObservationDigest)
-        SELECT ObservationSnapshotId, IndexId, ReportType, RepositoryId, GeneratedAtUtc, SourcePath, ObservationDigest
+            (ObservationSnapshotId, IndexId, ReportType, RepositoryId, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, WorkspaceId, ContextAuthorityId, GeneratedAtUtc, SourcePath, ObservationDigest)
+        SELECT ObservationSnapshotId, IndexId, ReportType, RepositoryId, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, WorkspaceId, ContextAuthorityId, GeneratedAtUtc, SourcePath, ObservationDigest
         FROM OPENJSON(@PayloadJson, '$.observation') WITH
         (
             ObservationSnapshotId varchar(80) '$.observationSnapshotId', IndexId varchar(120) '$.indexId',
             ReportType nvarchar(160) '$.reportType', RepositoryId nvarchar(400) '$.repositoryId',
+            EnterpriseId nvarchar(160) '$.enterpriseContext.enterpriseId', PortfolioId nvarchar(160) '$.enterpriseContext.portfolioId',
+            DomainId nvarchar(160) '$.enterpriseContext.domainId', ApplicationId nvarchar(160) '$.enterpriseContext.applicationId',
+            CapabilityId nvarchar(160) '$.enterpriseContext.capabilityId', WorkspaceId nvarchar(400) '$.enterpriseContext.workspaceId',
+            ContextAuthorityId nvarchar(160) '$.enterpriseContext.contextAuthorityId',
             GeneratedAtUtc datetime2(7) '$.generatedAtUtc', SourcePath nvarchar(1024) '$.sourcePath',
             ObservationDigest varchar(80) '$.observationDigest'
         );
@@ -132,6 +140,45 @@ BEGIN
             TestId varchar(80) '$.testId', CallableKey varchar(80) '$.callableKey', Depth int '$.depth',
             ReachabilityPosture nvarchar(120) '$.reachabilityPosture', PathWitnessJson nvarchar(max) '$.pathWitnessJson'
         );
+
+        INSERT enterprise.Subject
+            (SubjectType, SubjectId, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, RepositoryId, WorkspaceId, ContextAuthorityId, AuthorityDigest)
+        SELECT SubjectType, SubjectId, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, RepositoryId, WorkspaceId, ContextAuthorityId, AuthorityDigest
+        FROM OPENJSON(@PayloadJson, '$.enterpriseSubjects') WITH
+        (
+            SubjectType nvarchar(40) '$.subjectType', SubjectId nvarchar(400) '$.subjectId',
+            EnterpriseId nvarchar(160) '$.enterpriseId', PortfolioId nvarchar(160) '$.portfolioId',
+            DomainId nvarchar(160) '$.domainId', ApplicationId nvarchar(160) '$.applicationId',
+            CapabilityId nvarchar(160) '$.capabilityId', RepositoryId nvarchar(400) '$.repositoryId',
+            WorkspaceId nvarchar(400) '$.workspaceId',
+            ContextAuthorityId nvarchar(160) '$.contextAuthorityId', AuthorityDigest varchar(80) '$.authorityDigest'
+        ) source
+        WHERE NOT EXISTS (
+            SELECT 1 FROM enterprise.Subject existing
+            WHERE existing.SubjectType = source.SubjectType AND existing.SubjectId = source.SubjectId
+        );
+
+        INSERT enterprise.SubjectRelationship
+            (FromSubjectType, FromSubjectId, ToSubjectType, ToSubjectId, RelationshipType, EnterpriseId, PortfolioId, DomainId, ApplicationId, CapabilityId, RepositoryId, WorkspaceId, ContextAuthorityId, AuthorityDigest)
+        SELECT source.FromSubjectType, source.FromSubjectId, source.ToSubjectType, source.ToSubjectId, source.RelationshipType, source.EnterpriseId, source.PortfolioId, source.DomainId, source.ApplicationId, source.CapabilityId, source.RepositoryId, source.WorkspaceId, source.ContextAuthorityId, source.AuthorityDigest
+        FROM OPENJSON(@PayloadJson, '$.enterpriseSubjectRelationships') WITH
+        (
+            FromSubjectType nvarchar(40) '$.fromSubjectType', FromSubjectId nvarchar(400) '$.fromSubjectId',
+            ToSubjectType nvarchar(40) '$.toSubjectType', ToSubjectId nvarchar(400) '$.toSubjectId',
+            RelationshipType nvarchar(80) '$.relationshipType', EnterpriseId nvarchar(160) '$.enterpriseId',
+            PortfolioId nvarchar(160) '$.portfolioId', DomainId nvarchar(160) '$.domainId', ApplicationId nvarchar(160) '$.applicationId',
+            CapabilityId nvarchar(160) '$.capabilityId', RepositoryId nvarchar(400) '$.repositoryId', WorkspaceId nvarchar(400) '$.workspaceId',
+            ContextAuthorityId nvarchar(160) '$.contextAuthorityId',
+            AuthorityDigest varchar(80) '$.authorityDigest'
+        ) source
+        JOIN enterprise.Subject fromSubject ON fromSubject.SubjectType = source.FromSubjectType AND fromSubject.SubjectId = source.FromSubjectId
+        JOIN enterprise.Subject toSubject ON toSubject.SubjectType = source.ToSubjectType AND toSubject.SubjectId = source.ToSubjectId
+        WHERE NOT EXISTS (
+            SELECT 1 FROM enterprise.SubjectRelationship existing
+            WHERE existing.FromSubjectType = source.FromSubjectType AND existing.FromSubjectId = source.FromSubjectId
+              AND existing.ToSubjectType = source.ToSubjectType AND existing.ToSubjectId = source.ToSubjectId
+              AND existing.RelationshipType = source.RelationshipType
+        );
     END;
 
     -- Cross-plane rows are admitted only when both independently loaded identities
@@ -175,6 +222,27 @@ BEGIN
            @AlreadyLoaded AS AlreadyLoaded,
            (SELECT COUNT(*) FROM lineage.Feature WHERE ContractSnapshotId = @ContractSnapshotId) AS FeaturesLoaded,
            (SELECT COUNT(*) FROM observation.Callable WHERE ObservationSnapshotId = @ObservationSnapshotId) AS CallablesLoaded,
-           (SELECT COUNT(*) FROM [test].TestCase WHERE ObservationSnapshotId = @ObservationSnapshotId) AS TestsLoaded;
+           (SELECT COUNT(*) FROM [test].TestCase WHERE ObservationSnapshotId = @ObservationSnapshotId) AS TestsLoaded,
+           (SELECT COUNT(*)
+            FROM enterprise.Subject s
+            JOIN OPENJSON(@PayloadJson, '$.enterpriseSubjects') WITH
+            (
+                SubjectType nvarchar(40) '$.subjectType',
+                SubjectId nvarchar(400) '$.subjectId'
+            ) source
+              ON s.SubjectType = source.SubjectType AND s.SubjectId = source.SubjectId) AS EnterpriseSubjectsLoaded,
+           (SELECT COUNT(*)
+            FROM enterprise.SubjectRelationship r
+            JOIN OPENJSON(@PayloadJson, '$.enterpriseSubjectRelationships') WITH
+            (
+                FromSubjectType nvarchar(40) '$.fromSubjectType',
+                FromSubjectId nvarchar(400) '$.fromSubjectId',
+                ToSubjectType nvarchar(40) '$.toSubjectType',
+                ToSubjectId nvarchar(400) '$.toSubjectId',
+                RelationshipType nvarchar(80) '$.relationshipType'
+            ) source
+              ON r.FromSubjectType = source.FromSubjectType AND r.FromSubjectId = source.FromSubjectId
+             AND r.ToSubjectType = source.ToSubjectType AND r.ToSubjectId = source.ToSubjectId
+             AND r.RelationshipType = source.RelationshipType) AS EnterpriseSubjectRelationshipsLoaded;
 END;
 GO

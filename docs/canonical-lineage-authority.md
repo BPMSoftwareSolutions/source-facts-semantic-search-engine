@@ -600,6 +600,7 @@ The SQL deployment is defined by:
 ```text
 scripts/sql/001-create-schemas.sql
 scripts/sql/006-create-engineering-truth-tables.sql
+scripts/sql/009-create-enterprise-subject-registry.sql
 scripts/sql/007-load-engineering-truth.sql
 scripts/sql/008-create-engineering-truth-views.sql
 ```
@@ -640,3 +641,500 @@ ownership and obligation statements because that format does not declare either;
 their lifecycle remains `FEATURE_INTENT_PROPOSED`. This produces nine distinct
 repository scenarios without silently promoting proposed intent or inventing
 governed artifacts.
+
+# ###################################################################################
+
+Exactly. **The enterprise model cannot stop at project → feature → scenario.** That lineage is necessary, but it needs a larger contextual spine so every artifact, feature, test, call graph, and proof can be sliced by the enterprise boundary that matters.
+
+Your current contract already gives you a strong local lineage:
+
+```text
+project
+→ feature
+→ scenario
+→ obligation
+→ responsibility
+→ artifact
+```
+
+and it already carries subject, workspace, dependencies, effects, runtime authorities, design authority, projection authority, and proof. 
+
+Now it needs an enterprise context layer above and alongside that lineage.
+
+# The enterprise hierarchy
+
+I would establish this as the primary organizing spine:
+
+```text
+Enterprise
+  ↓
+Business domain
+  ↓
+Application / product
+  ↓
+Capability
+  ↓
+Feature
+  ↓
+Scenario
+  ↓
+Obligation
+  ↓
+Responsibility
+  ↓
+Artifact
+```
+
+But do **not** assume one rigid tree can represent every useful view.
+
+Some classifications are hierarchical:
+
+```text
+enterprise
+→ domain
+→ application
+→ feature
+```
+
+Others are cross-cutting dimensions:
+
+```text
+data domain
+security zone
+deployment environment
+technology stack
+business owner
+repository
+release
+regulatory boundary
+customer journey
+operating region
+```
+
+So the right SQL and schema model is:
+
+> **One canonical lineage spine plus multiple typed classification dimensions.**
+
+# Recommended enterprise context model
+
+Add a top-level context authority concept, either inside `lineage` or as a sibling to it:
+
+```json
+{
+  "enterpriseContext": {
+    "enterpriseId": "deterministic-solutions",
+    "portfolioId": "engineering-intelligence",
+    "domainId": "software-governance",
+    "applicationId": "source-facts-semantic-search-engine",
+    "capabilityIds": [
+      "source-fact-querying",
+      "cli-execution-graph-analysis",
+      "feature-lineage-governance"
+    ],
+    "repositoryIds": [
+      "source-facts-semantic-search-engine"
+    ],
+    "contextTags": [
+      {
+        "dimension": "technology",
+        "value": "node"
+      },
+      {
+        "dimension": "data-platform",
+        "value": "sql-server"
+      }
+    ]
+  }
+}
+```
+
+The exact field names can change, but the distinctions should stay explicit.
+
+# Do not overload `projectId`
+
+Right now, `canonicalLineage.projectId` is useful, but it should not be forced to mean all of these at once:
+
+```text
+enterprise portfolio
+business domain
+application
+repository
+deployment
+product
+project
+```
+
+Those are different identities.
+
+A clean model would separate:
+
+```text
+EnterpriseId
+PortfolioId
+DomainId
+ApplicationId
+ProductId
+ProjectId
+RepositoryId
+WorkspaceId
+```
+
+Not every contract needs every level populated, but each identity must mean exactly one thing.
+
+# Core dimensions to support
+
+## Organizational
+
+```text
+enterprise
+business unit
+portfolio
+program
+team
+owner
+```
+
+## Business meaning
+
+```text
+business domain
+subdomain
+business capability
+customer journey
+business process
+```
+
+## Software
+
+```text
+application
+product
+service
+component
+repository
+package
+workspace
+```
+
+## Execution
+
+```text
+interface
+CLI command
+API route
+scheduled job
+event consumer
+runtime
+environment
+deployment
+```
+
+## Data
+
+```text
+data domain
+dataset
+entity
+schema
+database
+data product
+```
+
+## Governance
+
+```text
+authority owner
+regulatory scope
+security classification
+risk tier
+lifecycle
+admission status
+```
+
+These should be queryable dimensions, not buried in free text.
+
+# SQL model
+
+I would create a generic enterprise subject model plus typed tables.
+
+```text
+enterprise.Subject
+enterprise.SubjectType
+enterprise.SubjectRelationship
+enterprise.SubjectClassification
+enterprise.ClassificationDimension
+```
+
+Then strongly typed projections:
+
+```text
+enterprise.Application
+enterprise.Domain
+enterprise.Capability
+enterprise.Repository
+enterprise.Environment
+enterprise.Team
+```
+
+Conceptually:
+
+```sql
+enterprise.Subject
+------------------
+SubjectId
+SubjectType
+CanonicalName
+Lifecycle
+AuthorityDigest
+
+enterprise.SubjectRelationship
+------------------------------
+RelationshipId
+FromSubjectId
+RelationshipType
+ToSubjectId
+AuthorityDigest
+
+enterprise.SubjectClassification
+--------------------------------
+SubjectId
+DimensionId
+ClassificationValueId
+AuthorityDigest
+```
+
+This supports both trees and cross-cutting views.
+
+# Relationship examples
+
+```text
+application belongs-to domain
+application contains capability
+repository implements application
+feature realizes capability
+scenario belongs-to feature
+responsibility implements obligation
+artifact embodies responsibility
+test proves scenario
+CLI command exposes capability
+dataset supports application
+team owns capability
+deployment runs application
+```
+
+Do not encode all of those as generic text. Use governed relationship types.
+
+# Enterprise queries this unlocks
+
+```sql
+Which features belong to this application?
+```
+
+```sql
+Which tests prove capabilities in the healthcare domain?
+```
+
+```sql
+Which CLI commands expose governance capabilities?
+```
+
+```sql
+Which repositories implement the same responsibility?
+```
+
+```sql
+Which applications have feature scenarios without tests?
+```
+
+```sql
+Which domains contain executable mechanics without canonical authority?
+```
+
+```sql
+Which shared capabilities are duplicated across applications?
+```
+
+```sql
+Which artifacts are reachable from no admitted interface in this portfolio?
+```
+
+That is where this becomes enterprise engineering intelligence rather than repository reporting.
+
+# Application boundary must be explicit
+
+Every durable observation should carry or resolve to:
+
+```text
+EnterpriseId
+ApplicationId
+RepositoryId
+RevisionId
+ScanId
+```
+
+Then feature and execution facts inherit the context through foreign keys.
+
+For example:
+
+```text
+Application
+→ RepositoryRevision
+→ Scan
+→ CLICommand
+→ Callable
+→ SourceFact
+```
+
+and:
+
+```text
+Application
+→ Feature
+→ Scenario
+→ Responsibility
+→ Test
+```
+
+This lets the same feature ID pattern exist in different applications without accidental collision.
+
+# Identity strategy
+
+Use globally stable IDs, not names alone.
+
+```text
+application:source-facts-semantic-search-engine
+domain:software-governance
+capability:cli-execution-graph-analysis
+feature:source-facts.cli-call-graph
+```
+
+The physical database key may be surrogate, but the canonical identity should remain durable and content-addressable where appropriate.
+
+A useful pattern:
+
+```text
+SubjectKey          internal SQL key
+CanonicalId         stable semantic identity
+AuthorityDigest     exact current authority
+SnapshotId          historical version
+```
+
+# History and upstream flow
+
+When you say “drive the data upstream,” the flow should be:
+
+```text
+repository observations
+    ↓
+application-level model
+    ↓
+domain-level aggregation
+    ↓
+portfolio-level intelligence
+    ↓
+enterprise authority registry
+```
+
+Not direct uncontrolled writes from repositories into enterprise truth.
+
+Use governed promotion:
+
+```text
+observed locally
+→ reconciled to application
+→ classified into domain
+→ admitted upstream
+```
+
+Each promotion should retain:
+
+* source repository;
+* revision;
+* scan;
+* authority digest;
+* application context;
+* classification disposition;
+* promotion receipt.
+
+# Keep authority and analytics separate
+
+The enterprise database should hold:
+
+```text
+canonical authority snapshots
+observed facts
+derived relationships
+analytics projections
+```
+
+but those should not be indistinguishable.
+
+Suggested schemas:
+
+```text
+authority
+enterprise
+lineage
+observation
+execution
+test
+proof
+analytics
+```
+
+Then:
+
+```text
+authority = what is admitted
+observation = what was found
+analytics = what was derived
+```
+
+# What to add to the governed artifact schema
+
+The current schema should gain a compact enterprise-context reference, not a giant embedded enterprise ontology.
+
+For example:
+
+```json
+{
+  "enterpriseContext": {
+    "enterpriseId": "deterministic-solutions",
+    "domainId": "software-governance",
+    "applicationId": "source-facts-semantic-search-engine",
+    "repositoryId": "source-facts-semantic-search-engine",
+    "capabilityIds": [
+      "feature-lineage-governance"
+    ],
+    "contextAuthorityId": "source-facts-enterprise-context.v1"
+  }
+}
+```
+
+The detailed domain/application relationships can live in a separate enterprise authority registry.
+
+That prevents every artifact contract from duplicating the enterprise taxonomy.
+
+# The right architectural shape
+
+```text
+Enterprise Canonical Authority
+        ↓
+Domain and application context
+        ↓
+Governed artifact contract
+        ↓
+Feature / scenario lineage
+        ↓
+Execution graph
+        ↓
+Tests and proof
+        ↓
+Observed application state
+        ↓
+Enterprise analytics
+```
+
+So yes—keep application, domain, capability, repository, environment, and ownership in the model from the start.
+
+The repository-level schema is already strong enough to govern an artifact family. The next expansion is to make each contract a **context-bound slice of an enterprise authority graph**, so the same facts can be analyzed locally, by application, by domain, by portfolio, or across the entire enterprise without changing their meaning.

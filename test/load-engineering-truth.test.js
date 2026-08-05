@@ -21,7 +21,15 @@ function fixture() {
   const callable = { symbolId: "feature.js#function:runFeature", name: "runFeature", modulePath: "src/feature.js", kind: "function", cliClosureClassification: "CLI_FEATURE_ROOT" };
   const report = {
     reportType: "source-facts-self-governance-report.v1", generatedAtUtc: "2026-08-04T00:00:00.000Z",
-    repository: { repositoryId: "repo" }, index: { indexId: "sha256:index" },
+    repository: { repositoryId: "repo", workspaceId: "workspace.v1" }, index: { indexId: "sha256:index" },
+    enterpriseContext: {
+      enterpriseId: "enterprise.v1",
+      portfolioId: "portfolio.v1",
+      domainId: "domain.v1",
+      applicationId: "application.v1",
+      capabilityId: "capability.v1",
+      contextAuthorityId: "authority.v1",
+    },
     interfaceGovernance: {
       commands: [{ commandName: "feature", entryPointId: callable.symbolId, canonicalResponsibilityIds: ["responsibility.v1"] }],
       callableInventory: [callable],
@@ -50,6 +58,32 @@ test("projects separate canonical, observed, binding, and proof planes", () => {
   assert.equal(payload.tests.length, 1);
   assert.equal(payload.scenarioTestBindings.length, 1);
   assert.equal(payload.scenarioProofs[0].proofDisposition, "SCENARIO_TEST_PROOF_DECLARED_EXECUTION_NOT_EVALUATED");
+  assert.deepEqual(payload.contract.enterpriseContext, {
+    enterpriseId: "enterprise.v1",
+    portfolioId: "portfolio.v1",
+    domainId: "domain.v1",
+    applicationId: "application.v1",
+    capabilityId: "capability.v1",
+    repositoryId: "repo",
+    workspaceId: "workspace.v1",
+    contextAuthorityId: "authority.v1",
+  });
+  assert.deepEqual(payload.observation.enterpriseContext, {
+    enterpriseId: "enterprise.v1",
+    portfolioId: "portfolio.v1",
+    domainId: "domain.v1",
+    applicationId: "application.v1",
+    capabilityId: "capability.v1",
+    repositoryId: "repo",
+    workspaceId: "workspace.v1",
+    contextAuthorityId: "authority.v1",
+  });
+  assert.equal(payload.enterpriseSubjects.length, 7);
+  assert.equal(payload.enterpriseSubjectRelationships.length, 6);
+  assert.equal(payload.enterpriseSubjects.find((row) => row.subjectType === "repository")?.repositoryId, "repo");
+  assert.equal(payload.enterpriseSubjects.find((row) => row.subjectType === "repository")?.workspaceId, "workspace.v1");
+  assert.equal(payload.enterpriseSubjectRelationships[0].enterpriseId, "enterprise.v1");
+  assert.equal(payload.enterpriseSubjectRelationships[0].repositoryId, "repo");
   assert.notEqual(payload.contract.contractSnapshotId, payload.observation.observationSnapshotId);
 });
 
@@ -59,6 +93,30 @@ test("rejects a canonical responsibility whose owned artifact is absent", () => 
   assert.throws(() => projectsEngineeringTruthSqlPayload(input), /unknown artifact 'missing\.v1'/u);
 });
 
+test("rejects report enterprise context values that conflict with the report repository", () => {
+  const input = fixture();
+  assert.throws(() => projectsEngineeringTruthSqlPayload({
+    contract: input.contract,
+    report: {
+      ...input.report,
+      enterpriseContext: {
+        ...input.report.enterpriseContext,
+        repositoryId: "repo.other",
+      },
+    },
+  }), /report\.enterpriseContext\.repositoryId \(repo\.other\) must match report\.repository\.repositoryId \(repo\)\./u);
+  assert.throws(() => projectsEngineeringTruthSqlPayload({
+    contract: input.contract,
+    report: {
+      ...input.report,
+      enterpriseContext: {
+        ...input.report.enterpriseContext,
+        workspaceId: "workspace.other",
+      },
+    },
+  }), /report\.enterpriseContext\.workspaceId \(workspace\.other\) must match report\.repository\.workspaceId \(workspace\.v1\)\./u);
+});
+
 test("projects the canonical intent registry without inventing artifact ownership or obligation prose", () => {
   const intents = [
     { documentKind: "canonical-feature-intent.v1", featureId: "feature.one", purpose: "One", lifecycle: "FEATURE_INTENT_PROPOSED", authorityStatus: "AUTHORITY_MISSING", scenarios: [
@@ -66,10 +124,32 @@ test("projects the canonical intent registry without inventing artifact ownershi
       { scenarioId: "scenario.two", obligationId: "obligation.two", responsibilityId: "responsibility.two", purpose: "Second scenario" },
     ] },
   ];
-  const contract = projectsCanonicalIntentRegistryContract({ intents, projectId: "project.one" });
+  const contract = projectsCanonicalIntentRegistryContract({
+    intents,
+    projectId: "project.one",
+    enterpriseContext: {
+      enterpriseId: "enterprise.v1",
+      portfolioId: "portfolio.v1",
+      domainId: "domain.v1",
+      applicationId: "application.v1",
+      capabilityId: "capability.v1",
+      repositoryId: "project.one",
+      contextAuthorityId: "authority.v1",
+    },
+  });
   assert.equal(contract.lineage.features.length, 1);
   assert.equal(contract.lineage.scenarios.length, 2);
   assert.equal(contract.lineage.features[0].lifecycleStatus, "FEATURE_INTENT_PROPOSED");
   assert.equal(contract.lineage.obligations[0].statement, null);
   assert.equal(contract.lineage.responsibilities[0].artifactId, null);
+  assert.deepEqual(contract.enterpriseContext, {
+    enterpriseId: "enterprise.v1",
+    portfolioId: "portfolio.v1",
+    domainId: "domain.v1",
+    applicationId: "application.v1",
+    capabilityId: "capability.v1",
+    repositoryId: "project.one",
+    workspaceId: null,
+    contextAuthorityId: "authority.v1",
+  });
 });

@@ -328,6 +328,15 @@ const baseQueryDrillDowns = Object.freeze({
   "feature-coverage.unclassified-inventory.v1": [
     { queryId: "authority.documents.v1", label: "Inspect authority without lineage", parameterBindings: {} },
   ],
+  "enterprise.context.v1": [
+    { queryId: "enterprise.subject-registry.v1", label: "Inspect enterprise subject registry", parameterBindings: {} },
+  ],
+  "enterprise.subject-registry.v1": [
+    { queryId: "enterprise.subject-relationships.v1", label: "Inspect enterprise subject relationships", parameterBindings: {} },
+  ],
+  "enterprise.subject-relationships.v1": [
+    { queryId: "subject-boundary.items-by-disposition.v1", label: "Inspect subject boundary items", parameterBindings: {} },
+  ],
   "feature-coverage.unlined-mechanics.v1": [
     { queryId: "feature-coverage.unlined-mechanics-by-file.v1", label: "Group by file", parameterBindings: {} },
     { queryId: "feature-coverage.unlined-mechanics-by-responsibility.v1", label: "Group by responsibility", parameterBindings: {} },
@@ -393,7 +402,10 @@ function scalarClaims(queryId, value, reportBasePointer, resultBasePointer, clai
   const claims = [];
   function visit(current, reportPointer, resultPointer) {
     if (current !== null && typeof current === "object") {
-      for (const [key, child] of Object.entries(current)) visit(child, `${reportPointer}/${key}`, `${resultPointer}/${key}`);
+      for (const [key, child] of Object.entries(current)) {
+        if (key === "drillDowns") continue;
+        visit(child, `${reportPointer}/${key}`, `${resultPointer}/${key}`);
+      }
       return;
     }
     claims.push({
@@ -653,6 +665,9 @@ export function projectsReportQueryLineage(view, index, canonicalFeatureQueryPla
     ...scalarClaims("scenario-conformance.drilldown.v1", view.scenarioConformance.features, "/scenarioConformance/features", "/rows", "CLASSIFICATION"),
     ...scalarClaims("unclassified-inventory.v1", view.unclassifiedInventory, "/unclassifiedInventory", "/rows/0"),
     ...scalarClaims("subject-boundary.evidence.v1", view.subjectScope, "/subjectScope", "/rows/0"),
+    ...scalarClaims("enterprise.context.v1", view.enterpriseContext, "/enterpriseContext", "/rows/0", "CLASSIFICATION"),
+    ...scalarClaims("enterprise.subject-registry.v1", view.enterpriseSubjects, "/enterpriseSubjects", "/rows", "CLASSIFICATION"),
+    ...scalarClaims("enterprise.subject-relationships.v1", view.enterpriseSubjectRelationships, "/enterpriseSubjectRelationships", "/rows", "CLASSIFICATION"),
     ...scalarClaims("authoring.reconciliation.v1", authoringReconciliation, "/queryLineage/authoringReconciliation", "/rows/0", "CLASSIFICATION"),
   ];
   // Correct the catalog identity used by unclassified inventory claims.

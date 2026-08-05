@@ -1,5 +1,6 @@
 import { projectsCliEntryPointCallGraph } from "../call-graph.js";
 import { authoringActionDrillDowns, authoringEvidenceQueries, buildsAuthoringEvidenceContext } from "./authoring-evidence-query-catalog.js";
+import { buildsEnterpriseSubjectRegistry } from "../sqlserver/load-engineering-truth.js";
 
 function uniqueSorted(values) {
   return [...new Set(values.filter((value) => value !== null && value !== undefined))].sort();
@@ -398,6 +399,66 @@ function subjectItemRows(context) {
   return context.subjectBoundaryItems ?? [];
 }
 
+function enterpriseContextColumns(context) {
+  const enterpriseContext = context.enterpriseContext ?? null;
+  return {
+    enterpriseId: enterpriseContext?.enterpriseId ?? null,
+    portfolioId: enterpriseContext?.portfolioId ?? null,
+    domainId: enterpriseContext?.domainId ?? null,
+    applicationId: enterpriseContext?.applicationId ?? null,
+    capabilityId: enterpriseContext?.capabilityId ?? null,
+    repositoryId: enterpriseContext?.repositoryId ?? null,
+    workspaceId: enterpriseContext?.workspaceId ?? null,
+    contextAuthorityId: enterpriseContext?.contextAuthorityId ?? null,
+  };
+}
+
+const enterpriseContextSubjectOrder = Object.freeze([
+  { field: "enterpriseId", subjectType: "enterprise" },
+  { field: "portfolioId", subjectType: "portfolio" },
+  { field: "domainId", subjectType: "domain" },
+  { field: "applicationId", subjectType: "application" },
+  { field: "capabilityId", subjectType: "capability" },
+  { field: "repositoryId", subjectType: "repository" },
+  { field: "workspaceId", subjectType: "workspace" },
+]);
+
+function enterpriseContextSubjectRows(context) {
+  const enterpriseContext = context.enterpriseContext ?? null;
+  if (enterpriseContext === null) return [];
+  const contextColumns = enterpriseContextColumns(context);
+  const rows = [];
+  for (const [depth, entry] of enterpriseContextSubjectOrder.entries()) {
+    const subjectId = enterpriseContext[entry.field];
+    if (subjectId === null || subjectId === undefined) continue;
+    rows.push({
+      ...contextColumns,
+      subjectType: entry.subjectType,
+      subjectId,
+      depth,
+    });
+  }
+  return rows;
+}
+
+function enterpriseContextRelationshipRows(context) {
+  const subjects = enterpriseContextSubjectRows(context);
+  if (subjects.length === 0) return [];
+  const contextColumns = enterpriseContextColumns(context);
+  const rows = [];
+  for (let index = 1; index < subjects.length; index += 1) {
+    rows.push({
+      ...contextColumns,
+      fromSubjectType: subjects[index - 1].subjectType,
+      fromSubjectId: subjects[index - 1].subjectId,
+      toSubjectType: subjects[index].subjectType,
+      toSubjectId: subjects[index].subjectId,
+      relationshipType: "CONTEXT_PARENT_OF",
+    });
+  }
+  return rows;
+}
+
 const parameter = (name, type = "string", nullable = true) => ({ name, type, required: false, nullable });
 const next = (queryId, label, parameterBindings = {}) => ({ queryId, label, parameterBindings });
 
@@ -408,6 +469,9 @@ export function buildsReportQueryContext(view, index, canonicalFeatureQueryPlane
   context.invocationRows = buildsInvocationRows(context);
   context.commandExecutionGraphRows = buildsCommandExecutionGraphRows(context);
   context.featureIntentProposalPackets = buildsFeatureIntentProposalPackets(context);
+  const enterpriseRegistry = buildsEnterpriseSubjectRegistry(context.enterpriseContext);
+  context.enterpriseSubjects = enterpriseRegistry.enterpriseSubjects;
+  context.enterpriseSubjectRelationships = enterpriseRegistry.enterpriseSubjectRelationships;
   context.testCliCoverage = (context.interfaceGovernance.commands ?? []).map((command) => {
     const commandTests = (context.testTraceability?.originatingCliFeatures ?? []).filter((row) => row.commandName === command.commandName);
     const testIds = uniqueSorted(commandTests.map((row) => row.testId));
@@ -813,6 +877,33 @@ export const reportDrillDownQueries = Object.freeze([
     rowDrillDowns: (row) => [next("source-facts.occurrence-source-references.v1", "Inspect source", { occurrenceId: row.occurrenceId })],
   },
   {
+    queryId: "enterprise.context.v1", section: "Enterprise Context", depth: 1,
+    queryText: "SELECT * FROM reportEnterpriseContext WHERE (:enterpriseId IS NULL OR enterpriseId = :enterpriseId) AND (:portfolioId IS NULL OR portfolioId = :portfolioId) AND (:domainId IS NULL OR domainId = :domainId) AND (:applicationId IS NULL OR applicationId = :applicationId) AND (:capabilityId IS NULL OR capabilityId = :capabilityId) AND (:repositoryId IS NULL OR repositoryId = :repositoryId) AND (:workspaceId IS NULL OR workspaceId = :workspaceId)",
+    inputCollections: ["reportEnterpriseContext"], expectedResultSchema: "one enterprise context row",
+    parameters: [parameter("enterpriseId"), parameter("portfolioId"), parameter("domainId"), parameter("applicationId"), parameter("capabilityId"), parameter("repositoryId"), parameter("workspaceId"), parameter("contextAuthorityId")],
+    rows: (context) => [context.enterpriseContext],
+    drillDowns: [next("enterprise.subject-registry.v1", "Inspect enterprise subject registry", {})],
+    rowDrillDowns: () => [next("enterprise.subject-registry.v1", "Inspect enterprise subject registry", {})],
+  },
+  {
+    queryId: "enterprise.subject-registry.v1", section: "Enterprise Context", depth: 1,
+    queryText: "SELECT * FROM reportEnterpriseSubjectRegistry WHERE (:enterpriseId IS NULL OR enterpriseId = :enterpriseId) AND (:portfolioId IS NULL OR portfolioId = :portfolioId) AND (:domainId IS NULL OR domainId = :domainId) AND (:applicationId IS NULL OR applicationId = :applicationId) AND (:capabilityId IS NULL OR capabilityId = :capabilityId) AND (:repositoryId IS NULL OR repositoryId = :repositoryId) AND (:workspaceId IS NULL OR workspaceId = :workspaceId)",
+    inputCollections: ["reportEnterpriseContext"], expectedResultSchema: "zero or more typed enterprise subject rows",
+    parameters: [parameter("enterpriseId"), parameter("portfolioId"), parameter("domainId"), parameter("applicationId"), parameter("capabilityId"), parameter("repositoryId"), parameter("workspaceId"), parameter("contextAuthorityId")],
+    rows: (context) => context.enterpriseSubjects,
+    drillDowns: [next("enterprise.subject-relationships.v1", "Inspect enterprise subject relationships", {})],
+    rowDrillDowns: (row) => [next("enterprise.subject-relationships.v1", "Inspect enterprise subject relationships", { subjectType: row.subjectType, subjectId: row.subjectId })],
+  },
+  {
+    queryId: "enterprise.subject-relationships.v1", section: "Enterprise Context", depth: 1,
+    queryText: "SELECT * FROM reportEnterpriseSubjectRelationships WHERE (:enterpriseId IS NULL OR enterpriseId = :enterpriseId) AND (:portfolioId IS NULL OR portfolioId = :portfolioId) AND (:domainId IS NULL OR domainId = :domainId) AND (:applicationId IS NULL OR applicationId = :applicationId) AND (:capabilityId IS NULL OR capabilityId = :capabilityId) AND (:repositoryId IS NULL OR repositoryId = :repositoryId) AND (:workspaceId IS NULL OR workspaceId = :workspaceId) AND (:subjectType IS NULL OR fromSubjectType = :subjectType OR toSubjectType = :subjectType) AND (:subjectId IS NULL OR fromSubjectId = :subjectId OR toSubjectId = :subjectId)",
+    inputCollections: ["reportEnterpriseContext"], expectedResultSchema: "zero or more typed enterprise subject relationship rows",
+    parameters: [parameter("enterpriseId"), parameter("portfolioId"), parameter("domainId"), parameter("applicationId"), parameter("capabilityId"), parameter("repositoryId"), parameter("workspaceId"), parameter("subjectType"), parameter("subjectId"), parameter("contextAuthorityId")],
+    rows: (context) => context.enterpriseSubjectRelationships,
+    drillDowns: [next("subject-boundary.items-by-disposition.v1", "Inspect subject boundary items", {})],
+    terminal: true,
+  },
+  {
     queryId: "subject-boundary.items-by-disposition.v1", section: "Subject Boundary Items", depth: 1,
     queryText: "SELECT * FROM reportSubjectItems WHERE (:disposition IS NULL OR disposition = :disposition) AND (:itemId IS NULL OR itemId = :itemId) ORDER BY evidenceClass, itemId",
     inputCollections: ["reportSubjectItems"], expectedResultSchema: "subject item disposition and reason rows", parameters: [parameter("disposition"), parameter("itemId")], rows: subjectItemRows,
@@ -898,6 +989,8 @@ export function filtersRowsByParameters(rows, parameters = {}) {
     if (key === "artifactId") return row.itemId === value || row.authorityFile === value;
     if (key === "featureId") return row.featureId === value || row.subject?.candidateFeatureId === value || row.featureIds?.includes(value) || row.canonicalFeatureIds?.includes(value);
     if (key === "scenarioId") return row.scenarioId === value || row.subject?.candidateScenarioId === value || row.scenarioIds?.includes(value);
+    if (key === "subjectType") return row.subjectType === value || row.fromSubjectType === value || row.toSubjectType === value;
+    if (key === "subjectId") return row.subjectId === value || row.fromSubjectId === value || row.toSubjectId === value;
     if (key === "authorityFile") return row.authorityFile === value || row.authorityHomeFile === value;
     const candidate = row[key]
       ?? row.subject?.[key]

@@ -28,6 +28,7 @@ export async function projectSourceFactsWorkspace(options) {
   }
 
   const workspaceRoot = request.workspaceRoot;
+  const rootId = request.workspaceId;
   const files = [];
   const symbols = [];
   const relationships = [];
@@ -50,6 +51,7 @@ export async function projectSourceFactsWorkspace(options) {
 
     files.push(Object.freeze({
       fileId: file.fileId,
+      rootId,
       relativePath: file.relativePath,
       contentHash: file.contentHash,
       counts: Object.freeze({
@@ -122,7 +124,7 @@ export async function projectSourceFactsWorkspace(options) {
         operator: relationship.operator ?? null,
       }));
       const relationshipRow = relationships[relationships.length - 1];
-      bodyMechanics.push(...projectsRelationshipMechanics(relationshipRow, file.relativePath));
+      bodyMechanics.push(...projectsRelationshipMechanics(relationshipRow, file.relativePath, rootId));
     }
 
     for (const control of file.controlFlowFacts) {
@@ -138,6 +140,7 @@ export async function projectSourceFactsWorkspace(options) {
       bodyMechanics.push(...projectsControlMechanics({
         control,
         modulePath: file.relativePath,
+        rootId,
         sourceReferenceId: sourceReference.referenceId,
         fromSymbolId: control.enclosingCallableStart === undefined
           ? null
@@ -423,7 +426,7 @@ function visitsJson(value, pointer, visitor) {
   }
 }
 
-function projectsRelationshipMechanics(relationship, modulePath) {
+function projectsRelationshipMechanics(relationship, modulePath, rootId) {
   const mechanics = [];
   if (relationship.relationshipKind === "object-construction") mechanics.push("object-construction");
   if (relationship.relationshipKind === "binary-operation") {
@@ -439,6 +442,7 @@ function projectsRelationshipMechanics(relationship, modulePath) {
   }
   return mechanics.map((mechanic) => createsBodyMechanic({
     mechanic,
+    rootId,
     modulePath,
     sourceReferenceId: relationship.sourceReferenceId,
     fromSymbolId: relationship.fromSymbolId,
@@ -446,7 +450,7 @@ function projectsRelationshipMechanics(relationship, modulePath) {
   }));
 }
 
-function projectsControlMechanics({ control, modulePath, sourceReferenceId, fromSymbolId }) {
+function projectsControlMechanics({ control, rootId, modulePath, sourceReferenceId, fromSymbolId }) {
   const mechanics = [];
   if (control.kind === "condition" || control.kind === "branch") mechanics.push("branch");
   if (control.kind === "loop") mechanics.push("iteration");
@@ -454,6 +458,7 @@ function projectsControlMechanics({ control, modulePath, sourceReferenceId, from
   if (control.kind === "throw") mechanics.push("throw");
   return mechanics.map((mechanic) => createsBodyMechanic({
     mechanic,
+    rootId,
     modulePath,
     sourceReferenceId,
     fromSymbolId,
@@ -461,10 +466,11 @@ function projectsControlMechanics({ control, modulePath, sourceReferenceId, from
   }));
 }
 
-function createsBodyMechanic({ mechanic, modulePath, sourceReferenceId, fromSymbolId, evidenceKind }) {
+function createsBodyMechanic({ mechanic, rootId, modulePath, sourceReferenceId, fromSymbolId, evidenceKind }) {
   return Object.freeze({
     mechanicId: createSha256(`${modulePath}\0${sourceReferenceId}\0${mechanic}`),
     mechanic,
+    rootId,
     modulePath,
     sourceReferenceId,
     fromSymbolId,

@@ -89,11 +89,15 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["fileId", "relativePath", "contentHash", "counts"],
+        "required": ["fileId", "rootId", "relativePath", "contentHash", "counts"],
         "properties": {
           "fileId": {
             "type": "string",
             "pattern": "^[0-9a-f]{64}$"
+          },
+          "rootId": {
+            "type": "string",
+            "minLength": 1
           },
           "relativePath": {
             "type": "string",
@@ -297,9 +301,10 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["mechanicId", "mechanic", "modulePath", "sourceReferenceId", "fromSymbolId", "evidenceKind", "classification", "verificationDisposition"],
+        "required": ["mechanicId", "rootId", "mechanic", "modulePath", "sourceReferenceId", "fromSymbolId", "evidenceKind", "classification", "verificationDisposition"],
         "properties": {
           "mechanicId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "rootId": { "type": "string", "minLength": 1 },
           "mechanic": { "type": "string" },
           "modulePath": { "type": "string" },
           "sourceReferenceId": { "type": "string" },
