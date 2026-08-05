@@ -42,6 +42,31 @@ projectable replacement
 
 The engineering standard already establishes that decisions, DTO construction, control flow, failure behavior, effects, and proof belong above the projection boundary. 
 
+# Exact repository projection companion plane
+
+The universal mechanic envelope governs executable meaning, but executable meaning
+alone is not a complete repository. SQL scripts, tests, feature declarations,
+documentation, schemas, package metadata, lockfiles, and binary assets also belong
+to the deployable workspace boundary.
+
+Source Facts therefore keeps two non-interchangeable representations:
+
+```text
+repository-current-image.v1 = exact current bytes and operational file metadata
+executable-mechanic-authority.v1 = admitted projectable semantic meaning
+```
+
+Repository capture never admits semantics. Each captured artifact is
+`OBSERVED_NOT_ADMITTED` until an explicit feature, responsibility, mechanic, or
+artifact contract binds its meaning. Conversely, semantic authority does not claim
+byte-complete repository reconstruction unless its declared artifacts are available
+through the exact-content plane or a closed deterministic projector.
+
+One current repository image is stored per durable `RootId`; identical content is
+deduplicated by digest rather than copied for every path. Database-only extraction
+must verify all content digests and the complete image digest before projection into
+an empty workspace.
+
 # The universal mechanic-authority envelope
 
 Every data counterpart should use the same outer shape:

@@ -16,6 +16,8 @@ test("engineering-truth load backfills missing application context without overw
 });
 
 test("engineering-truth load persists and conflict-checks canonical contract documents and normalized nodes", () => {
+  assert.match(loadEngineeringTruthSql, /JSON_QUERY\(@PayloadJson, '\$\.contractDocument'\) IS NULL/u);
+  assert.doesNotMatch(loadEngineeringTruthSql, /COUNT\(\*\) FROM OPENJSON\(@PayloadJson, '\$\.contractDocument'\)/u);
   assert.match(loadEngineeringTruthSql, /INSERT authority\.ContractDocument/u);
   assert.match(loadEngineeringTruthSql, /contractDocument\.authorityDigest must match/u);
   assert.match(loadEngineeringTruthSql, /Existing canonical contract document conflicts/u);

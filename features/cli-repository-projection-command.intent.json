@@ -1,0 +1,45 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-repository-projection",
+  "featureFile": "features/cli-repository-projection-command.feature",
+  "featureAnchor": "&feature:source-facts.cli-repository-projection",
+  "purpose": "Persist and reconstruct the complete current governed repository using SQL as the only artifact-content source",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-repository-projection.load-current-image",
+      "scenarioAnchor": "&scenario:source-facts.cli-repository-projection.load-current-image",
+      "responsibilityId": "cli-current-repository-image-loading",
+      "obligationId": "persist-every-governed-repository-artifact-exactly-once-in-current-root-state",
+      "givenId": "governed-repository-working-tree-exists",
+      "whenId": "load-repository-command-invoked",
+      "thenId": "current-repository-image-is-persisted",
+      "andId": "capture-does-not-admit-semantics",
+      "implementationSymbols": [
+        "runLoadRepository",
+        "capturesRepositoryImage",
+        "loadsRepositoryImageIntoSqlServer"
+      ],
+      "purpose": "User can replace one root's current database-backed repository image without creating historical source-file copies"
+    },
+    {
+      "scenarioId": "source-facts.cli-repository-projection.extract-current-image",
+      "scenarioAnchor": "&scenario:source-facts.cli-repository-projection.extract-current-image",
+      "responsibilityId": "cli-current-repository-image-extraction",
+      "obligationId": "reconstruct-complete-repository-from-durable-sql-content",
+      "givenId": "current-repository-image-is-loaded",
+      "whenId": "extract-repository-command-invoked",
+      "thenId": "complete-repository-is-reconstructed",
+      "andId": "projected-image-digest-agrees",
+      "implementationSymbols": [
+        "runExtractRepository",
+        "extractsRepositoryImageFromSqlServer",
+        "projectsRepositoryImageToWorkspace"
+      ],
+      "purpose": "User can reconstruct an exact complete workspace in an empty directory without reading the original repository"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runLoadRepository",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-05T00:00:00Z"
+}

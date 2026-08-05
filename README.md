@@ -247,6 +247,38 @@ node src/cli.js ingest --workspace ./src --workspace-id self --connection-env so
 
 Query `inventory.CurrentSourceFile` for current root-scoped files. `reporting.*` views (`ForbiddenExecutableMechanic`, `FunctionMechanicSummary`, `UnresolvedRelationship`, `UngovernedBody`) give SSMS ready-made starting points over the loaded facts; see [`sql/`](sql/) for the full schema and loader procedures.
 
+### Complete current repository projection
+
+Source-fact rows are an analysis surface, not a file backup. Apply
+`scripts/sql/016-create-repository-image.sql` to add the separate exact-content
+plane. It stores one current repository image per `RootId`, deduplicates identical
+bytes globally by SHA-256 digest, and keeps every captured artifact explicitly
+`OBSERVED_NOT_ADMITTED`.
+
+`load-repository` captures tracked and non-ignored working-tree files, including
+tests, SQL and other scripts, contracts, feature files, documentation, lockfiles,
+and binary assets. Secrets and transient dependency/build directories remain
+excluded. `extract-repository` accepts only an empty output directory and verifies
+the complete image before writing anything:
+
+```powershell
+node src/cli.js load-repository `
+  --workspace . `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+
+node src/cli.js extract-repository `
+  --root-id source-facts-semantic-search-engine `
+  --output C:\lab\temp\source-facts-projected `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+The resulting files are exact current-state projections. Their behavioral meaning
+becomes canonical only through the separate feature, mechanic, and governed-contract
+admission planes.
+
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
 then load an admitted governed contract beside a generated self-governance report:
@@ -283,6 +315,8 @@ npm run project -- --workspace <path> [--workspace-id <id>] [--output <file>] [-
 npm run query -- --index <file> "<sql>" [--pretty]
 node src/cli.js console serve --index <source-fact-index.json> [--workspace <dir>] [--port <n>]
 node src/cli.js load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js load-repository --workspace <dir> --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
+node src/cli.js extract-repository --root-id <id> --output <empty-dir> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js ingest --workspace <dir> [--workspace-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]
 node src/cli.js web query --index <web-surface-index.json> "<sql>" [--pretty]
 node src/cli.js web gallery plan --index <file> --inventory <file> --query <id> --output <dir>

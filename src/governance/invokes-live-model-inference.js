@@ -61,6 +61,6 @@ export async function invokesLiveModelInference(modelRequest, {
     }
     return response;
   } finally {
-    await rm(tempDir, { recursive: true, force: true });
+    await rm(tempDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
   }
 }

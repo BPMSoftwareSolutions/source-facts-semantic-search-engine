@@ -108,7 +108,8 @@ BEGIN
       AND existing.ApplicationId IS NULL
       AND source.ApplicationId IS NOT NULL;
 
-    IF (SELECT COUNT(*) FROM OPENJSON(@PayloadJson, '$.contractDocument')) <> 1
+    IF JSON_QUERY(@PayloadJson, '$.contractDocument') IS NULL
+       OR LEFT(LTRIM(JSON_QUERY(@PayloadJson, '$.contractDocument')), 1) <> N'{'
         THROW 51000, 'contractDocument must contain exactly one canonical contract document.', 1;
 
     IF EXISTS (SELECT 1 FROM authority.ContractDocument WHERE ContractSnapshotId = @ContractSnapshotId)

@@ -34,6 +34,8 @@ import { loadsSourceFactIndexIntoSqlServer } from "./sqlserver/load-sqlserver.js
 import { loadsEngineeringTruthIntoSqlServer, projectsCanonicalIntentRegistryContract, validatesReportEnterpriseContextMatchesRepository } from "./sqlserver/load-engineering-truth.js";
 import { resolvesTrustedConnection, resolvesSqlAuthConnectionFromEnv } from "./sqlserver/resolves-sql-connection.js";
 import { extractsContractAuthorityDocumentFromSqlServer } from "./sqlserver/contract-authority-document.js";
+import { capturesRepositoryImage, projectsRepositoryImageToWorkspace } from "./repository-image.js";
+import { extractsRepositoryImageFromSqlServer, loadsRepositoryImageIntoSqlServer } from "./sqlserver/repository-image.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -130,6 +132,10 @@ if (command === "project") {
   await runLoadEngineeringTruth(args.slice(1));
 } else if (command === "extract-contract") {
   await runExtractContract(args.slice(1));
+} else if (command === "load-repository") {
+  await runLoadRepository(args.slice(1));
+} else if (command === "extract-repository") {
+  await runExtractRepository(args.slice(1));
 } else if (command === "ingest") {
   await runIngest(args.slice(1));
 } else if (command === "help" || command === "--help" || command === "-h" || command === undefined) {
@@ -757,6 +763,40 @@ async function runExtractContract(rawArgs) {
   }
 }
 
+async function runLoadRepository(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  const workspaceRoot = path.resolve(flags.workspace ?? process.cwd());
+  const rootId = flags.rootId ?? flags.workspaceId ?? path.basename(workspaceRoot);
+  const image = await capturesRepositoryImage({ workspaceRoot, rootId });
+  const connection = resolvesSqlServerConnection(flags);
+  const receipt = await loadsRepositoryImageIntoSqlServer({ image, connection });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${receipt.rootId}\n`);
+    process.stdout.write(`Repository image: ${receipt.imageDigest}\n`);
+    process.stdout.write(`Artifacts: ${receipt.artifactCount}\n`);
+    process.stdout.write(`Bytes: ${receipt.totalByteLength}\n`);
+    process.stdout.write(`Discovery: ${image.discoveryMode}\n`);
+  }
+}
+
+async function runExtractRepository(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  if (typeof flags.output !== "string") throw new Error("--output <directory> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const image = await extractsRepositoryImageFromSqlServer({ rootId: flags.rootId, connection });
+  const receipt = await projectsRepositoryImageToWorkspace(image, path.resolve(flags.output));
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${receipt.rootId}\n`);
+    process.stdout.write(`Repository image: ${receipt.imageDigest}\n`);
+    process.stdout.write(`Artifacts: ${receipt.artifactCount}\n`);
+    process.stdout.write(`Bytes: ${receipt.totalByteLength}\n`);
+    process.stdout.write(`Output: ${receipt.outputRoot}\n`);
+  }
+}
+
 async function preparesSelfGovernanceReportArtifacts(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   const pretty = flags.pretty === true;
@@ -1239,6 +1279,7 @@ function parseArgs(rawArgs) {
   const longValueOptions = new Set([
     "--workspace",
     "--workspace-id",
+    "--root-id",
     "--repository-id",
     "--output",
     "--index",
@@ -1398,6 +1439,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se load-engineering-truth [--contract <governed-contract.json>] [--intent-dir <directory>] --report <self-governance-report.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se extract-contract (--contract-id <id> | --contract-snapshot-id <digest>) --output <contract.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--pretty] [--summary]\n`);
+  stream.write(`  source-facts-se load-repository [--workspace <dir>] [--root-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se extract-repository --root-id <id> --output <empty-dir> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
   stream.write(`Examples:\n`);
@@ -1419,6 +1462,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se console serve --index ./source-fact-index.json --workspace ./src\n`);
   stream.write(`  source-facts-se load-sqlserver --index ./source-fact-index.json --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se load-engineering-truth --contract ./contracts/serves-query-console.governed.contract.json --intent-dir ./features --report ./artifacts/governance/source-facts-self-governance-report.json --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se load-repository --workspace . --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se extract-repository --root-id source-facts-semantic-search-engine --output ../source-facts-projected --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }
 

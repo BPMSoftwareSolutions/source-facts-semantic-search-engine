@@ -1,6 +1,6 @@
 # Universal Mechanic Authority Envelope: Deterministic Implementation Plan
 
-Status: research complete; implementation not started
+Status: implementation in progress; exact current-repository SQL projection implemented, universal mechanic profiles remain staged
 
 Plan date: 2026-08-05
 
@@ -69,6 +69,48 @@ SELECT
 
 Persistence, body projection, and proof consume its results later. They do not
 complicate that query.
+
+### Repository projection boundary implemented on 2026-08-05
+
+The authority circuit now has an exact-content companion plane. Source facts alone
+remain insufficient to reconstruct source because they intentionally store
+observations, references, hashes, and normalized facts rather than every original
+byte. The repository-image implementation closes that separate concern:
+
+~~~text
+governed working tree
+  -> repository-current-image.v1
+  -> inventory.RepositoryImage (one current row per RootId)
+  -> inventory.RepositoryArtifact (path and operational metadata)
+  -> inventory.RepositoryContent (sha256-deduplicated exact bytes)
+  -> extract-repository
+  -> empty workspace
+~~~
+
+The capture includes source, tests, scripts, SQL, contracts, features,
+documentation, runtime manifests, lockfiles, and binary assets inside the governed
+working-tree boundary. It excludes secrets, dependency trees, and transient build
+output. Every row is marked `OBSERVED_NOT_ADMITTED`; byte preservation does not
+promote implementation into semantic authority.
+
+This plane deliberately keeps no historical repository-image copies. Loading a
+root replaces its current path mapping atomically. Content is stored once per
+digest and unreferenced content is removed. Contract admission and proof history
+remain separate concerns.
+
+Implemented public commands:
+
+~~~text
+load-repository    -> capture and atomically persist the current exact image
+extract-repository -> reconstruct and digest-verify that image in an empty directory
+~~~
+
+Migration: `scripts/sql/016-create-repository-image.sql`.
+
+This closes exact workspace materialization, not runtime provisioning or universal
+mechanic projection. A fully runnable remote deployment still requires pinned
+toolchain/dependency provisioning followed by the declared workspace gates and
+tests.
 
 ## 2. Scope
 
