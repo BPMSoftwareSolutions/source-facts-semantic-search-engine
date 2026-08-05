@@ -126,11 +126,14 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(commandNames.includes("analyze-tests"));
   assert.ok(commandNames.includes("test-closure"));
   assert.ok(commandNames.includes("test-meaning"));
+  assert.ok(commandNames.includes("analyze-execution"));
+  assert.ok(commandNames.includes("execution-knowledge"));
   assert.ok(commandNames.includes("prove-test-vector"));
+  assert.ok(commandNames.includes("admit-mechanic-authority"));
   assert.ok(commandNames.includes("project-governed-console-contract"));
-  assert.equal(projection.summary.observedCliCommandHandlers, 28);
-  assert.equal(projection.summary.observedCliCommandTokens, 29);
-  assert.equal(projection.summary.distinctCliExecutionSlices, 28);
+  assert.equal(projection.summary.observedCliCommandHandlers, 31);
+  assert.equal(projection.summary.observedCliCommandTokens, 32);
+  assert.equal(projection.summary.distinctCliExecutionSlices, 31);
   assert.equal(projection.summary.aliasedCliCommandTokens, 2);
   assert.equal(projection.commands.find((row) => row.commandName === "project-console-contract").executionSliceDisposition, "MULTIPLE_INTERFACE_ALIASES_ONE_EXECUTION_SLICE");
   assert.equal(projection.summary.admittedCliCommands, 0);
@@ -198,7 +201,7 @@ test("CLI-first closure inventories every command, classifies every callable, an
   assert.ok(governGraph.rows[0].summary.actionableInternalClosureDebt < governGraph.rows[0].summary.unresolvedInvocationEdgeCount);
 
   const packets = rerunsRegisteredReportQuery(report, "cli.feature-intent-proposal-packets.v1", {});
-  assert.equal(packets.rowCount, 28);
+  assert.equal(packets.rowCount, 31);
   assert.deepEqual(packets.rows.find((row) => row.handler === "runProjectConsoleContract").commandAliases, ["project-console-contract", "project-governed-console-contract"]);
   const callGraphPacket = packets.rows.find((row) => row.commandId === "call-graph");
   assert.equal(callGraphPacket.proposalDisposition, "FEATURE_INTENT_EXECUTION_GRAPH_BOUND");

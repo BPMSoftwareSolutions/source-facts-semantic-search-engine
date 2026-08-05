@@ -76,13 +76,14 @@ export async function projectsInterfaceGovernance({
   workspaceRelativePrefix = "",
   cliAuthorityFiles = [],
 }) {
-  const callGraph = projectsCliEntryPointCallGraph(index);
+  const rootModulePath = resolvesCliRootModulePath(index);
+  const callGraph = projectsCliEntryPointCallGraph(index, { rootModulePath });
   const workspaceRoot = index.manifest?.scanRequest?.workspaceRoot ?? null;
   let source = null;
   let dispatchEvidenceDisposition = "CLI_DISPATCH_SOURCE_UNAVAILABLE";
   if (typeof workspaceRoot === "string" && workspaceRoot.length > 0) {
     try {
-      source = await fs.readFile(path.join(workspaceRoot, "cli.js"), "utf8");
+      source = await fs.readFile(path.join(workspaceRoot, ...rootModulePath.split("/")), "utf8");
       dispatchEvidenceDisposition = "CLI_DISPATCH_SOURCE_PARSED";
     } catch {
       // The source-fact entrypoint inventory remains usable without raw source text.
@@ -304,4 +305,12 @@ export async function projectsInterfaceGovernance({
     originatingCommands: Object.freeze(originatingCommands),
     removalImpact: Object.freeze(removalImpact),
   });
+}
+
+function resolvesCliRootModulePath(index) {
+  const paths = new Set((index.files ?? []).map((file) => String(file.relativePath).replace(/\\/gu, "/")));
+  if (paths.has("cli.js")) return "cli.js";
+  if (paths.has("src/cli.js")) return "src/cli.js";
+  const candidates = [...paths].filter((candidate) => candidate.endsWith("/cli.js")).sort();
+  return candidates.length === 1 ? candidates[0] : "cli.js";
 }

@@ -85,64 +85,70 @@ async function runsAtomicIndexLoad(runner, index) {
 
 function buildsAtomicLoadScript(index) {
   const header = { indexId: index.indexId, indexType: index.indexType, manifest: index.manifest, workspace: index.workspace, coverage: index.coverage };
-  const countVariableByKey = new Map();
-  const declarations = [`DECLARE @Payload NVARCHAR(MAX) = ${sqlStringLiteral(JSON.stringify(header))};`];
-  const loadBlocks = [];
+  const indexIdLiteral = sqlStringLiteral(index.indexId);
+  const loadBatches = [];
   for (const [ordinal, step] of arraySteps.entries()) {
     const variableStem = `${step.jsonKey[0].toUpperCase()}${step.jsonKey.slice(1)}`;
     const jsonVariable = `@${variableStem}Json`;
-    const countVariable = `@${variableStem}Count`;
-    countVariableByKey.set(step.jsonKey, countVariable);
-    declarations.push(`DECLARE ${jsonVariable} NVARCHAR(MAX) = ${sqlStringLiteral(JSON.stringify(index[step.jsonKey] ?? []))};`);
-    loadBlocks.push(`
-    SET @StepStartedAt = SYSUTCDATETIME();
+    const batches = chunksJsonArray(index[step.jsonKey] ?? []);
+    for (const batch of batches) loadBatches.push(`SET NOCOUNT ON;
+SET XACT_ABORT ON;
+DECLARE @IndexId varchar(120) = ${indexIdLiteral};
+DECLARE ${jsonVariable} nvarchar(max);
+${buildsNvarcharAssignment(jsonVariable, batch)}
+DECLARE @StepStartedAt datetime2(7) = SYSUTCDATETIME();
+DECLARE @PriorRows int = (SELECT [Rows] FROM #Counts WHERE JsonKey = N'${step.jsonKey}');
     DECLARE @${variableStem}Result TABLE (RecordCount int);
-    INSERT INTO @${variableStem}Result
-    EXEC ${step.procedure} @IndexId = @IndexId, ${step.jsonParam} = ${jsonVariable};
-    DECLARE ${countVariable} int = COALESCE((SELECT TOP (1) RecordCount FROM @${variableStem}Result), 0);
-    INSERT INTO @Steps (StepOrdinal, [Table], [Rows], ElapsedMs)
-    VALUES (${ordinal + 2}, N'${step.table}', ${countVariable}, DATEDIFF(millisecond, @StepStartedAt, SYSUTCDATETIME()));`);
+INSERT INTO @${variableStem}Result
+EXEC ${step.procedure} @IndexId = @IndexId, ${step.jsonParam} = ${jsonVariable};
+DECLARE @Rows int = COALESCE((SELECT SUM(RecordCount) FROM @${variableStem}Result), 0);
+UPDATE #Counts SET [Rows] = @Rows WHERE JsonKey = N'${step.jsonKey}';
+INSERT INTO #StepBatches (StepOrdinal, [Table], [Rows], ElapsedMs)
+VALUES (${ordinal + 2}, N'${step.table}', @Rows - @PriorRows, DATEDIFF(millisecond, @StepStartedAt, SYSUTCDATETIME()));
+GO`);
   }
-  const count = (key) => countVariableByKey.get(key);
   return `SET NOCOUNT ON;
 SET XACT_ABORT ON;
-${declarations.join("\n")}
-DECLARE @IndexId varchar(120) = ${sqlStringLiteral(index.indexId)};
-DECLARE @LoadStartedAt datetime2(7) = SYSUTCDATETIME();
-DECLARE @StepStartedAt datetime2(7);
-DECLARE @Steps TABLE (StepOrdinal int NOT NULL, [Table] nvarchar(200) NOT NULL, [Rows] int NOT NULL, ElapsedMs int NOT NULL);
-
+BEGIN TRANSACTION;
+CREATE TABLE #LoadContext (LoadStartedAt datetime2(7) NOT NULL);
+CREATE TABLE #StepBatches (StepOrdinal int NOT NULL, [Table] nvarchar(200) NOT NULL, [Rows] int NOT NULL, ElapsedMs int NOT NULL);
+CREATE TABLE #Counts (JsonKey nvarchar(80) NOT NULL PRIMARY KEY, [Rows] int NOT NULL);
+INSERT INTO #LoadContext VALUES (SYSUTCDATETIME());
+INSERT INTO #Counts (JsonKey,[Rows]) VALUES ${arraySteps.map((step) => `(N'${step.jsonKey}',0)`).join(",")};
+DECLARE @Payload nvarchar(max) = ${sqlNvarcharMaxExpression(JSON.stringify(header))};
+DECLARE @StepStartedAt datetime2(7) = SYSUTCDATETIME();
+DECLARE @ScanResult TABLE (IndexId varchar(120), RootId nvarchar(400), ScanId varchar(200), WorkspaceId nvarchar(400), FilesObserved int);
+INSERT INTO @ScanResult EXEC ingestion.LoadScan @Payload = @Payload;
+INSERT INTO #StepBatches (StepOrdinal,[Table],[Rows],ElapsedMs)
+SELECT 1,N'inventory.Scan',FilesObserved,DATEDIFF(millisecond,@StepStartedAt,SYSUTCDATETIME()) FROM @ScanResult;
+GO
+${loadBatches.join("\n")}
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
 BEGIN TRY
-    BEGIN TRANSACTION;
-    SET @StepStartedAt = SYSUTCDATETIME();
-    DECLARE @ScanResult TABLE (IndexId varchar(120), RootId nvarchar(400), ScanId varchar(200), WorkspaceId nvarchar(400), FilesObserved int);
-    INSERT INTO @ScanResult
-    EXEC ingestion.LoadScan @Payload = @Payload;
-    INSERT INTO @Steps (StepOrdinal, [Table], [Rows], ElapsedMs)
-    SELECT 1, N'inventory.Scan', FilesObserved, DATEDIFF(millisecond, @StepStartedAt, SYSUTCDATETIME()) FROM @ScanResult;
-${loadBlocks.join("\n")}
-
-    DECLARE @TotalElapsedMs int = DATEDIFF(millisecond, @LoadStartedAt, SYSUTCDATETIME());
-    DECLARE @StepsJson nvarchar(max) = (SELECT [Table] AS [table], [Rows] AS [rows], ElapsedMs AS elapsedMs FROM @Steps ORDER BY StepOrdinal FOR JSON PATH);
+    DECLARE @IndexId varchar(120) = ${indexIdLiteral};
+    DECLARE @TotalElapsedMs int = DATEDIFF(millisecond,(SELECT LoadStartedAt FROM #LoadContext),SYSUTCDATETIME());
+    DECLARE @StepsJson nvarchar(max) = (SELECT [Table] AS [table],SUM([Rows]) AS [rows],SUM(ElapsedMs) AS elapsedMs FROM #StepBatches GROUP BY StepOrdinal,[Table] ORDER BY StepOrdinal FOR JSON PATH);
+    ${arraySteps.map((step) => `DECLARE @${step.jsonKey}Count int = (SELECT [Rows] FROM #Counts WHERE JsonKey=N'${step.jsonKey}');`).join("\n    ")}
     DECLARE @ReceiptResult TABLE (ReceiptId uniqueidentifier, LoadedAtUtc datetime2(7));
     INSERT INTO @ReceiptResult
     EXEC ingestion.RecordLoadReceipt
         @IndexId = @IndexId, @Disposition = 'LOAD_ADMITTED', @AlreadyLoaded = 0,
-        @FilesLoaded = ${count("files")}, @SymbolsLoaded = ${count("symbols")}, @RelationshipsLoaded = ${count("relationships")},
-        @DataflowsLoaded = ${count("dataflows")}, @SourceReferencesLoaded = ${count("sourceReferences")},
-        @DocumentsLoaded = ${count("documents")}, @GovernanceRulesLoaded = ${count("governanceRules")},
-        @BodyMechanicsLoaded = ${count("bodyMechanics")}, @StepsJson = @StepsJson, @TotalElapsedMs = @TotalElapsedMs;
+        @FilesLoaded = @filesCount, @SymbolsLoaded = @symbolsCount, @RelationshipsLoaded = @relationshipsCount,
+        @DataflowsLoaded = @dataflowsCount, @SourceReferencesLoaded = @sourceReferencesCount,
+        @DocumentsLoaded = @documentsCount, @GovernanceRulesLoaded = @governanceRulesCount,
+        @BodyMechanicsLoaded = @bodyMechanicsCount, @StepsJson = @StepsJson, @TotalElapsedMs = @TotalElapsedMs;
     COMMIT TRANSACTION;
 
     SELECT (SELECT
-        ${count("files")} AS files,
-        ${count("symbols")} AS symbols,
-        ${count("relationships")} AS relationships,
-        ${count("dataflows")} AS dataflows,
-        ${count("sourceReferences")} AS sourceReferences,
-        ${count("documents")} AS documents,
-        ${count("governanceRules")} AS governanceRules,
-        ${count("bodyMechanics")} AS bodyMechanics,
+        @filesCount AS files,
+        @symbolsCount AS symbols,
+        @relationshipsCount AS relationships,
+        @dataflowsCount AS dataflows,
+        @sourceReferencesCount AS sourceReferences,
+        @documentsCount AS documents,
+        @governanceRulesCount AS governanceRules,
+        @bodyMechanicsCount AS bodyMechanics,
         JSON_QUERY(@StepsJson) AS steps,
         @TotalElapsedMs AS totalElapsedMs
     FOR JSON PATH, WITHOUT_ARRAY_WRAPPER) AS StepJson;
@@ -230,4 +236,57 @@ function parsesJsonRow(stdout) {
 
 function sqlStringLiteral(value) {
   return `N'${String(value).replace(/'/g, "''")}'`;
+}
+
+// sqlcmd becomes prohibitively slow when a generated batch contains a single
+// line tens of megabytes long. Keep every token bounded while preserving one
+// nvarchar(max) value and the loader's one-transaction replacement boundary.
+export function sqlNvarcharMaxExpression(value, chunkSize = 3900) {
+  const text = String(value);
+  const chunks = [];
+  for (let offset = 0; offset < text.length;) {
+    let end = Math.min(offset + chunkSize, text.length);
+    if (end < text.length && /[\uD800-\uDBFF]/u.test(text[end - 1])) end -= 1;
+    chunks.push(`N'${text.slice(offset, end).replace(/'/g, "''")}'`);
+    offset = end;
+  }
+  if (chunks.length === 0) return "CAST(N'' AS nvarchar(max))";
+  chunks[0] = `CAST(${chunks[0]} AS nvarchar(max))`;
+  return chunks.join(" +\n    ");
+}
+
+function buildsNvarcharAssignment(variable, value, chunkSize = 3900) {
+  const text = String(value);
+  if (text.length === 0) return `    SET ${variable} = CAST(N'' AS nvarchar(max));`;
+  const statements = [];
+  for (let offset = 0; offset < text.length;) {
+    let end = Math.min(offset + chunkSize, text.length);
+    if (end < text.length && /[\uD800-\uDBFF]/u.test(text[end - 1])) end -= 1;
+    const literal = `N'${text.slice(offset, end).replace(/'/g, "''")}'`;
+    statements.push(statements.length === 0
+      ? `    SET ${variable} = CAST(${literal} AS nvarchar(max));`
+      : `    SET ${variable} += ${literal};`);
+    offset = end;
+  }
+  return statements.join("\n");
+}
+
+function chunksJsonArray(rows, maxCharacters = 250_000) {
+  if (!Array.isArray(rows) || rows.length === 0) return ["[]"];
+  const batches = [];
+  let members = [];
+  let length = 2;
+  for (const row of rows) {
+    const member = JSON.stringify(row);
+    const additional = member.length + (members.length === 0 ? 0 : 1);
+    if (members.length > 0 && length + additional > maxCharacters) {
+      batches.push(`[${members.join(",")}]`);
+      members = [];
+      length = 2;
+    }
+    members.push(member);
+    length += member.length + (members.length === 1 ? 0 : 1);
+  }
+  batches.push(`[${members.join(",")}]`);
+  return batches;
 }

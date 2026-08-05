@@ -177,6 +177,8 @@ BEGIN
             DELETE FROM testbinding.TestVectorArtifact WHERE RootId = @RootId;
         IF OBJECT_ID('testbinding.TestCaseCandidate', 'U') IS NOT NULL
             DELETE FROM testbinding.TestCaseCandidate WHERE RootId = @RootId;
+        IF OBJECT_ID('testobservation.TestMeaningClassification', 'U') IS NOT NULL
+            DELETE FROM testobservation.TestMeaningClassification WHERE RootId = @RootId;
         IF OBJECT_ID('testobservation.Assertion', 'U') IS NOT NULL DELETE FROM testobservation.Assertion WHERE RootId = @RootId;
         IF OBJECT_ID('testobservation.FixtureUsage', 'U') IS NOT NULL DELETE FROM testobservation.FixtureUsage WHERE RootId = @RootId;
         IF OBJECT_ID('testobservation.MockUsage', 'U') IS NOT NULL DELETE FROM testobservation.MockUsage WHERE RootId = @RootId;

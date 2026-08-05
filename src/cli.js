@@ -44,6 +44,8 @@ import { projectsRepositoryTestKnowledge } from "./repository-test-knowledge.js"
 import { loadsRepositoryTestKnowledgeIntoSqlServer, queriesCurrentRepositoryTestClosure, queriesCurrentTestMeaningCoverage } from "./sqlserver/repository-test-knowledge.js";
 import { executesCanonicalTestVector } from "./canonical-test-vector.js";
 import { extractsCanonicalTestVectorFromSqlServer, recordsCanonicalTestExecutionInSqlServer } from "./sqlserver/canonical-test-vector.js";
+import { projectsRepositoryExecutionKnowledge } from "./repository-execution-knowledge.js";
+import { recordsRepositoryExecutionKnowledgeInSqlServer, queriesCurrentOperationalExecutionSummary, admitsMechanicAuthorityInSqlServer } from "./sqlserver/repository-execution-knowledge.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -156,6 +158,12 @@ if (command === "project") {
   await runTestClosure(args.slice(1));
 } else if (command === "test-meaning") {
   await runTestMeaning(args.slice(1));
+} else if (command === "analyze-execution") {
+  await runAnalyzeExecution(args.slice(1));
+} else if (command === "execution-knowledge") {
+  await runExecutionKnowledge(args.slice(1));
+} else if (command === "admit-mechanic-authority") {
+  await runAdmitMechanicAuthority(args.slice(1));
 } else if (command === "prove-test-vector") {
   await runProveTestVector(args.slice(1));
 } else if (command === "ingest") {
@@ -953,6 +961,82 @@ async function runTestMeaning(rawArgs) {
   }
 }
 
+async function runAnalyzeExecution(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const applicationId = flags.applicationId ?? flags.rootId;
+  const connection = resolvesSqlServerConnection(flags);
+  const image = await extractsRepositoryImageFromSqlServer({ rootId: flags.rootId, connection });
+  const analysis = await projectsRepositoryExecutionKnowledge(image, { applicationId });
+  const sourceReceipt = await loadsSourceFactIndexIntoSqlServer({ index: analysis.sourceFactIndex, connection });
+  const truthReceipt = await loadsEngineeringTruthIntoSqlServer({
+    contract: analysis.contract,
+    report: analysis.report,
+    contractSourcePath: `sql://repository/${encodeURIComponent(flags.rootId)}/features/*.intent.json`,
+    reportSourcePath: `sql://repository/${encodeURIComponent(flags.rootId)}/execution-observation`,
+    connection,
+  });
+  const receipt = await recordsRepositoryExecutionKnowledgeInSqlServer({ analysis, observationSnapshotId: truthReceipt.observationSnapshotId, contractSnapshotId: truthReceipt.contractSnapshotId, connection });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${analysis.rootId}\n`);
+    process.stdout.write(`Repository image: ${analysis.repositoryImageDigest}\n`);
+    process.stdout.write(`Execution analysis: ${analysis.analysisDigest}\n`);
+    process.stdout.write(`Source-fact index: ${analysis.sourceFactIndexId} (${sourceReceipt.disposition})\n`);
+    process.stdout.write(`Source files: ${analysis.summary.sourceFiles}\n`);
+    process.stdout.write(`Callables: ${analysis.summary.callables}\n`);
+    process.stdout.write(`Commands: ${analysis.summary.commands}\n`);
+    process.stdout.write(`Reachability rows: ${analysis.summary.reachabilityRows}\n`);
+    process.stdout.write(`Mechanics: ${analysis.summary.mechanics}\n`);
+    process.stdout.write(`Test mechanics: ${analysis.summary.testMechanics}\n`);
+    process.stdout.write("Analysis source: SQL_REPOSITORY_IMAGE\n");
+    process.stdout.write("Authority admission: NONE_FROM_OBSERVATION\n");
+    process.stdout.write("Ephemeral workspace: REMOVED\n");
+  }
+}
+
+async function runExecutionKnowledge(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const connection = resolvesSqlServerConnection(flags);
+  const summary = await queriesCurrentOperationalExecutionSummary({ rootId: flags.rootId, connection });
+  process.stdout.write(`${summary.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${summary.rootId}\n`);
+    process.stdout.write(`Execution analysis: ${summary.executionAnalysisDisposition ?? "MISSING"}\n`);
+    process.stdout.write(`Source files: ${summary.sourceFileCount ?? 0}\n`);
+    process.stdout.write(`Callables: ${summary.callableCount ?? 0}\n`);
+    process.stdout.write(`Commands: ${summary.commandCount ?? 0}\n`);
+    process.stdout.write(`Reachability rows: ${summary.reachabilityRowCount ?? 0}\n`);
+    process.stdout.write(`Mechanics: ${summary.mechanicCount ?? 0}\n`);
+    process.stdout.write(`Test mechanics: ${summary.testMechanicCount ?? 0}\n`);
+    process.stdout.write(`Interface-reachable mechanics: ${summary.interfaceReachableMechanicCount ?? 0}\n`);
+    process.stdout.write(`Responsibility-linked mechanics (observed): ${summary.responsibilityLinkedMechanicCount ?? 0}\n`);
+    process.stdout.write(`Responsibility-owned mechanics: ${summary.responsibilityOwnedMechanicCount ?? 0}\n`);
+    process.stdout.write(`Test-reached mechanics: ${summary.testReachedMechanicCount ?? 0}\n`);
+    process.stdout.write(`Authority-admitted mechanics: ${summary.authorityAdmittedMechanicCount ?? 0}\n`);
+    process.stdout.write(`Reachable unowned callables: ${summary.reachableUnownedCallableCount ?? 0}\n`);
+    process.stdout.write(`Unreachable callables: ${summary.unreachableCallableCount ?? 0}\n`);
+    process.stdout.write(`Authority-completion backlog: ${summary.authorityCompletionBacklogCount ?? 0}\n`);
+  }
+}
+
+async function runAdmitMechanicAuthority(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  if (typeof flags.mechanicOccurrenceId !== "string") throw new Error("--mechanic-occurrence-id <id> is required.");
+  if (typeof flags.authorityFile !== "string") throw new Error("--authority-file <path> is required.");
+  const authorityData = JSON.parse(await fs.readFile(path.resolve(flags.authorityFile), "utf8"));
+  const connection = resolvesSqlServerConnection(flags);
+  const receipt = await admitsMechanicAuthorityInSqlServer({ rootId: flags.rootId, mechanicOccurrenceId: flags.mechanicOccurrenceId, authorityData, connection });
+  process.stdout.write(`${receipt.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Mechanic occurrence: ${receipt.mechanicOccurrenceId}\n`);
+    process.stdout.write(`Execution analysis: ${receipt.analysisDigest}\n`);
+    process.stdout.write(`Authority digest: ${receipt.authorityDigest}\n`);
+  }
+}
+
 async function runProveTestVector(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
@@ -1462,6 +1546,7 @@ function parseArgs(rawArgs) {
     "--workspace-id",
     "--root-id",
     "--test-vector-id",
+    "--mechanic-occurrence-id",
     "--application-id",
     "--repository-id",
     "--output",
@@ -1630,6 +1715,9 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se analyze-tests --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se test-closure --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se test-meaning --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se analyze-execution --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se execution-knowledge --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se admit-mechanic-authority --root-id <id> --mechanic-occurrence-id <id> --authority-file <file> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id <id> --test-vector-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);
@@ -1660,6 +1748,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se analyze-tests --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se test-closure --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se test-meaning --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se analyze-execution --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se execution-knowledge --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id source-facts-semantic-search-engine --test-vector-id classify-mechanic-authority-family.v1 --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
 }

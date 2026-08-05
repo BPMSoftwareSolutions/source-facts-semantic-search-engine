@@ -16,6 +16,7 @@ test("repository image schema keeps one current root image and deduplicates exac
   assert.match(sql, /DELETE FROM observation\.RepositorySemanticAnalysis WHERE RootId = @RootId/u);
   assert.match(sql, /DELETE FROM projection\.RepositoryLineageSeal WHERE RootId = @RootId/u);
   assert.match(sql, /DELETE FROM testexecution\.RepositoryTestClosureSeal WHERE RootId = @RootId/u);
+  assert.match(sql, /DELETE FROM testobservation\.TestMeaningClassification WHERE RootId = @RootId/u);
   assert.match(sql, /DELETE FROM testobservation\.RepositoryTestAnalysis WHERE RootId = @RootId/u);
   assert.match(sql, /REPOSITORY_CURRENT_IMAGE_ADMITTED/u);
 });

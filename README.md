@@ -397,6 +397,31 @@ isolates asserted or operational behavior with missing canonical intent. A
 recommendation is always `DETERMINISTIC_RECOMMENDATION_NOT_ADMITTED`; only an
 exact-analysis `TestMeaningReview` row can establish reviewed meaning authority.
 
+Apply `scripts/sql/022-create-operational-execution-knowledge.sql` to connect the
+current repository image to a complete Source Facts scan, observed call graph,
+execution mechanics, candidate authority families, canonical ownership, and test
+reachability. The analysis projects the SQL image into a disposable workspace;
+it never reads the original source workspace and retains no report sidecar:
+
+```powershell
+node src/cli.js analyze-execution `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+
+node src/cli.js execution-knowledge `
+  --root-id source-facts-semantic-search-engine `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+`projection.CurrentOperationalExecutionKnowledge` is the joined navigation
+surface. Supporting views expose responsibility readiness, scenario execution
+coverage, reachable unowned callables, unreachable bodies, and a leverage-ranked
+authority-completion backlog. Image-digest mismatch makes the entire execution
+analysis stale immediately. Observed call paths, applicability recommendations,
+and authority candidates remain explicitly unadmitted.
+
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
 then load an admitted governed contract beside a generated self-governance report:

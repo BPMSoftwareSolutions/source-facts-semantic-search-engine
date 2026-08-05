@@ -4,13 +4,22 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { projectSourceFactsWorkspace } from "../src/project.js";
-import { loadsSourceFactIndexIntoSqlServer } from "../src/sqlserver/load-sqlserver.js";
+import { loadsSourceFactIndexIntoSqlServer, sqlNvarcharMaxExpression } from "../src/sqlserver/load-sqlserver.js";
 import { resolvesSqlAuthConnectionFromEnv } from "../src/sqlserver/resolves-sql-connection.js";
 import { validatesLoadReceipt } from "../src/sqlserver/validates-load-receipt.js";
 
 const connectionEnvVar = "source-facts-semantic-search-engine";
 const hasConnection = typeof process.env[connectionEnvVar] === "string" && process.env[connectionEnvVar].trim().length > 0;
 const skipReason = hasConnection ? false : `${connectionEnvVar} env var not set; skipping live SQL Server integration test.`;
+
+test("bounds generated nvarchar tokens without corrupting quotes or surrogate pairs", () => {
+  const value = `${"x".repeat(9)}'🚀${"y".repeat(9)}`;
+  const expression = sqlNvarcharMaxExpression(value, 10);
+  assert.match(expression, /^CAST\(N'/u);
+  assert.match(expression, /''/u);
+  assert.doesNotMatch(expression, /�/u);
+  assert.ok(expression.split(/\r?\n/u).every((line) => line.length < 80));
+});
 
 test("loads a fresh index table-by-table, reports LOAD_ADMITTED, and is idempotent on repeat", { skip: skipReason }, async () => {
   const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "load-sqlserver-source-"));

@@ -1,0 +1,37 @@
+{
+  "documentKind": "canonical-feature-intent.v1",
+  "featureId": "source-facts.cli-operational-execution-knowledge",
+  "featureFile": "features/cli-operational-execution-knowledge.feature",
+  "featureAnchor": "&feature:source-facts.cli-operational-execution-knowledge",
+  "purpose": "Bind current executable mechanics to callable reachability, tests, candidate authority, and canonical ownership from the SQL repository image",
+  "scenarios": [
+    {
+      "scenarioId": "source-facts.cli-operational-execution-knowledge.analyze-from-sql-image",
+      "scenarioAnchor": "&scenario:source-facts.cli-operational-execution-knowledge.analyze-from-sql-image",
+      "responsibilityId": "repository-execution-knowledge-analysis",
+      "obligationId": "current-image-has-complete-execution-observation",
+      "givenId": "current-sql-repository-image-exists",
+      "whenId": "analyze-execution-command-invoked",
+      "thenId": "mechanics-and-call-graph-persisted",
+      "andId": "observation-does-not-admit-authority",
+      "implementationSymbols": ["runAnalyzeExecution", "projectsRepositoryExecutionKnowledge", "recordsRepositoryExecutionKnowledgeInSqlServer"],
+      "purpose": "Analyze the SQL image once and persist a current source-fact and call-reachability observation"
+    },
+    {
+      "scenarioId": "source-facts.cli-operational-execution-knowledge.query-current-graph",
+      "scenarioAnchor": "&scenario:source-facts.cli-operational-execution-knowledge.query-current-graph",
+      "responsibilityId": "repository-operational-execution-query",
+      "obligationId": "current-operational-execution-gaps-are-queryable",
+      "givenId": "current-execution-analysis-exists",
+      "whenId": "execution-knowledge-command-invoked",
+      "thenId": "reachability-and-authority-gaps-returned",
+      "andId": "no-source-workspace-is-read",
+      "implementationSymbols": ["runExecutionKnowledge", "queriesCurrentOperationalExecutionSummary"],
+      "purpose": "Return inexpensive current-only execution, ownership, test, and authority reachability facts"
+    }
+  ],
+  "interfaceRoot": "src/cli.js#runAnalyzeExecution",
+  "lifecycle": "FEATURE_INTENT_PROPOSED",
+  "authorityStatus": "FEATURE_AND_INTERFACE_AUTHORITY_MISSING",
+  "createdAt": "2026-08-05T00:00:00Z"
+}
