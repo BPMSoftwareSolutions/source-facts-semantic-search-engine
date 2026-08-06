@@ -2,6 +2,20 @@
 
 This repository turns enterprise source into queryable facts, inspectable web experiences, and governed candidate products.
 
+## Voice to Value: project a draft capability
+
+`draft-capability` turns a natural-language feature write-up into a complete, disposable Node.js ESM capability skeleton in one model-assisted pass:
+
+```powershell
+node src/cli.js draft-capability `
+  --intent-file .\feature-write-up.md `
+  --feature-id product.runtime-compatibility `
+  --output C:\lab\temp\runtime-compatibility-draft `
+  --summary
+```
+
+The new output directory contains aligned Gherkin and canonical intent, a draft governed contract, draft semantic authority, input/output schemas, thin executable bodies, runnable wiring tests, a package manifest, and a hash-bound projection receipt. The projection is explicitly `SKELETON_PROJECTED_NOT_ADMITTED`: its tests prove identity and semantic-edge wiring, not domain equivalence, authority admission, signing, or release readiness. Reprojection refuses to overwrite an existing directory so a prior hypothesis cannot be changed silently.
+
 ## Local CLI setup
 
 Install dependencies and link the package binary once from this repository so the documented `source-facts-se` commands resolve in a new shell:

@@ -66,6 +66,7 @@ import { discoversCanonicalFeatureIntents } from "./governance/canonical-feature
 import { processesDeterministicMechanicAuthorityBatch } from "./governance/processes-deterministic-mechanic-authority.js";
 import { projectsMechanicAuthorityInspectionProjection, validatesMechanicAuthorityInspectionProjection } from "./governance/mechanic-authority-inspection-projection.js";
 import { evaluatesExecutableMechanicConformance } from "./governance/evaluates-executable-mechanic-conformance.js";
+import { draftsCapabilityFromIntent, materializesDraftCapabilityPackage, readsIntentText } from "./draft-capability/drafts-capability.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -135,6 +136,8 @@ if (command === "project") {
   await runProposeFeatureCoverage(args.slice(1));
 } else if (command === "generate-connective-tissue") {
   await runGenerateConnectiveTissue(args.slice(1));
+} else if (command === "draft-capability") {
+  await runDraftCapability(args.slice(1));
 } else if (command === "web") {
   await runWeb(args.slice(1));
 } else if (command === "console") {
@@ -674,6 +677,30 @@ async function runGenerateConnectiveTissue(rawArgs) {
   process.stdout.write(`${outputPath}\n`);
   process.stdout.write(`healingDisposition: ${batch.draft.healingDisposition} (confidence ${batch.draft.confidence}), model ${batch.inference.resolvedModel} (${batch.inference.usage?.totalTokens ?? "?"} tokens, ${batch.inference.durationMilliseconds ?? "?"}ms).\n`);
   process.stdout.write("Lifecycle: DRAFT_NOT_ADMITTED -- nothing has been applied. Review this file before any further action.\n");
+}
+
+async function runDraftCapability(rawArgs) {
+  const { flags, positional } = parseArgs(rawArgs);
+  const positionalIntent = positional.join(" ").trim();
+  const intentText = await readsIntentText({
+    intent: flags.intent ?? (positionalIntent.length > 0 ? positionalIntent : undefined),
+    intentFile: flags.intentFile,
+  });
+  const outputDirectory = path.resolve(flags.output ?? path.join(process.cwd(), "artifacts", "draft-capabilities", flags.featureId ?? "projected-capability"));
+  const draft = await draftsCapabilityFromIntent({
+    intentText,
+    ...(typeof flags.featureId === "string" ? { featureId: flags.featureId } : {}),
+    targetPlatform: flags.targetPlatform ?? "node-esm",
+  });
+  const result = await materializesDraftCapabilityPackage(draft, outputDirectory);
+  process.stdout.write(`${result.outputRoot}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Feature: ${result.manifest.featureId}\n`);
+    process.stdout.write(`Scenarios: ${result.manifest.identitySpine.length}\n`);
+    process.stdout.write(`Artifacts: ${result.manifest.artifacts.length}\n`);
+    process.stdout.write(`Disposition: ${result.receipt.disposition}\n`);
+    process.stdout.write(`Proof scope: ${result.receipt.proofScope}\n`);
+  }
 }
 
 /**
@@ -1700,6 +1727,9 @@ function parseArgs(rawArgs) {
     "--receipt-output",
     "--closure-receipt",
     "--contract-map-root",
+    "--intent",
+    "--intent-file",
+    "--target-platform",
   ]);
   const booleanOptions = new Set(["--pretty", "--summary", "--prove", "--project", "--gate", "--write", "--write-receipt", "--admit", "--retry-rejected"]);
   for (let index = 0; index < rawArgs.length; index++) {
@@ -1784,6 +1814,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
   stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);
   stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --feature-authority-file <file> --feature-id <id> --scenario-id <id> --responsibility-id <id> --obligation-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);
+  stream.write(`  source-facts-se draft-capability (--intent <text> | --intent-file <file>) [--feature-id <id>] [--target-platform node-esm] [--output <new-directory>] [--summary]\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se load-engineering-truth [--contract <governed-contract.json>] [--intent-dir <directory>] --report <self-governance-report.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
@@ -1834,6 +1865,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se execution-knowledge --root-id source-facts-semantic-search-engine --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id source-facts-semantic-search-engine --test-vector-id classify-mechanic-authority-family.v1 --connection-env source-facts-semantic-search-engine --summary\n`);
   stream.write(`  source-facts-se ingest --workspace ./src --workspace-id self --connection-env source-facts-semantic-search-engine --summary\n`);
+  stream.write(`  source-facts-se draft-capability --intent-file ./feature-write-up.md --feature-id my-product.runtime-compatibility --output ../runtime-compatibility-draft --summary\n`);
 }
 
 function formatsGallerySummary(selection, plan) {

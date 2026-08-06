@@ -46,6 +46,7 @@
     { "directoryId": "source-facts-query-console-src-directory", "relativePath": "source-facts-query-console/src", "required": true },
 
     { "directoryId": "src-directory", "relativePath": "src", "required": true },
+    { "directoryId": "src-draft-capability-directory", "relativePath": "src/draft-capability", "required": true },
     { "directoryId": "src-composition-directory", "relativePath": "src/composition", "required": true },
     { "directoryId": "src-governance-directory", "relativePath": "src/governance", "required": false },
     { "directoryId": "src-console-directory", "relativePath": "src/console", "required": true },
