@@ -85,6 +85,29 @@ test("obtains a complete blueprint through the governed model connector seam", a
   assert.equal(draft.inference.responseHash, "sha256:response");
 });
 
+test("curates a deterministically invalid live candidate before admission", async () => {
+  const invalid = fixtureBlueprint();
+  invalid.scenarios.push({ ...structuredClone(invalid.scenarios[0]), scenarioId: "product.runtime-compatibility.second", responsibilityId: "second-responsibility", obligationId: "second-obligation", bodyName: "secondBody" });
+  const corrected = fixtureBlueprint();
+  let calls = 0;
+  const draft = await draftsCapabilityFromIntent({
+    intentText: "Evaluate system runtime compatibility.",
+    featureId: corrected.feature.featureId,
+    requestId: "curation-test",
+    invoke: async (request) => ({
+      disposition: "MODEL_RESPONSE_OBTAINED",
+      requestId: request.requestId,
+      result: { structuredValue: calls++ === 0 ? invalid : corrected },
+      resolvedAuthority: { providerAuthorityId: "test", providerKind: "fixture", resolvedModel: "fixture-model" },
+      proof: { requestHash: `sha256:request-${calls}`, responseHash: `sha256:response-${calls}` },
+    }),
+  });
+  assert.equal(calls, 2);
+  assert.deepEqual(draft.curationAttempts[0].findings, ["scenarios[1].edgeId:DUPLICATE_ID"]);
+  assert.deepEqual(draft.curationAttempts[1].findings, []);
+  assert.equal(draft.curationAttempts[1].inference.requestId, "curation-test-curation-2");
+});
+
 test("rejects a blueprint whose identity spine drifts", () => {
   const blueprint = fixtureBlueprint();
   blueprint.scenarios[0].bodyName = "not-valid-name!";

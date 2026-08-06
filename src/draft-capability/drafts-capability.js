@@ -222,14 +222,30 @@ export async function draftsCapabilityFromIntent({
     },
     evidencePolicy: { captureRequestHash: true, captureResponseHash: true, captureResolvedProvider: true, captureResolvedModel: true, captureTokenUsage: true, captureTiming: true },
   };
-  const response = await invoke(modelRequest);
-  if (response.disposition !== "MODEL_RESPONSE_OBTAINED") {
-    const details = (response.findings ?? []).map((finding) => finding.detail).filter(Boolean).join("; ");
-    throw new Error(`Model invocation did not succeed: ${response.disposition}${details.length > 0 ? ` (${details})` : ""}`);
+  const curationAttempts = [];
+  let response;
+  let blueprint;
+  let findings = [];
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const request = structuredClone(modelRequest);
+    request.requestId = attempt === 1 ? requestId : `${requestId}-curation-${attempt}`;
+    if (attempt > 1) {
+      request.interaction.messages.push({
+        role: "user",
+        content: `The previous candidate failed deterministic validation. Produce a corrected complete blueprint. Do not merely explain the correction.\n\nFindings:\n${findings.join("\n")}\n\nRejected candidate:\n${JSON.stringify(blueprint)}`,
+      });
+    }
+    response = await invoke(request);
+    if (response.disposition !== "MODEL_RESPONSE_OBTAINED") {
+      const details = (response.findings ?? []).map((finding) => finding.detail).filter(Boolean).join("; ");
+      throw new Error(`Model invocation did not succeed: ${response.disposition}${details.length > 0 ? ` (${details})` : ""}`);
+    }
+    blueprint = response.result?.structuredValue;
+    findings = validatesDraftCapabilityBlueprint(blueprint, featureId);
+    curationAttempts.push(Object.freeze({ attempt, findings: [...findings], inference: inferenceReceipt(response) }));
+    if (findings.length === 0) break;
   }
-  const blueprint = response.result?.structuredValue;
-  const findings = validatesDraftCapabilityBlueprint(blueprint, featureId);
-  if (findings.length > 0) throw new Error(`Draft capability failed deterministic validation: ${findings.join(", ")}`);
+  if (findings.length > 0) throw new Error(`Draft capability failed deterministic validation after 3 live curation attempts: ${findings.join(", ")}`);
   return Object.freeze({
     documentKind: "draft-capability-blueprint.v1",
     lifecycle: "INTENT_CAPTURED",
@@ -237,6 +253,7 @@ export async function draftsCapabilityFromIntent({
     intentText,
     blueprint,
     inference: inferenceReceipt(response),
+    curationAttempts: Object.freeze(curationAttempts),
   });
 }
 
@@ -374,6 +391,7 @@ export async function materializesDraftCapabilityPackage(draft, outputDirectory)
     identitySpine: feature.scenarios.map((scenario) => ({ scenarioId: scenario.scenarioId, obligationId: scenario.obligationId, responsibilityId: scenario.responsibilityId, bodyName: scenario.bodyName, edgeId: scenario.edgeId })),
     artifacts: projectedPaths,
     inference: draft.inference,
+    curationAttempts: draft.curationAttempts ?? [],
     nextLifecycle: "CAPABILITY_DRAFT_ACTIVE",
   };
   addJson("capability-package.json", manifest);

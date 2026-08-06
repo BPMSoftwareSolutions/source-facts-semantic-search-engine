@@ -1,0 +1,3153 @@
+{
+  "$schema": "https://canonical.local/schemas/governed-artifact-contract.schema.json",
+  "artifacts": [
+    {
+      "artifactId": "evaluate-minimum-disk-compatibility-bundle.v1",
+      "artifactKind": "deterministic-ontology-bundle",
+      "mediaType": "application/json",
+      "projection": {
+        "authority": {
+          "authorityType": "canonical-json-value.v1",
+          "value": {
+            "authorityId": "evaluate-minimum-disk-compatibility.bundle.v1",
+            "authorityType": "bound-semantic-execution-authority.v1",
+            "context": {
+              "catalogs": [],
+              "executionBinding": {
+                "executorPortId": "semantic-authority-runtime.v1",
+                "runtimeProfileId": "finite-semantic-runtime.v3",
+                "serializationProfileId": "canonical-json.v1"
+              },
+              "schemas": [
+                {
+                  "schemaId": "disk-check-request.schema.v1",
+                  "value": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "availableDiskMb": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2147483647
+                      },
+                      "requiredDiskMb": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2147483647
+                      }
+                    },
+                    "required": [
+                      "availableDiskMb",
+                      "requiredDiskMb"
+                    ],
+                    "type": "object"
+                  }
+                },
+                {
+                  "schemaId": "disk-check-request-variant-id.schema.v1",
+                  "value": {
+                    "const": "disk-check-request"
+                  }
+                },
+                {
+                  "schemaId": "disk-megabytes.schema.v1",
+                  "value": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
+                  }
+                },
+                {
+                  "schemaId": "order-state.schema.v1",
+                  "value": {
+                    "enum": [
+                      "less-than",
+                      "equal-to",
+                      "greater-than"
+                    ]
+                  }
+                },
+                {
+                  "schemaId": "obligation-status.schema.v1",
+                  "value": {
+                    "enum": [
+                      "satisfied",
+                      "violated"
+                    ]
+                  }
+                },
+                {
+                  "schemaId": "result-type.schema.v1",
+                  "value": {
+                    "const": "disk-compatibility-result"
+                  }
+                },
+                {
+                  "schemaId": "disk-disposition.schema.v1",
+                  "value": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "schemaId": "compatibility-disposition-value.schema.v1",
+                  "value": {
+                    "enum": [
+                      "SYSTEM_RUNTIME_COMPATIBLE",
+                      "SYSTEM_RUNTIME_INCOMPATIBLE"
+                    ]
+                  }
+                },
+                {
+                  "schemaId": "disk-compatibility-result.schema.v1",
+                  "value": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "disposition": {
+                        "enum": [
+                          "SYSTEM_RUNTIME_COMPATIBLE",
+                          "SYSTEM_RUNTIME_INCOMPATIBLE"
+                        ]
+                      },
+                      "resultType": {
+                        "const": "disk-compatibility-result"
+                      },
+                      "availableDiskMb": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2147483647
+                      },
+                      "requiredDiskMb": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 2147483647
+                      }
+                    },
+                    "required": [
+                      "resultType",
+                      "disposition",
+                      "availableDiskMb",
+                      "requiredDiskMb"
+                    ],
+                    "type": "object"
+                  }
+                }
+              ]
+            },
+            "inputConceptId": "disk-check-request",
+            "ontology": {
+              "arithmeticOperations": [
+                {
+                  "operandAConceptId": "available-disk-value",
+                  "operandBConceptId": "required-disk-value",
+                  "operation": "compare",
+                  "operationId": "compare-available-disk",
+                  "resultConceptId": "available-disk-order"
+                }
+              ],
+              "classifications": [
+                {
+                  "classificationId": "disk-check-request-variant",
+                  "classificationType": "concept-variant",
+                  "multipleMatchDisposition": "DISK_CHECK_REQUEST_VARIANT_AMBIGUOUS",
+                  "noMatchDisposition": "DISK_CHECK_REQUEST_VARIANT_UNRESOLVED",
+                  "resultConceptId": "disk-check-request-variant-id",
+                  "subjectConceptId": "disk-check-request",
+                  "variants": [
+                    "disk-check-request"
+                  ]
+                },
+                {
+                  "cases": [
+                    {
+                      "stateId": "below-minimum",
+                      "value": {
+                        "type": "string",
+                        "value": "less-than"
+                      }
+                    },
+                    {
+                      "stateId": "at-or-above-minimum",
+                      "value": {
+                        "type": "string",
+                        "value": "equal-to"
+                      }
+                    },
+                    {
+                      "stateId": "at-or-above-minimum",
+                      "value": {
+                        "type": "string",
+                        "value": "greater-than"
+                      }
+                    }
+                  ],
+                  "classificationId": "available-disk-order-classification",
+                  "classificationType": "finite-value",
+                  "resultConceptId": "disk-disposition",
+                  "subjectConceptId": "available-disk-order",
+                  "unmatchedDisposition": "DISK_ORDER_UNRESOLVED"
+                }
+              ],
+              "constraints": [],
+              "indexedReads": [],
+              "iterations": [],
+              "obligations": [
+                {
+                  "classificationId": "available-disk-order-classification",
+                  "failureDisposition": "DISK_BELOW_MINIMUM",
+                  "obligationId": "minimum-disk-obligation",
+                  "resultConceptId": "disk-obligation-status",
+                  "satisfiedStateIds": [
+                    "at-or-above-minimum"
+                  ],
+                  "subjectConceptId": "available-disk-order"
+                }
+              ],
+              "randomDraws": [],
+              "results": [
+                {
+                  "invalidResultDisposition": "DISK_COMPATIBILITY_RESULT_INVALID",
+                  "members": [
+                    {
+                      "conceptId": "disk-compatibility-result",
+                      "discriminator": {
+                        "outputPath": [
+                          "disposition"
+                        ],
+                        "propertyId": "result-disposition",
+                        "value": {
+                          "type": "string",
+                          "value": "SYSTEM_RUNTIME_COMPATIBLE"
+                        }
+                      },
+                      "resultId": "disk-compatible"
+                    },
+                    {
+                      "conceptId": "disk-compatibility-result",
+                      "discriminator": {
+                        "outputPath": [
+                          "disposition"
+                        ],
+                        "propertyId": "result-disposition",
+                        "value": {
+                          "type": "string",
+                          "value": "SYSTEM_RUNTIME_INCOMPATIBLE"
+                        }
+                      },
+                      "resultId": "disk-incompatible"
+                    }
+                  ],
+                  "multipleMatchDisposition": "RESULT_SELECTION_AMBIGUOUS",
+                  "noMatchDisposition": "RESULT_SELECTION_NOT_TOTAL",
+                  "resultTypeConceptId": "disk-compatibility-result",
+                  "resultUnionId": "disk-compatibility-result-union",
+                  "selectionRules": [
+                    {
+                      "resultId": "disk-compatible",
+                      "ruleId": "compatible-when-satisfied",
+                      "when": [
+                        {
+                          "inputPort": "nodeVersionObligation",
+                          "obligationId": "minimum-disk-obligation",
+                          "status": "satisfied"
+                        }
+                      ]
+                    },
+                    {
+                      "resultId": "disk-incompatible",
+                      "ruleId": "incompatible-when-violated",
+                      "when": [
+                        {
+                          "inputPort": "nodeVersionObligation",
+                          "obligationId": "minimum-disk-obligation",
+                          "status": "violated"
+                        }
+                      ]
+                    }
+                  ],
+                  "serializerId": "identity.v1"
+                }
+              ],
+              "transformations": [
+                {
+                  "invalidTypeDisposition": "RESULT_TYPE_INVALID",
+                  "outputPath": [
+                    "resultType"
+                  ],
+                  "relationId": "result-type-relation",
+                  "resultIds": [
+                    "disk-compatible"
+                  ],
+                  "sourceAuthorityId": "emit-result-type-constant",
+                  "targetPropertyId": "result-type",
+                  "transformationId": "emit-result-type-compatible",
+                  "unavailableDisposition": "RESULT_TYPE_UNAVAILABLE",
+                  "valueConceptId": "result-type-concept"
+                },
+                {
+                  "invalidTypeDisposition": "RESULT_TYPE_INVALID",
+                  "outputPath": [
+                    "resultType"
+                  ],
+                  "relationId": "result-type-relation",
+                  "resultIds": [
+                    "disk-incompatible"
+                  ],
+                  "sourceAuthorityId": "emit-result-type-constant",
+                  "targetPropertyId": "result-type",
+                  "transformationId": "emit-result-type-incompatible",
+                  "unavailableDisposition": "RESULT_TYPE_UNAVAILABLE",
+                  "valueConceptId": "result-type-concept"
+                },
+                {
+                  "transformationId": "emit-available-disk",
+                  "relationId": "available-disk-value-projects-as-reported-available-disk",
+                  "sourceAuthorityId": "available-disk-field",
+                  "targetPropertyId": "reported-available-disk",
+                  "outputPath": [
+                    "availableDiskMb"
+                  ],
+                  "valueConceptId": "available-disk-value",
+                  "resultIds": [
+                    "disk-compatible",
+                    "disk-incompatible"
+                  ],
+                  "unavailableDisposition": "REPORTED_AVAILABLE_DISK_UNAVAILABLE",
+                  "invalidTypeDisposition": "REPORTED_AVAILABLE_DISK_INVALID"
+                },
+                {
+                  "transformationId": "emit-required-disk",
+                  "relationId": "required-disk-value-projects-as-reported-required-disk",
+                  "sourceAuthorityId": "required-disk-field",
+                  "targetPropertyId": "reported-required-disk",
+                  "outputPath": [
+                    "requiredDiskMb"
+                  ],
+                  "valueConceptId": "required-disk-value",
+                  "resultIds": [
+                    "disk-compatible",
+                    "disk-incompatible"
+                  ],
+                  "unavailableDisposition": "REPORTED_REQUIRED_DISK_UNAVAILABLE",
+                  "invalidTypeDisposition": "REPORTED_REQUIRED_DISK_INVALID"
+                }
+              ],
+              "translations": [
+                {
+                  "cases": [
+                    {
+                      "source": {
+                        "type": "string",
+                        "value": "disk-check-request"
+                      },
+                      "target": {
+                        "type": "string",
+                        "value": "disk-compatibility-result"
+                      }
+                    }
+                  ],
+                  "sourceConceptId": "disk-check-request-variant-id",
+                  "targetConceptId": "result-type-concept",
+                  "translationId": "emit-result-type-constant",
+                  "unmappedDisposition": "RESULT_TYPE_UNAVAILABLE"
+                }
+              ]
+            },
+            "ontologyId": "evaluate-minimum-disk-compatibility",
+            "semanticLayer": {
+              "concepts": [
+                {
+                  "abstract": false,
+                  "conceptId": "disk-check-request",
+                  "conceptType": "domain-entity",
+                  "isA": [],
+                  "schemaId": "disk-check-request.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "disk-check-request-variant-id",
+                  "conceptType": "classification",
+                  "isA": [],
+                  "schemaId": "disk-check-request-variant-id.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "available-disk-value",
+                  "conceptType": "domain-value",
+                  "isA": [],
+                  "schemaId": "disk-megabytes.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "required-disk-value",
+                  "conceptType": "domain-value",
+                  "isA": [],
+                  "schemaId": "disk-megabytes.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "available-disk-order",
+                  "conceptType": "canonical-value",
+                  "isA": [],
+                  "schemaId": "order-state.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "disk-disposition",
+                  "conceptType": "canonical-value",
+                  "isA": [],
+                  "schemaId": "disk-disposition.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "disk-obligation-status",
+                  "conceptType": "signal",
+                  "isA": [],
+                  "schemaId": "obligation-status.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "result-type-concept",
+                  "conceptType": "canonical-value",
+                  "isA": [],
+                  "schemaId": "result-type.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "compatibility-disposition-value",
+                  "conceptType": "canonical-value",
+                  "isA": [],
+                  "schemaId": "compatibility-disposition-value.schema.v1"
+                },
+                {
+                  "abstract": false,
+                  "conceptId": "disk-compatibility-result",
+                  "conceptType": "result-union",
+                  "isA": [],
+                  "schemaId": "disk-compatibility-result.schema.v1"
+                }
+              ],
+              "facts": [],
+              "properties": [
+                {
+                  "cardinality": "exactly-one",
+                  "propertyId": "available-disk-field",
+                  "propertyKind": "observed",
+                  "resolutions": [
+                    {
+                      "path": [
+                        "availableDiskMb"
+                      ],
+                      "subjectVariantConceptId": "disk-check-request"
+                    }
+                  ],
+                  "subjectConceptId": "disk-check-request",
+                  "valueConceptId": "available-disk-value"
+                },
+                {
+                  "cardinality": "exactly-one",
+                  "propertyId": "result-type",
+                  "propertyKind": "projected",
+                  "resolutions": [],
+                  "subjectConceptId": "disk-compatibility-result",
+                  "valueConceptId": "result-type-concept"
+                },
+                {
+                  "cardinality": "exactly-one",
+                  "propertyId": "result-disposition",
+                  "propertyKind": "projected",
+                  "resolutions": [],
+                  "subjectConceptId": "disk-compatibility-result",
+                  "valueConceptId": "compatibility-disposition-value"
+                },
+                {
+                  "propertyId": "required-disk-field",
+                  "propertyKind": "observed",
+                  "cardinality": "exactly-one",
+                  "subjectConceptId": "disk-check-request",
+                  "valueConceptId": "required-disk-value",
+                  "resolutions": [
+                    {
+                      "subjectVariantConceptId": "disk-check-request",
+                      "path": [
+                        "requiredDiskMb"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "propertyId": "reported-available-disk",
+                  "propertyKind": "projected",
+                  "cardinality": "exactly-one",
+                  "subjectConceptId": "disk-compatibility-result",
+                  "valueConceptId": "available-disk-value",
+                  "resolutions": []
+                },
+                {
+                  "propertyId": "reported-required-disk",
+                  "propertyKind": "projected",
+                  "cardinality": "exactly-one",
+                  "subjectConceptId": "disk-compatibility-result",
+                  "valueConceptId": "required-disk-value",
+                  "resolutions": []
+                }
+              ],
+              "relations": [
+                {
+                  "cardinality": "exactly-one",
+                  "objectConceptId": "result-type-concept",
+                  "relationId": "result-type-relation",
+                  "relationType": "computes",
+                  "subjectConceptId": "result-type-concept"
+                },
+                {
+                  "relationId": "available-disk-value-projects-as-reported-available-disk",
+                  "relationType": "computes",
+                  "cardinality": "exactly-one",
+                  "subjectConceptId": "available-disk-value",
+                  "objectConceptId": "available-disk-value"
+                },
+                {
+                  "relationId": "required-disk-value-projects-as-reported-required-disk",
+                  "relationType": "computes",
+                  "cardinality": "exactly-one",
+                  "subjectConceptId": "required-disk-value",
+                  "objectConceptId": "required-disk-value"
+                }
+              ]
+            }
+          }
+        },
+        "authorityId": "evaluate-minimum-disk-compatibility-authority.v1",
+        "projectorId": "bound-semantic-execution-authority-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:e8bc7cbaa4979df0a424153f59e096265214f744f99af87a7f5995bb12919111",
+        "expectedByteLength": 34038,
+        "verifierIds": [
+          "content-digest-verifier.v1",
+          "json-meta-schema-verifier.v1"
+        ]
+      },
+      "purpose": "The derived, executable semantic-execution bundle for the minimum-disk obligation.",
+      "relationships": [],
+      "relativePath": "contracts/evaluate-minimum-disk-compatibility.bundle.json"
+    },
+    {
+      "artifactId": "evaluate-minimum-disk-compatibility-body.v1",
+      "artifactKind": "javascript-module",
+      "mediaType": "application/javascript",
+      "projection": {
+        "authority": {
+          "authorityType": "lossless-source-tokens.v1",
+          "language": "javascript",
+          "tokens": [
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "executeSemanticAuthority"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"contract-driven-artifact-governance-engine\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluateMinimumNodeVersionCompatibilityBundle"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../contracts/evaluate-minimum-disk-compatibility.bundle.json\""
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "WithKeyword",
+              "text": "with"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "TypeKeyword",
+              "text": "type"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"json\""
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ExportKeyword",
+              "text": "export"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FunctionKeyword",
+              "text": "function"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluatesMinimumDiskCompatibility"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "context"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": "  "
+            },
+            {
+              "kind": "ReturnKeyword",
+              "text": "return"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "executeSemanticAuthority"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluateMinimumNodeVersionCompatibilityBundle"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "context"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            }
+          ]
+        },
+        "authorityId": "evaluate-minimum-disk-compatibility-body-authority.v1",
+        "projectorId": "provenance-sealed-source-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:df0f9dd158d72f332504b9dc906e98f558bc8cf0a0372937693cd1d6cfdd4f27",
+        "expectedByteLength": 1257,
+        "verifierIds": [
+          "artifact-provenance-verifier.v1",
+          "authority-closure-verifier.v1",
+          "content-digest-verifier.v1",
+          "source-token-structure-verifier.v1",
+          "mechanic-authority-envelope-verifier.v1",
+          "mechanic-authority-closure-verifier.v1",
+          "responsibility-authority-query-verifier.v1",
+          "projected-body-equivalence-verifier.v1"
+        ]
+      },
+      "purpose": "Evaluates minimum Node-version compatibility by delegating entirely to the admitted semantic-execution bundle.",
+      "relationships": [
+        {
+          "artifactId": "evaluate-minimum-disk-compatibility-bundle.v1",
+          "relationshipType": "reads"
+        }
+      ],
+      "relativePath": "src/evaluates-minimum-disk-compatibility.mjs",
+      "sourceAuthority": {
+        "decisions": [],
+        "declarations": [
+          "evaluatesMinimumDiskCompatibility"
+        ],
+        "failurePolicies": [],
+        "forbiddenSyntaxKinds": [
+          "CatchClause",
+          "ConditionalExpression",
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "ForStatement",
+          "IfStatement",
+          "LogicalAndExpression",
+          "LogicalOrExpression",
+          "NullishCoalescingExpression",
+          "ObjectLiteralExpression",
+          "SwitchStatement",
+          "ThrowStatement",
+          "TryStatement",
+          "WhileStatement"
+        ],
+        "iterations": [],
+        "mechanicAuthorities": [],
+        "projectionMappings": [],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Declares the admitted minimum-disk compatibility surface.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-module.v1",
+            "responsibilityType": "module"
+          },
+          {
+            "declaration": "evaluatesMinimumDiskCompatibility",
+            "functionKind": "function-declaration",
+            "purpose": "Evaluates minimum Node-version compatibility for one observed system.",
+            "responsibilityId": "evaluates-minimum-disk-compatibility",
+            "responsibilityType": "function"
+          }
+        ],
+        "resultContracts": [
+          {
+            "mediaType": "application/json",
+            "purpose": "The compatibility disposition produced by the admitted semantic-execution bundle.",
+            "resultContractId": "disk-compatibility-result.v1",
+            "resultKind": "projected-json-value",
+            "source": {
+              "expression": "executeSemanticAuthority(evaluateMinimumNodeVersionCompatibilityBundle,context)",
+              "occurrences": 1,
+              "responsibilityId": "evaluates-minimum-disk-compatibility",
+              "returnKind": "explicit-return",
+              "sourceType": "return"
+            }
+          }
+        ],
+        "semanticEdges": [
+          {
+            "argumentExpressions": [
+              "evaluateMinimumNodeVersionCompatibilityBundle",
+              "context"
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "contract-driven-artifact-governance-engine"
+              },
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "evaluate-minimum-disk-compatibility-bundle-data.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "semantic-authority-runtime.v1"
+              },
+              {
+                "authorityType": "result-authority",
+                "resultContractId": "disk-compatibility-result.v1"
+              }
+            ],
+            "edgeId": "execute-disk-compatibility-semantics.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "executeSemanticAuthority",
+            "purpose": "Forwards the observed system context through the admitted semantic-execution bundle.",
+            "responsibilityId": "evaluates-minimum-disk-compatibility"
+          }
+        ]
+      }
+    },
+    {
+      "artifactId": "verifies-minimum-disk-compatibility.v1",
+      "artifactKind": "javascript-module",
+      "mediaType": "application/javascript",
+      "projection": {
+        "authority": {
+          "authorityType": "lossless-source-tokens.v1",
+          "language": "javascript",
+          "tokens": [
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"node:assert/strict\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluatesMinimumDiskCompatibility"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../src/evaluates-minimum-disk-compatibility.mjs\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "equalBoundary"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluatesMinimumDiskCompatibility"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "availableDiskMb"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "requiredDiskMb"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "equalBoundary"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "disposition"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"SYSTEM_RUNTIME_COMPATIBLE\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "equalBoundary"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "availableDiskMb"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "equalBoundary"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "requiredDiskMb"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "aboveMinimum"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluatesMinimumDiskCompatibility"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "availableDiskMb"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "20000"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "requiredDiskMb"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "aboveMinimum"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "disposition"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"SYSTEM_RUNTIME_COMPATIBLE\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "aboveMinimum"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "availableDiskMb"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "20000"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "aboveMinimum"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "requiredDiskMb"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "belowMinimum"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluatesMinimumDiskCompatibility"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "availableDiskMb"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "5000"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "requiredDiskMb"
+            },
+            {
+              "kind": "ColonToken",
+              "text": ":"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "belowMinimum"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "disposition"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"SYSTEM_RUNTIME_INCOMPATIBLE\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "belowMinimum"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "availableDiskMb"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "5000"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "AssertKeyword",
+              "text": "assert"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "equal"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "belowMinimum"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "requiredDiskMb"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "10000"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "Identifier",
+              "text": "process"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "stdout"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "write"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"ARTIFACT_TEST_CONFORMS\\n\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            }
+          ]
+        },
+        "authorityId": "verifies-minimum-disk-compatibility-authority.v1",
+        "projectorId": "provenance-sealed-source-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:aeba5e897e55bd4427771d6c79976dffda78b3cf27017003fdfdd3aee8101c6d",
+        "expectedByteLength": 1835,
+        "verifierIds": [
+          "artifact-provenance-verifier.v1",
+          "authority-closure-verifier.v1",
+          "content-digest-verifier.v1",
+          "source-token-structure-verifier.v1",
+          "mechanic-authority-envelope-verifier.v1",
+          "mechanic-authority-closure-verifier.v1",
+          "responsibility-authority-query-verifier.v1",
+          "projected-body-equivalence-verifier.v1"
+        ]
+      },
+      "purpose": "Proves the projected body returns the expected disposition for the canonical compatible and incompatible test vectors.",
+      "relationships": [
+        {
+          "artifactId": "evaluate-minimum-disk-compatibility-body.v1",
+          "relationshipType": "invoke-evaluates-minimum-disk-compatibility-compatible.v1"
+        }
+      ],
+      "relativePath": "verification/verifies-evaluates-minimum-disk-compatibility.mjs",
+      "sourceAuthority": {
+        "decisions": [],
+        "declarations": [
+          "equalBoundary",
+          "aboveMinimum",
+          "belowMinimum"
+        ],
+        "failurePolicies": [],
+        "forbiddenSyntaxKinds": [
+          "CatchClause",
+          "ConditionalExpression",
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "ForStatement",
+          "IfStatement",
+          "LogicalAndExpression",
+          "LogicalOrExpression",
+          "NullishCoalescingExpression",
+          "SwitchStatement",
+          "ThrowStatement",
+          "TryStatement",
+          "WhileStatement"
+        ],
+        "iterations": [],
+        "mechanicAuthorities": [],
+        "projectionMappings": [
+          {
+            "projectionMappingId": "equal-boundary-test-vector-dto.v1",
+            "purpose": "Canonical equalBoundary disk compatibility test vector.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "availableDiskMb",
+                "sourceExpression": "10000"
+              },
+              {
+                "outputField": "requiredDiskMb",
+                "sourceExpression": "10000"
+              }
+            ]
+          },
+          {
+            "projectionMappingId": "above-minimum-test-vector-dto.v1",
+            "purpose": "Canonical aboveMinimum disk compatibility test vector.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "availableDiskMb",
+                "sourceExpression": "20000"
+              },
+              {
+                "outputField": "requiredDiskMb",
+                "sourceExpression": "10000"
+              }
+            ]
+          },
+          {
+            "projectionMappingId": "below-minimum-test-vector-dto.v1",
+            "purpose": "Canonical belowMinimum disk compatibility test vector.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "occurrences": 1,
+            "fields": [
+              {
+                "outputField": "availableDiskMb",
+                "sourceExpression": "5000"
+              },
+              {
+                "outputField": "requiredDiskMb",
+                "sourceExpression": "10000"
+              }
+            ]
+          }
+        ],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "Proves the minimum-disk responsibility conforms for its canonical test vectors.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "responsibilityType": "module"
+          }
+        ],
+        "resultContracts": [],
+        "semanticEdges": [
+          {
+            "edgeId": "invoke-evaluates-minimum-disk-compatibility-equal-boundary.v1",
+            "edgeKind": "invocation",
+            "operation": "evaluatesMinimumDiskCompatibility",
+            "argumentExpressions": [
+              "{availableDiskMb:10000,requiredDiskMb:10000}"
+            ],
+            "occurrences": 1,
+            "purpose": "Invokes the projected responsibility for equalBoundary.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "evaluate-minimum-disk-compatibility-body-import.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "invoke-evaluates-minimum-disk-compatibility-above-minimum.v1",
+            "edgeKind": "invocation",
+            "operation": "evaluatesMinimumDiskCompatibility",
+            "argumentExpressions": [
+              "{availableDiskMb:20000,requiredDiskMb:10000}"
+            ],
+            "occurrences": 1,
+            "purpose": "Invokes the projected responsibility for aboveMinimum.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "evaluate-minimum-disk-compatibility-body-import.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "invoke-evaluates-minimum-disk-compatibility-below-minimum.v1",
+            "edgeKind": "invocation",
+            "operation": "evaluatesMinimumDiskCompatibility",
+            "argumentExpressions": [
+              "{availableDiskMb:5000,requiredDiskMb:10000}"
+            ],
+            "occurrences": 1,
+            "purpose": "Invokes the projected responsibility for belowMinimum.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "evaluate-minimum-disk-compatibility-body-import.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-equal-boundary-disposition.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "equalBoundary.disposition",
+              "\"SYSTEM_RUNTIME_COMPATIBLE\""
+            ],
+            "occurrences": 1,
+            "purpose": "Proves equalBoundary has the required disposition.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-equal-boundary-available-disk-mb.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "equalBoundary.availableDiskMb",
+              "10000"
+            ],
+            "occurrences": 1,
+            "purpose": "Proves equalBoundary reports availableDiskMb.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-equal-boundary-required-disk-mb.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "equalBoundary.requiredDiskMb",
+              "10000"
+            ],
+            "occurrences": 1,
+            "purpose": "Proves equalBoundary reports requiredDiskMb.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-above-minimum-disposition.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "aboveMinimum.disposition",
+              "\"SYSTEM_RUNTIME_COMPATIBLE\""
+            ],
+            "occurrences": 1,
+            "purpose": "Proves aboveMinimum has the required disposition.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-above-minimum-available-disk-mb.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "aboveMinimum.availableDiskMb",
+              "20000"
+            ],
+            "occurrences": 1,
+            "purpose": "Proves aboveMinimum reports availableDiskMb.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-above-minimum-required-disk-mb.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "aboveMinimum.requiredDiskMb",
+              "10000"
+            ],
+            "occurrences": 1,
+            "purpose": "Proves aboveMinimum reports requiredDiskMb.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-below-minimum-disposition.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "belowMinimum.disposition",
+              "\"SYSTEM_RUNTIME_INCOMPATIBLE\""
+            ],
+            "occurrences": 1,
+            "purpose": "Proves belowMinimum has the required disposition.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-below-minimum-available-disk-mb.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "belowMinimum.availableDiskMb",
+              "5000"
+            ],
+            "occurrences": 1,
+            "purpose": "Proves belowMinimum reports availableDiskMb.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "edgeId": "assert-below-minimum-required-disk-mb.v1",
+            "edgeKind": "invocation",
+            "operation": "assert.equal",
+            "argumentExpressions": [
+              "belowMinimum.requiredDiskMb",
+              "10000"
+            ],
+            "occurrences": 1,
+            "purpose": "Proves belowMinimum reports requiredDiskMb.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module",
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-assert-strict.v1"
+              },
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "assert-equal-runtime.v1"
+              }
+            ]
+          },
+          {
+            "argumentExpressions": [
+              "\"ARTIFACT_TEST_CONFORMS\\n\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "effect-authority",
+                "effectId": "write-stdout.v1"
+              }
+            ],
+            "edgeId": "emit-conformance-marker.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "process.stdout.write",
+            "purpose": "Emits the fixed conformance marker read by the command-exit-verifier.",
+            "responsibilityId": "verifies-minimum-disk-compatibility-module"
+          }
+        ]
+      }
+    },
+    {
+      "artifactId": "evaluate-minimum-disk-compatibility-cli.v1",
+      "artifactKind": "javascript-module",
+      "mediaType": "application/javascript",
+      "projection": {
+        "authority": {
+          "authorityType": "lossless-source-tokens.v1",
+          "language": "javascript",
+          "tokens": [
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "readFileSync"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"node:fs\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ImportKeyword",
+              "text": "import"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "OpenBraceToken",
+              "text": "{"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluatesMinimumDiskCompatibility"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "CloseBraceToken",
+              "text": "}"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "FromKeyword",
+              "text": "from"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"../src/evaluates-minimum-disk-compatibility.mjs\""
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "inputPath"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "process"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "argv"
+            },
+            {
+              "kind": "OpenBracketToken",
+              "text": "["
+            },
+            {
+              "kind": "NumericLiteral",
+              "text": "2"
+            },
+            {
+              "kind": "CloseBracketToken",
+              "text": "]"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "inputText"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "readFileSync"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "inputPath"
+            },
+            {
+              "kind": "CommaToken",
+              "text": ","
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"utf8\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "context"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "JSON"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "parse"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "inputText"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "ConstKeyword",
+              "text": "const"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "result"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "EqualsToken",
+              "text": "="
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "Identifier",
+              "text": "evaluatesMinimumDiskCompatibility"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "context"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            },
+            {
+              "kind": "Identifier",
+              "text": "process"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "stdout"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "write"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "JSON"
+            },
+            {
+              "kind": "DotToken",
+              "text": "."
+            },
+            {
+              "kind": "Identifier",
+              "text": "stringify"
+            },
+            {
+              "kind": "OpenParenToken",
+              "text": "("
+            },
+            {
+              "kind": "Identifier",
+              "text": "result"
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "PlusToken",
+              "text": "+"
+            },
+            {
+              "kind": "WhitespaceTrivia",
+              "text": " "
+            },
+            {
+              "kind": "StringLiteral",
+              "text": "\"\\n\""
+            },
+            {
+              "kind": "CloseParenToken",
+              "text": ")"
+            },
+            {
+              "kind": "SemicolonToken",
+              "text": ";"
+            },
+            {
+              "kind": "NewLineTrivia",
+              "text": "\n"
+            }
+          ]
+        },
+        "authorityId": "evaluate-minimum-disk-compatibility-cli-authority.v1",
+        "projectorId": "provenance-sealed-source-projector.v1"
+      },
+      "proof": {
+        "contentSha256": "sha256:1e60578303c7751d7ca36185dc21fc68309c999bd0bdf5641a724599612330cd",
+        "expectedByteLength": 1185,
+        "verifierIds": [
+          "artifact-provenance-verifier.v1",
+          "authority-closure-verifier.v1",
+          "content-digest-verifier.v1",
+          "source-token-structure-verifier.v1",
+          "mechanic-authority-envelope-verifier.v1",
+          "mechanic-authority-closure-verifier.v1",
+          "responsibility-authority-query-verifier.v1",
+          "projected-body-equivalence-verifier.v1"
+        ]
+      },
+      "purpose": "Container/CLI entry point: reads observed system facts from a file path given as the first argument, evaluates minimum-Node-version compatibility, and writes the JSON result to stdout.",
+      "relationships": [
+        {
+          "artifactId": "evaluate-minimum-disk-compatibility-body.v1",
+          "relationshipType": "invoke-evaluates-minimum-disk-compatibility-compatible.v1"
+        }
+      ],
+      "relativePath": "bin/evaluate-minimum-disk-compatibility.mjs",
+      "sourceAuthority": {
+        "decisions": [],
+        "declarations": [
+          "inputPath",
+          "inputText",
+          "context",
+          "result"
+        ],
+        "failurePolicies": [],
+        "forbiddenSyntaxKinds": [
+          "CatchClause",
+          "ConditionalExpression",
+          "DebuggerStatement",
+          "DoStatement",
+          "DynamicImportExpression",
+          "ForStatement",
+          "IfStatement",
+          "LogicalAndExpression",
+          "LogicalOrExpression",
+          "NullishCoalescingExpression",
+          "ObjectLiteralExpression",
+          "SwitchStatement",
+          "ThrowStatement",
+          "TryStatement",
+          "WhileStatement"
+        ],
+        "iterations": [],
+        "mechanicAuthorities": [],
+        "projectionMappings": [],
+        "responsibilities": [
+          {
+            "declaration": "<module>",
+            "purpose": "The container/CLI entry point for the minimum-disk compatibility responsibility.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1",
+            "responsibilityType": "module"
+          }
+        ],
+        "resultContracts": [],
+        "semanticEdges": [
+          {
+            "argumentExpressions": [],
+            "authorities": [
+              {
+                "authorityType": "effect-authority",
+                "effectId": "read-cli-argv.v1"
+              }
+            ],
+            "edgeId": "read-cli-input-path.v1",
+            "edgeKind": "reference",
+            "occurrences": 1,
+            "operation": "process.argv",
+            "purpose": "Reads the input file path from the first CLI argument.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1"
+          },
+          {
+            "argumentExpressions": [
+              "inputPath",
+              "\"utf8\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "node-fs.v1"
+              },
+              {
+                "authorityType": "effect-authority",
+                "effectId": "read-cli-input-file.v1"
+              }
+            ],
+            "edgeId": "read-cli-input-file.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "readFileSync",
+            "purpose": "Reads the observed system-facts JSON file.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1"
+          },
+          {
+            "argumentExpressions": [
+              "inputText"
+            ],
+            "authorities": [
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "json-parse-runtime.v1"
+              }
+            ],
+            "edgeId": "parse-cli-input.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "JSON.parse",
+            "purpose": "Parses the observed system-facts JSON file into a context object.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1"
+          },
+          {
+            "argumentExpressions": [
+              "context"
+            ],
+            "authorities": [
+              {
+                "authorityType": "dependency-authority",
+                "dependencyId": "evaluate-minimum-disk-compatibility-body-import.v1"
+              }
+            ],
+            "edgeId": "invoke-evaluates-minimum-disk-compatibility-cli.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "evaluatesMinimumDiskCompatibility",
+            "purpose": "Invokes the projected responsibility with the observed context.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1"
+          },
+          {
+            "argumentExpressions": [
+              "result"
+            ],
+            "authorities": [
+              {
+                "authorityType": "runtime-authority",
+                "runtimeAuthorityId": "json-stringify-runtime.v1"
+              }
+            ],
+            "edgeId": "serialize-cli-result.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "JSON.stringify",
+            "purpose": "Serializes the compatibility result for output.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1"
+          },
+          {
+            "argumentExpressions": [
+              "JSON.stringify(result)+\"\\n\""
+            ],
+            "authorities": [
+              {
+                "authorityType": "effect-authority",
+                "effectId": "write-stdout.v1"
+              }
+            ],
+            "edgeId": "emit-cli-result.v1",
+            "edgeKind": "invocation",
+            "occurrences": 1,
+            "operation": "process.stdout.write",
+            "purpose": "Writes the JSON compatibility result to stdout.",
+            "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1"
+          }
+        ]
+      }
+    }
+  ],
+  "claims": [
+    {
+      "claim": "COMPLETE",
+      "claimId": "artifact-family-complete.v1"
+    },
+    {
+      "claim": "CONTRACT_AUTHORITY_CLOSED",
+      "claimId": "contract-authority-closed.v1"
+    },
+    {
+      "claim": "TRUSTED",
+      "claimId": "artifact-family-trusted.v1"
+    }
+  ],
+  "conformance": {
+    "artifactEvaluations": [
+      {
+        "command": [
+          "node",
+          "verification/verifies-evaluates-minimum-disk-compatibility.mjs"
+        ],
+        "evaluationId": "minimum-disk-compatibility-evaluation.v1",
+        "expectedExitCode": 0,
+        "expectedStdoutContains": "ARTIFACT_TEST_CONFORMS",
+        "verifierId": "command-exit-verifier.v1"
+      }
+    ]
+  },
+  "contract": {
+    "contractId": "runtime-capability-evaluator.evaluate-minimum-disk-compatibility.v1",
+    "contractType": "governed-artifact-contract.v1",
+    "contractVersion": "1.15.0",
+    "status": "admitted"
+  },
+  "dependencies": [
+    {
+      "allowedImports": [
+        "executeSemanticAuthority"
+      ],
+      "allowedInvocations": [
+        "executeSemanticAuthority"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "execute-semantic-authority",
+        "portId": "semantic-authority-runtime.v1"
+      },
+      "dependencyId": "contract-driven-artifact-governance-engine",
+      "specifier": "contract-driven-artifact-governance-engine",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-body.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-semantic-authority",
+        "portId": "evaluate-minimum-disk-compatibility-bundle-data.v1"
+      },
+      "dependencyId": "evaluate-minimum-disk-compatibility-bundle-data.v1",
+      "specifier": "../contracts/evaluate-minimum-disk-compatibility.bundle.json",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-body.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "default"
+      ],
+      "allowedInvocations": [
+        "default.equal"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "assert-invariant",
+        "portId": "node-assert-strict.v1"
+      },
+      "dependencyId": "node-assert-strict.v1",
+      "specifier": "node:assert/strict",
+      "usedByArtifacts": [
+        "verifies-minimum-disk-compatibility.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "evaluatesMinimumDiskCompatibility"
+      ],
+      "allowedInvocations": [
+        "evaluatesMinimumDiskCompatibility"
+      ],
+      "authority": {
+        "artifactId": "evaluate-minimum-disk-compatibility-body.v1",
+        "authorityType": "artifact-authority.v1",
+        "responsibilityId": "evaluates-minimum-disk-compatibility",
+        "semanticEdge": "invoke-evaluates-minimum-disk-compatibility-compatible.v1"
+      },
+      "dependencyId": "evaluate-minimum-disk-compatibility-body-import.v1",
+      "specifier": "../src/evaluates-minimum-disk-compatibility.mjs",
+      "usedByArtifacts": [
+        "verifies-minimum-disk-compatibility.v1",
+        "evaluate-minimum-disk-compatibility-cli.v1"
+      ]
+    },
+    {
+      "allowedImports": [
+        "readFileSync"
+      ],
+      "allowedInvocations": [
+        "readFileSync"
+      ],
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-input-file",
+        "portId": "node-fs.v1"
+      },
+      "dependencyId": "node-fs.v1",
+      "specifier": "node:fs",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-cli.v1"
+      ]
+    }
+  ],
+  "designAuthority": {
+    "authorityType": "conversation-design-authority.v1",
+    "conversationDigest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "decisions": [
+      {
+        "decisionId": "atomic-first-slice",
+        "disposition": "accepted",
+        "source": "user",
+        "statement": "Grow this capability through independently proven atomic scenario contracts (one obligation, one responsibility, one artifact) rather than one large upfront contract; this is the first slice, covering only the minimum-Node-version obligation."
+      },
+      {
+        "decisionId": "exclude-unresolved-headroom-policy.v1",
+        "source": "live-model",
+        "disposition": "deferred",
+        "statement": "Headroom ratios remain outside this admitted capability because the live projection left that policy unresolved."
+      },
+      {
+        "decisionId": "exclude-disk-unit-conversion.v1",
+        "source": "user",
+        "disposition": "accepted",
+        "statement": "Inputs are already normalized megabyte integers; byte/gibibyte conversion remains outside this capability."
+      },
+      {
+        "decisionId": "defer-rfc-7807-findings.v1",
+        "source": "live-model",
+        "disposition": "deferred",
+        "statement": "RFC 7807 formatting remains unresolved; invalid inputs use the admitted semantic runtime's structured schema findings."
+      }
+    ],
+    "deviations": [],
+    "tieOut": [
+      {
+        "artifactIds": [
+          "evaluate-minimum-disk-compatibility-body.v1",
+          "evaluate-minimum-disk-compatibility-bundle.v1",
+          "verifies-minimum-disk-compatibility.v1",
+          "evaluate-minimum-disk-compatibility-cli.v1"
+        ],
+        "decisionId": "atomic-first-slice"
+      },
+      {
+        "decisionId": "exclude-disk-unit-conversion.v1",
+        "artifactIds": [
+          "evaluate-minimum-disk-compatibility-bundle.v1",
+          "verifies-minimum-disk-compatibility.v1"
+        ]
+      }
+    ]
+  },
+  "effects": [
+    {
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "write-stdout",
+        "portId": "write-stdout.v1"
+      },
+      "effectId": "write-stdout.v1",
+      "operation": "process.stdout.write",
+      "usedByArtifacts": [
+        "verifies-minimum-disk-compatibility.v1",
+        "evaluate-minimum-disk-compatibility-cli.v1"
+      ]
+    },
+    {
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-process-arguments",
+        "portId": "read-cli-argv.v1"
+      },
+      "effectId": "read-cli-argv.v1",
+      "operation": "process.argv",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-cli.v1"
+      ]
+    },
+    {
+      "authority": {
+        "authorityType": "port-authority.v1",
+        "effect": "read-input-file",
+        "portId": "read-cli-input-file.v1"
+      },
+      "effectId": "read-cli-input-file.v1",
+      "operation": "readFileSync",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-cli.v1"
+      ]
+    }
+  ],
+  "exclusions": [
+    "README.md",
+    "contracts/runtime-profiles/node-service-runtime.v1.json",
+    "docs/intent.md",
+    "features/evaluate-system-runtime-compatibility.feature",
+    "features/evaluate-system-runtime-compatibility.intent.json",
+    "package-lock.json",
+    "package.json",
+    "schemas/README.md",
+    "scripts/README.md",
+    "src/README.md",
+    "test/README.md",
+    "tsconfig.json"
+  ],
+  "interpretationBase": {
+    "conformanceProfile": {
+      "digest": "sha256:7c7c0133bcdfcf9d159552a1cd94f1787eec998dbc049b0438142aac64a9f3c9",
+      "identity": "closed-world-artifact-conformance.v9"
+    },
+    "engine": {
+      "digest": "sha256:25fdf0e88d26e77986ec3db8cf224f82028827a6ed4ed2bef8c4477f814ff1ba",
+      "identity": "governed-artifact-engine.0.22.0"
+    },
+    "migrationRegistry": {
+      "digest": "sha256:4b1bcd84a8d87c0b0029dde0ff1a5fdc30dce8f8bbe96202d719a7ff082cd3cc",
+      "identity": "governed-artifact-migration-registry.v1"
+    },
+    "projectorRegistry": {
+      "digest": "sha256:1ab8ec48c80324c862cf598813554847fc4224ecb146e8dbddf7d9b1efdb2785",
+      "identity": "governed-artifact-projector-registry.v1"
+    },
+    "schema": {
+      "digest": "sha256:aa4b9f6af2a1dde5c241384f5abb7a5255dce85cebd5cfce9525297622d2d7f6",
+      "identity": "https://canonical.local/schemas/governed-artifact-contract.schema.json"
+    },
+    "verifierRegistry": {
+      "digest": "sha256:ce859620f2c1edae49f8ad58924f6b10780a1c3e55eb1de90619eeee3abc674c",
+      "identity": "governed-artifact-verifier-registry.v1"
+    }
+  },
+  "lineage": {
+    "authorityType": "canonical-lineage-authority.v1",
+    "features": [
+      {
+        "featureId": "system-runtime.evaluate-compatibility",
+        "projectId": "runtime-capability-evaluator",
+        "purpose": "Determine whether a system supports a declared runtime profile"
+      }
+    ],
+    "obligations": [
+      {
+        "obligationId": "system-below-minimum-disk-is-rejected",
+        "scenarioId": "system-runtime.evaluate-compatibility.reject-incompatible-runtime-version",
+        "statement": "A system whose observed available disk is below the node-service-runtime.v1 profile's minimum major version must be rejected."
+      }
+    ],
+    "projectId": "runtime-capability-evaluator",
+    "responsibilities": [
+      {
+        "artifactId": "evaluate-minimum-disk-compatibility-body.v1",
+        "obligationId": "system-below-minimum-disk-is-rejected",
+        "projectionProfileId": "javascript-semantic-execution-body.v1",
+        "responsibilityId": "evaluates-minimum-disk-compatibility",
+        "responsibilityType": "semantic-execution"
+      },
+      {
+        "artifactId": "verifies-minimum-disk-compatibility.v1",
+        "obligationId": "system-below-minimum-disk-is-rejected",
+        "projectionProfileId": "javascript-verification-body.v1",
+        "responsibilityId": "verifies-minimum-disk-compatibility-module",
+        "responsibilityType": "proof-evaluation"
+      },
+      {
+        "artifactId": "evaluate-minimum-disk-compatibility-cli.v1",
+        "obligationId": "system-below-minimum-disk-is-rejected",
+        "projectionProfileId": "javascript-command-body.v1",
+        "responsibilityId": "evaluate-minimum-disk-compatibility-cli-module.v1",
+        "responsibilityType": "command-entry"
+      }
+    ],
+    "scenarios": [
+      {
+        "featureId": "system-runtime.evaluate-compatibility",
+        "purpose": "Reject a system whose available disk is below the required minimum",
+        "scenarioId": "system-runtime.evaluate-compatibility.reject-incompatible-runtime-version"
+      }
+    ]
+  },
+  "projectionLedger": {
+    "relativePath": "receipts/evaluate-minimum-disk-compatibility.projection-ledger.json"
+  },
+  "receipt": {
+    "relativePath": "receipts/evaluate-minimum-disk-compatibility.receipt.json"
+  },
+  "runtimeAuthorities": [
+    {
+      "invocation": "executeSemanticAuthority",
+      "purpose": "Executes the admitted bound-semantic-execution-authority bundle for this responsibility.",
+      "runtimeAuthorityId": "semantic-authority-runtime.v1",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-body.v1"
+      ]
+    },
+    {
+      "invocation": "assert.equal",
+      "purpose": "Asserts the projected body's disposition matches the expected canonical test vector.",
+      "runtimeAuthorityId": "assert-equal-runtime.v1",
+      "usedByArtifacts": [
+        "verifies-minimum-disk-compatibility.v1"
+      ]
+    },
+    {
+      "invocation": "JSON.parse",
+      "purpose": "Parses the admitted UTF-8 JSON system-facts input file.",
+      "runtimeAuthorityId": "json-parse-runtime.v1",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-cli.v1"
+      ]
+    },
+    {
+      "invocation": "JSON.stringify",
+      "purpose": "Serializes the compatibility result for the fixed stdout output contract.",
+      "runtimeAuthorityId": "json-stringify-runtime.v1",
+      "usedByArtifacts": [
+        "evaluate-minimum-disk-compatibility-cli.v1"
+      ]
+    }
+  ],
+  "subject": {
+    "authority": {
+      "authorityType": "live-model-curated-feature-intent.v1",
+      "featureId": "system-runtime.evaluate-minimum-disk-compatibility",
+      "inferenceRequestHash": "sha256:ec305f4866e0e220b8f0cdde90e03c45f6866ca2045a2ce820573a64c0ff8846",
+      "inferenceResponseHash": "sha256:7f0284a804d1100720fef7f6e7967341fab312161dbf97d2cb115eb0cff54f5a",
+      "sourceIntent": "docs/evaluate-minimum-disk-compatibility.intent.md"
+    },
+    "purpose": "Evaluate input-authoritative available and required disk capacity without probing or unit-conversion policy.",
+    "subjectId": "evaluates-minimum-disk-compatibility",
+    "subjectType": "capability-responsibility"
+  },
+  "workspace": {
+    "artifactRoot": ".",
+    "governedScope": {
+      "governedDirectories": [],
+      "inventoryMode": "declared-paths",
+      "outsideScopePosture": "outside-authority",
+      "requiredDisposition": "ARTIFACT_SCOPE_CLOSED",
+      "scopeType": "declared-artifact-scope.v1"
+    },
+    "pathExceptions": [],
+    "workspaceRoot": "."
+  }
+}
