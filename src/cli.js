@@ -45,7 +45,7 @@ import { loadsRepositoryTestKnowledgeIntoSqlServer, queriesCurrentRepositoryTest
 import { executesCanonicalTestVector } from "./canonical-test-vector.js";
 import { extractsCanonicalTestVectorFromSqlServer, recordsCanonicalTestExecutionInSqlServer } from "./sqlserver/canonical-test-vector.js";
 import { projectsRepositoryExecutionKnowledge } from "./repository-execution-knowledge.js";
-import { recordsRepositoryExecutionKnowledgeInSqlServer, queriesCurrentOperationalExecutionSummary, admitsMechanicAuthorityInSqlServer } from "./sqlserver/repository-execution-knowledge.js";
+import { recordsRepositoryExecutionKnowledgeInSqlServer, queriesCurrentOperationalExecutionSummary, admitsMechanicAuthorityInSqlServer, queriesCurrentMechanicAuthorityCandidates } from "./sqlserver/repository-execution-knowledge.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -63,6 +63,7 @@ import { projectsBoundReportQueryReceiptArtifact, projectsReportQueryReceiptArti
 import { validatesSelfGovernanceReport } from "./governance/validates-self-governance-report.js";
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
 import { discoversCanonicalFeatureIntents } from "./governance/canonical-feature-intent.js";
+import { processesDeterministicMechanicAuthorityBatch } from "./governance/processes-deterministic-mechanic-authority.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -164,6 +165,8 @@ if (command === "project") {
   await runExecutionKnowledge(args.slice(1));
 } else if (command === "admit-mechanic-authority") {
   await runAdmitMechanicAuthority(args.slice(1));
+} else if (command === "lower-mechanic-authority") {
+  await runLowerMechanicAuthority(args.slice(1));
 } else if (command === "prove-test-vector") {
   await runProveTestVector(args.slice(1));
 } else if (command === "ingest") {
@@ -1037,6 +1040,44 @@ async function runAdmitMechanicAuthority(rawArgs) {
   }
 }
 
+async function runLowerMechanicAuthority(rawArgs) {
+  const { flags } = parseArgs(rawArgs);
+  if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
+  const limit = flags.limit === undefined ? 100 : Number(flags.limit);
+  if (!Number.isInteger(limit) || limit < 1 || limit > 1000) throw new Error("--limit must be an integer from 1 through 1000.");
+  const connection = resolvesSqlServerConnection(flags);
+  const batch = await processesDeterministicMechanicAuthorityBatch({
+    rootId: flags.rootId,
+    workspaceRoot: path.resolve(flags.workspace ?? process.cwd()),
+    mechanicKind: flags.mechanicKind ?? "branch",
+    mechanicOccurrenceId: flags.mechanicOccurrenceId ?? null,
+    limit,
+    admit: flags.admit === true,
+    connection,
+    candidateQuery: queriesCurrentMechanicAuthorityCandidates,
+    authorityAdmitter: admitsMechanicAuthorityInSqlServer,
+  });
+  if (typeof flags.outputDir === "string") {
+    const outputDirectory = path.resolve(flags.outputDir);
+    for (const result of batch.projected) {
+      const outputPath = path.join(outputDirectory, `${result.mechanicOccurrenceId}.authority.json`);
+      await writesJsonFile(outputPath, result.authorityData, { pretty: true });
+      process.stdout.write(`${outputPath}\n`);
+    }
+  }
+  process.stdout.write(`${batch.disposition}\n`);
+  if (flags.summary === true) {
+    process.stdout.write(`Root: ${batch.rootId}\n`);
+    process.stdout.write(`Mechanic kind: ${batch.mechanicKind}\n`);
+    process.stdout.write(`Mode: ${batch.mode}\n`);
+    process.stdout.write(`Candidates: ${batch.candidateCount}\n`);
+    process.stdout.write(`Projected: ${batch.projectedCount}\n`);
+    process.stdout.write(`Rejected: ${batch.rejectedCount}\n`);
+    process.stdout.write(`Admitted: ${batch.admittedCount}\n`);
+    for (const rejection of batch.rejected) process.stdout.write(`Rejected ${rejection.mechanicOccurrenceId}: ${rejection.code}\n`);
+  }
+}
+
 async function runProveTestVector(rawArgs) {
   const { flags } = parseArgs(rawArgs);
   if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
@@ -1547,6 +1588,9 @@ function parseArgs(rawArgs) {
     "--root-id",
     "--test-vector-id",
     "--mechanic-occurrence-id",
+    "--mechanic-kind",
+    "--limit",
+    "--output-dir",
     "--application-id",
     "--repository-id",
     "--output",
@@ -1620,7 +1664,7 @@ function parseArgs(rawArgs) {
     "--closure-receipt",
     "--contract-map-root",
   ]);
-  const booleanOptions = new Set(["--pretty", "--summary", "--prove", "--project", "--gate", "--write", "--write-receipt"]);
+  const booleanOptions = new Set(["--pretty", "--summary", "--prove", "--project", "--gate", "--write", "--write-receipt", "--admit"]);
   for (let index = 0; index < rawArgs.length; index++) {
     const current = rawArgs[index];
     if (!current.startsWith("-")) {
@@ -1718,6 +1762,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se analyze-execution --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se execution-knowledge --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se admit-mechanic-authority --root-id <id> --mechanic-occurrence-id <id> --authority-file <file> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se lower-mechanic-authority --root-id <id> [--workspace <dir>] [--mechanic-kind branch] [--mechanic-occurrence-id <id>] [--limit <1-1000>] [--output-dir <dir>] [--admit] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id <id> --test-vector-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);

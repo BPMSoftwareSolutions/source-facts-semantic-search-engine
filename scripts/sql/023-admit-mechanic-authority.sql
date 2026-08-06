@@ -33,6 +33,8 @@ BEGIN
 
     DECLARE @RootId nvarchar(400)=JSON_VALUE(@PayloadJson,'$.rootId');
     DECLARE @MechanicOccurrenceId varchar(120)=JSON_VALUE(@PayloadJson,'$.mechanicOccurrenceId');
+    DECLARE @ExpectedAnalysisDigest varchar(80)=JSON_VALUE(@PayloadJson,'$.expectedAnalysisDigest');
+    DECLARE @ExpectedArtifactDigest varchar(80)=JSON_VALUE(@PayloadJson,'$.expectedArtifactDigest');
     DECLARE @AuthorityDataJson nvarchar(max)=JSON_QUERY(@PayloadJson,'$.authorityData');
     IF @RootId IS NULL OR @MechanicOccurrenceId IS NULL THROW 51091,'Mechanic authority admission requires rootId and mechanicOccurrenceId.',1;
     IF ISJSON(@AuthorityDataJson)<>1 THROW 51092,'Admitted authority data must be JSON.',1;
@@ -42,12 +44,14 @@ BEGIN
     FROM projection.CurrentRepositoryExecutionAnalysis
     WHERE RootId=@RootId AND ExecutionAnalysisDisposition='EXECUTION_ANALYSIS_CURRENT';
     IF @AnalysisDigest IS NULL THROW 51093,'Root does not have a current execution analysis.',1;
+    IF @ExpectedAnalysisDigest IS NOT NULL AND @ExpectedAnalysisDigest<>@AnalysisDigest THROW 51095,'Current execution analysis does not match deterministic lowering evidence.',1;
 
-    DECLARE @AuthorityFamily varchar(80);
-    SELECT @AuthorityFamily=AuthorityFamily
-    FROM projection.ExecutionMechanicAuthority
+    DECLARE @AuthorityFamily varchar(80),@CurrentArtifactDigest varchar(80);
+    SELECT @AuthorityFamily=AuthorityFamily,@CurrentArtifactDigest=ArtifactDigest
+    FROM projection.CurrentExecutionMechanicOccurrence
     WHERE SourceFactIndexId=@SourceFactIndexId AND RootId=@RootId AND MechanicOccurrenceId=@MechanicOccurrenceId;
     IF @AuthorityFamily IS NULL THROW 51094,'Mechanic occurrence has no current, supported authority family to admit against.',1;
+    IF @ExpectedArtifactDigest IS NOT NULL AND COALESCE(@CurrentArtifactDigest,'')<>@ExpectedArtifactDigest THROW 51096,'Current source artifact does not match deterministic lowering evidence.',1;
 
     DECLARE @AuthorityDigest varchar(80)=CONCAT('sha256:',LOWER(CONVERT(varchar(64),HASHBYTES('SHA2_256',CONVERT(varchar(max),@AuthorityDataJson)),2)));
 
@@ -111,6 +115,18 @@ LEFT JOIN authority.MechanicApplicabilityReview applicability ON applicability.A
 LEFT JOIN projection.ExecutionMechanicAuthority authorityProjection ON authorityProjection.SourceFactIndexId=mechanic.IndexId AND authorityProjection.RootId=mechanic.RootId AND authorityProjection.MechanicOccurrenceId=mechanic.ExecutableMechanicFactId
 LEFT JOIN authority.MechanicAuthorityAdmission admission ON admission.AnalysisDigest=currentAnalysis.AnalysisDigest AND admission.MechanicOccurrenceId=mechanic.ExecutableMechanicFactId
 WHERE currentAnalysis.ExecutionAnalysisDisposition='EXECUTION_ANALYSIS_CURRENT';
+GO
+
+CREATE OR ALTER VIEW projection.CurrentAuthorityCompletionBacklog AS
+SELECT mechanic.RootId,mechanic.ResponsibilityId,mechanic.BodySymbolId,mechanic.SymbolName,mechanic.ArtifactId,mechanic.MechanicKind,mechanic.AuthorityFamily,
+ COUNT(*) OccurrenceCount,COALESCE(MAX(mechanic.InterfaceCount),0) InterfaceCount,COALESCE(MAX(mechanic.TestCaseCount),0) TestCaseCount,
+ COALESCE(MAX(mechanic.InterfaceCount),0)*100+COALESCE(MAX(mechanic.TestCaseCount),0)*10+COUNT(*) LeverageScore,
+ CASE WHEN mechanic.ResponsibilityId IS NULL THEN 'RESPONSIBILITY_OWNERSHIP_REQUIRED'
+      WHEN MAX(CASE WHEN mechanic.ApplicabilityAuthorityDisposition='REVIEWED_APPLICABILITY_AUTHORITY' THEN 1 ELSE 0 END)=0 THEN 'MECHANIC_APPLICABILITY_REVIEW_REQUIRED'
+      ELSE 'MECHANIC_AUTHORITY_COMPLETION_REQUIRED' END BacklogDisposition
+FROM projection.CurrentExecutionMechanicOccurrence mechanic
+WHERE mechanic.AdmissionDisposition<>'AUTHORITY_ADMITTED'
+GROUP BY mechanic.RootId,mechanic.ResponsibilityId,mechanic.BodySymbolId,mechanic.SymbolName,mechanic.ArtifactId,mechanic.MechanicKind,mechanic.AuthorityFamily;
 GO
 
 CREATE OR ALTER VIEW projection.CurrentOperationalExecutionSummary AS

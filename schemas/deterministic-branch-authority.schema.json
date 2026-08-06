@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json",
+  "title": "Deterministically lowered branch authority",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["authorityKind", "candidateAuthorityId", "inputs", "rules", "outcomes", "noMatchDisposition"],
+  "properties": {
+    "authorityKind": { "const": "decision-authority.v1" },
+    "candidateAuthorityId": { "type": "string", "minLength": 1 },
+    "inputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ruleId", "predicate", "outcomeId"],
+        "properties": {
+          "ruleId": { "type": "string", "minLength": 1 },
+          "predicate": { "type": "object" },
+          "outcomeId": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["outcomeId"],
+        "properties": {
+          "outcomeId": { "type": "string", "minLength": 1 },
+          "effects": { "type": "array", "items": { "type": "object" } },
+          "result": { "type": "object" },
+          "continuation": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "noMatchDisposition": { "type": "string", "minLength": 1 }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "authorityKind": "decision-authority.v1",
+  "candidateAuthorityId": "candidate-8dffaeb6c1f2b0f03c2afc5bf007f3cd00bce1c12f81786431512b4c780032ad",
+  "inputs": [
+    "argument"
+  ],
+  "rules": [
+    {"ruleId":"match-8dffaeb6c1f2b0f03c2afc5bf007f3cd00bce1c12f81786431512b4c780032ad","predicate":{"kind":"binary","operator":"===","left":{"kind":"reference","path":["argument"]},"right":{"kind":"literal","literalType":"string","value":"--candidates"}},"outcomeId":"BRANCH_MATCHED"}
+  ],
+  "outcomes": [
+    {"outcomeId":"BRANCH_MATCHED","effects":[{"kind":"evaluate","expression":{"kind":"binary","operator":"=","left":{"kind":"reference","path":["options","candidates"]},"right":{"kind":"reference","path":["value"]}}}]},
+    {"outcomeId":"BRANCH_NOT_MATCHED","effects":[{"kind":"branch","predicate":{"kind":"binary","operator":"===","left":{"kind":"reference","path":["argument"]},"right":{"kind":"literal","literalType":"string","value":"--contract"}},"whenTrue":[{"kind":"evaluate","expression":{"kind":"binary","operator":"=","left":{"kind":"reference","path":["options","contract"]},"right":{"kind":"reference","path":["value"]}}}],"whenFalse":[{"kind":"branch","predicate":{"kind":"binary","operator":"===","left":{"kind":"reference","path":["argument"]},"right":{"kind":"literal","literalType":"string","value":"--workspace"}},"whenTrue":[{"kind":"evaluate","expression":{"kind":"binary","operator":"=","left":{"kind":"reference","path":["options","workspace"]},"right":{"kind":"reference","path":["value"]}}}],"whenFalse":[{"kind":"branch","predicate":{"kind":"binary","operator":"===","left":{"kind":"reference","path":["argument"]},"right":{"kind":"literal","literalType":"string","value":"--output"}},"whenTrue":[{"kind":"evaluate","expression":{"kind":"binary","operator":"=","left":{"kind":"reference","path":["options","output"]},"right":{"kind":"reference","path":["value"]}}}],"whenFalse":[{"kind":"branch","predicate":{"kind":"binary","operator":"===","left":{"kind":"reference","path":["argument"]},"right":{"kind":"literal","literalType":"string","value":"--context-lines"}},"whenTrue":[{"kind":"evaluate","expression":{"kind":"binary","operator":"=","left":{"kind":"reference","path":["options","contextLines"]},"right":{"kind":"call","callee":{"kind":"reference","path":["Number","parseInt"]},"arguments":[{"kind":"reference","path":["value"]},{"kind":"literal","literalType":"number","value":10}]}}}],"whenFalse":[]}]}]}]}],"continuation":"EXECUTE_ELSE_BRANCH"}
+  ],
+  "noMatchDisposition": "BRANCH_NOT_MATCHED"
+}

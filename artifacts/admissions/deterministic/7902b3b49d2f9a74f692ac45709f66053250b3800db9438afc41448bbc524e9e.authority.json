@@ -1,0 +1,15 @@
+{
+  "authorityKind": "decision-authority.v1",
+  "candidateAuthorityId": "candidate-7902b3b49d2f9a74f692ac45709f66053250b3800db9438afc41448bbc524e9e",
+  "inputs": [
+    "scannerLoaded"
+  ],
+  "rules": [
+    {"ruleId":"match-7902b3b49d2f9a74f692ac45709f66053250b3800db9438afc41448bbc524e9e","predicate":{"kind":"unary","operator":"!","operand":{"kind":"reference","path":["scannerLoaded"]}},"outcomeId":"BRANCH_MATCHED"}
+  ],
+  "outcomes": [
+    {"outcomeId":"BRANCH_MATCHED","effects":[{"kind":"evaluate","expression":{"kind":"call","callee":{"kind":"reference","path":["failed","push"]},"arguments":[{"kind":"literal","literalType":"string","value":"@deterministic-solutions/source-code-taxonomy-scanner"}]}}]},
+    {"outcomeId":"BRANCH_NOT_MATCHED","effects":[],"continuation":"CONTINUE_AFTER_BRANCH"}
+  ],
+  "noMatchDisposition": "BRANCH_NOT_MATCHED"
+}

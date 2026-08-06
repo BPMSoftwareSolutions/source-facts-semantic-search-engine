@@ -1,0 +1,16 @@
+{
+  "authorityKind": "decision-authority.v1",
+  "candidateAuthorityId": "candidate-e5ec0500ddb36180ebefbf5e5caca635626803b5946609113c227d6a54d7a64e",
+  "inputs": [
+    "scannerLoaded",
+    "queryLoaded"
+  ],
+  "rules": [
+    {"ruleId":"match-e5ec0500ddb36180ebefbf5e5caca635626803b5946609113c227d6a54d7a64e","predicate":{"kind":"binary","operator":"||","left":{"kind":"unary","operator":"!","operand":{"kind":"reference","path":["scannerLoaded"]}},"right":{"kind":"unary","operator":"!","operand":{"kind":"reference","path":["queryLoaded"]}}},"outcomeId":"BRANCH_MATCHED"}
+  ],
+  "outcomes": [
+    {"outcomeId":"BRANCH_MATCHED","effects":[{"kind":"declare","declarationKind":"const","bindings":[{"binding":{"kind":"binding","name":"failed"},"initializer":{"kind":"array","items":[]}}]},{"kind":"branch","predicate":{"kind":"unary","operator":"!","operand":{"kind":"reference","path":["scannerLoaded"]}},"whenTrue":[{"kind":"evaluate","expression":{"kind":"call","callee":{"kind":"reference","path":["failed","push"]},"arguments":[{"kind":"literal","literalType":"string","value":"@deterministic-solutions/source-code-taxonomy-scanner"}]}}],"whenFalse":[]},{"kind":"branch","predicate":{"kind":"unary","operator":"!","operand":{"kind":"reference","path":["queryLoaded"]}},"whenTrue":[{"kind":"evaluate","expression":{"kind":"call","callee":{"kind":"reference","path":["failed","push"]},"arguments":[{"kind":"literal","literalType":"string","value":"@deterministic-solutions/sej-runtime-query"}]}}],"whenFalse":[]},{"kind":"throw","error":{"kind":"construct","callee":{"kind":"reference","path":["Error"]},"arguments":[{"kind":"template","head":"Unable to load production dependencies: ","spans":[{"expression":{"kind":"call","callee":{"kind":"reference","path":["failed","join"]},"arguments":[{"kind":"literal","literalType":"string","value":", "}]},"literal":""}]}]}}]},
+    {"outcomeId":"BRANCH_NOT_MATCHED","effects":[],"continuation":"CONTINUE_AFTER_BRANCH"}
+  ],
+  "noMatchDisposition": "BRANCH_NOT_MATCHED"
+}

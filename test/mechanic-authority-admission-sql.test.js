@@ -10,6 +10,8 @@ test("admits completed mechanic authority and echoes its identity",async()=>{
     rootId:"root",
     mechanicOccurrenceId:"sha256:mechanic-1",
     authorityData:{authorityKind:"decision-authority.v1",candidateAuthorityId:"candidate-sha256:mechanic-1",inputs:[],rules:[],outcomes:[],noMatchDisposition:"DECISION_NOT_RESOLVED"},
+    expectedAnalysisDigest:"sha256:analysis",
+    expectedArtifactDigest:"sha256:artifact",
     connection,
     queryRunner:async request=>{
       query=request.query;
@@ -23,6 +25,8 @@ test("admits completed mechanic authority and echoes its identity",async()=>{
   assert.match(query,/EXEC ingestion\.AdmitMechanicAuthority/u);
   assert.match(query,/mechanic-1/u);
   assert.match(query,/DECISION_NOT_RESOLVED/u);
+  assert.match(query,/expectedAnalysisDigest/u);
+  assert.match(query,/sha256:artifact/u);
 });
 
 test("rejects a mismatched identity echoed back from SQL Server",async()=>{

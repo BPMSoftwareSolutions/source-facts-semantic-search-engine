@@ -7,6 +7,7 @@ node_modules/
 !contracts/**/*.json
 !features/**/*.json
 !schemas/**/*.json
+!artifacts/admissions/**/*.json
 .env
 .env.local
 .DS_Store

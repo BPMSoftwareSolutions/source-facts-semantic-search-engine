@@ -25,12 +25,12 @@ export async function queriesCurrentOperationalExecutionSummary({ rootId, connec
   return Object.freeze({ rootId, sourceFileCount:Number(sourceFileCount), callableCount:Number(callableCount), commandCount:Number(commandCount), reachabilityRowCount:Number(reachabilityRowCount), mechanicCount:Number(mechanicCount), testMechanicCount:Number(testMechanicCount), interfaceReachableMechanicCount:Number(interfaceReachableMechanicCount), responsibilityLinkedMechanicCount:Number(responsibilityLinkedMechanicCount), responsibilityOwnedMechanicCount:Number(responsibilityOwnedMechanicCount), testReachedMechanicCount:Number(testReachedMechanicCount), authorityAdmittedMechanicCount:Number(authorityAdmittedMechanicCount), reachableUnownedCallableCount:Number(reachableUnownedCallableCount), unreachableCallableCount:Number(unreachableCallableCount), authorityCompletionBacklogCount:Number(authorityCompletionBacklogCount), executionAnalysisDisposition, disposition:"OPERATIONAL_EXECUTION_KNOWLEDGE_QUERIED" });
 }
 
-export async function admitsMechanicAuthorityInSqlServer({ rootId, mechanicOccurrenceId, authorityData, connection, sqlcmdPath = "sqlcmd", queryRunner = runsSqlcmdQuery } = {}) {
+export async function admitsMechanicAuthorityInSqlServer({ rootId, mechanicOccurrenceId, authorityData, expectedAnalysisDigest = null, expectedArtifactDigest = null, connection, sqlcmdPath = "sqlcmd", queryRunner = runsSqlcmdQuery } = {}) {
   verifiesConnection(connection);
   if (typeof rootId !== "string" || rootId.length === 0) throw new Error("rootId is required.");
   if (typeof mechanicOccurrenceId !== "string" || mechanicOccurrenceId.length === 0) throw new Error("mechanicOccurrenceId is required.");
   if (authorityData === null || typeof authorityData !== "object") throw new Error("authorityData is required.");
-  const payload = { rootId, mechanicOccurrenceId, authorityData };
+  const payload = { rootId, mechanicOccurrenceId, authorityData, ...(expectedAnalysisDigest === null ? {} : { expectedAnalysisDigest }), ...(expectedArtifactDigest === null ? {} : { expectedArtifactDigest }) };
   const query = `SET NOCOUNT ON; DECLARE @PayloadJson nvarchar(max)=${sqlStringLiteral(JSON.stringify(payload))}; EXEC ingestion.AdmitMechanicAuthority @PayloadJson=@PayloadJson;`;
   const lines = await queryRunner({ connection, sqlcmdPath, query });
   const row = lines.find((line) => line.startsWith("M|"));
@@ -38,6 +38,18 @@ export async function admitsMechanicAuthorityInSqlServer({ rootId, mechanicOccur
   const [, analysisDigest, occurrenceId, authorityDigest, disposition] = row.split("|");
   if (occurrenceId !== mechanicOccurrenceId) throw new Error("SQL Server mechanic authority admission identity mismatch.");
   return Object.freeze({ rootId, analysisDigest, mechanicOccurrenceId, authorityDigest, disposition });
+}
+
+export async function queriesCurrentMechanicAuthorityCandidates({ rootId, mechanicKind = "branch", mechanicOccurrenceId = null, limit = 100, connection, sqlcmdPath = "sqlcmd", queryRunner = runsSqlcmdQuery } = {}) {
+  verifiesConnection(connection);
+  if (typeof rootId !== "string" || rootId.length === 0) throw new Error("rootId is required.");
+  if (typeof mechanicKind !== "string" || mechanicKind.length === 0) throw new Error("mechanicKind is required.");
+  if (mechanicOccurrenceId !== null && (typeof mechanicOccurrenceId !== "string" || mechanicOccurrenceId.length === 0)) throw new Error("mechanicOccurrenceId must be a non-empty string or null.");
+  if (!Number.isInteger(limit) || limit < 1 || limit > 1000) throw new Error("limit must be an integer from 1 through 1000.");
+  const occurrenceFilter = mechanicOccurrenceId === null ? "" : ` AND mechanic.MechanicOccurrenceId=${sqlStringLiteral(mechanicOccurrenceId)}`;
+  const query = `SET NOCOUNT ON; SELECT CONCAT('C|',(SELECT candidate.MechanicOccurrenceId mechanicOccurrenceId,candidate.MechanicKind mechanicKind,candidate.ArtifactId artifactId,candidate.ArtifactDigest artifactDigest,candidate.ExecutionAnalysisDigest executionAnalysisDigest,candidate.StartLine startLine,candidate.StartColumn startColumn,candidate.AuthorityFamily authorityFamily FOR JSON PATH,WITHOUT_ARRAY_WRAPPER,INCLUDE_NULL_VALUES)) FROM (SELECT TOP (${limit}) mechanic.MechanicOccurrenceId,mechanic.MechanicKind,mechanic.ArtifactId,mechanic.ArtifactDigest,mechanic.ExecutionAnalysisDigest,mechanic.StartLine,mechanic.StartColumn,mechanic.AuthorityFamily FROM projection.CurrentExecutionMechanicOccurrence mechanic WHERE mechanic.RootId=${sqlStringLiteral(rootId)} AND mechanic.MechanicKind=${sqlStringLiteral(mechanicKind)} AND mechanic.AdmissionDisposition<>'AUTHORITY_ADMITTED'${occurrenceFilter} ORDER BY mechanic.ArtifactId,mechanic.StartLine,mechanic.StartColumn,mechanic.MechanicOccurrenceId) candidate;`;
+  const lines = await queryRunner({ connection, sqlcmdPath, query });
+  return Object.freeze(lines.filter((line) => line.startsWith("C|")).map((line) => Object.freeze(JSON.parse(line.slice(2)))));
 }
 
 function verifiesConnection(connection){if(connection===null||typeof connection!=="object"||typeof connection.buildsArgs!=="function")throw new Error("connection is required (see resolves-sql-connection.js).");}

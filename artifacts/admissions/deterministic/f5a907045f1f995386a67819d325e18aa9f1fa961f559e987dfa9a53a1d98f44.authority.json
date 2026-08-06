@@ -1,0 +1,15 @@
+{
+  "authorityKind": "decision-authority.v1",
+  "candidateAuthorityId": "candidate-f5a907045f1f995386a67819d325e18aa9f1fa961f559e987dfa9a53a1d98f44",
+  "inputs": [
+    "queryLoaded"
+  ],
+  "rules": [
+    {"ruleId":"match-f5a907045f1f995386a67819d325e18aa9f1fa961f559e987dfa9a53a1d98f44","predicate":{"kind":"unary","operator":"!","operand":{"kind":"reference","path":["queryLoaded"]}},"outcomeId":"BRANCH_MATCHED"}
+  ],
+  "outcomes": [
+    {"outcomeId":"BRANCH_MATCHED","effects":[{"kind":"evaluate","expression":{"kind":"call","callee":{"kind":"reference","path":["failed","push"]},"arguments":[{"kind":"literal","literalType":"string","value":"@deterministic-solutions/sej-runtime-query"}]}}]},
+    {"outcomeId":"BRANCH_NOT_MATCHED","effects":[],"continuation":"CONTINUE_AFTER_BRANCH"}
+  ],
+  "noMatchDisposition": "BRANCH_NOT_MATCHED"
+}

@@ -1,0 +1,27 @@
+{
+  "authorityKind": "decision-authority.v1",
+  "candidateAuthorityId": "candidate-2be4e398311235051df5d774aed2dfb4ebbb0555bbccbc9b3a35a2b6117a55db",
+  "inputs": [
+    "contractPath"
+  ],
+  "rules": [
+    {
+      "ruleId": "include-resolved-contract-authority",
+      "when": {
+        "contractPath": {
+          "isNotNull": true
+        }
+      },
+      "then": {
+        "outcome": "CONTRACT_AUTHORITY_INCLUDED"
+      }
+    }
+  ],
+  "outcomes": [
+    {
+      "outcomeId": "CONTRACT_AUTHORITY_INCLUDED",
+      "effect": "Read the resolved contract and append it with its source path to the engineering-truth authority collection."
+    }
+  ],
+  "noMatchDisposition": "CONTINUE_WITHOUT_CONTRACT_AUTHORITY"
+}

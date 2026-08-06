@@ -14,6 +14,31 @@ source-facts-se --help
 
 For automation that should not depend on a linked binary, use the equivalent repository-local form: `node .\src\cli.js`.
 
+## Enterprise dependencies
+
+`package.json` resolves several dependencies as `file:../<name>` sibling checkouts
+rather than versioned registry packages, because they are part of the same
+`BPMSoftwareSolutions` enterprise suite and evolve alongside this repository.
+Clone each one as a sibling of this repository (`c:\lab\repos\<name>`, or
+wherever this repository itself lives) before running `npm install`:
+
+| Package                                              | GitHub repository                                                                          |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `@deterministic-solutions/sej-runtime-query`           | https://github.com/BPMSoftwareSolutions/sej-runtime-query                                   |
+| `@deterministic-solutions/semantic-kernel`             | https://github.com/BPMSoftwareSolutions/semantic-kernel                                     |
+| `@deterministic-solutions/source-code-taxonomy-scanner`| https://github.com/BPMSoftwareSolutions/source-code-taxonomy-scanner                        |
+| `@deterministic-solutions/workspace-file-system-governor` | https://github.com/BPMSoftwareSolutions/workspace-file-system-governor                  |
+| `webpage-classification-scanner`                       | https://github.com/BPMSoftwareSolutions/webpage-classification-scanner                      |
+
+```powershell
+cd C:\lab\repos
+git clone https://github.com/BPMSoftwareSolutions/sej-runtime-query.git
+git clone https://github.com/BPMSoftwareSolutions/semantic-kernel.git
+git clone https://github.com/BPMSoftwareSolutions/source-code-taxonomy-scanner.git
+git clone https://github.com/BPMSoftwareSolutions/workspace-file-system-governor.git
+git clone https://github.com/BPMSoftwareSolutions/webpage-classification-scanner.git
+```
+
 To produce a feature-scoped result and a receipt bound to that exact invocation:
 
 ```powershell
@@ -421,6 +446,28 @@ coverage, reachable unowned callables, unreachable bodies, and a leverage-ranked
 authority-completion backlog. Image-digest mismatch makes the entire execution
 analysis stale immediately. Observed call paths, applicability recommendations,
 and authority candidates remain explicitly unadmitted.
+
+Branch candidates can be lowered deterministically from their exact TypeScript
+AST nodes without an LLM. The command is dry-run by default, verifies local bytes
+against the current repository-image artifact digest, validates the completed
+authority schema, and writes no SQL authority unless `--admit` is explicit:
+
+```powershell
+node src/cli.js lower-mechanic-authority `
+  --root-id source-facts-semantic-search-engine `
+  --workspace . `
+  --mechanic-kind branch `
+  --limit 100 `
+  --output-dir artifacts/admissions/deterministic `
+  --connection-env source-facts-semantic-search-engine `
+  --summary
+```
+
+Add `--admit` only after reviewing the dry-run coverage. Admission carries the
+expected execution-analysis and source-artifact digests, so SQL rejects a refresh
+or source change between deterministic lowering and persistence. Unsupported
+mechanic families and syntax remain explicit rejected rows rather than guessed
+authority.
 
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,
