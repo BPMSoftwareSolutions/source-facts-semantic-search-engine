@@ -8,6 +8,12 @@ node_modules/
 !features/**/*.json
 !schemas/**/*.json
 !artifacts/admissions/**/*.json
+!src/console/contracts/console-request-routing.bundle.json
+!src/console/contracts/console-snippet-retrieval.bundle.json
+!src/console/contracts/console-validation.bundle.json
+!source-facts-query-console/contracts/route-dispatch.bundle.json
+!source-facts-query-console/contracts/loopback-bind.bundle.json
+!source-facts-query-console/contracts/query-console-csp-policy.bundle.json
 .env
 .env.local
 .DS_Store

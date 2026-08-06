@@ -1,0 +1,557 @@
+{
+  "bundleType": "semantic-execution-bundle.v1",
+  "bundleId": "query-console-csp-policy.authority.v1",
+  "authority": {
+    "authorityType": "deterministic-ontology-authority.v1",
+    "ontologyId": "query-console-csp-policy",
+    "concepts": [
+      {
+        "abstract": false,
+        "conceptId": "csp-policy-request",
+        "conceptType": "domain-entity",
+        "isA": [],
+        "schemaId": "csp-policy-request.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "csp-policy-request-variant-id",
+        "conceptType": "classification",
+        "isA": [],
+        "schemaId": "csp-policy-request-variant-id.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "obligation-status",
+        "conceptType": "signal",
+        "isA": [],
+        "schemaId": "obligation-status.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "result-kind-concept",
+        "conceptType": "canonical-value",
+        "isA": [],
+        "schemaId": "result-kind.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "csp-policy-value-concept",
+        "conceptType": "canonical-value",
+        "isA": [],
+        "schemaId": "csp-policy-value.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "csp-policy-result",
+        "conceptType": "result-union",
+        "isA": [],
+        "schemaId": "csp-policy-result.schema.v1"
+      }
+    ],
+    "relations": [
+      {
+        "relationId": "csp-policy-value-relation",
+        "relationType": "value-of",
+        "subjectConceptId": "csp-policy-value-concept",
+        "objectConceptId": "csp-policy-value-concept",
+        "cardinality": "exactly-one"
+      }
+    ],
+    "properties": [
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "result-kind",
+        "propertyKind": "projected",
+        "resolutions": [],
+        "subjectConceptId": "csp-policy-result",
+        "valueConceptId": "result-kind-concept"
+      },
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "csp-policy-value-property",
+        "propertyKind": "projected",
+        "resolutions": [],
+        "subjectConceptId": "csp-policy-result",
+        "valueConceptId": "csp-policy-value-concept"
+      }
+    ],
+    "facts": [
+      {
+        "factId": "csp-header-value-fact",
+        "conceptId": "csp-policy-value-concept",
+        "value": {
+          "type": "string",
+          "value": "default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+        }
+      }
+    ],
+    "classifications": [
+      {
+        "classificationId": "csp-policy-request-variant",
+        "classificationType": "concept-variant",
+        "subjectConceptId": "csp-policy-request",
+        "resultConceptId": "csp-policy-request-variant-id",
+        "variants": [
+          "csp-policy-request"
+        ],
+        "noMatchDisposition": "CSP_POLICY_REQUEST_VARIANT_UNRESOLVED",
+        "multipleMatchDisposition": "CSP_POLICY_REQUEST_VARIANT_AMBIGUOUS"
+      }
+    ],
+    "constraints": [],
+    "translations": [],
+    "obligations": [
+      {
+        "obligationId": "csp-policy-request-recognized-obligation",
+        "subjectConceptId": "csp-policy-request",
+        "classificationId": "csp-policy-request-variant",
+        "resultConceptId": "obligation-status",
+        "satisfiedStateIds": [
+          "csp-policy-request"
+        ],
+        "failureDisposition": "CSP_POLICY_REQUEST_NOT_RECOGNIZED"
+      }
+    ],
+    "transformations": [
+      {
+        "transformationId": "project-csp-policy-value",
+        "relationId": "csp-policy-value-relation",
+        "sourceAuthorityId": "csp-header-value-fact",
+        "targetPropertyId": "csp-policy-value-property",
+        "outputPath": [
+          "cspPolicy"
+        ],
+        "valueConceptId": "csp-policy-value-concept",
+        "resultIds": [
+          "csp-policy-projected"
+        ],
+        "unavailableDisposition": "CSP_POLICY_UNAVAILABLE",
+        "invalidTypeDisposition": "CSP_POLICY_INVALID"
+      }
+    ],
+    "results": [
+      {
+        "resultUnionId": "csp-policy-result-union",
+        "resultTypeConceptId": "csp-policy-result",
+        "members": [
+          {
+            "resultId": "csp-policy-projected",
+            "conceptId": "csp-policy-result",
+            "discriminator": {
+              "propertyId": "result-kind",
+              "outputPath": [
+                "kind"
+              ],
+              "value": {
+                "type": "string",
+                "value": "csp-policy-result"
+              }
+            }
+          }
+        ],
+        "selectionRules": [
+          {
+            "ruleId": "always-ok",
+            "when": [
+              {
+                "inputPort": "requestRecognized",
+                "obligationId": "csp-policy-request-recognized-obligation",
+                "status": "satisfied"
+              }
+            ],
+            "resultId": "csp-policy-projected"
+          },
+          {
+            "ruleId": "still-ok-when-violated",
+            "when": [
+              {
+                "inputPort": "requestRecognized",
+                "obligationId": "csp-policy-request-recognized-obligation",
+                "status": "violated"
+              }
+            ],
+            "resultId": "csp-policy-projected"
+          }
+        ],
+        "noMatchDisposition": "RESULT_SELECTION_NOT_TOTAL",
+        "multipleMatchDisposition": "RESULT_SELECTION_AMBIGUOUS",
+        "invalidResultDisposition": "CSP_POLICY_RESULT_INVALID",
+        "serializerId": "identity.v1"
+      }
+    ],
+    "arithmeticOperations": [],
+    "randomDraws": [],
+    "indexedReads": [],
+    "iterations": [],
+    "executionBindings": [
+      {
+        "bindingId": "bind.input.csp-policy-request",
+        "semanticAuthorityId": "csp-policy-request",
+        "executorPrimitive": "input.v1"
+      },
+      {
+        "bindingId": "bind.constant.csp-header-value-fact",
+        "semanticAuthorityId": "csp-header-value-fact",
+        "executorPrimitive": "constant.v1"
+      },
+      {
+        "bindingId": "bind.validate-variant.csp-policy-request-variant",
+        "semanticAuthorityId": "csp-policy-request-variant",
+        "executorPrimitive": "validate-variant.v1"
+      },
+      {
+        "bindingId": "bind.evaluate-obligation.csp-policy-request-recognized-obligation",
+        "semanticAuthorityId": "csp-policy-request-recognized-obligation",
+        "executorPrimitive": "evaluate-obligation.v1"
+      },
+      {
+        "bindingId": "bind.project-value.project-csp-policy-value",
+        "semanticAuthorityId": "project-csp-policy-value",
+        "executorPrimitive": "project-value.v1"
+      },
+      {
+        "bindingId": "bind.select-result.csp-policy-result-union",
+        "semanticAuthorityId": "csp-policy-result-union",
+        "executorPrimitive": "select-result.v1"
+      },
+      {
+        "bindingId": "bind.emit-result.csp-policy-result-union",
+        "semanticAuthorityId": "csp-policy-result-union",
+        "executorPrimitive": "emit-result.v1"
+      },
+      {
+        "bindingId": "bind.serialize-result.csp-policy-result-union",
+        "semanticAuthorityId": "csp-policy-result-union",
+        "executorPrimitive": "serialize-result.v1"
+      }
+    ],
+    "executionGraph": {
+      "entryNodeId": "node.input.csp-policy-request",
+      "terminalNodeIds": [
+        "node.serialize-result.csp-policy-result-union"
+      ],
+      "nodes": [
+        {
+          "nodeId": "node.input.csp-policy-request",
+          "bindingId": "bind.input.csp-policy-request"
+        },
+        {
+          "nodeId": "node.constant.csp-header-value-fact",
+          "bindingId": "bind.constant.csp-header-value-fact"
+        },
+        {
+          "nodeId": "node.validate-variant.csp-policy-request-variant",
+          "bindingId": "bind.validate-variant.csp-policy-request-variant"
+        },
+        {
+          "nodeId": "node.evaluate-obligation.csp-policy-request-recognized-obligation",
+          "bindingId": "bind.evaluate-obligation.csp-policy-request-recognized-obligation"
+        },
+        {
+          "nodeId": "node.project-value.project-csp-policy-value",
+          "bindingId": "bind.project-value.project-csp-policy-value"
+        },
+        {
+          "nodeId": "node.select-result.csp-policy-result-union",
+          "bindingId": "bind.select-result.csp-policy-result-union"
+        },
+        {
+          "nodeId": "node.emit-result.csp-policy-result-union",
+          "bindingId": "bind.emit-result.csp-policy-result-union"
+        },
+        {
+          "nodeId": "node.serialize-result.csp-policy-result-union",
+          "bindingId": "bind.serialize-result.csp-policy-result-union"
+        }
+      ],
+      "edges": [
+        {
+          "edgeId": "edge.input.csp-policy-request.to.constant.csp-header-value-fact.activation",
+          "from": {
+            "nodeId": "node.input.csp-policy-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.constant.csp-header-value-fact",
+            "port": "activation"
+          }
+        },
+        {
+          "edgeId": "edge.input.csp-policy-request.to.validate-variant.csp-policy-request-variant.source",
+          "from": {
+            "nodeId": "node.input.csp-policy-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.validate-variant.csp-policy-request-variant",
+            "port": "source"
+          }
+        },
+        {
+          "edgeId": "edge.validate-variant.csp-policy-request-variant.to.evaluate-obligation.csp-policy-request-recognized-obligation.state",
+          "from": {
+            "nodeId": "node.validate-variant.csp-policy-request-variant",
+            "port": "conceptId"
+          },
+          "to": {
+            "nodeId": "node.evaluate-obligation.csp-policy-request-recognized-obligation",
+            "port": "state"
+          }
+        },
+        {
+          "edgeId": "edge.constant.csp-header-value-fact.to.project-value.project-csp-policy-value.value",
+          "from": {
+            "nodeId": "node.constant.csp-header-value-fact",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.project-value.project-csp-policy-value",
+            "port": "value"
+          }
+        },
+        {
+          "edgeId": "edge.evaluate-obligation.csp-policy-request-recognized-obligation.to.select-result.csp-policy-result-union.request-recognized",
+          "from": {
+            "nodeId": "node.evaluate-obligation.csp-policy-request-recognized-obligation",
+            "port": "status"
+          },
+          "to": {
+            "nodeId": "node.select-result.csp-policy-result-union",
+            "port": "requestRecognized"
+          }
+        },
+        {
+          "edgeId": "edge.project-value.project-csp-policy-value.to.emit-result.csp-policy-result-union.fragment-project-csp-policy-value",
+          "from": {
+            "nodeId": "node.project-value.project-csp-policy-value",
+            "port": "fragment"
+          },
+          "to": {
+            "nodeId": "node.emit-result.csp-policy-result-union",
+            "port": "fragment-project-csp-policy-value"
+          }
+        },
+        {
+          "edgeId": "edge.select-result.csp-policy-result-union.to.emit-result.csp-policy-result-union.selection",
+          "from": {
+            "nodeId": "node.select-result.csp-policy-result-union",
+            "port": "resultId"
+          },
+          "to": {
+            "nodeId": "node.emit-result.csp-policy-result-union",
+            "port": "selection"
+          }
+        },
+        {
+          "edgeId": "edge.emit-result.csp-policy-result-union.to.serialize-result.csp-policy-result-union.result",
+          "from": {
+            "nodeId": "node.emit-result.csp-policy-result-union",
+            "port": "result"
+          },
+          "to": {
+            "nodeId": "node.serialize-result.csp-policy-result-union",
+            "port": "result"
+          }
+        }
+      ]
+    },
+    "proofRequirements": [
+      {
+        "requirementId": "prove-reference-closure",
+        "proofType": "reference-closure",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-type-closure",
+        "proofType": "type-closure",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-cardinality-closure",
+        "proofType": "cardinality-closure",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-classification-totality",
+        "proofType": "classification-totality",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-translation-totality",
+        "proofType": "translation-totality",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-obligation-binding",
+        "proofType": "obligation-binding",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-result-discrimination",
+        "proofType": "result-discrimination",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-execution-binding",
+        "proofType": "execution-binding",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-graph-closure",
+        "proofType": "graph-closure",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-arithmetic-range-closure",
+        "proofType": "arithmetic-range-closure",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-randomness-determinism-closure",
+        "proofType": "randomness-determinism-closure",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-iteration-termination-closure",
+        "proofType": "iteration-termination-closure",
+        "subjectAuthorityId": "query-console-csp-policy",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      }
+    ]
+  },
+  "schemas": [
+    {
+      "schemaId": "csp-policy-request.schema.v1",
+      "digest": "sha256:042b35e50dd5dd505f0228e829f17a8aeaae50e49d865c4754cf9ba1edba9bd0",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      }
+    },
+    {
+      "schemaId": "csp-policy-request-variant-id.schema.v1",
+      "digest": "sha256:702b6afa9ddc7a511295e7471c6704e6145b64779274a09c165acc378ed9d7af",
+      "value": {
+        "const": "csp-policy-request"
+      }
+    },
+    {
+      "schemaId": "obligation-status.schema.v1",
+      "digest": "sha256:5d59fc5fb020fee7ea29a2493b457aa7d8fb46f8012dff970cc65a8a2aa42cad",
+      "value": {
+        "enum": [
+          "satisfied",
+          "violated"
+        ]
+      }
+    },
+    {
+      "schemaId": "result-kind.schema.v1",
+      "digest": "sha256:d25e67830d9b614323ef220311543d5621b903404c1973accf35d2394e75bf17",
+      "value": {
+        "const": "csp-policy-result"
+      }
+    },
+    {
+      "schemaId": "csp-policy-value.schema.v1",
+      "digest": "sha256:00876431431924e0cfad222885106825b323d364981780a602db6f14348de250",
+      "value": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024
+      }
+    },
+    {
+      "schemaId": "csp-policy-result.schema.v1",
+      "digest": "sha256:a616f92afb03cefb5d96d9fbf2a9361384037b2b13d14b246630a96b1b6b08a3",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "cspPolicy"
+        ],
+        "properties": {
+          "kind": {
+            "const": "csp-policy-result"
+          },
+          "cspPolicy": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        }
+      }
+    }
+  ],
+  "catalogs": [],
+  "runtimeProfile": {
+    "identity": "finite-semantic-runtime.v3",
+    "limits": {
+      "maxGraphNodes": 64,
+      "maxGraphEdges": 128,
+      "maxVariants": 16,
+      "maxClassificationInputs": 16,
+      "maxClassificationCases": 128,
+      "maxTranslationCases": 128,
+      "maxPathDepth": 16,
+      "maxOutputDepth": 16,
+      "maxSchemas": 32,
+      "maxTerminalResults": 1,
+      "maxSerializedByteLength": 1048576,
+      "maxOperandDomainSize": 64,
+      "maxIterationSteps": 8192,
+      "maxWorklistItems": 256
+    },
+    "forbiddenCapabilities": [
+      "cycles",
+      "recursion",
+      "dynamic-invocation",
+      "arbitrary-expressions",
+      "user-code",
+      "runtime-module-loading",
+      "unbounded-array-traversal",
+      "regex-authority",
+      "implicit-coercion",
+      "ambient-state",
+      "clock-access",
+      "ambient-randomness",
+      "network-access"
+    ],
+    "admittedPrimitives": [
+      "input.v1",
+      "validate-variant.v1",
+      "read-path.v1",
+      "constant.v1",
+      "test-presence.v1",
+      "classify-value.v1",
+      "classify-observations.v1",
+      "translate-value.v1",
+      "evaluate-obligation.v1",
+      "project-value.v1",
+      "select-result.v1",
+      "emit-result.v1",
+      "add-bounded.v1",
+      "subtract-bounded.v1",
+      "compare-bounded.v1",
+      "seeded-range-draw.v1",
+      "read-indexed-path.v1",
+      "iterate-bounded-worklist.v1",
+      "resolve-branching-worklist.v1",
+      "serialize-result.v1"
+    ],
+    "digest": "sha256:18ca4acba6be2b4d1a0acb6c35df5d32aa5d5afc2acd17b412b0773c1e3cb151"
+  }
+}

@@ -1,0 +1,574 @@
+{
+  "bundleType": "semantic-execution-bundle.v1",
+  "bundleId": "console-snippet-retrieval.bundle.v1",
+  "authority": {
+    "authorityType": "deterministic-ontology-authority.v1",
+    "ontologyId": "console-snippet-retrieval",
+    "concepts": [
+      {
+        "abstract": false,
+        "conceptId": "console-snippet-request",
+        "conceptType": "domain-entity",
+        "isA": [],
+        "schemaId": "console-snippet-request.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "console-snippet-request-variant-id",
+        "conceptType": "classification",
+        "isA": [],
+        "schemaId": "console-snippet-request-variant-id.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "obligation-status",
+        "conceptType": "signal",
+        "isA": [],
+        "schemaId": "obligation-status.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "result-kind-concept",
+        "conceptType": "canonical-value",
+        "isA": [],
+        "schemaId": "result-kind.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "snippet-lines-value-concept",
+        "conceptType": "canonical-value",
+        "isA": [],
+        "schemaId": "snippet-lines-value.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "console-snippet-result",
+        "conceptType": "result-union",
+        "isA": [],
+        "schemaId": "console-snippet-result.schema.v1"
+      }
+    ],
+    "relations": [
+      {
+        "relationId": "snippet-lines-relation",
+        "relationType": "value-of",
+        "subjectConceptId": "snippet-lines-value-concept",
+        "objectConceptId": "snippet-lines-value-concept",
+        "cardinality": "exactly-one"
+      }
+    ],
+    "properties": [
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "result-kind",
+        "propertyKind": "projected",
+        "resolutions": [],
+        "subjectConceptId": "console-snippet-result",
+        "valueConceptId": "result-kind-concept"
+      },
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "lines",
+        "propertyKind": "projected",
+        "resolutions": [],
+        "subjectConceptId": "console-snippet-result",
+        "valueConceptId": "snippet-lines-value-concept"
+      }
+    ],
+    "facts": [
+      {
+        "factId": "empty-lines-fact",
+        "conceptId": "snippet-lines-value-concept",
+        "value": {
+          "type": "array",
+          "value": []
+        }
+      }
+    ],
+    "classifications": [
+      {
+        "classificationId": "console-snippet-request-variant",
+        "classificationType": "concept-variant",
+        "subjectConceptId": "console-snippet-request",
+        "resultConceptId": "console-snippet-request-variant-id",
+        "variants": [
+          "console-snippet-request"
+        ],
+        "noMatchDisposition": "CONSOLE_SNIPPET_REQUEST_VARIANT_UNRESOLVED",
+        "multipleMatchDisposition": "CONSOLE_SNIPPET_REQUEST_VARIANT_AMBIGUOUS"
+      }
+    ],
+    "constraints": [],
+    "translations": [],
+    "obligations": [
+      {
+        "obligationId": "console-snippet-request-recognized-obligation",
+        "subjectConceptId": "console-snippet-request",
+        "classificationId": "console-snippet-request-variant",
+        "resultConceptId": "obligation-status",
+        "satisfiedStateIds": [
+          "console-snippet-request"
+        ],
+        "failureDisposition": "CONSOLE_SNIPPET_REQUEST_NOT_RECOGNIZED"
+      }
+    ],
+    "transformations": [
+      {
+        "transformationId": "project-empty-lines",
+        "relationId": "snippet-lines-relation",
+        "sourceAuthorityId": "empty-lines-fact",
+        "targetPropertyId": "lines",
+        "outputPath": [
+          "lines"
+        ],
+        "valueConceptId": "snippet-lines-value-concept",
+        "resultIds": [
+          "console-snippet-ok"
+        ],
+        "unavailableDisposition": "CONSOLE_SNIPPET_LINES_UNAVAILABLE",
+        "invalidTypeDisposition": "CONSOLE_SNIPPET_LINES_INVALID"
+      }
+    ],
+    "results": [
+      {
+        "resultUnionId": "console-snippet-result-union",
+        "resultTypeConceptId": "console-snippet-result",
+        "members": [
+          {
+            "resultId": "console-snippet-ok",
+            "conceptId": "console-snippet-result",
+            "discriminator": {
+              "propertyId": "result-kind",
+              "outputPath": [
+                "kind"
+              ],
+              "value": {
+                "type": "string",
+                "value": "console-snippet-result"
+              }
+            }
+          }
+        ],
+        "selectionRules": [
+          {
+            "ruleId": "always-ok",
+            "when": [
+              {
+                "inputPort": "requestRecognized",
+                "obligationId": "console-snippet-request-recognized-obligation",
+                "status": "satisfied"
+              }
+            ],
+            "resultId": "console-snippet-ok"
+          },
+          {
+            "ruleId": "still-ok-when-violated",
+            "when": [
+              {
+                "inputPort": "requestRecognized",
+                "obligationId": "console-snippet-request-recognized-obligation",
+                "status": "violated"
+              }
+            ],
+            "resultId": "console-snippet-ok"
+          }
+        ],
+        "noMatchDisposition": "RESULT_SELECTION_NOT_TOTAL",
+        "multipleMatchDisposition": "RESULT_SELECTION_AMBIGUOUS",
+        "invalidResultDisposition": "CONSOLE_SNIPPET_RESULT_INVALID",
+        "serializerId": "identity.v1"
+      }
+    ],
+    "arithmeticOperations": [],
+    "randomDraws": [],
+    "indexedReads": [],
+    "iterations": [],
+    "executionBindings": [
+      {
+        "bindingId": "bind.input.console-snippet-request",
+        "semanticAuthorityId": "console-snippet-request",
+        "executorPrimitive": "input.v1"
+      },
+      {
+        "bindingId": "bind.constant.empty-lines-fact",
+        "semanticAuthorityId": "empty-lines-fact",
+        "executorPrimitive": "constant.v1"
+      },
+      {
+        "bindingId": "bind.validate-variant.console-snippet-request-variant",
+        "semanticAuthorityId": "console-snippet-request-variant",
+        "executorPrimitive": "validate-variant.v1"
+      },
+      {
+        "bindingId": "bind.evaluate-obligation.console-snippet-request-recognized-obligation",
+        "semanticAuthorityId": "console-snippet-request-recognized-obligation",
+        "executorPrimitive": "evaluate-obligation.v1"
+      },
+      {
+        "bindingId": "bind.project-value.project-empty-lines",
+        "semanticAuthorityId": "project-empty-lines",
+        "executorPrimitive": "project-value.v1"
+      },
+      {
+        "bindingId": "bind.select-result.console-snippet-result-union",
+        "semanticAuthorityId": "console-snippet-result-union",
+        "executorPrimitive": "select-result.v1"
+      },
+      {
+        "bindingId": "bind.emit-result.console-snippet-result-union",
+        "semanticAuthorityId": "console-snippet-result-union",
+        "executorPrimitive": "emit-result.v1"
+      },
+      {
+        "bindingId": "bind.serialize-result.console-snippet-result-union",
+        "semanticAuthorityId": "console-snippet-result-union",
+        "executorPrimitive": "serialize-result.v1"
+      }
+    ],
+    "executionGraph": {
+      "entryNodeId": "node.input.console-snippet-request",
+      "terminalNodeIds": [
+        "node.serialize-result.console-snippet-result-union"
+      ],
+      "nodes": [
+        {
+          "nodeId": "node.input.console-snippet-request",
+          "bindingId": "bind.input.console-snippet-request"
+        },
+        {
+          "nodeId": "node.constant.empty-lines-fact",
+          "bindingId": "bind.constant.empty-lines-fact"
+        },
+        {
+          "nodeId": "node.validate-variant.console-snippet-request-variant",
+          "bindingId": "bind.validate-variant.console-snippet-request-variant"
+        },
+        {
+          "nodeId": "node.evaluate-obligation.console-snippet-request-recognized-obligation",
+          "bindingId": "bind.evaluate-obligation.console-snippet-request-recognized-obligation"
+        },
+        {
+          "nodeId": "node.project-value.project-empty-lines",
+          "bindingId": "bind.project-value.project-empty-lines"
+        },
+        {
+          "nodeId": "node.select-result.console-snippet-result-union",
+          "bindingId": "bind.select-result.console-snippet-result-union"
+        },
+        {
+          "nodeId": "node.emit-result.console-snippet-result-union",
+          "bindingId": "bind.emit-result.console-snippet-result-union"
+        },
+        {
+          "nodeId": "node.serialize-result.console-snippet-result-union",
+          "bindingId": "bind.serialize-result.console-snippet-result-union"
+        }
+      ],
+      "edges": [
+        {
+          "edgeId": "edge.input.console-snippet-request.to.constant.empty-lines-fact.activation",
+          "from": {
+            "nodeId": "node.input.console-snippet-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.constant.empty-lines-fact",
+            "port": "activation"
+          }
+        },
+        {
+          "edgeId": "edge.input.console-snippet-request.to.validate-variant.console-snippet-request-variant.source",
+          "from": {
+            "nodeId": "node.input.console-snippet-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.validate-variant.console-snippet-request-variant",
+            "port": "source"
+          }
+        },
+        {
+          "edgeId": "edge.validate-variant.console-snippet-request-variant.to.evaluate-obligation.console-snippet-request-recognized-obligation.state",
+          "from": {
+            "nodeId": "node.validate-variant.console-snippet-request-variant",
+            "port": "conceptId"
+          },
+          "to": {
+            "nodeId": "node.evaluate-obligation.console-snippet-request-recognized-obligation",
+            "port": "state"
+          }
+        },
+        {
+          "edgeId": "edge.constant.empty-lines-fact.to.project-value.project-empty-lines.value",
+          "from": {
+            "nodeId": "node.constant.empty-lines-fact",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.project-value.project-empty-lines",
+            "port": "value"
+          }
+        },
+        {
+          "edgeId": "edge.evaluate-obligation.console-snippet-request-recognized-obligation.to.select-result.console-snippet-result-union.request-recognized",
+          "from": {
+            "nodeId": "node.evaluate-obligation.console-snippet-request-recognized-obligation",
+            "port": "status"
+          },
+          "to": {
+            "nodeId": "node.select-result.console-snippet-result-union",
+            "port": "requestRecognized"
+          }
+        },
+        {
+          "edgeId": "edge.project-value.project-empty-lines.to.emit-result.console-snippet-result-union.fragment-project-empty-lines",
+          "from": {
+            "nodeId": "node.project-value.project-empty-lines",
+            "port": "fragment"
+          },
+          "to": {
+            "nodeId": "node.emit-result.console-snippet-result-union",
+            "port": "fragment-project-empty-lines"
+          }
+        },
+        {
+          "edgeId": "edge.select-result.console-snippet-result-union.to.emit-result.console-snippet-result-union.selection",
+          "from": {
+            "nodeId": "node.select-result.console-snippet-result-union",
+            "port": "resultId"
+          },
+          "to": {
+            "nodeId": "node.emit-result.console-snippet-result-union",
+            "port": "selection"
+          }
+        },
+        {
+          "edgeId": "edge.emit-result.console-snippet-result-union.to.serialize-result.console-snippet-result-union.result",
+          "from": {
+            "nodeId": "node.emit-result.console-snippet-result-union",
+            "port": "result"
+          },
+          "to": {
+            "nodeId": "node.serialize-result.console-snippet-result-union",
+            "port": "result"
+          }
+        }
+      ]
+    },
+    "proofRequirements": [
+      {
+        "requirementId": "prove-reference-closure",
+        "proofType": "reference-closure",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-type-closure",
+        "proofType": "type-closure",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-cardinality-closure",
+        "proofType": "cardinality-closure",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-classification-totality",
+        "proofType": "classification-totality",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-translation-totality",
+        "proofType": "translation-totality",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-obligation-binding",
+        "proofType": "obligation-binding",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-result-discrimination",
+        "proofType": "result-discrimination",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-execution-binding",
+        "proofType": "execution-binding",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-graph-closure",
+        "proofType": "graph-closure",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-arithmetic-range-closure",
+        "proofType": "arithmetic-range-closure",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-randomness-determinism-closure",
+        "proofType": "randomness-determinism-closure",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-iteration-termination-closure",
+        "proofType": "iteration-termination-closure",
+        "subjectAuthorityId": "console-snippet-retrieval",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      }
+    ]
+  },
+  "schemas": [
+    {
+      "schemaId": "console-snippet-request.schema.v1",
+      "digest": "sha256:8af933e223360363a63a453c7b20bcbd4f0cd173734029aecf7d033ca2892e06",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "startLine": {
+            "type": "integer"
+          },
+          "endLine": {
+            "type": "integer"
+          },
+          "context": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    {
+      "schemaId": "console-snippet-request-variant-id.schema.v1",
+      "digest": "sha256:3e9140b93e10fb98ed40cb792a3f55ffa7cee337733017556064f688679e3578",
+      "value": {
+        "const": "console-snippet-request"
+      }
+    },
+    {
+      "schemaId": "obligation-status.schema.v1",
+      "digest": "sha256:5d59fc5fb020fee7ea29a2493b457aa7d8fb46f8012dff970cc65a8a2aa42cad",
+      "value": {
+        "enum": [
+          "satisfied",
+          "violated"
+        ]
+      }
+    },
+    {
+      "schemaId": "result-kind.schema.v1",
+      "digest": "sha256:1b63db994239ab66b4cc56334f5104b082b1bdeca9e909cbf8b51e4c115281d6",
+      "value": {
+        "const": "console-snippet-result"
+      }
+    },
+    {
+      "schemaId": "snippet-lines-value.schema.v1",
+      "digest": "sha256:9cb8ca05512e77ffb25fd53f88fff43ce32b00be1b77e5ae1ed13c2c305561f0",
+      "value": {
+        "type": "array",
+        "maxItems": 512,
+        "items": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "schemaId": "console-snippet-result.schema.v1",
+      "digest": "sha256:e917f64f982d7bb76b6debeb34272ab75f772cfd111eca28ed546afddf7d07e2",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "lines"
+        ],
+        "properties": {
+          "kind": {
+            "const": "console-snippet-result"
+          },
+          "lines": {
+            "type": "array",
+            "maxItems": 512,
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "catalogs": [],
+  "runtimeProfile": {
+    "identity": "finite-semantic-runtime.v3",
+    "limits": {
+      "maxGraphNodes": 64,
+      "maxGraphEdges": 128,
+      "maxVariants": 16,
+      "maxClassificationInputs": 16,
+      "maxClassificationCases": 128,
+      "maxTranslationCases": 128,
+      "maxPathDepth": 16,
+      "maxOutputDepth": 16,
+      "maxSchemas": 32,
+      "maxTerminalResults": 1,
+      "maxSerializedByteLength": 1048576,
+      "maxOperandDomainSize": 64,
+      "maxIterationSteps": 8192,
+      "maxWorklistItems": 256
+    },
+    "forbiddenCapabilities": [
+      "cycles",
+      "recursion",
+      "dynamic-invocation",
+      "arbitrary-expressions",
+      "user-code",
+      "runtime-module-loading",
+      "unbounded-array-traversal",
+      "regex-authority",
+      "implicit-coercion",
+      "ambient-state",
+      "clock-access",
+      "ambient-randomness",
+      "network-access"
+    ],
+    "admittedPrimitives": [
+      "input.v1",
+      "validate-variant.v1",
+      "read-path.v1",
+      "constant.v1",
+      "test-presence.v1",
+      "classify-value.v1",
+      "classify-observations.v1",
+      "translate-value.v1",
+      "evaluate-obligation.v1",
+      "project-value.v1",
+      "select-result.v1",
+      "emit-result.v1",
+      "add-bounded.v1",
+      "subtract-bounded.v1",
+      "compare-bounded.v1",
+      "seeded-range-draw.v1",
+      "read-indexed-path.v1",
+      "iterate-bounded-worklist.v1",
+      "resolve-branching-worklist.v1",
+      "serialize-result.v1"
+    ],
+    "digest": "sha256:18ca4acba6be2b4d1a0acb6c35df5d32aa5d5afc2acd17b412b0773c1e3cb151"
+  }
+}

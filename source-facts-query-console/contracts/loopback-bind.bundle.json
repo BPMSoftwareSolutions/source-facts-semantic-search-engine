@@ -1,0 +1,566 @@
+{
+  "bundleType": "semantic-execution-bundle.v1",
+  "bundleId": "loopback-bind.authority.v1",
+  "authority": {
+    "authorityType": "deterministic-ontology-authority.v1",
+    "ontologyId": "loopback-bind",
+    "concepts": [
+      {
+        "abstract": false,
+        "conceptId": "loopback-bind-request",
+        "conceptType": "domain-entity",
+        "isA": [],
+        "schemaId": "loopback-bind-request.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "loopback-bind-request-variant-id",
+        "conceptType": "classification",
+        "isA": [],
+        "schemaId": "loopback-bind-request-variant-id.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "hostname-value",
+        "conceptType": "domain-value",
+        "isA": [],
+        "schemaId": "hostname-value.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "hostname-admission",
+        "conceptType": "classification",
+        "isA": [],
+        "schemaId": "hostname-admission.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "obligation-status",
+        "conceptType": "signal",
+        "isA": [],
+        "schemaId": "obligation-status.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "result-kind-concept",
+        "conceptType": "canonical-value",
+        "isA": [],
+        "schemaId": "result-kind.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "loopback-bind-result",
+        "conceptType": "result-union",
+        "isA": [],
+        "schemaId": "loopback-bind-result.schema.v1"
+      }
+    ],
+    "relations": [],
+    "properties": [
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "hostname-field",
+        "propertyKind": "observed",
+        "resolutions": [
+          {
+            "subjectVariantConceptId": "loopback-bind-request",
+            "path": [
+              "hostname"
+            ]
+          }
+        ],
+        "subjectConceptId": "loopback-bind-request",
+        "valueConceptId": "hostname-value"
+      },
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "result-kind",
+        "propertyKind": "projected",
+        "resolutions": [],
+        "subjectConceptId": "loopback-bind-result",
+        "valueConceptId": "result-kind-concept"
+      }
+    ],
+    "facts": [],
+    "classifications": [
+      {
+        "classificationId": "loopback-bind-request-variant",
+        "classificationType": "concept-variant",
+        "subjectConceptId": "loopback-bind-request",
+        "resultConceptId": "loopback-bind-request-variant-id",
+        "variants": [
+          "loopback-bind-request"
+        ],
+        "noMatchDisposition": "LOOPBACK_BIND_REQUEST_VARIANT_UNRESOLVED",
+        "multipleMatchDisposition": "LOOPBACK_BIND_REQUEST_VARIANT_AMBIGUOUS"
+      },
+      {
+        "classificationId": "hostname-classification",
+        "classificationType": "finite-value",
+        "subjectConceptId": "hostname-value",
+        "resultConceptId": "hostname-admission",
+        "cases": [
+          {
+            "stateId": "admitted",
+            "value": {
+              "type": "string",
+              "value": "127.0.0.1"
+            }
+          }
+        ],
+        "unmatchedDisposition": "HOSTNAME_NOT_ADMITTED"
+      }
+    ],
+    "constraints": [],
+    "translations": [],
+    "obligations": [
+      {
+        "obligationId": "hostname-admitted-obligation",
+        "subjectConceptId": "hostname-value",
+        "classificationId": "hostname-classification",
+        "resultConceptId": "obligation-status",
+        "satisfiedStateIds": [
+          "admitted"
+        ],
+        "failureDisposition": "HOSTNAME_NOT_ADMITTED"
+      }
+    ],
+    "transformations": [],
+    "results": [
+      {
+        "resultUnionId": "loopback-bind-result-union",
+        "resultTypeConceptId": "loopback-bind-result",
+        "members": [
+          {
+            "resultId": "loopback-bind-ok",
+            "conceptId": "loopback-bind-result",
+            "discriminator": {
+              "propertyId": "result-kind",
+              "outputPath": [
+                "kind"
+              ],
+              "value": {
+                "type": "string",
+                "value": "loopback-bind-result"
+              }
+            }
+          }
+        ],
+        "selectionRules": [
+          {
+            "ruleId": "always-ok",
+            "when": [
+              {
+                "inputPort": "hostnameAdmitted",
+                "obligationId": "hostname-admitted-obligation",
+                "status": "satisfied"
+              }
+            ],
+            "resultId": "loopback-bind-ok"
+          },
+          {
+            "ruleId": "still-ok-when-violated",
+            "when": [
+              {
+                "inputPort": "hostnameAdmitted",
+                "obligationId": "hostname-admitted-obligation",
+                "status": "violated"
+              }
+            ],
+            "resultId": "loopback-bind-ok"
+          }
+        ],
+        "noMatchDisposition": "RESULT_SELECTION_NOT_TOTAL",
+        "multipleMatchDisposition": "RESULT_SELECTION_AMBIGUOUS",
+        "invalidResultDisposition": "LOOPBACK_BIND_RESULT_INVALID",
+        "serializerId": "identity.v1"
+      }
+    ],
+    "arithmeticOperations": [],
+    "randomDraws": [],
+    "indexedReads": [],
+    "iterations": [],
+    "executionBindings": [
+      {
+        "bindingId": "bind.input.loopback-bind-request",
+        "semanticAuthorityId": "loopback-bind-request",
+        "executorPrimitive": "input.v1"
+      },
+      {
+        "bindingId": "bind.read-path.hostname-field",
+        "semanticAuthorityId": "hostname-field",
+        "executorPrimitive": "read-path.v1"
+      },
+      {
+        "bindingId": "bind.validate-variant.loopback-bind-request-variant",
+        "semanticAuthorityId": "loopback-bind-request-variant",
+        "executorPrimitive": "validate-variant.v1"
+      },
+      {
+        "bindingId": "bind.classify-value.hostname-classification",
+        "semanticAuthorityId": "hostname-classification",
+        "executorPrimitive": "classify-value.v1"
+      },
+      {
+        "bindingId": "bind.evaluate-obligation.hostname-admitted-obligation",
+        "semanticAuthorityId": "hostname-admitted-obligation",
+        "executorPrimitive": "evaluate-obligation.v1"
+      },
+      {
+        "bindingId": "bind.select-result.loopback-bind-result-union",
+        "semanticAuthorityId": "loopback-bind-result-union",
+        "executorPrimitive": "select-result.v1"
+      },
+      {
+        "bindingId": "bind.emit-result.loopback-bind-result-union",
+        "semanticAuthorityId": "loopback-bind-result-union",
+        "executorPrimitive": "emit-result.v1"
+      },
+      {
+        "bindingId": "bind.serialize-result.loopback-bind-result-union",
+        "semanticAuthorityId": "loopback-bind-result-union",
+        "executorPrimitive": "serialize-result.v1"
+      }
+    ],
+    "executionGraph": {
+      "entryNodeId": "node.input.loopback-bind-request",
+      "terminalNodeIds": [
+        "node.serialize-result.loopback-bind-result-union"
+      ],
+      "nodes": [
+        {
+          "nodeId": "node.input.loopback-bind-request",
+          "bindingId": "bind.input.loopback-bind-request"
+        },
+        {
+          "nodeId": "node.read-path.hostname-field",
+          "bindingId": "bind.read-path.hostname-field"
+        },
+        {
+          "nodeId": "node.validate-variant.loopback-bind-request-variant",
+          "bindingId": "bind.validate-variant.loopback-bind-request-variant"
+        },
+        {
+          "nodeId": "node.classify-value.hostname-classification",
+          "bindingId": "bind.classify-value.hostname-classification"
+        },
+        {
+          "nodeId": "node.evaluate-obligation.hostname-admitted-obligation",
+          "bindingId": "bind.evaluate-obligation.hostname-admitted-obligation"
+        },
+        {
+          "nodeId": "node.select-result.loopback-bind-result-union",
+          "bindingId": "bind.select-result.loopback-bind-result-union"
+        },
+        {
+          "nodeId": "node.emit-result.loopback-bind-result-union",
+          "bindingId": "bind.emit-result.loopback-bind-result-union"
+        },
+        {
+          "nodeId": "node.serialize-result.loopback-bind-result-union",
+          "bindingId": "bind.serialize-result.loopback-bind-result-union"
+        }
+      ],
+      "edges": [
+        {
+          "edgeId": "edge.validate-variant.loopback-bind-request-variant.to.read-path.hostname-field.concept-id",
+          "from": {
+            "nodeId": "node.validate-variant.loopback-bind-request-variant",
+            "port": "conceptId"
+          },
+          "to": {
+            "nodeId": "node.read-path.hostname-field",
+            "port": "conceptId"
+          }
+        },
+        {
+          "edgeId": "edge.input.loopback-bind-request.to.read-path.hostname-field.source",
+          "from": {
+            "nodeId": "node.input.loopback-bind-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.read-path.hostname-field",
+            "port": "source"
+          }
+        },
+        {
+          "edgeId": "edge.input.loopback-bind-request.to.validate-variant.loopback-bind-request-variant.source",
+          "from": {
+            "nodeId": "node.input.loopback-bind-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.validate-variant.loopback-bind-request-variant",
+            "port": "source"
+          }
+        },
+        {
+          "edgeId": "edge.read-path.hostname-field.to.classify-value.hostname-classification.observation",
+          "from": {
+            "nodeId": "node.read-path.hostname-field",
+            "port": "observation"
+          },
+          "to": {
+            "nodeId": "node.classify-value.hostname-classification",
+            "port": "observation"
+          }
+        },
+        {
+          "edgeId": "edge.classify-value.hostname-classification.to.evaluate-obligation.hostname-admitted-obligation.state",
+          "from": {
+            "nodeId": "node.classify-value.hostname-classification",
+            "port": "state"
+          },
+          "to": {
+            "nodeId": "node.evaluate-obligation.hostname-admitted-obligation",
+            "port": "state"
+          }
+        },
+        {
+          "edgeId": "edge.evaluate-obligation.hostname-admitted-obligation.to.select-result.loopback-bind-result-union.hostname-admitted",
+          "from": {
+            "nodeId": "node.evaluate-obligation.hostname-admitted-obligation",
+            "port": "status"
+          },
+          "to": {
+            "nodeId": "node.select-result.loopback-bind-result-union",
+            "port": "hostnameAdmitted"
+          }
+        },
+        {
+          "edgeId": "edge.select-result.loopback-bind-result-union.to.emit-result.loopback-bind-result-union.selection",
+          "from": {
+            "nodeId": "node.select-result.loopback-bind-result-union",
+            "port": "resultId"
+          },
+          "to": {
+            "nodeId": "node.emit-result.loopback-bind-result-union",
+            "port": "selection"
+          }
+        },
+        {
+          "edgeId": "edge.emit-result.loopback-bind-result-union.to.serialize-result.loopback-bind-result-union.result",
+          "from": {
+            "nodeId": "node.emit-result.loopback-bind-result-union",
+            "port": "result"
+          },
+          "to": {
+            "nodeId": "node.serialize-result.loopback-bind-result-union",
+            "port": "result"
+          }
+        }
+      ]
+    },
+    "proofRequirements": [
+      {
+        "requirementId": "prove-reference-closure",
+        "proofType": "reference-closure",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-type-closure",
+        "proofType": "type-closure",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-cardinality-closure",
+        "proofType": "cardinality-closure",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-classification-totality",
+        "proofType": "classification-totality",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-translation-totality",
+        "proofType": "translation-totality",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-obligation-binding",
+        "proofType": "obligation-binding",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-result-discrimination",
+        "proofType": "result-discrimination",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-execution-binding",
+        "proofType": "execution-binding",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-graph-closure",
+        "proofType": "graph-closure",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-arithmetic-range-closure",
+        "proofType": "arithmetic-range-closure",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-randomness-determinism-closure",
+        "proofType": "randomness-determinism-closure",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-iteration-termination-closure",
+        "proofType": "iteration-termination-closure",
+        "subjectAuthorityId": "loopback-bind",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      }
+    ]
+  },
+  "schemas": [
+    {
+      "schemaId": "loopback-bind-request.schema.v1",
+      "digest": "sha256:0096a91b52f4f2c5e583c548e553f92ac964adfc16c797b04361f4b9c38d9944",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "hostname"
+        ],
+        "properties": {
+          "hostname": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        }
+      }
+    },
+    {
+      "schemaId": "loopback-bind-request-variant-id.schema.v1",
+      "digest": "sha256:040927259f32669f83198d07a3dfea1d491cb92f4c5a9dc4853f92ae652195a4",
+      "value": {
+        "const": "loopback-bind-request"
+      }
+    },
+    {
+      "schemaId": "hostname-value.schema.v1",
+      "digest": "sha256:7d62681c6488867d45f56ceb71d1e9c5b0bbb11153846bc1da30f6ec97536142",
+      "value": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      }
+    },
+    {
+      "schemaId": "hostname-admission.schema.v1",
+      "digest": "sha256:faa81d353c35af865d6fb11bace13fc1517e79a9c7b5f5f43bad879b6f25219d",
+      "value": {
+        "enum": [
+          "admitted"
+        ]
+      }
+    },
+    {
+      "schemaId": "obligation-status.schema.v1",
+      "digest": "sha256:5d59fc5fb020fee7ea29a2493b457aa7d8fb46f8012dff970cc65a8a2aa42cad",
+      "value": {
+        "enum": [
+          "satisfied",
+          "violated"
+        ]
+      }
+    },
+    {
+      "schemaId": "result-kind.schema.v1",
+      "digest": "sha256:49bd4472cbe1d8e87f9df85ce440f77d6e8583e723e00190500c2627b52bcc2c",
+      "value": {
+        "const": "loopback-bind-result"
+      }
+    },
+    {
+      "schemaId": "loopback-bind-result.schema.v1",
+      "digest": "sha256:1d84ed7289885f9ff14544ba55df57b3ae4d328600e1bb7c3eed8949640f0a00",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind"
+        ],
+        "properties": {
+          "kind": {
+            "const": "loopback-bind-result"
+          }
+        }
+      }
+    }
+  ],
+  "catalogs": [],
+  "runtimeProfile": {
+    "identity": "finite-semantic-runtime.v3",
+    "limits": {
+      "maxGraphNodes": 64,
+      "maxGraphEdges": 128,
+      "maxVariants": 16,
+      "maxClassificationInputs": 16,
+      "maxClassificationCases": 128,
+      "maxTranslationCases": 128,
+      "maxPathDepth": 16,
+      "maxOutputDepth": 16,
+      "maxSchemas": 32,
+      "maxTerminalResults": 1,
+      "maxSerializedByteLength": 1048576,
+      "maxOperandDomainSize": 64,
+      "maxIterationSteps": 8192,
+      "maxWorklistItems": 256
+    },
+    "forbiddenCapabilities": [
+      "cycles",
+      "recursion",
+      "dynamic-invocation",
+      "arbitrary-expressions",
+      "user-code",
+      "runtime-module-loading",
+      "unbounded-array-traversal",
+      "regex-authority",
+      "implicit-coercion",
+      "ambient-state",
+      "clock-access",
+      "ambient-randomness",
+      "network-access"
+    ],
+    "admittedPrimitives": [
+      "input.v1",
+      "validate-variant.v1",
+      "read-path.v1",
+      "constant.v1",
+      "test-presence.v1",
+      "classify-value.v1",
+      "classify-observations.v1",
+      "translate-value.v1",
+      "evaluate-obligation.v1",
+      "project-value.v1",
+      "select-result.v1",
+      "emit-result.v1",
+      "add-bounded.v1",
+      "subtract-bounded.v1",
+      "compare-bounded.v1",
+      "seeded-range-draw.v1",
+      "read-indexed-path.v1",
+      "iterate-bounded-worklist.v1",
+      "resolve-branching-worklist.v1",
+      "serialize-result.v1"
+    ],
+    "digest": "sha256:18ca4acba6be2b4d1a0acb6c35df5d32aa5d5afc2acd17b412b0773c1e3cb151"
+  }
+}

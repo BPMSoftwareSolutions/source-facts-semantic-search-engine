@@ -52,6 +52,7 @@
     { "directoryId": "src-console-directory", "relativePath": "src/console", "required": true },
     { "directoryId": "src-console-governance-directory", "relativePath": "src/console/.governance", "required": true },
     { "directoryId": "src-console-governance-projections-directory", "relativePath": "src/console/.governance/projections", "required": true },
+    { "directoryId": "src-console-governance-receipts-directory", "relativePath": "src/console/.governance/receipts", "required": false },
     { "directoryId": "src-console-contracts-directory", "relativePath": "src/console/contracts", "required": true },
     { "directoryId": "src-console-governed-message-artifact-family-directory", "relativePath": "src/console/governed-message-artifact-family", "required": true },
     { "directoryId": "src-console-governed-message-artifact-family-architecture-directory", "relativePath": "src/console/governed-message-artifact-family/architecture", "required": true },

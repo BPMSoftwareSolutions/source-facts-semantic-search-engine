@@ -1,0 +1,988 @@
+{
+  "bundleType": "semantic-execution-bundle.v1",
+  "bundleId": "route-dispatch.authority.v1",
+  "authority": {
+    "authorityType": "deterministic-ontology-authority.v1",
+    "ontologyId": "route-dispatch",
+    "concepts": [
+      {
+        "abstract": false,
+        "conceptId": "route-request",
+        "conceptType": "domain-entity",
+        "isA": [],
+        "schemaId": "route-request.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "route-request-variant-id",
+        "conceptType": "classification",
+        "isA": [],
+        "schemaId": "route-request-variant-id.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "pathname-value",
+        "conceptType": "domain-value",
+        "isA": [],
+        "schemaId": "pathname-value.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "method-value",
+        "conceptType": "domain-value",
+        "isA": [],
+        "schemaId": "method-value.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "route-id",
+        "conceptType": "classification",
+        "isA": [],
+        "schemaId": "route-id.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "obligation-status",
+        "conceptType": "signal",
+        "isA": [],
+        "schemaId": "obligation-status.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "result-kind-concept",
+        "conceptType": "canonical-value",
+        "isA": [],
+        "schemaId": "result-kind.schema.v1"
+      },
+      {
+        "abstract": false,
+        "conceptId": "route-dispatch-result",
+        "conceptType": "result-union",
+        "isA": [],
+        "schemaId": "route-dispatch-result.schema.v1"
+      }
+    ],
+    "relations": [
+      {
+        "cardinality": "exactly-one",
+        "objectConceptId": "route-id",
+        "relationId": "route-id-produces-value",
+        "relationType": "computes",
+        "subjectConceptId": "route-id"
+      }
+    ],
+    "properties": [
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "pathname-field",
+        "propertyKind": "observed",
+        "resolutions": [
+          {
+            "subjectVariantConceptId": "route-request",
+            "path": [
+              "pathname"
+            ]
+          }
+        ],
+        "subjectConceptId": "route-request",
+        "valueConceptId": "pathname-value"
+      },
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "method-field",
+        "propertyKind": "observed",
+        "resolutions": [
+          {
+            "subjectVariantConceptId": "route-request",
+            "path": [
+              "method"
+            ]
+          }
+        ],
+        "subjectConceptId": "route-request",
+        "valueConceptId": "method-value"
+      },
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "result-kind",
+        "propertyKind": "projected",
+        "resolutions": [],
+        "subjectConceptId": "route-dispatch-result",
+        "valueConceptId": "result-kind-concept"
+      },
+      {
+        "cardinality": "exactly-one",
+        "propertyId": "result-route-id",
+        "propertyKind": "projected",
+        "resolutions": [],
+        "subjectConceptId": "route-dispatch-result",
+        "valueConceptId": "route-id"
+      }
+    ],
+    "facts": [],
+    "classifications": [
+      {
+        "classificationId": "route-request-variant",
+        "classificationType": "concept-variant",
+        "subjectConceptId": "route-request",
+        "resultConceptId": "route-request-variant-id",
+        "variants": [
+          "route-request"
+        ],
+        "noMatchDisposition": "ROUTE_REQUEST_VARIANT_UNRESOLVED",
+        "multipleMatchDisposition": "ROUTE_REQUEST_VARIANT_AMBIGUOUS"
+      },
+      {
+        "classificationId": "route-dispatch-classification",
+        "classificationType": "multi-observation",
+        "subjectConceptId": "route-request",
+        "resultConceptId": "route-id",
+        "observations": [
+          {
+            "inputPort": "pathname",
+            "propertyId": "pathname-field"
+          },
+          {
+            "inputPort": "method",
+            "propertyId": "method-field"
+          }
+        ],
+        "cases": [
+          {
+            "caseId": "root-get",
+            "emit": {
+              "type": "string",
+              "value": "console-html"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "GET"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "root-head",
+            "emit": {
+              "type": "string",
+              "value": "console-html"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "HEAD"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "index-html-get",
+            "emit": {
+              "type": "string",
+              "value": "console-html"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/index.html"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "GET"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "index-html-head",
+            "emit": {
+              "type": "string",
+              "value": "console-html"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/index.html"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "HEAD"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "index-info-get",
+            "emit": {
+              "type": "string",
+              "value": "index-info"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/api/index-info"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "GET"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "index-info-head",
+            "emit": {
+              "type": "string",
+              "value": "index-info"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/api/index-info"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "HEAD"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "query-post",
+            "emit": {
+              "type": "string",
+              "value": "query"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/api/query"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "POST"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "snippet-get",
+            "emit": {
+              "type": "string",
+              "value": "snippet"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/api/snippet"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "GET"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "caseId": "snippet-head",
+            "emit": {
+              "type": "string",
+              "value": "snippet"
+            },
+            "when": [
+              {
+                "inputPort": "pathname",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "/api/snippet"
+                  }
+                }
+              },
+              {
+                "inputPort": "method",
+                "observation": {
+                  "state": "value",
+                  "value": {
+                    "type": "string",
+                    "value": "HEAD"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "noMatchDisposition": "ROUTE_OR_METHOD_NOT_ADMITTED",
+        "multipleMatchDisposition": "ROUTE_DISPATCH_AMBIGUOUS"
+      }
+    ],
+    "constraints": [],
+    "translations": [],
+    "obligations": [
+      {
+        "obligationId": "route-classified-obligation",
+        "subjectConceptId": "route-request",
+        "classificationId": "route-dispatch-classification",
+        "resultConceptId": "obligation-status",
+        "satisfiedStateIds": [
+          "console-html",
+          "index-info",
+          "query",
+          "snippet"
+        ],
+        "failureDisposition": "ROUTE_DISPATCH_UNRESOLVED"
+      }
+    ],
+    "transformations": [
+      {
+        "transformationId": "emit-route-id",
+        "relationId": "route-id-produces-value",
+        "sourceAuthorityId": "route-dispatch-classification",
+        "targetPropertyId": "result-route-id",
+        "outputPath": [
+          "routeId"
+        ],
+        "valueConceptId": "route-id",
+        "resultIds": [
+          "route-dispatch-ok"
+        ],
+        "unavailableDisposition": "ROUTE_ID_UNAVAILABLE",
+        "invalidTypeDisposition": "ROUTE_ID_INVALID"
+      }
+    ],
+    "results": [
+      {
+        "resultUnionId": "route-dispatch-result-union",
+        "resultTypeConceptId": "route-dispatch-result",
+        "members": [
+          {
+            "resultId": "route-dispatch-ok",
+            "conceptId": "route-dispatch-result",
+            "discriminator": {
+              "propertyId": "result-kind",
+              "outputPath": [
+                "kind"
+              ],
+              "value": {
+                "type": "string",
+                "value": "route-dispatch-result"
+              }
+            }
+          }
+        ],
+        "selectionRules": [
+          {
+            "ruleId": "always-ok",
+            "when": [
+              {
+                "inputPort": "routeClassified",
+                "obligationId": "route-classified-obligation",
+                "status": "satisfied"
+              }
+            ],
+            "resultId": "route-dispatch-ok"
+          },
+          {
+            "ruleId": "still-ok-when-violated",
+            "when": [
+              {
+                "inputPort": "routeClassified",
+                "obligationId": "route-classified-obligation",
+                "status": "violated"
+              }
+            ],
+            "resultId": "route-dispatch-ok"
+          }
+        ],
+        "noMatchDisposition": "RESULT_SELECTION_NOT_TOTAL",
+        "multipleMatchDisposition": "RESULT_SELECTION_AMBIGUOUS",
+        "invalidResultDisposition": "ROUTE_DISPATCH_RESULT_INVALID",
+        "serializerId": "identity.v1"
+      }
+    ],
+    "arithmeticOperations": [],
+    "randomDraws": [],
+    "indexedReads": [],
+    "iterations": [],
+    "executionBindings": [
+      {
+        "bindingId": "bind.input.route-request",
+        "semanticAuthorityId": "route-request",
+        "executorPrimitive": "input.v1"
+      },
+      {
+        "bindingId": "bind.read-path.pathname-field",
+        "semanticAuthorityId": "pathname-field",
+        "executorPrimitive": "read-path.v1"
+      },
+      {
+        "bindingId": "bind.read-path.method-field",
+        "semanticAuthorityId": "method-field",
+        "executorPrimitive": "read-path.v1"
+      },
+      {
+        "bindingId": "bind.validate-variant.route-request-variant",
+        "semanticAuthorityId": "route-request-variant",
+        "executorPrimitive": "validate-variant.v1"
+      },
+      {
+        "bindingId": "bind.classify-observations.route-dispatch-classification",
+        "semanticAuthorityId": "route-dispatch-classification",
+        "executorPrimitive": "classify-observations.v1"
+      },
+      {
+        "bindingId": "bind.evaluate-obligation.route-classified-obligation",
+        "semanticAuthorityId": "route-classified-obligation",
+        "executorPrimitive": "evaluate-obligation.v1"
+      },
+      {
+        "bindingId": "bind.project-value.emit-route-id",
+        "semanticAuthorityId": "emit-route-id",
+        "executorPrimitive": "project-value.v1"
+      },
+      {
+        "bindingId": "bind.select-result.route-dispatch-result-union",
+        "semanticAuthorityId": "route-dispatch-result-union",
+        "executorPrimitive": "select-result.v1"
+      },
+      {
+        "bindingId": "bind.emit-result.route-dispatch-result-union",
+        "semanticAuthorityId": "route-dispatch-result-union",
+        "executorPrimitive": "emit-result.v1"
+      },
+      {
+        "bindingId": "bind.serialize-result.route-dispatch-result-union",
+        "semanticAuthorityId": "route-dispatch-result-union",
+        "executorPrimitive": "serialize-result.v1"
+      }
+    ],
+    "executionGraph": {
+      "entryNodeId": "node.input.route-request",
+      "terminalNodeIds": [
+        "node.serialize-result.route-dispatch-result-union"
+      ],
+      "nodes": [
+        {
+          "nodeId": "node.input.route-request",
+          "bindingId": "bind.input.route-request"
+        },
+        {
+          "nodeId": "node.read-path.pathname-field",
+          "bindingId": "bind.read-path.pathname-field"
+        },
+        {
+          "nodeId": "node.read-path.method-field",
+          "bindingId": "bind.read-path.method-field"
+        },
+        {
+          "nodeId": "node.validate-variant.route-request-variant",
+          "bindingId": "bind.validate-variant.route-request-variant"
+        },
+        {
+          "nodeId": "node.classify-observations.route-dispatch-classification",
+          "bindingId": "bind.classify-observations.route-dispatch-classification"
+        },
+        {
+          "nodeId": "node.evaluate-obligation.route-classified-obligation",
+          "bindingId": "bind.evaluate-obligation.route-classified-obligation"
+        },
+        {
+          "nodeId": "node.project-value.emit-route-id",
+          "bindingId": "bind.project-value.emit-route-id"
+        },
+        {
+          "nodeId": "node.select-result.route-dispatch-result-union",
+          "bindingId": "bind.select-result.route-dispatch-result-union"
+        },
+        {
+          "nodeId": "node.emit-result.route-dispatch-result-union",
+          "bindingId": "bind.emit-result.route-dispatch-result-union"
+        },
+        {
+          "nodeId": "node.serialize-result.route-dispatch-result-union",
+          "bindingId": "bind.serialize-result.route-dispatch-result-union"
+        }
+      ],
+      "edges": [
+        {
+          "edgeId": "edge.validate-variant.route-request-variant.to.read-path.pathname-field.concept-id",
+          "from": {
+            "nodeId": "node.validate-variant.route-request-variant",
+            "port": "conceptId"
+          },
+          "to": {
+            "nodeId": "node.read-path.pathname-field",
+            "port": "conceptId"
+          }
+        },
+        {
+          "edgeId": "edge.input.route-request.to.read-path.pathname-field.source",
+          "from": {
+            "nodeId": "node.input.route-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.read-path.pathname-field",
+            "port": "source"
+          }
+        },
+        {
+          "edgeId": "edge.validate-variant.route-request-variant.to.read-path.method-field.concept-id",
+          "from": {
+            "nodeId": "node.validate-variant.route-request-variant",
+            "port": "conceptId"
+          },
+          "to": {
+            "nodeId": "node.read-path.method-field",
+            "port": "conceptId"
+          }
+        },
+        {
+          "edgeId": "edge.input.route-request.to.read-path.method-field.source",
+          "from": {
+            "nodeId": "node.input.route-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.read-path.method-field",
+            "port": "source"
+          }
+        },
+        {
+          "edgeId": "edge.input.route-request.to.validate-variant.route-request-variant.source",
+          "from": {
+            "nodeId": "node.input.route-request",
+            "port": "value"
+          },
+          "to": {
+            "nodeId": "node.validate-variant.route-request-variant",
+            "port": "source"
+          }
+        },
+        {
+          "edgeId": "edge.read-path.method-field.to.classify-observations.route-dispatch-classification.method",
+          "from": {
+            "nodeId": "node.read-path.method-field",
+            "port": "observation"
+          },
+          "to": {
+            "nodeId": "node.classify-observations.route-dispatch-classification",
+            "port": "method"
+          }
+        },
+        {
+          "edgeId": "edge.read-path.pathname-field.to.classify-observations.route-dispatch-classification.pathname",
+          "from": {
+            "nodeId": "node.read-path.pathname-field",
+            "port": "observation"
+          },
+          "to": {
+            "nodeId": "node.classify-observations.route-dispatch-classification",
+            "port": "pathname"
+          }
+        },
+        {
+          "edgeId": "edge.classify-observations.route-dispatch-classification.to.evaluate-obligation.route-classified-obligation.state",
+          "from": {
+            "nodeId": "node.classify-observations.route-dispatch-classification",
+            "port": "state"
+          },
+          "to": {
+            "nodeId": "node.evaluate-obligation.route-classified-obligation",
+            "port": "state"
+          }
+        },
+        {
+          "edgeId": "edge.classify-observations.route-dispatch-classification.to.project-value.emit-route-id.value",
+          "from": {
+            "nodeId": "node.classify-observations.route-dispatch-classification",
+            "port": "state"
+          },
+          "to": {
+            "nodeId": "node.project-value.emit-route-id",
+            "port": "value"
+          }
+        },
+        {
+          "edgeId": "edge.evaluate-obligation.route-classified-obligation.to.select-result.route-dispatch-result-union.route-classified",
+          "from": {
+            "nodeId": "node.evaluate-obligation.route-classified-obligation",
+            "port": "status"
+          },
+          "to": {
+            "nodeId": "node.select-result.route-dispatch-result-union",
+            "port": "routeClassified"
+          }
+        },
+        {
+          "edgeId": "edge.project-value.emit-route-id.to.emit-result.route-dispatch-result-union.fragment-emit-route-id",
+          "from": {
+            "nodeId": "node.project-value.emit-route-id",
+            "port": "fragment"
+          },
+          "to": {
+            "nodeId": "node.emit-result.route-dispatch-result-union",
+            "port": "fragment-emit-route-id"
+          }
+        },
+        {
+          "edgeId": "edge.select-result.route-dispatch-result-union.to.emit-result.route-dispatch-result-union.selection",
+          "from": {
+            "nodeId": "node.select-result.route-dispatch-result-union",
+            "port": "resultId"
+          },
+          "to": {
+            "nodeId": "node.emit-result.route-dispatch-result-union",
+            "port": "selection"
+          }
+        },
+        {
+          "edgeId": "edge.emit-result.route-dispatch-result-union.to.serialize-result.route-dispatch-result-union.result",
+          "from": {
+            "nodeId": "node.emit-result.route-dispatch-result-union",
+            "port": "result"
+          },
+          "to": {
+            "nodeId": "node.serialize-result.route-dispatch-result-union",
+            "port": "result"
+          }
+        }
+      ]
+    },
+    "proofRequirements": [
+      {
+        "requirementId": "prove-reference-closure",
+        "proofType": "reference-closure",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-type-closure",
+        "proofType": "type-closure",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-cardinality-closure",
+        "proofType": "cardinality-closure",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-classification-totality",
+        "proofType": "classification-totality",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-translation-totality",
+        "proofType": "translation-totality",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-obligation-binding",
+        "proofType": "obligation-binding",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-result-discrimination",
+        "proofType": "result-discrimination",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-execution-binding",
+        "proofType": "execution-binding",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-graph-closure",
+        "proofType": "graph-closure",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-arithmetic-range-closure",
+        "proofType": "arithmetic-range-closure",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-randomness-determinism-closure",
+        "proofType": "randomness-determinism-closure",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      },
+      {
+        "requirementId": "prove-iteration-termination-closure",
+        "proofType": "iteration-termination-closure",
+        "subjectAuthorityId": "route-dispatch",
+        "requiredDisposition": "ONTOLOGY_AUTHORITY_CLOSED"
+      }
+    ]
+  },
+  "schemas": [
+    {
+      "schemaId": "route-request.schema.v1",
+      "digest": "sha256:0ef5d0b5fdc7088be371dd524cc85c94d73c5bf523f62c8c4debc4448d9d07b7",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pathname",
+          "method"
+        ],
+        "properties": {
+          "pathname": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "method": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 16
+          }
+        }
+      }
+    },
+    {
+      "schemaId": "route-request-variant-id.schema.v1",
+      "digest": "sha256:301ff490a7f9e914f43053185143a01600e8fb87c78b36d1ce41f52160b5203e",
+      "value": {
+        "const": "route-request"
+      }
+    },
+    {
+      "schemaId": "pathname-value.schema.v1",
+      "digest": "sha256:85c1db78d5c7dc29b5e24f13a6d3f86af9075e032e322bfe2f7abd542739b409",
+      "value": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      }
+    },
+    {
+      "schemaId": "method-value.schema.v1",
+      "digest": "sha256:2be66a0fd128bb383dfe05acafbb4c9e8d529209dfe8aaf9d16f2801b9fda44c",
+      "value": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 16
+      }
+    },
+    {
+      "schemaId": "route-id.schema.v1",
+      "digest": "sha256:ed178c2008d98f014fee7a140f73a696c3111c8d8a283bc6e633daa28a641863",
+      "value": {
+        "enum": [
+          "console-html",
+          "index-info",
+          "query",
+          "snippet"
+        ]
+      }
+    },
+    {
+      "schemaId": "obligation-status.schema.v1",
+      "digest": "sha256:5d59fc5fb020fee7ea29a2493b457aa7d8fb46f8012dff970cc65a8a2aa42cad",
+      "value": {
+        "enum": [
+          "satisfied",
+          "violated"
+        ]
+      }
+    },
+    {
+      "schemaId": "result-kind.schema.v1",
+      "digest": "sha256:f439820ab7e1cf3a2388edc57d862cf2e12bb4312ab4b452945791b781073547",
+      "value": {
+        "const": "route-dispatch-result"
+      }
+    },
+    {
+      "schemaId": "route-dispatch-result.schema.v1",
+      "digest": "sha256:9a6f27fe20528f339208dfebc371b385161e55f90e647893ce8cd037bf250709",
+      "value": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "routeId"
+        ],
+        "properties": {
+          "kind": {
+            "const": "route-dispatch-result"
+          },
+          "routeId": {
+            "enum": [
+              "console-html",
+              "index-info",
+              "query",
+              "snippet"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "catalogs": [],
+  "runtimeProfile": {
+    "identity": "finite-semantic-runtime.v3",
+    "limits": {
+      "maxGraphNodes": 64,
+      "maxGraphEdges": 128,
+      "maxVariants": 16,
+      "maxClassificationInputs": 16,
+      "maxClassificationCases": 128,
+      "maxTranslationCases": 128,
+      "maxPathDepth": 16,
+      "maxOutputDepth": 16,
+      "maxSchemas": 32,
+      "maxTerminalResults": 1,
+      "maxSerializedByteLength": 1048576,
+      "maxOperandDomainSize": 64,
+      "maxIterationSteps": 8192,
+      "maxWorklistItems": 256
+    },
+    "forbiddenCapabilities": [
+      "cycles",
+      "recursion",
+      "dynamic-invocation",
+      "arbitrary-expressions",
+      "user-code",
+      "runtime-module-loading",
+      "unbounded-array-traversal",
+      "regex-authority",
+      "implicit-coercion",
+      "ambient-state",
+      "clock-access",
+      "ambient-randomness",
+      "network-access"
+    ],
+    "admittedPrimitives": [
+      "input.v1",
+      "validate-variant.v1",
+      "read-path.v1",
+      "constant.v1",
+      "test-presence.v1",
+      "classify-value.v1",
+      "classify-observations.v1",
+      "translate-value.v1",
+      "evaluate-obligation.v1",
+      "project-value.v1",
+      "select-result.v1",
+      "emit-result.v1",
+      "add-bounded.v1",
+      "subtract-bounded.v1",
+      "compare-bounded.v1",
+      "seeded-range-draw.v1",
+      "read-indexed-path.v1",
+      "iterate-bounded-worklist.v1",
+      "resolve-branching-worklist.v1",
+      "serialize-result.v1"
+    ],
+    "digest": "sha256:18ca4acba6be2b4d1a0acb6c35df5d32aa5d5afc2acd17b412b0773c1e3cb151"
+  }
+}

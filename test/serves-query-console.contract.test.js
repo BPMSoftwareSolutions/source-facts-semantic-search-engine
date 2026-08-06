@@ -9,8 +9,9 @@ import Ajv2020 from "ajv/dist/2020.js";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cliPath = path.join(repoRoot, "src", "cli.js");
-const schemaPath = "C:/lab/repos/contract-driven-artifact-governance-engine/schemas/governed-artifact-contract.schema.json";
-const mechanicAuthoritySchemaPath = "C:/lab/repos/contract-driven-artifact-governance-engine/schemas/executable-mechanic-authority.schema.json";
+const governanceEngineRoot = path.resolve(repoRoot, "..", "contract-driven-artifact-governance-engine");
+const schemaPath = path.join(governanceEngineRoot, "schemas", "governed-artifact-contract.schema.json");
+const mechanicAuthoritySchemaPath = path.join(governanceEngineRoot, "schemas", "executable-mechanic-authority.schema.json");
 const expectedSourceArtifactPaths = [
   "src/console/console-authority-bundles.mjs",
   "src/console/console-routing-adapter.mjs",
@@ -71,6 +72,7 @@ test("project-console-contract writes a governed console contract draft", () => 
   const validate = ajv.compile(schema);
 
   assert.ok(validate(contract), `Contract schema validation failed: ${ajv.errorsText(validate.errors)}`);
+  assert.equal(contract.interpretationBase.engine.identity, "governed-artifact-engine.0.22.0");
   assert.equal(contract.contract.contractId, "serves-query-console-governed-contract");
   assert.equal(contract.contract.status, "admitted");
   assert.equal(contract.artifacts.length, expectedArtifactPaths.length);

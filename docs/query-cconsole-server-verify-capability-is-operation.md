@@ -1,6 +1,11 @@
 # `console serve`: Operationality & Overlap Verification
 
-**Status:** 🟡 **VERIFIED BROKEN — resolution pending human decision**
+**Status:** 🟢 **OPERATIONAL — resolved 2026-08-06**
+
+The authority sources and projected runtime bundles are now versioned instead
+of being hidden by the repository-wide JSON ignore rule. The console server,
+route adapter, and relational query integration are covered by the portable
+test suite. The investigation below is retained as the historical diagnosis.
 
 **Investigated:** 2026-08-03
 **Subject:** `node src/cli.js console serve` (query console HTTP server)

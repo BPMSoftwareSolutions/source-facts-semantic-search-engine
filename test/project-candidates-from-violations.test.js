@@ -1,21 +1,15 @@
 import assert from "node:assert/strict";
 import os from "node:os";
 import path from "node:path";
-import { mkdtempSync, readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { test } from "node:test";
 import { projectSourceFactsWorkspace } from "../src/project.js";
 import { executeRelationalQuery } from "../src/query.js";
 import { projectAuthorityCandidatesFromViolations } from "../src/projects-authority-from-violations.js";
 
-const consoleWorkspaceRoot = path.resolve(process.cwd(), "src", "console");
+const fixtureModulePath = "deliberately-violating-fixture.mjs";
 const targetModulePaths = new Set([
-  "console-authority-bundles.mjs",
-  "console-routing-adapter.mjs",
-  "console-snippet-adapter.mjs",
-  "console-validation-adapter.mjs",
-  "serves-query-console.conformant.mjs",
-  "serves-query-console.mjs",
-  "serves-query-console.projected.mjs",
+  fixtureModulePath,
 ]);
 
 const forbiddenMechanics = new Set([
@@ -80,7 +74,19 @@ async function buildsGovernanceViolationsFromQuery(index) {
   return receipt.result.value.rows;
 }
 
-test("authority candidates are projected from query-detected violations", async () => {
+test("authority candidates are projected from query-detected violations", async (t) => {
+  const consoleWorkspaceRoot = mkdtempSync(path.join(os.tmpdir(), "source-facts-violations-fixture-"));
+  t.after(() => rmSync(consoleWorkspaceRoot, { recursive: true, force: true }));
+  writeFileSync(path.join(consoleWorkspaceRoot, fixtureModulePath), [
+    "export function deliberatelyViolatesAuthority(items) {",
+    "  const selected = [];",
+    "  for (const item of items) {",
+    "    if (item.enabled) selected.push({ value: item.value });",
+    "  }",
+    "  return JSON.stringify(selected);",
+    "}",
+    "",
+  ].join("\n"), "utf8");
   const index = await projectSourceFactsWorkspace({
     workspaceRoot: consoleWorkspaceRoot,
     workspaceId: "console-authority-candidates",
@@ -90,10 +96,11 @@ test("authority candidates are projected from query-detected violations", async 
     ...(await buildsViolationsFromQuery(index)),
     ...(await buildsGovernanceViolationsFromQuery(index)),
   ];
-  assert.ok(violations.length > 0, "query scan should find violations to project");
+  assert.ok(violations.length > 0, "query scan should find violations in the deliberate fixture");
 
   const outputDirectory = mkdtempSync(path.join(os.tmpdir(), "source-facts-authority-"));
-  const codeFile = "src/console/serves-query-console.mjs";
+  t.after(() => rmSync(outputDirectory, { recursive: true, force: true }));
+  const codeFile = path.join(consoleWorkspaceRoot, fixtureModulePath);
   const authorityFile = "contracts/serves-query-console.authority.json";
   const outputPath = path.join(outputDirectory, "serves-query-console.candidates.json");
   const authorityOutputPath = path.join(outputDirectory, "serves-query-console.authority.draft.json");

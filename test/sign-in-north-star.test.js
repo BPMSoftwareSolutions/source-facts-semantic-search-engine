@@ -42,7 +42,12 @@ test("runs the complete sign-in north star from one request and accepts source-p
     assert.equal(result.report.selectedAuthorities[0].sourceRelativePath, "layout.html");
     assert.equal(result.report.compatibility.disposition, "COMPATIBLE");
     assert.equal(result.report.gallery.proof.receiptCount, 4);
-    assert.equal(result.report.gallery.proof.renderedCount, 4);
+    if (result.report.gallery.proof.browserAvailable) {
+      assert.equal(result.report.gallery.proof.renderedCount, 4);
+    } else {
+      assert.equal(result.report.gallery.proof.renderedCount, 0);
+      assert.ok(result.galleryProof.receipts.every((receipt) => receipt.verdict === "NOT_EVALUATED"));
+    }
     assert.equal(result.report.stages.at(-1).stageId, "runnable-governed-preview");
     assert.equal(result.report.stages.at(-1).disposition, "READY");
     assert.ok(fs.existsSync(path.join(result.outputRoot, "authority-choices.json")));
