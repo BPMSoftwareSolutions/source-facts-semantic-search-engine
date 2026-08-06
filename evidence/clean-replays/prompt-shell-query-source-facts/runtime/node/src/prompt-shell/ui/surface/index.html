@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cognitive Prompt Shell</title>
+    <link rel="stylesheet" href="/styles/00_tokens/materializes-visual-tokens.css">
+    <link rel="stylesheet" href="/styles/01_foundation/establishes-browser-foundation.css">
+    <link rel="stylesheet" href="/styles/02_layout/arranges-cockpit-regions.css">
+    <link rel="stylesheet" href="/styles/03_components/renders-cockpit-components.css">
+    <link rel="stylesheet" href="/styles/04_states/projects-interaction-states.css">
+  </head>
+  <body>
+    <main class="prompt-shell">
+      <aside class="codebase-sidebar" aria-label="Codebase browser">
+        <div class="sidebar-header">
+          <div>
+            <p class="sidebar-kicker">Codebase</p>
+            <h1>Cognitive</h1>
+          </div>
+          <button class="icon-button sidebar-refresh" id="refreshCodebase" type="button" title="Refresh codebase tree" aria-label="Refresh codebase tree">R</button>
+        </div>
+        <div class="codebase-search" role="search">
+          <label class="sr-only" for="codebaseSearchInput">Search codebase files</label>
+          <input id="codebaseSearchInput" type="search" autocomplete="off" spellcheck="false" placeholder="Search files">
+          <div class="codebase-search-results hidden" id="codebaseSearchResults" role="listbox" aria-label="Matching files"></div>
+        </div>
+        <nav class="codebase-tree" id="codebaseTree" aria-label="Repository folders">
+          <div class="tree-empty">Loading codebase...</div>
+        </nav>
+        <div class="sidebar-resizer" id="sidebarResizer" role="separator" aria-orientation="vertical" aria-label="Resize codebase sidebar" tabindex="0"></div>
+      </aside>
+      <section class="shell-workspace">
+        <header class="shell-topbar">
+          <div class="brand-line">
+            <h2>Prompt Shell</h2>
+            <code id="sessionId">No session</code>
+          </div>
+          <div class="status-line">
+            <span class="status-badge" id="serverBadge">Starting</span>
+            <span class="status-badge" id="invocationBadge">Checking SQLite</span>
+            <button id="themeToggle" type="button" aria-pressed="true">Dark</button>
+            <button id="refreshHistory" type="button">History</button>
+            <button id="clearOutput" type="button">Clear</button>
+          </div>
+        </header>
+        <section class="transcript" id="output" aria-live="polite" aria-label="Prompt shell transcript">
+          <div class="empty-state">Ask the codebase to plan, explain, or run a governed command.</div>
+        </section>
+        <section class="file-viewer hidden" id="fileViewer" aria-label="Selected codebase file">
+          <div class="file-viewer-header">
+            <div class="file-viewer-title">
+              <p class="file-viewer-kicker">Selected file</p>
+              <h3 id="fileViewerName">No file selected</h3>
+              <code id="fileViewerPath"></code>
+              <div class="file-viewer-breadcrumbs" id="fileViewerBreadcrumbs" aria-label="File breadcrumbs"></div>
+            </div>
+            <div class="file-viewer-actions">
+              <button id="fileViewerBack" type="button" disabled="" title="Back to previous file" aria-label="Back to previous file">Back</button>
+              <button id="fileViewerForward" type="button" disabled="" title="Forward to next file" aria-label="Forward to next file">Forward</button>
+              <button id="analyzeSelectedFile" type="button">Analyze</button>
+              <button id="closeFileViewer" type="button">Close</button>
+            </div>
+          </div>
+          <div class="file-viewer-meta" id="fileViewerMeta"></div>
+          <div class="file-viewer-body" id="fileViewerBody"></div>
+        </section>
+        <section class="shell-controls hidden" id="advancedControls" aria-label="Prompt shell controls">
+          <div class="model-picker">
+            <label>
+              Provider
+              <select id="providerSelect"></select>
+            </label>
+            <label>
+              Model
+              <select id="modelSelect"></select>
+            </label>
+          </div>
+          <details class="advanced-details">
+            <summary>Options</summary>
+            <div class="controls-grid">
+              <label>
+                Egress
+                <select id="egressSelect"></select>
+              </label>
+              <label>
+                Task
+                <select id="taskSelect"></select>
+              </label>
+              <label class="wide-field">
+                System Prompt
+                <input id="systemPrompt" placeholder="Optional" autocomplete="off">
+              </label>
+            </div>
+            <div class="control-footer">
+              <div class="button-row">
+                <button class="primary" id="openSession" type="button">Open Session</button>
+                <button id="closeSession" type="button" disabled="">Close</button>
+              </div>
+              <div class="compare-controls hidden" id="compareControls">
+                <div class="compare-options" id="compareOptions"></div>
+              </div>
+              <div class="run-controls" id="runControls">
+                <label>
+                  Command
+                  <select id="commandSelect"></select>
+                </label>
+                <label class="wide-field">
+                  Options JSON
+                  <textarea id="commandOptionsInput" rows="3" spellcheck="false" placeholder="{&quot;key&quot;:&quot;value&quot;}"></textarea>
+                </label>
+                <div class="command-summary" id="commandSummary"></div>
+              </div>
+            </div>
+          </details>
+        </section>
+        <form class="shell-composer" id="promptForm">
+          <button class="model-button" id="toggleControls" type="button" aria-expanded="false" aria-controls="advancedControls" title="Model">Model</button>
+          <div class="prompt-input-wrap">
+            <textarea id="promptInput" rows="1" spellcheck="true" placeholder="Message the cognitive codebase"></textarea>
+            <span class="voice-status" id="voiceStatus" aria-live="polite">Voice ready</span>
+          </div>
+          <button class="icon-button mic-button" id="micButton" type="button" aria-pressed="false" title="Start dictation" aria-label="Start dictation">
+            <svg class="button-icon mic-icon" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" aria-hidden="true">
+              <path d="M18.585 13.412a.9.9 0 0 1 1.668.676 8.91 8.91 0 0 1-7.353 5.516V22a.9.9 0 0 1-1.8 0v-2.396a8.91 8.91 0 0 1-7.352-5.516.9.9 0 0 1 1.668-.676 7.104 7.104 0 0 0 13.169 0"></path>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.35a4.9 4.9 0 0 1 4.9 4.9v4.483a4.9 4.9 0 0 1-9.8 0V6.25a4.9 4.9 0 0 1 4.9-4.9m0 1.8a3.1 3.1 0 0 0-3.1 3.1v4.483a3.1 3.1 0 1 0 6.2 0V6.25a3.1 3.1 0 0 0-3.1-3.1"></path>
+            </svg>
+          </button>
+          <button class="primary send-button" id="sendPrompt" type="submit">Run</button>
+        </form>
+      </section>
+    </main>
+    <script type="module" src="/surface/operates-cockpit.js"></script>
+    <script type="module" src="/surface/source-facts-cockpit-extension.js"></script>
+  </body>
+</html>
