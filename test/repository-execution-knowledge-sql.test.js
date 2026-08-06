@@ -13,8 +13,8 @@ test("records execution analysis identity without writing a disk report",async()
 });
 
 test("queries one bounded operational execution summary",async()=>{
-  let query; const summary=await queriesCurrentOperationalExecutionSummary({rootId:"root",connection,queryRunner:async request=>{query=request.query;return ["O|188|900|30|4000|5000|2000|3000|250|25|700|0|600|300|1200|EXECUTION_ANALYSIS_CURRENT"];}});
-  assert.equal(summary.mechanicCount,5000); assert.equal(summary.responsibilityLinkedMechanicCount,250); assert.equal(summary.executionAnalysisDisposition,"EXECUTION_ANALYSIS_CURRENT"); assert.match(query,/CurrentOperationalExecutionSummary/u); assert.doesNotMatch(query,/RepositoryArtifact|ExecutableMechanic/u);
+  let query; const summary=await queriesCurrentOperationalExecutionSummary({rootId:"root",connection,queryRunner:async request=>{query=request.query;return ["O|188|900|30|4000|5000|2000|3000|250|25|700|0|600|300|1200|4900|800|75|25|EXECUTION_ANALYSIS_CURRENT"];}});
+  assert.equal(summary.mechanicCount,5000); assert.equal(summary.responsibilityLinkedMechanicCount,250); assert.equal(summary.outsideKernelViolationCount,4900); assert.equal(summary.authorityBoundViolationCount,800); assert.equal(summary.kernelAllowedMechanicCount,75); assert.equal(summary.falsePositiveMechanicCount,25); assert.equal(summary.executionAnalysisDisposition,"EXECUTION_ANALYSIS_CURRENT"); assert.match(query,/CurrentOperationalExecutionSummary/u); assert.doesNotMatch(query,/RepositoryArtifact|ExecutableMechanic/u);
 });
 
 test("queries bounded current mechanic candidates for deterministic lowering",async()=>{

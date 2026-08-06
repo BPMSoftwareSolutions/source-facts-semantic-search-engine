@@ -447,6 +447,11 @@ authority-completion backlog. Image-digest mismatch makes the entire execution
 analysis stale immediately. Observed call paths, applicability recommendations,
 and authority candidates remain explicitly unadmitted.
 
+Executable mechanics are permitted only inside an explicitly admitted semantic
+kernel boundary. Authority admission is remediation progress, not conformance:
+an outside-kernel occurrence remains a projection-blocking violation until a
+mechanic-free replacement is proven and the original mechanic is removed.
+
 All configured executable-mechanic families can be lowered deterministically
 from their exact TypeScript AST nodes without an LLM. The command is dry-run by
 default, verifies local bytes
@@ -518,8 +523,15 @@ intent registry in one step, use:
 node src/cli.js sync-self-governance `
   --workspace ./src `
   --connection-env source-facts-semantic-search-engine `
+  --gate `
   --summary
 ```
+
+`--gate` fails when any outside-kernel executable mechanic remains and stops
+`sync-self-governance` before publishing engineering truth. An admitted
+authority counterpart does not clear the gate; the source occurrence remains a
+violation until a mechanic-free replacement is proven and the occurrence is
+absent from a fresh source-fact index.
 
 `reporting.FeatureTestDisposition` answers whether each canonical responsibility
 has mapped test lineage. `reporting.FeatureEngineeringClosure` joins the canonical

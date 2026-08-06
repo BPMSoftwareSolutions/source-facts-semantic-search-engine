@@ -572,9 +572,9 @@ export const reportDrillDownQueries = Object.freeze([
   },
   {
     queryId: "test.supporting-lineage.v1", section: "Test Traceability", depth: 1,
-    queryText: "SELECT * FROM reportTestPostures WHERE posture IN ('SHARED_INFRASTRUCTURE_PROOF','KERNEL_PRIMITIVE_CONFORMANCE','ADAPTER_MECHANICS_PROOF')",
+    queryText: "SELECT * FROM reportTestPostures WHERE posture IN ('SHARED_INFRASTRUCTURE_PROOF','KERNEL_PRIMITIVE_CONFORMANCE','MECHANIC_FREE_ADAPTER_WIRING_PROOF')",
     inputCollections: ["reportTestPostures"], expectedResultSchema: "tests justified by admitted supporting infrastructure posture",
-    parameters: [parameter("testId"), parameter("posture")], rows: (context) => (context.testTraceability?.testPostures ?? []).filter((row) => ["SHARED_INFRASTRUCTURE_PROOF", "KERNEL_PRIMITIVE_CONFORMANCE", "ADAPTER_MECHANICS_PROOF"].includes(row.posture)),
+    parameters: [parameter("testId"), parameter("posture")], rows: (context) => (context.testTraceability?.testPostures ?? []).filter((row) => ["SHARED_INFRASTRUCTURE_PROOF", "KERNEL_PRIMITIVE_CONFORMANCE", "MECHANIC_FREE_ADAPTER_WIRING_PROOF"].includes(row.posture)),
     terminal: true,
   },
   {

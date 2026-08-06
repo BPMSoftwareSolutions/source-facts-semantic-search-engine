@@ -1,10 +1,7 @@
 const knownPostures = Object.freeze([
-  "GOVERNED_BY_SEMANTIC_AUTHORITY",
-  "MECHANICAL_ADAPTER_OPERATION",
   "KERNEL_PRIMITIVE",
-  "AUTHORIZED_TEMPORARY_BACKLOG",
   "UNAUTHORIZED_EXECUTABLE_MEANING",
-  "UNKNOWN_CLASSIFICATION",
+  "FALSE_POSITIVE",
 ]);
 
 function normalizesPathKey(value) {
@@ -60,7 +57,7 @@ export function extractsDeclaredAuthorityMechanics(authorityDocument, authorityF
     .filter((entry) => entry.mechanicId !== null && entry.mechanic !== null && entry.location !== null);
 }
 
-export function classifiesMechanicOccurrence(occurrence, declaredAuthorityMechanics) {
+export function classifiesMechanicOccurrence(occurrence, declaredAuthorityMechanics, { kernelModulePathPrefixes = [], falsePositiveOccurrenceIds = [] } = {}) {
   const occurrenceLocation = {
     modulePath: normalizesPathKey(occurrence.modulePath),
     startLine: occurrence.startLine,
@@ -71,16 +68,52 @@ export function classifiesMechanicOccurrence(occurrence, declaredAuthorityMechan
     (declared) => declared.mechanic === occurrence.mechanic && locationsOverlap(declared.location, occurrenceLocation),
   );
 
+  const inKernel = kernelModulePathPrefixes.some((prefix) => {
+    const normalized = normalizesPathKey(prefix).replace(/\/$/u, "");
+    return normalized.length > 0 && (occurrenceLocation.modulePath === normalized || occurrenceLocation.modulePath.startsWith(`${normalized}/`));
+  });
+  if (inKernel) {
+    return Object.freeze({
+      posture: "KERNEL_PRIMITIVE",
+      executionBoundary: "SEMANTIC_KERNEL",
+      authorityDisposition: "AUTHORITY_NOT_REQUIRED_IN_KERNEL",
+      violationDisposition: "KERNEL_EXECUTION_ALLOWED",
+      remediationDisposition: "NONE",
+      governingMechanicId: match?.mechanicId ?? null,
+      governingAuthorityFile: match?.authorityFile ?? null,
+    });
+  }
+
+  if (falsePositiveOccurrenceIds.includes(occurrence.occurrenceId)) {
+    return Object.freeze({
+      posture: "FALSE_POSITIVE",
+      executionBoundary: "OUTSIDE_SEMANTIC_KERNEL",
+      authorityDisposition: "AUTHORITY_NOT_APPLICABLE_FALSE_POSITIVE",
+      violationDisposition: "FALSE_POSITIVE_EXCLUDED",
+      remediationDisposition: "NONE",
+      governingMechanicId: null,
+      governingAuthorityFile: null,
+    });
+  }
+
   if (match) {
     return Object.freeze({
-      posture: "GOVERNED_BY_SEMANTIC_AUTHORITY",
+      posture: "UNAUTHORIZED_EXECUTABLE_MEANING",
+      executionBoundary: "OUTSIDE_SEMANTIC_KERNEL",
+      authorityDisposition: "AUTHORITY_ADMITTED",
+      violationDisposition: "OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION",
+      remediationDisposition: "REPLACEMENT_REQUIRED",
       governingMechanicId: match.mechanicId,
       governingAuthorityFile: match.authorityFile,
     });
   }
 
   return Object.freeze({
-    posture: "UNKNOWN_CLASSIFICATION",
+    posture: "UNAUTHORIZED_EXECUTABLE_MEANING",
+    executionBoundary: "OUTSIDE_SEMANTIC_KERNEL",
+    authorityDisposition: "AUTHORITY_MISSING",
+    violationDisposition: "OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION",
+    remediationDisposition: "AUTHORITY_REQUIRED",
     governingMechanicId: null,
     governingAuthorityFile: null,
   });

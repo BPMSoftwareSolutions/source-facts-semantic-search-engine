@@ -337,7 +337,7 @@ function buildsAuthoringCollections(context) {
     modulePath: context.occurrenceEvidence.find((row) => row.symbolId === symbolId)?.modulePath ?? symbols.get(symbolId)?.modulePath ?? null,
     currentExecutableBodyReference: symbols.get(symbolId)?.sourceReferenceId ?? null,
     mechanicsProposedForRemoval: (candidateOccurrencesBySymbol.get(symbolId) ?? []).map((row) => row.occurrenceId),
-    retainedMechanicalAdapterOperations: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => row.posture === "MECHANICAL_ADAPTER_OPERATION").map((row) => row.occurrenceId),
+    outsideKernelMechanicsRequiringRemoval: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => row.violationDisposition === "OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION").map((row) => row.occurrenceId),
     requiredSemanticRuntimeCalls: (relationshipsBySymbol.get(symbolId) ?? []).filter((row) => row.relationshipKind === "invocation").map((row) => row.toSymbolId ?? row.toSymbolCandidate).filter(Boolean),
     requiredImports: (relationshipsBySymbol.get(symbolId) ?? []).filter((row) => row.relationshipKind === "dependency").map((row) => row.toSymbolCandidate).filter(Boolean),
     targetGeneratedArtifactShape: "SEMANTIC_EXECUTION_ADAPTER_NOT_YET_AUTHORED",

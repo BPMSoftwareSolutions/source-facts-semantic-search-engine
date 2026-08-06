@@ -73,6 +73,7 @@ function resolvesBodyMechanicOccurrences(index, workspaceRelativePrefix) {
     const sourceReference = sourceReferenceById.get(mechanic.sourceReferenceId) ?? null;
     const symbol = mechanic.fromSymbolId ? symbolById.get(mechanic.fromSymbolId) ?? null : null;
     return {
+      occurrenceId: mechanic.bodyMechanicId ?? mechanic.mechanicId ?? null,
       mechanic: mechanic.mechanic,
       modulePath: joinsRepositoryRelativePath(workspaceRelativePrefix, mechanic.modulePath),
       startLine: sourceReference?.startLine ?? null,
@@ -130,7 +131,7 @@ function fileBreakdownKey(mechanic, modulePath) {
  * Still observational only -- no gap remediation records or projection
  * actions are produced yet.
  */
-export async function projectsSelfGovernanceReport({ index, testIndex = null, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, canonicalFeatureIntents = { pairs: [], findings: [], disposition: "CANONICAL_FEATURE_INTENTS_NOT_DISCOVERED" }, enterpriseContext = null, workspaceRelativePrefix = "" }) {
+export async function projectsSelfGovernanceReport({ index, testIndex = null, repositoryId, authorityDocuments = [], semanticOverlapProposalBatches = [], featureCoverageProposalBatches = [], featureCoverageInferenceEvaluationBatches = [], knowHowRegistry = { admittedKnowHow: [], authorityRemediationCandidates: [] }, healingDraftBatches = [], authoringContractMap = { disposition: "AUTHORING_CONTRACT_MAP_UNAVAILABLE", engineVersion: null, root: null, entries: [], projectors: [], verifiers: [], inputs: [] }, canonicalFeatureIntents = { pairs: [], findings: [], disposition: "CANONICAL_FEATURE_INTENTS_NOT_DISCOVERED" }, enterpriseContext = null, workspaceRelativePrefix = "", kernelModulePathPrefixes = [], falsePositiveOccurrenceIds = [] }) {
   const resolvedEnterpriseContext = buildsEnterpriseContext(enterpriseContext, {
     repositoryId,
     workspaceId: index.workspace?.workspaceId ?? null,
@@ -175,12 +176,14 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
   const classifiedOccurrences = [];
 
   for (const occurrence of occurrences) {
-    const { posture, governingMechanicId, governingAuthorityFile } = classifiesMechanicOccurrence(occurrence, declaredAuthorityMechanics);
-    const isGoverned = posture === "GOVERNED_BY_SEMANTIC_AUTHORITY";
+    const classification = classifiesMechanicOccurrence(occurrence, declaredAuthorityMechanics, { kernelModulePathPrefixes, falsePositiveOccurrenceIds });
+    const { posture, governingMechanicId, governingAuthorityFile, executionBoundary, authorityDisposition, violationDisposition, remediationDisposition } = classification;
+    const isAuthorityBound = authorityDisposition === "AUTHORITY_ADMITTED";
+    const isViolation = violationDisposition === "OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION";
     const authorityFamily = resolvesAuthorityFamily(occurrence.mechanic);
-    const home = resolvesAuthorityHomeStatus({ modulePath: occurrence.modulePath, isGoverned }, authorityHomeIndex);
-    const candidateMatch = isGoverned ? null : resolvesCandidateAuthorityMatch(occurrence, candidateAuthorityMechanicsByMechanic.get(occurrence.mechanic) ?? [], knownModulePaths);
-    const { automationDisposition, missingTissue } = classifiesAutomationReadiness({ posture, authorityHomeStatus: home.status, candidateMatch });
+    const home = resolvesAuthorityHomeStatus({ modulePath: occurrence.modulePath, isGoverned: isAuthorityBound }, authorityHomeIndex);
+    const candidateMatch = isAuthorityBound ? null : resolvesCandidateAuthorityMatch(occurrence, candidateAuthorityMechanicsByMechanic.get(occurrence.mechanic) ?? [], knownModulePaths);
+    const { automationDisposition, missingTissue } = classifiesAutomationReadiness({ posture, authorityDisposition, authorityHomeStatus: home.status, candidateMatch });
     byPosture[posture] += 1;
     byAutomationDisposition[automationDisposition] += 1;
 
@@ -188,12 +191,16 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
       mechanic: occurrence.mechanic,
       authorityFamily,
       observed: 0,
-      governed: 0,
+      authorityBoundViolations: 0,
+      outsideKernelViolations: 0,
+      kernelAllowed: 0,
       files: new Set(),
       byHomeStatus: Object.fromEntries(knownHomeStatuses.map((status) => [status, 0])),
     };
     mechanicSummary.observed += 1;
-    if (isGoverned) mechanicSummary.governed += 1;
+    if (isAuthorityBound) mechanicSummary.authorityBoundViolations += 1;
+    if (isViolation) mechanicSummary.outsideKernelViolations += 1;
+    if (violationDisposition === "KERNEL_EXECUTION_ALLOWED") mechanicSummary.kernelAllowed += 1;
     mechanicSummary.files.add(occurrence.modulePath);
     mechanicSummary.byHomeStatus[home.status] += 1;
     byMechanicType.set(occurrence.mechanic, mechanicSummary);
@@ -204,24 +211,33 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
       modulePath: occurrence.modulePath,
       authorityFamily,
       occurrenceCount: 0,
-      governedCount: 0,
+      authorityBoundViolationCount: 0,
+      violationCount: 0,
+      kernelAllowedCount: 0,
       responsibilities: new Set(),
       homeStatus: home.status,
       authorityFile: home.authorityFile,
       authorityHomeVerified: home.authorityHomeVerified,
     };
     fileEntry.occurrenceCount += 1;
-    if (isGoverned) fileEntry.governedCount += 1;
+    if (isAuthorityBound) fileEntry.authorityBoundViolationCount += 1;
+    if (isViolation) fileEntry.violationCount += 1;
+    if (violationDisposition === "KERNEL_EXECUTION_ALLOWED") fileEntry.kernelAllowedCount += 1;
     if (occurrence.symbolName) fileEntry.responsibilities.add(occurrence.symbolName);
     fileBreakdownByKey.set(breakdownKey, fileEntry);
 
     classifiedOccurrences.push({
+      occurrenceId: occurrence.occurrenceId,
       mechanic: occurrence.mechanic,
       modulePath: occurrence.modulePath,
       startLine: occurrence.startLine,
       endLine: occurrence.endLine ?? occurrence.startLine,
       symbolName: occurrence.symbolName ?? null,
       posture,
+      executionBoundary,
+      authorityDisposition,
+      violationDisposition,
+      remediationDisposition,
       governingMechanicId,
       governingAuthorityFile,
       authorityFamily,
@@ -379,7 +395,10 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
     ),
     executionMechanics: Object.freeze({
       observed: occurrences.length,
-      governed: byPosture.GOVERNED_BY_SEMANTIC_AUTHORITY,
+      authorityBoundViolations: classifiedOccurrences.filter((row) => row.authorityDisposition === "AUTHORITY_ADMITTED").length,
+      outsideKernelViolations: classifiedOccurrences.filter((row) => row.violationDisposition === "OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION").length,
+      kernelAllowed: classifiedOccurrences.filter((row) => row.violationDisposition === "KERNEL_EXECUTION_ALLOWED").length,
+      falsePositives: classifiedOccurrences.filter((row) => row.violationDisposition === "FALSE_POSITIVE_EXCLUDED").length,
       byPosture: Object.freeze(byPosture),
       byMechanicType: Object.freeze(
         [...byMechanicType.values()]

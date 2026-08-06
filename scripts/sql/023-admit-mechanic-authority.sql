@@ -33,6 +33,20 @@ IF COL_LENGTH('authority.MechanicAuthorityAdmission','LowererVersion') IS NULL
 ALTER TABLE authority.MechanicAuthorityAdmission ADD LowererVersion varchar(120) NULL;
 GO
 
+IF OBJECT_ID('authority.ExecutableMechanicKernelBoundary','U') IS NULL
+CREATE TABLE authority.ExecutableMechanicKernelBoundary
+(
+    RootId nvarchar(400) NOT NULL,
+    ModulePathPrefix nvarchar(1024) NOT NULL,
+    BoundaryAuthorityDigest varchar(80) NOT NULL,
+    AdmissionDisposition varchar(80) NOT NULL,
+    AdmittedAtUtc datetime2(7) NOT NULL CONSTRAINT DF_ExecutableMechanicKernelBoundary_AdmittedAtUtc DEFAULT SYSUTCDATETIME(),
+    CONSTRAINT PK_ExecutableMechanicKernelBoundary PRIMARY KEY (RootId,ModulePathPrefix),
+    CONSTRAINT CK_ExecutableMechanicKernelBoundary_Digest CHECK (BoundaryAuthorityDigest LIKE 'sha256:%'),
+    CONSTRAINT CK_ExecutableMechanicKernelBoundary_Disposition CHECK (AdmissionDisposition='KERNEL_BOUNDARY_ADMITTED')
+);
+GO
+
 IF OBJECT_ID('observation.MechanicAuthorityLoweringAttempt','U') IS NULL
 CREATE TABLE observation.MechanicAuthorityLoweringAttempt
 (
@@ -217,6 +231,13 @@ SELECT currentAnalysis.RootId,currentAnalysis.ApplicationId,currentAnalysis.Repo
  CASE WHEN applicability.ReviewDisposition='APPLICABILITY_ADMITTED' THEN 'REVIEWED_APPLICABILITY_AUTHORITY' ELSE 'APPLICABILITY_REVIEW_REQUIRED' END ApplicabilityAuthorityDisposition,
  authorityProjection.ProjectionDisposition AuthorityProjectionDisposition,
  COALESCE(admission.AdmissionDisposition,'CANDIDATE_NOT_ADMITTED') AdmissionDisposition,
+ CASE WHEN kernelBoundary.ModulePathPrefix IS NOT NULL THEN 'SEMANTIC_KERNEL' ELSE 'OUTSIDE_SEMANTIC_KERNEL' END ExecutionBoundary,
+ CASE WHEN kernelBoundary.ModulePathPrefix IS NOT NULL THEN 'KERNEL_EXECUTION_ALLOWED'
+      WHEN applicability.ReviewDisposition='APPLICABILITY_ADMITTED' AND applicability.ApplicabilityDisposition='FALSE_POSITIVE' THEN 'FALSE_POSITIVE_EXCLUDED'
+      ELSE 'OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION' END ViolationDisposition,
+ CASE WHEN kernelBoundary.ModulePathPrefix IS NOT NULL OR (applicability.ReviewDisposition='APPLICABILITY_ADMITTED' AND applicability.ApplicabilityDisposition='FALSE_POSITIVE') THEN 'NONE'
+      WHEN admission.MechanicOccurrenceId IS NOT NULL THEN 'REPLACEMENT_REQUIRED'
+      ELSE 'AUTHORITY_REQUIRED' END RemediationDisposition,
  admission.AuthorityDataJson AdmittedAuthorityDataJson,admission.AuthorityDigest AdmittedAuthorityDigest,
  CASE WHEN artifact.RootId IS NULL OR sourceFile.ContentHash<>artifact.ContentDigest THEN 'SOURCE_EVIDENCE_STALE' ELSE 'CURRENT_REPOSITORY_IMAGE' END CurrentPosture
 FROM projection.CurrentRepositoryExecutionAnalysis currentAnalysis
@@ -242,7 +263,15 @@ OUTER APPLY
  WHERE binding.ContractSnapshotId=currentAnalysis.ContractSnapshotId
    AND binding.ObservationSnapshotId=currentAnalysis.ObservationSnapshotId AND binding.CallableKey=callable.CallableKey
 ) ownership
-OUTER APPLY (SELECT COUNT(DISTINCT reach.CommandId) InterfaceCount,MIN(reach.Depth) MinimumPathDepth FROM observation.CommandReachability reach WHERE reach.ObservationSnapshotId=currentAnalysis.ObservationSnapshotId AND reach.CallableKey=callable.CallableKey AND reach.ResolutionDisposition='STATICALLY_RESOLVED') reachability
+ OUTER APPLY (SELECT COUNT(DISTINCT reach.CommandId) InterfaceCount,MIN(reach.Depth) MinimumPathDepth FROM observation.CommandReachability reach WHERE reach.ObservationSnapshotId=currentAnalysis.ObservationSnapshotId AND reach.CallableKey=callable.CallableKey AND reach.ResolutionDisposition='STATICALLY_RESOLVED') reachability
+OUTER APPLY
+(
+ SELECT TOP (1) boundary.ModulePathPrefix
+ FROM authority.ExecutableMechanicKernelBoundary boundary
+ WHERE boundary.RootId=currentAnalysis.RootId AND boundary.AdmissionDisposition='KERNEL_BOUNDARY_ADMITTED'
+   AND (mechanic.ModulePath=boundary.ModulePathPrefix OR mechanic.ModulePath LIKE CONCAT(boundary.ModulePathPrefix,'/%'))
+ ORDER BY LEN(boundary.ModulePathPrefix) DESC
+) kernelBoundary
 OUTER APPLY
 (
  SELECT COUNT(DISTINCT invocation.TestId) TestCaseCount,
@@ -266,11 +295,11 @@ WITH RankedAttempt AS
 SELECT mechanic.RootId,mechanic.ExecutionAnalysisDigest,mechanic.MechanicOccurrenceId,mechanic.MechanicKind,mechanic.AuthorityFamily,
        mechanic.ArtifactId,mechanic.ArtifactDigest,mechanic.StartLine,mechanic.StartColumn,mechanic.SourceReferenceId,
        mechanic.ResponsibilityId,mechanic.BodySymbolId CallableId,mechanic.InterfaceCount InterfaceReachabilityCount,
-       mechanic.TestCaseCount TestReachabilityCount,mechanic.CurrentPosture,
+       mechanic.TestCaseCount TestReachabilityCount,mechanic.CurrentPosture,mechanic.ExecutionBoundary,mechanic.ViolationDisposition,mechanic.RemediationDisposition,
        latest.LowererVersion,COALESCE(latest.LoweringDisposition,'NOT_EVALUATED') LoweringDisposition,
        latest.RejectionReason,latest.RequiredPrimitive,latest.DetailMessage LoweringDetail,
        mechanic.AdmissionDisposition AuthorityAdmissionStatus,
-       CONVERT(bit,CASE WHEN mechanic.ResponsibilityId IS NOT NULL AND mechanic.AdmissionDisposition<>'AUTHORITY_ADMITTED' THEN 1 ELSE 0 END) ProjectionBlocking,
+       CONVERT(bit,CASE WHEN mechanic.ViolationDisposition='OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION' THEN 1 ELSE 0 END) ProjectionBlocking,
        (CASE WHEN mechanic.ResponsibilityId IS NOT NULL THEN 1000 ELSE 0 END)
          + COALESCE(mechanic.InterfaceCount,0)*100
          + COALESCE(mechanic.TestCaseCount,0)*10
@@ -278,6 +307,12 @@ SELECT mechanic.RootId,mechanic.ExecutionAnalysisDigest,mechanic.MechanicOccurre
 FROM projection.CurrentExecutionMechanicOccurrence mechanic
 LEFT JOIN RankedAttempt latest ON latest.RootId=mechanic.RootId AND latest.AnalysisDigest=mechanic.ExecutionAnalysisDigest
   AND latest.MechanicOccurrenceId=mechanic.MechanicOccurrenceId AND latest.AttemptRank=1;
+GO
+
+CREATE OR ALTER VIEW projection.CurrentExecutableMechanicViolation AS
+SELECT *
+FROM projection.CurrentExecutionMechanicOccurrence
+WHERE ViolationDisposition='OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION';
 GO
 
 CREATE OR ALTER VIEW projection.CurrentAuthorityCompletionBacklog AS
@@ -339,6 +374,15 @@ WITH CurrentAnalysis AS
  LEFT JOIN Reachable reachable ON reachable.ObservationSnapshotId=analysis.ObservationSnapshotId AND reachable.CallableKey=callable.CallableKey
  LEFT JOIN Linked linked ON linked.ObservationSnapshotId=analysis.ObservationSnapshotId AND linked.CallableKey=callable.CallableKey AND linked.ContractSnapshotId=analysis.ContractSnapshotId
  GROUP BY analysis.RootId
+), ViolationRollup AS
+(
+ SELECT mechanic.RootId,
+  COUNT(CASE WHEN mechanic.ViolationDisposition='OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION' THEN 1 END) OutsideKernelViolationCount,
+  COUNT(CASE WHEN mechanic.ViolationDisposition='OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION' AND mechanic.AdmissionDisposition='AUTHORITY_ADMITTED' THEN 1 END) AuthorityBoundViolationCount,
+  COUNT(CASE WHEN mechanic.ViolationDisposition='KERNEL_EXECUTION_ALLOWED' THEN 1 END) KernelAllowedMechanicCount,
+  COUNT(CASE WHEN mechanic.ViolationDisposition='FALSE_POSITIVE_EXCLUDED' THEN 1 END) FalsePositiveMechanicCount
+ FROM projection.CurrentExecutionMechanicOccurrence mechanic
+ GROUP BY mechanic.RootId
 )
 SELECT analysis.RootId,analysis.SourceFileCount,analysis.CallableCount,analysis.CommandCount,analysis.ReachabilityRowCount,analysis.MechanicCount,analysis.TestMechanicCount,
  COALESCE(mechanic.InterfaceReachableMechanicCount,0) InterfaceReachableMechanicCount,
@@ -349,8 +393,13 @@ SELECT analysis.RootId,analysis.SourceFileCount,analysis.CallableCount,analysis.
  COALESCE(callable.ReachableUnownedCallableCount,0) ReachableUnownedCallableCount,
  COALESCE(callable.UnreachableCallableCount,0) UnreachableCallableCount,
  COALESCE(mechanic.AuthorityCompletionBacklogCount,0) AuthorityCompletionBacklogCount,
+ COALESCE(violation.OutsideKernelViolationCount,0) OutsideKernelViolationCount,
+ COALESCE(violation.AuthorityBoundViolationCount,0) AuthorityBoundViolationCount,
+ COALESCE(violation.KernelAllowedMechanicCount,0) KernelAllowedMechanicCount,
+ COALESCE(violation.FalsePositiveMechanicCount,0) FalsePositiveMechanicCount,
  analysis.ExecutionAnalysisDisposition
 FROM projection.CurrentRepositoryExecutionAnalysis analysis
 LEFT JOIN MechanicRollup mechanic ON mechanic.RootId=analysis.RootId
-LEFT JOIN CallableRollup callable ON callable.RootId=analysis.RootId;
+LEFT JOIN CallableRollup callable ON callable.RootId=analysis.RootId
+LEFT JOIN ViolationRollup violation ON violation.RootId=analysis.RootId;
 GO

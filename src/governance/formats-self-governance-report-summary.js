@@ -58,14 +58,14 @@ function formatsFileDrillDown(report) {
 
     lines.push(`### ${mechanicEntry.mechanic} (${mechanicEntry.authorityFamily} authority family)`);
     lines.push("");
-    lines.push("| File | Occurrences | Governed | Home status | Responsibilities |");
-    lines.push("|---|---:|---:|---|---|");
+    lines.push("| File | Occurrences | Violations | Authority-bound violations | Kernel allowed | Home status | Responsibilities |");
+    lines.push("|---|---:|---:|---:|---:|---|---|");
     for (const file of files.slice(0, maxFilesShownPerMechanic)) {
       const responsibilities = file.responsibilities.length > 0 ? file.responsibilities.slice(0, 3).join(", ") : "(module scope)";
       const homeStatusCell = file.homeStatus === "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE" && !file.authorityHomeVerified
         ? `${file.homeStatus} (unverified schema)`
         : file.homeStatus;
-      lines.push(`| \`${file.modulePath}\` | ${file.occurrenceCount} | ${file.governedCount} | ${homeStatusCell} | ${responsibilities} |`);
+      lines.push(`| \`${file.modulePath}\` | ${file.occurrenceCount} | ${file.violationCount} | ${file.authorityBoundViolationCount} | ${file.kernelAllowedCount} | ${homeStatusCell} | ${responsibilities} |`);
     }
     if (files.length > maxFilesShownPerMechanic) {
       lines.push("");
@@ -240,21 +240,23 @@ function formatsContractSemanticVolume(report) {
 }
 
 const automationDispositionLabels = Object.freeze({
-  ALREADY_GOVERNED: "Already governed",
+  AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED: "Authority admitted; mechanic-free replacement required",
+  KERNEL_EXECUTION_ALLOWED: "Kernel execution allowed",
+  FALSE_POSITIVE: "False positive",
   AUTOMATABLE_AFTER_REVIEW: "Automatable after review",
   REQUIRES_HUMAN_SEMANTIC_DECISION: "Requires human semantic decision",
   AUTOMATABLE_AFTER_AUTHORITY_COMPLETION: "Automatable after authority completion",
   REQUIRES_NEW_AUTHORITY: "Requires new authority",
   NOT_CURRENTLY_PROJECTABLE: "Not currently projectable",
-  NOT_APPLICABLE: "Not applicable (mechanical/kernel/backlog)",
+  NOT_APPLICABLE: "Not applicable",
 });
 
 const maxAutomationCandidateGroupsShown = 10;
 
 /**
  * A fourth question, narrower than coverage, home status, or wiring: for
- * every occurrence that isn't yet GOVERNED_BY_SEMANTIC_AUTHORITY, can
- * connecting it to authority be automated without new authoring, and if not,
+ * every outside-kernel violation, can authority recovery or mechanic-free
+ * replacement be automated without new authoring, and if not,
  * exactly what connective tissue is missing? A reachable not-yet-admitted
  * candidate is necessary but not sufficient -- see classifiesAutomationReadiness
  * for why REQUIRES_HUMAN_SEMANTIC_DECISION and AUTOMATABLE_AFTER_REVIEW are
@@ -267,9 +269,9 @@ function formatsAutomationReadiness(report) {
   const lines = [
     "## Automation Readiness",
     "",
-    "A fourth question, narrower than coverage or wiring: for every occurrence",
-    "that isn't yet `GOVERNED_BY_SEMANTIC_AUTHORITY`, can connecting it to",
-    "authority be automated without new authoring, and if not, exactly what is",
+    "For every outside-kernel executable-mechanic violation, can authority",
+    "recovery or mechanic-free replacement be automated without new authoring,",
+    "and if not, exactly what is",
     "missing? Reachable candidate evidence is necessary but not sufficient -- a",
     "candidate can carry its own `coverageDisposition` (this repo's drafts only",
     "use `SEMANTIC_DECISION_REQUIRED` today) declaring that a human judgment",
@@ -632,11 +634,11 @@ export function formatsSelfGovernanceReportMarkdown(report, options = {}) {
     "| Metric | Count | Share of observed |",
     "|---|---:|---:|",
     `| Execution mechanics observed | ${formatsCount(observed)} | 100.0% |`,
-    `| Governed by semantic authority | ${formatsCount(executionMechanics.governed)} | ${formatsPercent(executionMechanics.governed, observed)} |`,
-    `| Unknown classification | ${formatsCount(executionMechanics.byPosture.UNKNOWN_CLASSIFICATION)} | ${formatsPercent(executionMechanics.byPosture.UNKNOWN_CLASSIFICATION, observed)} |`,
-    `| Authorized temporary backlog | ${formatsCount(executionMechanics.byPosture.AUTHORIZED_TEMPORARY_BACKLOG)} | ${formatsPercent(executionMechanics.byPosture.AUTHORIZED_TEMPORARY_BACKLOG, observed)} |`,
+    `| Outside-kernel violations | ${formatsCount(executionMechanics.outsideKernelViolations)} | ${formatsPercent(executionMechanics.outsideKernelViolations, observed)} |`,
+    `| Authority-bound violations awaiting replacement | ${formatsCount(executionMechanics.authorityBoundViolations)} | ${formatsPercent(executionMechanics.authorityBoundViolations, observed)} |`,
+    `| Kernel mechanics allowed | ${formatsCount(executionMechanics.kernelAllowed)} | ${formatsPercent(executionMechanics.kernelAllowed, observed)} |`,
+    `| False positives excluded | ${formatsCount(executionMechanics.falsePositives)} | ${formatsPercent(executionMechanics.falsePositives, observed)} |`,
     `| Unauthorized executable meaning | ${formatsCount(executionMechanics.byPosture.UNAUTHORIZED_EXECUTABLE_MEANING)} | ${formatsPercent(executionMechanics.byPosture.UNAUTHORIZED_EXECUTABLE_MEANING, observed)} |`,
-    `| Mechanical adapter operation | ${formatsCount(executionMechanics.byPosture.MECHANICAL_ADAPTER_OPERATION)} | ${formatsPercent(executionMechanics.byPosture.MECHANICAL_ADAPTER_OPERATION, observed)} |`,
     `| Kernel primitive | ${formatsCount(executionMechanics.byPosture.KERNEL_PRIMITIVE)} | ${formatsPercent(executionMechanics.byPosture.KERNEL_PRIMITIVE, observed)} |`,
     "",
     "## Coverage by Mechanic Type",
@@ -645,18 +647,19 @@ export function formatsSelfGovernanceReportMarkdown(report, options = {}) {
     "occurrence resolves to an admitted authority mechanic; home status is whether an",
     "authority *file* claiming that mechanic's file exists at all, even incompletely.",
     "",
-    "| Mechanic | Authority family | Observed | Files | Governed | Home exists | Home incomplete | Home missing | Coverage |",
-    "|---|---|---:|---:|---:|---:|---:|---:|---:|",
+    "| Mechanic | Authority family | Observed | Files | Violations | Authority-bound violations | Kernel allowed | Home exists | Home incomplete | Home missing |",
+    "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|",
     ...executionMechanics.byMechanicType.map((entry) => [
       "|", entry.mechanic,
       "|", entry.authorityFamily,
       "|", formatsCount(entry.observed),
       "|", formatsCount(entry.files),
-      "|", formatsCount(entry.governed),
+      "|", formatsCount(entry.outsideKernelViolations),
+      "|", formatsCount(entry.authorityBoundViolations),
+      "|", formatsCount(entry.kernelAllowed),
       "|", formatsCount(entry.byHomeStatus.AUTHORITY_HOME_EXISTS),
       "|", formatsCount(entry.byHomeStatus.AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE),
-      "|", formatsCount(entry.byHomeStatus.AUTHORITY_HOME_MISSING),
-      "|", formatsPercent(entry.governed, entry.observed), "|",
+      "|", formatsCount(entry.byHomeStatus.AUTHORITY_HOME_MISSING), "|",
     ].join(" ")),
     "",
     "## File Drill-Down",
@@ -761,8 +764,9 @@ export function formatsSelfGovernanceReportSummary(report) {
     `Workspace: ${repository.workspaceRoot ?? "(unknown)"}`,
     "",
     `Execution mechanics observed:      ${executionMechanics.observed}`,
-    `Governed by semantic authority:    ${executionMechanics.governed} (${formatsPercent(executionMechanics.governed, executionMechanics.observed)})`,
-    `Unknown classification:            ${executionMechanics.byPosture.UNKNOWN_CLASSIFICATION}`,
+    `Outside-kernel violations:         ${executionMechanics.outsideKernelViolations} (${formatsPercent(executionMechanics.outsideKernelViolations, executionMechanics.observed)})`,
+    `Authority-bound violations:        ${executionMechanics.authorityBoundViolations}`,
+    `Kernel mechanics allowed:          ${executionMechanics.kernelAllowed}`,
     "",
     "By mechanic type:",
   ];
@@ -770,7 +774,7 @@ export function formatsSelfGovernanceReportSummary(report) {
   const mechanicWidth = Math.max(8, ...executionMechanics.byMechanicType.map((entry) => entry.mechanic.length)) + 2;
   for (const entry of executionMechanics.byMechanicType) {
     lines.push(
-      `  ${padsColumn(entry.mechanic, mechanicWidth)}observed ${entry.observed}  files ${entry.files}  governed ${entry.governed}  `
+      `  ${padsColumn(entry.mechanic, mechanicWidth)}observed ${entry.observed}  files ${entry.files}  violations ${entry.outsideKernelViolations}  authority-bound ${entry.authorityBoundViolations}  kernel ${entry.kernelAllowed}  `
       + `home[exists ${entry.byHomeStatus.AUTHORITY_HOME_EXISTS} incomplete ${entry.byHomeStatus.AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE} missing ${entry.byHomeStatus.AUTHORITY_HOME_MISSING}]`,
     );
   }
@@ -865,7 +869,7 @@ export function formatsSelfGovernanceReportSummary(report) {
   }
 
   lines.push("");
-  lines.push(`Disposition: ${disposition} (no build gate wired yet)`);
+  lines.push(`Disposition: ${disposition} (use --gate to enforce zero outside-kernel violations)`);
 
   return `${lines.join("\n")}\n`;
 }

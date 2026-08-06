@@ -4,7 +4,8 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { DeterministicMechanicLoweringError, lowersDeterministicMechanicAuthority } from "../src/governance/lowers-deterministic-mechanic-authority.js";
+import { DeterministicMechanicLoweringError, deterministicallyLowerableMechanicKinds, lowersDeterministicMechanicAuthority } from "../src/governance/lowers-deterministic-mechanic-authority.js";
+import { mechanicAuthorityFamilies } from "../src/governance/mechanic-authority-families.js";
 import { processesDeterministicMechanicAuthorityBatch } from "../src/governance/processes-deterministic-mechanic-authority.js";
 import { validatesDeterministicMechanicAuthority } from "../src/governance/validates-deterministic-mechanic-authority.js";
 import { projectsMechanicAuthorityInspectionProjection, validatesMechanicAuthorityInspectionProjection } from "../src/governance/mechanic-authority-inspection-projection.js";
@@ -58,6 +59,18 @@ const mechanicFixtures = [
   ["state-mutation", "state.value = next;", 1, 1, "state-transition-authority.v1", "ASSIGNMENT"],
   ["meaning-hidden-in-text", "\"status.ready\";", 1, 1, "text-meaning-authority.v1", "EXACT_TEXT_IDENTITY"],
 ];
+
+test("the deterministic lowerer covers all 12 governed mechanic families without drift", () => {
+  assert.equal(deterministicallyLowerableMechanicKinds.length, 12);
+  assert.deepEqual(
+    [...deterministicallyLowerableMechanicKinds].sort(),
+    mechanicAuthorityFamilies.map((entry) => entry.mechanicKind).sort(),
+  );
+  assert.deepEqual(
+    [...deterministicallyLowerableMechanicKinds].sort(),
+    ["branch", ...mechanicFixtures.map(([mechanicKind]) => mechanicKind)].sort(),
+  );
+});
 
 test("deterministically lowers and validates every executable mechanic family", async () => {
   for (const [mechanicKind, sourceText, startLine, startColumn, authorityKind, expectedSemantic] of mechanicFixtures) {

@@ -41,12 +41,9 @@
     },
     "posture": {
       "enum": [
-        "GOVERNED_BY_SEMANTIC_AUTHORITY",
-        "MECHANICAL_ADAPTER_OPERATION",
         "KERNEL_PRIMITIVE",
-        "AUTHORIZED_TEMPORARY_BACKLOG",
         "UNAUTHORIZED_EXECUTABLE_MEANING",
-        "UNKNOWN_CLASSIFICATION"
+        "FALSE_POSITIVE"
       ]
     },
     "authorityHomeStatus": {
@@ -59,7 +56,9 @@
     },
     "automationDisposition": {
       "enum": [
-        "ALREADY_GOVERNED",
+        "AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED",
+        "KERNEL_EXECUTION_ALLOWED",
+        "FALSE_POSITIVE",
         "NOT_APPLICABLE",
         "AUTOMATABLE_AFTER_REVIEW",
         "REQUIRES_HUMAN_SEMANTIC_DECISION",
@@ -76,7 +75,9 @@
         "AUTHORITY_HOME_AMBIGUOUS",
         "RESPONSIBILITY_BINDING_MISSING",
         "EXECUTION_BINDING_MISSING",
-        "EQUIVALENCE_PROOF_MISSING"
+        "EQUIVALENCE_PROOF_MISSING",
+        "MECHANIC_FREE_REPLACEMENT_MISSING",
+        "ORIGINAL_MECHANIC_REMOVAL_MISSING"
       ]
     },
     "enterpriseContext": {
@@ -479,42 +480,41 @@
     },
     "executionMechanics": {
       "type": "object",
-      "required": ["observed", "governed", "byPosture", "byMechanicType"],
+      "required": ["observed", "authorityBoundViolations", "outsideKernelViolations", "kernelAllowed", "falsePositives", "byPosture", "byMechanicType"],
       "additionalProperties": false,
       "properties": {
         "observed": { "type": "integer", "minimum": 0 },
-        "governed": { "type": "integer", "minimum": 0 },
+        "authorityBoundViolations": { "type": "integer", "minimum": 0 },
+        "outsideKernelViolations": { "type": "integer", "minimum": 0 },
+        "kernelAllowed": { "type": "integer", "minimum": 0 },
+        "falsePositives": { "type": "integer", "minimum": 0 },
         "byPosture": {
           "type": "object",
           "required": [
-            "GOVERNED_BY_SEMANTIC_AUTHORITY",
-            "MECHANICAL_ADAPTER_OPERATION",
             "KERNEL_PRIMITIVE",
-            "AUTHORIZED_TEMPORARY_BACKLOG",
             "UNAUTHORIZED_EXECUTABLE_MEANING",
-            "UNKNOWN_CLASSIFICATION"
+            "FALSE_POSITIVE"
           ],
           "additionalProperties": false,
           "properties": {
-            "GOVERNED_BY_SEMANTIC_AUTHORITY": { "type": "integer", "minimum": 0 },
-            "MECHANICAL_ADAPTER_OPERATION": { "type": "integer", "minimum": 0 },
             "KERNEL_PRIMITIVE": { "type": "integer", "minimum": 0 },
-            "AUTHORIZED_TEMPORARY_BACKLOG": { "type": "integer", "minimum": 0 },
             "UNAUTHORIZED_EXECUTABLE_MEANING": { "type": "integer", "minimum": 0 },
-            "UNKNOWN_CLASSIFICATION": { "type": "integer", "minimum": 0 }
+            "FALSE_POSITIVE": { "type": "integer", "minimum": 0 }
           }
         },
         "byMechanicType": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["mechanic", "authorityFamily", "observed", "governed", "files", "byHomeStatus"],
+            "required": ["mechanic", "authorityFamily", "observed", "authorityBoundViolations", "outsideKernelViolations", "kernelAllowed", "files", "byHomeStatus"],
             "additionalProperties": false,
             "properties": {
               "mechanic": { "type": "string", "minLength": 1 },
               "authorityFamily": { "type": "string", "minLength": 1 },
               "observed": { "type": "integer", "minimum": 0 },
-              "governed": { "type": "integer", "minimum": 0 },
+              "authorityBoundViolations": { "type": "integer", "minimum": 0 },
+              "outsideKernelViolations": { "type": "integer", "minimum": 0 },
+              "kernelAllowed": { "type": "integer", "minimum": 0 },
               "files": { "type": "integer", "minimum": 0 },
               "byHomeStatus": {
                 "type": "object",
@@ -905,7 +905,9 @@
         "byDisposition": {
           "type": "object",
           "required": [
-            "ALREADY_GOVERNED",
+            "AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED",
+            "KERNEL_EXECUTION_ALLOWED",
+            "FALSE_POSITIVE",
             "NOT_APPLICABLE",
             "AUTOMATABLE_AFTER_REVIEW",
             "REQUIRES_HUMAN_SEMANTIC_DECISION",
@@ -915,7 +917,9 @@
           ],
           "additionalProperties": false,
           "properties": {
-            "ALREADY_GOVERNED": { "type": "integer", "minimum": 0 },
+            "AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED": { "type": "integer", "minimum": 0 },
+            "KERNEL_EXECUTION_ALLOWED": { "type": "integer", "minimum": 0 },
+            "FALSE_POSITIVE": { "type": "integer", "minimum": 0 },
             "NOT_APPLICABLE": { "type": "integer", "minimum": 0 },
             "AUTOMATABLE_AFTER_REVIEW": { "type": "integer", "minimum": 0 },
             "REQUIRES_HUMAN_SEMANTIC_DECISION": { "type": "integer", "minimum": 0 },
@@ -930,14 +934,16 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["mechanic", "modulePath", "authorityFamily", "occurrenceCount", "governedCount", "responsibilities", "homeStatus", "authorityFile", "authorityHomeVerified"],
+        "required": ["mechanic", "modulePath", "authorityFamily", "occurrenceCount", "authorityBoundViolationCount", "violationCount", "kernelAllowedCount", "responsibilities", "homeStatus", "authorityFile", "authorityHomeVerified"],
         "additionalProperties": false,
         "properties": {
           "mechanic": { "type": "string", "minLength": 1 },
           "modulePath": { "type": "string", "minLength": 1 },
           "authorityFamily": { "type": "string", "minLength": 1 },
           "occurrenceCount": { "type": "integer", "minimum": 1 },
-          "governedCount": { "type": "integer", "minimum": 0 },
+          "authorityBoundViolationCount": { "type": "integer", "minimum": 0 },
+          "violationCount": { "type": "integer", "minimum": 0 },
+          "kernelAllowedCount": { "type": "integer", "minimum": 0 },
           "responsibilities": { "type": "array", "items": { "type": "string", "minLength": 1 } },
           "homeStatus": { "$ref": "#/$defs/authorityHomeStatus" },
           "authorityFile": { "type": ["string", "null"] },
@@ -950,12 +956,17 @@
       "items": {
         "type": "object",
         "required": [
+          "occurrenceId",
           "mechanic",
           "modulePath",
           "startLine",
           "endLine",
           "symbolName",
           "posture",
+          "executionBoundary",
+          "authorityDisposition",
+          "violationDisposition",
+          "remediationDisposition",
           "governingMechanicId",
           "governingAuthorityFile",
           "authorityFamily",
@@ -977,12 +988,17 @@
         ],
         "additionalProperties": false,
         "properties": {
+          "occurrenceId": { "type": ["string", "null"] },
           "mechanic": { "type": "string", "minLength": 1 },
           "modulePath": { "type": "string" },
           "startLine": { "type": ["integer", "null"] },
           "endLine": { "type": ["integer", "null"] },
           "symbolName": { "type": ["string", "null"] },
           "posture": { "$ref": "#/$defs/posture" },
+          "executionBoundary": { "enum": ["SEMANTIC_KERNEL", "OUTSIDE_SEMANTIC_KERNEL"] },
+          "authorityDisposition": { "enum": ["AUTHORITY_ADMITTED", "AUTHORITY_MISSING", "AUTHORITY_NOT_REQUIRED_IN_KERNEL", "AUTHORITY_NOT_APPLICABLE_FALSE_POSITIVE"] },
+          "violationDisposition": { "enum": ["OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION", "KERNEL_EXECUTION_ALLOWED", "FALSE_POSITIVE_EXCLUDED"] },
+          "remediationDisposition": { "enum": ["AUTHORITY_REQUIRED", "REPLACEMENT_REQUIRED", "NONE"] },
           "governingMechanicId": { "type": ["string", "null"] },
           "governingAuthorityFile": { "type": ["string", "null"] },
           "authorityFamily": { "type": "string", "minLength": 1 },

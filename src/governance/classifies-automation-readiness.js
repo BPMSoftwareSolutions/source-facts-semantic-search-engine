@@ -1,17 +1,13 @@
 const knownAutomationDispositions = Object.freeze([
-  "ALREADY_GOVERNED",
+  "AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED",
+  "KERNEL_EXECUTION_ALLOWED",
+  "FALSE_POSITIVE",
   "NOT_APPLICABLE",
   "AUTOMATABLE_AFTER_REVIEW",
   "REQUIRES_HUMAN_SEMANTIC_DECISION",
   "AUTOMATABLE_AFTER_AUTHORITY_COMPLETION",
   "REQUIRES_NEW_AUTHORITY",
   "NOT_CURRENTLY_PROJECTABLE",
-]);
-
-const posturesExemptFromAutomation = Object.freeze([
-  "MECHANICAL_ADAPTER_OPERATION",
-  "KERNEL_PRIMITIVE",
-  "AUTHORIZED_TEMPORARY_BACKLOG",
 ]);
 
 function normalizesPathKey(value) {
@@ -127,12 +123,15 @@ export function resolvesCandidateAuthorityMatch(occurrence, candidates, knownMod
  * declaring that a human judgment call is still open even though the
  * mechanical scaffolding (type, location, semantic shape) is complete.
  */
-export function classifiesAutomationReadiness({ posture, authorityHomeStatus, candidateMatch }) {
-  if (posture === "GOVERNED_BY_SEMANTIC_AUTHORITY") {
-    return Object.freeze({ automationDisposition: "ALREADY_GOVERNED", missingTissue: Object.freeze([]) });
+export function classifiesAutomationReadiness({ posture, authorityDisposition = null, authorityHomeStatus, candidateMatch }) {
+  if (posture === "KERNEL_PRIMITIVE") {
+    return Object.freeze({ automationDisposition: "KERNEL_EXECUTION_ALLOWED", missingTissue: Object.freeze([]) });
   }
-  if (posturesExemptFromAutomation.includes(posture)) {
-    return Object.freeze({ automationDisposition: "NOT_APPLICABLE", missingTissue: Object.freeze([]) });
+  if (posture === "FALSE_POSITIVE") {
+    return Object.freeze({ automationDisposition: "FALSE_POSITIVE", missingTissue: Object.freeze([]) });
+  }
+  if (authorityDisposition === "AUTHORITY_ADMITTED") {
+    return Object.freeze({ automationDisposition: "AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED", missingTissue: Object.freeze(["MECHANIC_FREE_REPLACEMENT_MISSING", "EQUIVALENCE_PROOF_MISSING", "ORIGINAL_MECHANIC_REMOVAL_MISSING"]) });
   }
   if (authorityHomeStatus === "AUTHORITY_HOME_AMBIGUOUS") {
     return Object.freeze({ automationDisposition: "NOT_CURRENTLY_PROJECTABLE", missingTissue: Object.freeze(["AUTHORITY_HOME_AMBIGUOUS"]) });

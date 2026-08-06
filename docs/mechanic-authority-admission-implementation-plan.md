@@ -7,6 +7,17 @@ Plan date: 2026-08-05
 Primary design doc: [inexpensive-transformation-loop.md](./inexpensive-transformation-loop.md)
 Schema/code delivered: [`scripts/sql/023-admit-mechanic-authority.sql`](../scripts/sql/023-admit-mechanic-authority.sql)
 
+## Kernel-only correction
+
+Only the semantic kernel may contain executable mechanics. An authority
+admission outside the kernel closes the deterministic authority-recovery phase
+only. It does not legalize the source occurrence, clear its violation, or prove
+transformation closure. Every admitted outside-kernel occurrence remains
+`OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION` with
+`RemediationDisposition = 'REPLACEMENT_REQUIRED'` until a mechanic-free
+replacement is proven and a fresh source-fact index confirms the original
+occurrence is absent.
+
 ## Completion evidence
 
 Completed on 2026-08-05 against the configured
@@ -230,7 +241,7 @@ identical retry returns `MECHANIC_AUTHORITY_ALREADY_ADMITTED` without changing
 the stored row; a different payload for the same analysis and occurrence is
 rejected.
 
-### 3.7 Prove the loop closed
+### 3.7 Prove the authority-recovery phase closed
 
 ```powershell
 node src/cli.js execution-knowledge `
@@ -255,7 +266,20 @@ before step 3.6) — this is the concrete, queryable proof that a completed
 candidate can now reach admitted state, closing the gap this whole effort was
 about.
 
-## 4. Out of scope (unchanged from the original plan)
+## 4. Historical scope notes and current closure gap
+
+The bullets below describe the original branch-pilot scope and are retained as
+history. The 12-family deterministic admission lane now exists. Current
+transformation closure instead requires all of the following:
+
+- project a mechanic-free consumer from the admitted data counterpart;
+- admit behavioral-equivalence proof;
+- remove the original executable source occurrence;
+- re-index and prove that occurrence is absent; and
+- pass `govern --gate` or `sync-self-governance --gate` with zero
+  outside-kernel executable-mechanic violations.
+
+Authority admission by itself satisfies none of these removal obligations.
 
 - The interactive "show missing fields, prompt for completion" agent workflow —
   admission exists as a primitive now; nothing yet drives it automatically.

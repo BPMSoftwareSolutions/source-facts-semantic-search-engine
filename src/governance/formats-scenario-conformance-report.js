@@ -742,6 +742,7 @@ export function formatsScenarioConformanceReportSummary(report) {
     `Structural: ${featureSummary.scenariosStructurallyClosed} closed, ${featureSummary.scenariosStructurallyIncomplete} incomplete, ${featureSummary.scenariosStructuralStatusNotEvaluated} not evaluated`,
     `Runtime: ${featureSummary.scenariosExecutionEvaluated} execution-evaluated, ${featureSummary.fullyConformantScenarios} conformant, ${featureSummary.scenariosRuntimeNotEvaluated} not evaluated`,
     `Mechanics lineage: ${featureSummary.mechanicsWithCanonicalLineage} canonical, ${featureSummary.mechanicsWithProposedLineage} proposed, ${featureSummary.mechanicsWithoutLineage} none`,
+    `Executable mechanics: ${report.executionMechanics.outsideKernelViolations} outside-kernel violation(s), ${report.executionMechanics.authorityBoundViolations} authority-bound awaiting replacement, ${report.executionMechanics.kernelAllowed} kernel-allowed, ${report.executionMechanics.falsePositives} false positive(s)`,
     `Authority lineage: ${featureSummary.authorityWithCanonicalLineage} canonical, ${featureSummary.authorityWithProposedLineage} proposed, ${featureSummary.authorityWithoutLineage} none`,
     `Unresolved responsibility-evidence clusters: ${featureSummary.unresolvedEvidenceClusters}; confirmed feature candidates: ${featureSummary.confirmedFeatureCandidateClusters}`,
   ];

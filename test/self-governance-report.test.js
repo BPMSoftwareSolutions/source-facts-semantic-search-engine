@@ -22,7 +22,7 @@ import { invokesLiveModelInference, ModelInvocationError } from "../src/governan
 import { proposesSemanticOverlap } from "../src/governance/proposes-semantic-overlap.js";
 import { projectsSelfGovernanceReport } from "../src/governance/projects-self-governance-report.js";
 import { validatesSelfGovernanceReport } from "../src/governance/validates-self-governance-report.js";
-import { formatsSelfGovernanceReportMarkdown } from "../src/governance/formats-self-governance-report-summary.js";
+import { formatsSelfGovernanceReportMarkdown, formatsSelfGovernanceReportSummary } from "../src/governance/formats-self-governance-report-summary.js";
 import { FactQueryLineageError, projectsBoundReportQueryReceiptArtifact, projectsReportQueryReceiptArtifacts, rerunsRegisteredReportQuery } from "../src/governance/projects-report-query-lineage.js";
 import { discoversFeatureCoverageInferenceEvaluations, discoversFeatureCoverageProposals } from "../src/governance/discovers-feature-coverage-proposals.js";
 import { createsProposalFeatureFingerprint, validatesFeatureCoverageProposal } from "../src/governance/projects-feature-coverage.js";
@@ -72,19 +72,31 @@ test("extractsDeclaredAuthorityMechanics ignores documents with a different or m
   assert.deepEqual(extractsDeclaredAuthorityMechanics(null, "x.json"), []);
 });
 
-test("classifiesMechanicOccurrence marks an overlapping same-mechanic occurrence as governed", () => {
+test("classifiesMechanicOccurrence keeps an authority-bound outside-kernel mechanic as a replacement-required violation", () => {
   const declared = extractsDeclaredAuthorityMechanics(buildsAuthorityDocument(), "contracts/example.authority.json");
 
   const governed = classifiesMechanicOccurrence({ mechanic: "branch", modulePath: "src/example.js", startLine: 11, endLine: 11 }, declared);
-  assert.equal(governed.posture, "GOVERNED_BY_SEMANTIC_AUTHORITY");
+  assert.equal(governed.posture, "UNAUTHORIZED_EXECUTABLE_MEANING");
+  assert.equal(governed.authorityDisposition, "AUTHORITY_ADMITTED");
+  assert.equal(governed.violationDisposition, "OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION");
+  assert.equal(governed.remediationDisposition, "REPLACEMENT_REQUIRED");
   assert.equal(governed.governingMechanicId, "resolve-example-decision");
   assert.equal(governed.governingAuthorityFile, "contracts/example.authority.json");
 
   const wrongMechanic = classifiesMechanicOccurrence({ mechanic: "throw", modulePath: "src/example.js", startLine: 11, endLine: 11 }, declared);
-  assert.equal(wrongMechanic.posture, "UNKNOWN_CLASSIFICATION");
+  assert.equal(wrongMechanic.posture, "UNAUTHORIZED_EXECUTABLE_MEANING");
 
   const outsideLocation = classifiesMechanicOccurrence({ mechanic: "branch", modulePath: "src/example.js", startLine: 50, endLine: 50 }, declared);
-  assert.equal(outsideLocation.posture, "UNKNOWN_CLASSIFICATION");
+  assert.equal(outsideLocation.posture, "UNAUTHORIZED_EXECUTABLE_MEANING");
+});
+
+test("only explicit kernel boundaries and false-positive evidence clear mechanic violations", () => {
+  const kernel = classifiesMechanicOccurrence({ occurrenceId: "kernel-1", mechanic: "branch", modulePath: "packages/semantic-kernel/src/run.js", startLine: 1, endLine: 1 }, [], { kernelModulePathPrefixes: ["packages/semantic-kernel"] });
+  assert.equal(kernel.violationDisposition, "KERNEL_EXECUTION_ALLOWED");
+  assert.equal(kernel.posture, "KERNEL_PRIMITIVE");
+  const falsePositive = classifiesMechanicOccurrence({ occurrenceId: "false-1", mechanic: "branch", modulePath: "src/app.js", startLine: 1, endLine: 1 }, [], { falsePositiveOccurrenceIds: ["false-1"] });
+  assert.equal(falsePositive.violationDisposition, "FALSE_POSITIVE_EXCLUDED");
+  assert.equal(falsePositive.posture, "FALSE_POSITIVE");
 });
 
 test("detectsAuthorityDocumentKind recognizes schemas beyond authority-declaration.v1", () => {
@@ -319,19 +331,23 @@ test("projectsSelfGovernanceReport classifies observed mechanics against admitte
   await validatesSelfGovernanceReport(report);
 
   assert.equal(report.executionMechanics.observed, 3);
-  assert.equal(report.executionMechanics.governed, 1);
-  assert.equal(report.executionMechanics.byPosture.GOVERNED_BY_SEMANTIC_AUTHORITY, 1);
-  assert.equal(report.executionMechanics.byPosture.UNKNOWN_CLASSIFICATION, 2);
+  assert.equal(report.executionMechanics.authorityBoundViolations, 1);
+  assert.equal(report.executionMechanics.outsideKernelViolations, 3);
+  assert.equal(report.executionMechanics.byPosture.UNAUTHORIZED_EXECUTABLE_MEANING, 3);
 
   const branchSummary = report.executionMechanics.byMechanicType.find((entry) => entry.mechanic === "branch");
   assert.equal(branchSummary.authorityFamily, "decision-authority");
   assert.equal(branchSummary.observed, 1);
-  assert.equal(branchSummary.governed, 1);
+  assert.equal(branchSummary.authorityBoundViolations, 1);
   assert.equal(branchSummary.files, 1);
   assert.equal(branchSummary.byHomeStatus.AUTHORITY_HOME_EXISTS, 1);
+  const summary = formatsSelfGovernanceReportSummary(report);
+  assert.match(summary, /3 outside-kernel violation\(s\), 1 authority-bound awaiting replacement, 0 kernel-allowed/u);
+  assert.doesNotMatch(summary, /undefined|governed/u);
 
   const governedOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "branch");
-  assert.equal(governedOccurrence.posture, "GOVERNED_BY_SEMANTIC_AUTHORITY");
+  assert.equal(governedOccurrence.posture, "UNAUTHORIZED_EXECUTABLE_MEANING");
+  assert.equal(governedOccurrence.remediationDisposition, "REPLACEMENT_REQUIRED");
   assert.equal(governedOccurrence.governingMechanicId, "resolve-example-decision");
   assert.equal(governedOccurrence.authorityFamily, "decision-authority");
   assert.equal(governedOccurrence.authorityHomeStatus, "AUTHORITY_HOME_EXISTS");
@@ -349,7 +365,8 @@ test("projectsSelfGovernanceReport classifies observed mechanics against admitte
 
   const fileBreakdownForExample = report.fileBreakdown.find((entry) => entry.mechanic === "branch" && entry.modulePath === "src/example.js");
   assert.equal(fileBreakdownForExample.occurrenceCount, 1);
-  assert.equal(fileBreakdownForExample.governedCount, 1);
+  assert.equal(fileBreakdownForExample.authorityBoundViolationCount, 1);
+  assert.equal(fileBreakdownForExample.violationCount, 1);
   assert.deepEqual(fileBreakdownForExample.responsibilities, ["resolvesExample"]);
   assert.equal(fileBreakdownForExample.homeStatus, "AUTHORITY_HOME_EXISTS");
 
@@ -359,11 +376,11 @@ test("projectsSelfGovernanceReport classifies observed mechanics against admitte
   assert.equal(report.disposition, "OBSERVATIONAL_NO_GATE_APPLIED");
 });
 
-test("projectsSelfGovernanceReport reports everything as unknown when no authority evidence is supplied", async () => {
+test("projectsSelfGovernanceReport reports every outside-kernel mechanic as a violation when no authority evidence is supplied", async () => {
   const index = buildsSyntheticIndex();
   const report = await projectsSelfGovernanceReport({ index, repositoryId: "self-governance-test", authorityDocuments: [] });
-  assert.equal(report.executionMechanics.governed, 0);
-  assert.equal(report.executionMechanics.byPosture.UNKNOWN_CLASSIFICATION, 3);
+  assert.equal(report.executionMechanics.byPosture.UNAUTHORIZED_EXECUTABLE_MEANING, 3);
+  assert.equal(report.executionMechanics.outsideKernelViolations, 3);
   assert.equal(report.authoritySources.length, 0);
   assert.ok(report.fileBreakdown.every((entry) => entry.homeStatus === "AUTHORITY_HOME_MISSING"));
 });
@@ -551,7 +568,7 @@ test("projectsSelfGovernanceReport normalizes workspace-relative modulePath to t
   const authorityDocuments = [buildsAuthorityDocumentEntry("contracts/example.authority.json")];
 
   const unnormalized = await projectsSelfGovernanceReport({ index: workspaceRelativeIndex, repositoryId: "self-governance-test", authorityDocuments });
-  assert.equal(unnormalized.executionMechanics.governed, 0, "without the prefix, the identical file/line never resolves");
+  assert.equal(unnormalized.executionMechanics.authorityBoundViolations, 0, "without the prefix, the identical file/line never resolves");
 
   const normalized = await projectsSelfGovernanceReport({
     index: workspaceRelativeIndex,
@@ -559,10 +576,10 @@ test("projectsSelfGovernanceReport normalizes workspace-relative modulePath to t
     authorityDocuments,
     workspaceRelativePrefix: "src",
   });
-  assert.equal(normalized.executionMechanics.governed, 1);
+  assert.equal(normalized.executionMechanics.authorityBoundViolations, 1);
   const governedOccurrence = normalized.occurrences.find((occurrence) => occurrence.mechanic === "branch");
   assert.equal(governedOccurrence.modulePath, "src/example.js");
-  assert.equal(governedOccurrence.posture, "GOVERNED_BY_SEMANTIC_AUTHORITY");
+  assert.equal(governedOccurrence.posture, "UNAUTHORIZED_EXECUTABLE_MEANING");
 });
 
 test("projectsSelfGovernanceReport treats non-authority-declaration.v1 documents as an unverified home, not as missing or as coverage", async () => {
@@ -579,7 +596,7 @@ test("projectsSelfGovernanceReport treats non-authority-declaration.v1 documents
   await validatesSelfGovernanceReport(report);
 
   // This document isn't authority-declaration.v1, so it must never grant GOVERNED coverage.
-  assert.equal(report.executionMechanics.governed, 0);
+  assert.equal(report.executionMechanics.authorityBoundViolations, 0);
 
   const throwOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "throw");
   assert.equal(throwOccurrence.authorityHomeStatus, "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE");
@@ -875,27 +892,27 @@ test("resolvesCandidateAuthorityMatch resolves a candidate declared without a pa
 });
 
 test("classifiesAutomationReadiness tiers ungoverned occurrences by candidate reachability, coverageDisposition, and authority home status", () => {
-  assert.equal(classifiesAutomationReadiness({ posture: "GOVERNED_BY_SEMANTIC_AUTHORITY", authorityHomeStatus: "AUTHORITY_HOME_EXISTS", candidateMatch: null }).automationDisposition, "ALREADY_GOVERNED");
-  assert.equal(classifiesAutomationReadiness({ posture: "KERNEL_PRIMITIVE", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: null }).automationDisposition, "NOT_APPLICABLE");
-  assert.equal(classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_AMBIGUOUS", candidateMatch: null }).automationDisposition, "NOT_CURRENTLY_PROJECTABLE");
+  assert.equal(classifiesAutomationReadiness({ posture: "UNAUTHORIZED_EXECUTABLE_MEANING", authorityDisposition: "AUTHORITY_ADMITTED", authorityHomeStatus: "AUTHORITY_HOME_EXISTS", candidateMatch: null }).automationDisposition, "AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED");
+  assert.equal(classifiesAutomationReadiness({ posture: "KERNEL_PRIMITIVE", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: null }).automationDisposition, "KERNEL_EXECUTION_ALLOWED");
+  assert.equal(classifiesAutomationReadiness({ posture: "UNAUTHORIZED_EXECUTABLE_MEANING", authorityHomeStatus: "AUTHORITY_HOME_AMBIGUOUS", candidateMatch: null }).automationDisposition, "NOT_CURRENTLY_PROJECTABLE");
 
   const semanticDecisionCandidate = { mechanicId: "c1", coverageDisposition: "SEMANTIC_DECISION_REQUIRED" };
   const readyCandidate = { mechanicId: "c2", coverageDisposition: null };
   assert.equal(
-    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: semanticDecisionCandidate }).automationDisposition,
+    classifiesAutomationReadiness({ posture: "UNAUTHORIZED_EXECUTABLE_MEANING", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: semanticDecisionCandidate }).automationDisposition,
     "REQUIRES_HUMAN_SEMANTIC_DECISION",
   );
   assert.equal(
-    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: readyCandidate }).automationDisposition,
+    classifiesAutomationReadiness({ posture: "UNAUTHORIZED_EXECUTABLE_MEANING", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: readyCandidate }).automationDisposition,
     "AUTOMATABLE_AFTER_REVIEW",
   );
 
   assert.equal(
-    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE", candidateMatch: null }).automationDisposition,
+    classifiesAutomationReadiness({ posture: "UNAUTHORIZED_EXECUTABLE_MEANING", authorityHomeStatus: "AUTHORITY_HOME_EXISTS_BUT_INCOMPLETE", candidateMatch: null }).automationDisposition,
     "AUTOMATABLE_AFTER_AUTHORITY_COMPLETION",
   );
   assert.equal(
-    classifiesAutomationReadiness({ posture: "UNKNOWN_CLASSIFICATION", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: null }).automationDisposition,
+    classifiesAutomationReadiness({ posture: "UNAUTHORIZED_EXECUTABLE_MEANING", authorityHomeStatus: "AUTHORITY_HOME_MISSING", candidateMatch: null }).automationDisposition,
     "REQUIRES_NEW_AUTHORITY",
   );
 });
@@ -925,7 +942,7 @@ test("projectsSelfGovernanceReport classifies automation readiness per occurrenc
   await validatesSelfGovernanceReport(report);
 
   const governedOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "branch");
-  assert.equal(governedOccurrence.automationDisposition, "ALREADY_GOVERNED");
+  assert.equal(governedOccurrence.automationDisposition, "AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED");
 
   const fallbackOccurrence = report.occurrences.find((occurrence) => occurrence.mechanic === "fallback");
   assert.equal(fallbackOccurrence.automationDisposition, "REQUIRES_HUMAN_SEMANTIC_DECISION");
@@ -937,7 +954,7 @@ test("projectsSelfGovernanceReport classifies automation readiness per occurrenc
   assert.equal(throwOccurrence.automationDisposition, "REQUIRES_NEW_AUTHORITY");
   assert.equal(throwOccurrence.candidateAuthorityFile, null);
 
-  assert.equal(report.automationReadiness.byDisposition.ALREADY_GOVERNED, 1);
+  assert.equal(report.automationReadiness.byDisposition.AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED, 1);
   assert.equal(report.automationReadiness.byDisposition.REQUIRES_HUMAN_SEMANTIC_DECISION, 1);
   assert.equal(report.automationReadiness.byDisposition.REQUIRES_NEW_AUTHORITY, 1);
 });
@@ -1506,7 +1523,7 @@ test("projectsSelfGovernanceReport exposes semanticOverlapProposals as a purely 
   assert.deepEqual(report.semanticOverlapProposals[0].reviewedDispositionCounts, { PROPOSED_EXACT_OVERLAP: 1, PROPOSED_PARTIAL_OVERLAP: 1, PROPOSED_NO_MATCH: 1 });
   assert.equal(report.semanticOverlapProposals[0].inferenceQuality.proposalsGenerated, 3);
   // Untouched by the proposal batch -- this remains purely deterministic.
-  assert.equal(report.executionMechanics.governed, 0);
+  assert.equal(report.executionMechanics.authorityBoundViolations, 0);
 });
 
 function buildsFeatureCoverageProposal(overrides = {}) {

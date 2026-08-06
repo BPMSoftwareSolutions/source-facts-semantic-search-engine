@@ -190,14 +190,14 @@ function buildsMinimalReport() {
     otherAuthorityDocuments: [],
     executionMechanics: {
       observed: 0,
-      governed: 0,
+      authorityBoundViolations: 0,
+      outsideKernelViolations: 0,
+      kernelAllowed: 0,
+      falsePositives: 0,
       byPosture: {
-        GOVERNED_BY_SEMANTIC_AUTHORITY: 0,
-        MECHANICAL_ADAPTER_OPERATION: 0,
         KERNEL_PRIMITIVE: 0,
-        AUTHORIZED_TEMPORARY_BACKLOG: 0,
         UNAUTHORIZED_EXECUTABLE_MEANING: 0,
-        UNKNOWN_CLASSIFICATION: 0,
+        FALSE_POSITIVE: 0,
       },
       byMechanicType: [],
     },
@@ -222,7 +222,9 @@ function buildsMinimalReport() {
     },
     automationReadiness: {
       byDisposition: {
-        ALREADY_GOVERNED: 0,
+        AUTHORITY_ADMITTED_REPLACEMENT_REQUIRED: 0,
+        KERNEL_EXECUTION_ALLOWED: 0,
+        FALSE_POSITIVE: 0,
         NOT_APPLICABLE: 0,
         AUTOMATABLE_AFTER_REVIEW: 0,
         REQUIRES_HUMAN_SEMANTIC_DECISION: 0,

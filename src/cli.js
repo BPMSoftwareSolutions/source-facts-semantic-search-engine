@@ -65,6 +65,7 @@ import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown
 import { discoversCanonicalFeatureIntents } from "./governance/canonical-feature-intent.js";
 import { processesDeterministicMechanicAuthorityBatch } from "./governance/processes-deterministic-mechanic-authority.js";
 import { projectsMechanicAuthorityInspectionProjection, validatesMechanicAuthorityInspectionProjection } from "./governance/mechanic-authority-inspection-projection.js";
+import { evaluatesExecutableMechanicConformance } from "./governance/evaluates-executable-mechanic-conformance.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -412,11 +413,13 @@ async function runProjectConsoleContract(rawArgs) {
 async function runGovern(rawArgs) {
   const reportArtifacts = await preparesSelfGovernanceReportArtifacts(rawArgs);
   await writesSelfGovernanceReportArtifacts(reportArtifacts);
+  appliesExecutableMechanicGate(reportArtifacts);
 }
 
 async function runSyncSelfGovernance(rawArgs) {
   const reportArtifacts = await preparesSelfGovernanceReportArtifacts(rawArgs);
   await writesSelfGovernanceReportArtifacts(reportArtifacts);
+  if (!appliesExecutableMechanicGate(reportArtifacts)) return;
   validatesReportEnterpriseContextMatchesRepository(reportArtifacts.report);
 
   const authorities = await collectsEngineeringTruthAuthorities(reportArtifacts.flags, {
@@ -1019,6 +1022,10 @@ async function runExecutionKnowledge(rawArgs) {
     process.stdout.write(`Responsibility-owned mechanics: ${summary.responsibilityOwnedMechanicCount ?? 0}\n`);
     process.stdout.write(`Test-reached mechanics: ${summary.testReachedMechanicCount ?? 0}\n`);
     process.stdout.write(`Authority-admitted mechanics: ${summary.authorityAdmittedMechanicCount ?? 0}\n`);
+    process.stdout.write(`Outside-kernel mechanic violations: ${summary.outsideKernelViolationCount ?? 0}\n`);
+    process.stdout.write(`Authority-bound violations awaiting replacement: ${summary.authorityBoundViolationCount ?? 0}\n`);
+    process.stdout.write(`Kernel-allowed mechanics: ${summary.kernelAllowedMechanicCount ?? 0}\n`);
+    process.stdout.write(`False-positive mechanics: ${summary.falsePositiveMechanicCount ?? 0}\n`);
     process.stdout.write(`Reachable unowned callables: ${summary.reachableUnownedCallableCount ?? 0}\n`);
     process.stdout.write(`Unreachable callables: ${summary.unreachableCallableCount ?? 0}\n`);
     process.stdout.write(`Authority-completion backlog: ${summary.authorityCompletionBacklogCount ?? 0}\n`);
@@ -1193,6 +1200,18 @@ async function writesSelfGovernanceReportArtifacts({ report, outputPath, summary
   if (summary === true) {
     process.stdout.write(formatsSelfGovernanceReportSummary(report));
   }
+}
+
+function appliesExecutableMechanicGate({ report, flags }) {
+  if (flags.gate !== true) return true;
+  const result = evaluatesExecutableMechanicConformance(report);
+  if (result.conforms) {
+    process.stdout.write(`${result.disposition}\n`);
+    return true;
+  }
+  process.stderr.write(`${result.disposition}: ${result.violationCount} outside-kernel executable mechanic occurrence(s) remain.\n`);
+  process.exitCode = 1;
+  return false;
 }
 
 async function collectsEngineeringTruthAuthorities(flags, { defaultContractPath = null, defaultIntentDir = null, enterpriseContext = null } = {}) {
@@ -1759,8 +1778,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se web north-star sign-in [--index <file>] [--inventory <file>] [--request <file>] [--layout <id-or-source>] [--authentication-entry <id-or-source>] [--messaging <id-or-source>] [--theme <id-or-source>] [--output <dir>] [--prove] [--summary]\n`);
   stream.write(`  source-facts-se project-authority-violations [--workspace <dir>] [--modules <path,path,...>] [--code-file <file>] [--authority-file <file>] [--output <file>] [--authority-output <file>] [--summary]\n`);
   stream.write(`  source-facts-se project-console-contract [--workspace <dir>] [--template-contract <file>] [--authority-file <file>] [--authority-complete <file>] [--binding <file>] [--violation-bindings <file>] [--strategy-doc <file>] [--output <file>] [--project] [--gate] [--write] [--summary]\n`);
-  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--test-workspace <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--summary]\n`);
-  stream.write(`  source-facts-se sync-self-governance [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--test-workspace <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--contract <governed-contract.json>] [--intent-dir <directory>] [--project-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se govern [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--test-workspace <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--gate] [--summary]\n`);
+  stream.write(`  source-facts-se sync-self-governance [--workspace <dir> | --index <file>] [--authority-dir <dir>] [--reviews-dir <dir>] [--know-how-dir <dir>] [--healing-dir <dir>] [--contract-map-root <dir>] [--test-workspace <dir>] [--repository-id <id>] [--output <file>] [--pretty] [--gate] [--contract <governed-contract.json>] [--intent-dir <directory>] [--project-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se report-query --report <file> [--query-id trace.feature-complete-lineage.v1] --feature-id <id> [--output <file>] [--receipt-output <file>] [--pretty]\n`);
   stream.write(`  source-facts-se propose-semantic-overlap --historical-authority-file <file> --successor-file <file> [--related-files <file,file,...>] [--succession-evidence <text>] [--output <file>]\n`);
   stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);

@@ -30,6 +30,15 @@ test("admits completed mechanic authority into a queryable table and closes the 
   assert.match(sql,/CREATE TABLE observation\.MechanicAuthorityLoweringAttempt/u);
   assert.match(sql,/CREATE OR ALTER PROCEDURE ingestion\.RecordMechanicAuthorityLoweringAttempt/u);
   assert.match(sql,/CREATE OR ALTER VIEW projection\.CurrentMechanicAuthorityTransformationQueue/u);
+  assert.match(sql,/CREATE TABLE authority\.ExecutableMechanicKernelBoundary/u);
+  assert.match(sql,/CREATE OR ALTER VIEW projection\.CurrentExecutableMechanicViolation/u);
+  assert.match(sql,/OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION/u);
+  assert.match(sql,/WHEN admission\.MechanicOccurrenceId IS NOT NULL THEN 'REPLACEMENT_REQUIRED'/u);
+  assert.match(sql,/CASE WHEN mechanic\.ViolationDisposition='OUTSIDE_KERNEL_EXECUTABLE_MECHANIC_VIOLATION' THEN 1 ELSE 0 END\) ProjectionBlocking/u);
+  assert.match(sql,/OutsideKernelViolationCount/u);
+  assert.match(sql,/AuthorityBoundViolationCount/u);
+  assert.match(sql,/KernelAllowedMechanicCount/u);
+  assert.match(sql,/FalsePositiveMechanicCount/u);
   assert.match(sql,/latest\.RejectionReason,latest\.RequiredPrimitive/u);
 
   assert.match(sql,/COALESCE\(admission\.AdmissionDisposition,'CANDIDATE_NOT_ADMITTED'\) AdmissionDisposition/u);
