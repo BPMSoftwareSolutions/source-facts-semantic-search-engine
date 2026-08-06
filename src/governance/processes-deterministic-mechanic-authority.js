@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import { deterministicMechanicLowererVersion, lowersDeterministicMechanicAuthority } from "./lowers-deterministic-mechanic-authority.js";
+import { deterministicMechanicLowererVersion, deterministicallyLowerableMechanicKinds, lowersDeterministicMechanicAuthority } from "./lowers-deterministic-mechanic-authority.js";
 import { validatesDeterministicMechanicAuthority } from "./validates-deterministic-mechanic-authority.js";
 
 export async function processesDeterministicMechanicAuthorityBatch({
@@ -20,6 +20,7 @@ export async function processesDeterministicMechanicAuthorityBatch({
   if (typeof rootId !== "string" || rootId.length === 0) throw new Error("rootId is required.");
   if (typeof candidateQuery !== "function") throw new Error("candidateQuery is required.");
   if (admit && typeof authorityAdmitter !== "function") throw new Error("authorityAdmitter is required when admit is true.");
+  if (mechanicKind !== "all" && !deterministicallyLowerableMechanicKinds.includes(mechanicKind)) throw new Error(`Unsupported mechanic kind '${mechanicKind}'.`);
   const root = path.resolve(workspaceRoot ?? process.cwd());
   const candidates = await candidateQuery({ rootId, mechanicKind, mechanicOccurrenceId, limit, lowererVersion: deterministicMechanicLowererVersion, retryRejected, connection });
   const projected = [];
@@ -29,6 +30,8 @@ export async function processesDeterministicMechanicAuthorityBatch({
 
   for (const candidate of candidates) {
     try {
+      if (!deterministicallyLowerableMechanicKinds.includes(candidate.mechanicKind)) throw codedError("CANDIDATE_MECHANIC_KIND_UNSUPPORTED", `Candidate mechanic kind '${candidate.mechanicKind}' is unsupported.`, `${candidate.mechanicKind}-authority-lowerer`);
+      if (mechanicKind !== "all" && candidate.mechanicKind !== mechanicKind) throw codedError("CANDIDATE_MECHANIC_KIND_MISMATCH", `Candidate mechanic kind '${candidate.mechanicKind}' does not match requested kind '${mechanicKind}'.`, "candidate-query-mechanic-kind-integrity");
       const sourcePath = resolvesContainedPath(root, candidate.artifactId);
       const content = await readFile(sourcePath);
       const actualDigest = `sha256:${createHash("sha256").update(content).digest("hex")}`;

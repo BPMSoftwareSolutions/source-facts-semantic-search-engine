@@ -156,6 +156,15 @@
           "additionalProperties": false,
           "required": ["kind"],
           "properties": { "kind": { "const": "noop" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "label"],
+          "properties": {
+            "kind": { "enum": ["break", "continue"] },
+            "label": { "type": ["string", "null"], "minLength": 1 }
+          }
         }
       ]
     },
@@ -234,7 +243,8 @@
         { "$ref": "#/$defs/objectExpression" },
         { "$ref": "#/$defs/arrayExpression" },
         { "$ref": "#/$defs/conditionalExpression" },
-        { "$ref": "#/$defs/templateExpression" }
+        { "$ref": "#/$defs/templateExpression" },
+        { "$ref": "#/$defs/lambdaExpression" }
       ]
     },
     "referenceExpression": {
@@ -486,6 +496,36 @@
         "predicate": { "$ref": "#/$defs/predicateExpression" },
         "whenTrue": { "$ref": "#/$defs/expression" },
         "whenFalse": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "lambdaExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "async", "generator", "parameters", "body"],
+      "properties": {
+        "kind": { "const": "lambda" },
+        "async": { "type": "boolean" },
+        "generator": { "type": "boolean" },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["binding", "optional", "rest", "initializer"],
+            "properties": {
+              "binding": { "$ref": "#/$defs/binding" },
+              "optional": { "type": "boolean" },
+              "rest": { "type": "boolean" },
+              "initializer": { "oneOf": [{ "$ref": "#/$defs/expression" }, { "type": "null" }] }
+            }
+          }
+        },
+        "body": {
+          "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind", "expression"], "properties": { "kind": { "const": "expression" }, "expression": { "$ref": "#/$defs/expression" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "statements"], "properties": { "kind": { "const": "statements" }, "statements": { "type": "array", "items": { "$ref": "#/$defs/statement" } } } }
+          ]
+        }
       }
     },
     "templateExpression": {

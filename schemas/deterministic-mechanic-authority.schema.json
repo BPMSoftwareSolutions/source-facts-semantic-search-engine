@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://source-facts.local/schemas/deterministic-mechanic-authority.schema.json",
+  "title": "Deterministically lowered executable mechanic authority",
+  "oneOf": [
+    { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json" },
+    { "$ref": "#/$defs/iteration" },
+    { "$ref": "#/$defs/exceptionHandling" },
+    { "$ref": "#/$defs/throw" },
+    { "$ref": "#/$defs/objectConstruction" },
+    { "$ref": "#/$defs/serialization" },
+    { "$ref": "#/$defs/normalization" },
+    { "$ref": "#/$defs/validation" },
+    { "$ref": "#/$defs/fallback" },
+    { "$ref": "#/$defs/retry" },
+    { "$ref": "#/$defs/stateMutation" },
+    { "$ref": "#/$defs/meaningHiddenInText" }
+  ],
+  "$defs": {
+    "baseProperties": {
+      "type": "object",
+      "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId"],
+      "properties": {
+        "authorityKind": { "type": "string", "minLength": 1 },
+        "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" },
+        "syntaxProfile": { "const": "typescript-mechanic-authority.v1" },
+        "candidateAuthorityId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "nullableExpression": {
+      "oneOf": [
+        { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" },
+        { "type": "null" }
+      ]
+    },
+    "statements": {
+      "type": "array",
+      "items": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/statement" }
+    },
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation", "arguments"],
+      "properties": {
+        "operation": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" },
+        "arguments": { "type": "array", "items": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" } }
+      }
+    },
+    "forInitializer": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "declarationKind", "bindings"],
+          "properties": {
+            "kind": { "const": "declaration" },
+            "declarationKind": { "enum": ["const", "let", "var"] },
+            "bindings": {
+              "type": "array", "minItems": 1,
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "required": ["binding", "initializer"],
+                "properties": {
+                  "binding": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/binding" },
+                  "initializer": { "$ref": "#/$defs/nullableExpression" }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "expression"],
+          "properties": {
+            "kind": { "const": "expression" },
+            "expression": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" }
+          }
+        },
+        { "type": "null" }
+      ]
+    },
+    "iteration": {
+      "allOf": [
+        { "$ref": "#/$defs/baseProperties" },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "iterationKind", "initializer", "predicate", "binding", "iterable", "incrementor", "body", "continuationPolicy", "terminationPolicy"],
+          "properties": {
+            "authorityKind": { "const": "iteration-authority.v1" },
+            "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" },
+            "syntaxProfile": { "const": "typescript-mechanic-authority.v1" },
+            "candidateAuthorityId": { "type": "string", "minLength": 1 },
+            "iterationKind": { "enum": ["FOR", "FOR_IN", "FOR_OF", "FOR_AWAIT_OF", "WHILE", "DO_WHILE"] },
+            "initializer": { "$ref": "#/$defs/forInitializer" },
+            "predicate": { "oneOf": [{ "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/predicateExpression" }, { "type": "null" }] },
+            "binding": { "$ref": "#/$defs/forInitializer" },
+            "iterable": { "$ref": "#/$defs/nullableExpression" },
+            "incrementor": { "$ref": "#/$defs/nullableExpression" },
+            "body": { "$ref": "#/$defs/statements" },
+            "continuationPolicy": { "const": "SOURCE_DEFINED" },
+            "terminationPolicy": { "enum": ["PREDICATE_FALSE", "ITERATOR_EXHAUSTED", "PROPERTY_ENUMERATION_EXHAUSTED"] }
+          }
+        }
+      ]
+    },
+    "exceptionHandling": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false,
+        "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "boundaryKind", "protectedEffects", "catchBinding", "handledEffects", "finalizationEffects", "unhandledDisposition"],
+        "properties": {
+          "authorityKind": { "const": "failure-observation-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 },
+          "boundaryKind": { "enum": ["TRY_BOUNDARY", "CATCH_BOUNDARY"] }, "protectedEffects": { "$ref": "#/$defs/statements" },
+          "catchBinding": { "oneOf": [{ "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/binding" }, { "type": "null" }] },
+          "handledEffects": { "$ref": "#/$defs/statements" }, "finalizationEffects": { "$ref": "#/$defs/statements" },
+          "unhandledDisposition": { "enum": ["PROPAGATE", "CATCH_CLAUSE_DECIDES"] }
+        }
+      }]
+    },
+    "throw": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false,
+        "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "error", "terminalDisposition", "resultOutputId"],
+        "properties": {
+          "authorityKind": { "const": "terminal-disposition-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 },
+          "error": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" }, "terminalDisposition": { "const": "THROW" }, "resultOutputId": { "type": "null" }
+        }
+      }]
+    },
+    "objectConstruction": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false,
+        "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "constructionKind", "constructor", "arguments", "fieldMappings", "unmappedFieldDisposition"],
+        "properties": {
+          "authorityKind": { "const": "semantic-projection-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 },
+          "constructionKind": { "enum": ["CONSTRUCTOR_INVOCATION", "OBJECT_LITERAL"] }, "constructor": { "$ref": "#/$defs/nullableExpression" },
+          "arguments": { "type": "array", "items": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" } },
+          "fieldMappings": { "type": "array", "items": { "oneOf": [
+            { "type": "object", "additionalProperties": false, "required": ["kind", "name", "value"], "properties": { "kind": { "const": "field" }, "name": { "type": "string" }, "value": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" } } },
+            { "type": "object", "additionalProperties": false, "required": ["kind", "value"], "properties": { "kind": { "const": "spread" }, "value": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" } } }
+          ] } },
+          "unmappedFieldDisposition": { "enum": ["CONSTRUCTOR_DECIDES", "NO_UNMAPPED_FIELDS"] }
+        }
+      }]
+    },
+    "serialization": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false, "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "profileId", "mediaType", "encoding", "rules"],
+        "properties": { "authorityKind": { "const": "serialization-profile-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 }, "profileId": { "type": "string", "minLength": 1 }, "mediaType": { "type": "null" }, "encoding": { "type": "null" }, "rules": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/invocation" } } }
+      }]
+    },
+    "normalization": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false, "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "inputIds", "operations", "ambiguityDisposition"],
+        "properties": { "authorityKind": { "const": "canonicalization-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 }, "inputIds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }, "operations": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/invocation" } }, "ambiguityDisposition": { "const": "SOURCE_OPERATION_DECIDES" } }
+      }]
+    },
+    "validation": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false, "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "inputIds", "constraints", "validOutcome", "invalidOutcome"],
+        "properties": { "authorityKind": { "const": "constraint-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 }, "inputIds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }, "constraints": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/invocation" } }, "validOutcome": { "const": "CALL_COMPLETED" }, "invalidOutcome": { "const": "CALL_REJECTED_OR_THREW" } }
+      }]
+    },
+    "fallback": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false, "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "operator", "alternatives", "selectionOrder", "exhaustedDisposition"],
+        "properties": { "authorityKind": { "const": "alternative-selection-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 }, "operator": { "enum": ["||", "??"] }, "alternatives": { "type": "array", "minItems": 2, "items": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" } }, "selectionOrder": { "const": "LEFT_TO_RIGHT_SHORT_CIRCUIT" }, "exhaustedDisposition": { "enum": ["ALL_NULLISH", "ALL_FALSY"] } }
+      }]
+    },
+    "retry": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false, "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "operation", "maximumAttempts", "retryableDispositions", "backoff", "exhaustedDisposition"],
+        "properties": { "authorityKind": { "const": "retry-policy-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 }, "operation": { "$ref": "#/$defs/invocation" }, "maximumAttempts": { "type": ["integer", "null"], "minimum": 0 }, "retryableDispositions": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }, "backoff": { "type": "null" }, "exhaustedDisposition": { "const": "SOURCE_OPERATION_DECIDES" } }
+      }]
+    },
+    "stateMutation": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false, "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "stateTarget", "transitionKind", "operator", "value", "arguments", "guards"],
+        "properties": { "authorityKind": { "const": "state-transition-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 }, "stateTarget": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" }, "transitionKind": { "enum": ["ASSIGNMENT", "UPDATE", "MUTATOR_INVOCATION"] }, "operator": { "type": "string", "minLength": 1 }, "value": { "$ref": "#/$defs/nullableExpression" }, "arguments": { "type": "array", "items": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" } }, "guards": { "type": "array", "items": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/predicateExpression" } } }
+      }]
+    },
+    "meaningHiddenInText": {
+      "allOf": [{ "$ref": "#/$defs/baseProperties" }, {
+        "type": "object", "additionalProperties": false, "required": ["authorityKind", "authorityBasis", "syntaxProfile", "candidateAuthorityId", "interpretationMode", "vocabulary", "templates", "sourceExpression", "unknownTextDisposition"],
+        "properties": {
+          "authorityKind": { "const": "text-meaning-authority.v1" }, "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" }, "syntaxProfile": { "const": "typescript-mechanic-authority.v1" }, "candidateAuthorityId": { "type": "string", "minLength": 1 }, "interpretationMode": { "const": "EXACT_TEXT_IDENTITY" },
+          "vocabulary": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["text", "semanticToken"], "properties": { "text": { "type": "string" }, "semanticToken": { "type": "string" } } } },
+          "templates": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["head", "spans"], "properties": { "head": { "type": "string" }, "spans": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["slot", "expression", "literal"], "properties": { "slot": { "type": "integer", "minimum": 0 }, "expression": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" }, "literal": { "type": "string" } } } } } } },
+          "sourceExpression": { "$ref": "https://source-facts.local/schemas/deterministic-branch-authority.schema.json#/$defs/expression" }, "unknownTextDisposition": { "const": "REJECT_UNKNOWN_TEXT" }
+        }
+      }]
+    }
+  }
+}

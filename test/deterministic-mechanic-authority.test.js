@@ -34,15 +34,66 @@ test("lowers both outcomes of a conditional expression", () => {
   assert.equal(result.authorityData.outcomes[1].result.callee.path[0], "skip");
 });
 
-test("fails closed for unsupported mechanic families and source locations", () => {
+test("fails closed for unknown mechanic families and source locations", () => {
   assert.throws(
-    () => lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "m", mechanicKind: "retry", artifactId: "src/x.js", artifactDigest: "sha256:x", sourceText: "retry();", startLine: 1, startColumn: 1 }),
+    () => lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "m", mechanicKind: "unknown", artifactId: "src/x.js", artifactDigest: "sha256:x", sourceText: "run();", startLine: 1, startColumn: 1 }),
     (error) => error instanceof DeterministicMechanicLoweringError && error.code === "MECHANIC_FAMILY_NOT_DETERMINISTICALLY_LOWERABLE",
   );
   assert.throws(
     () => lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "m", mechanicKind: "branch", artifactId: "src/x.js", artifactDigest: "sha256:x", sourceText: "if (ok) run();", startLine: 2, startColumn: 1 }),
     (error) => error instanceof DeterministicMechanicLoweringError && error.code === "MECHANIC_SOURCE_NODE_NOT_FOUND",
   );
+});
+
+const mechanicFixtures = [
+  ["iteration", "for (const item of items) consume(item);", 1, 1, "iteration-authority.v1", "FOR_OF"],
+  ["exception-handling", "try { run(); } catch (error) { recover(error); } finally { clean(); }", 1, 1, "failure-observation-authority.v1", "TRY_BOUNDARY"],
+  ["throw", "throw new Error(message);", 1, 1, "terminal-disposition-authority.v1", "THROW"],
+  ["object-construction", "new Result(value);", 1, 1, "semantic-projection-authority.v1", "CONSTRUCTOR_INVOCATION"],
+  ["serialization", "JSON.stringify(value);", 1, 1, "serialization-profile-authority.v1", "JSON.stringify"],
+  ["normalization", "normalize(value);", 1, 1, "canonicalization-authority.v1", "SOURCE_OPERATION_DECIDES"],
+  ["validation", "validates(value);", 1, 1, "constraint-authority.v1", "CALL_COMPLETED"],
+  ["fallback", "const selected = primary ?? secondary;", 1, 18, "alternative-selection-authority.v1", "??"],
+  ["retry", "retry(operation, 3);", 1, 1, "retry-policy-authority.v1", 3],
+  ["state-mutation", "state.value = next;", 1, 1, "state-transition-authority.v1", "ASSIGNMENT"],
+  ["meaning-hidden-in-text", "\"status.ready\";", 1, 1, "text-meaning-authority.v1", "EXACT_TEXT_IDENTITY"],
+];
+
+test("deterministically lowers and validates every executable mechanic family", async () => {
+  for (const [mechanicKind, sourceText, startLine, startColumn, authorityKind, expectedSemantic] of mechanicFixtures) {
+    const mechanicOccurrenceId = `mechanic-${mechanicKind}`;
+    const result = lowersDeterministicMechanicAuthority({ mechanicOccurrenceId, mechanicKind, artifactId: "src/example.js", artifactDigest: digest(sourceText), sourceText, startLine, startColumn });
+    assert.equal(result.authorityData.authorityKind, authorityKind, mechanicKind);
+    assert.equal(result.authorityData.authorityBasis, "DETERMINISTIC_SYNTAX_LOWERING", mechanicKind);
+    assert.equal(result.authorityData.syntaxProfile, "typescript-mechanic-authority.v1", mechanicKind);
+    assert.equal(result.authorityData.candidateAuthorityId, `candidate-${mechanicOccurrenceId}`, mechanicKind);
+    assert.ok(JSON.stringify(result.authorityData).includes(String(expectedSemantic)), mechanicKind);
+    await assert.doesNotReject(validatesDeterministicMechanicAuthority(result.authorityData, mechanicKind, { mechanicOccurrenceId }), mechanicKind);
+    assert.deepEqual(result, lowersDeterministicMechanicAuthority({ mechanicOccurrenceId, mechanicKind, artifactId: "src/example.js", artifactDigest: digest(sourceText), sourceText, startLine, startColumn }), mechanicKind);
+  }
+});
+
+test("rejects cross-family authority and malformed family-specific data", async () => {
+  const [mechanicKind, sourceText, startLine, startColumn] = mechanicFixtures[0];
+  const result = lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "mechanic-iteration", mechanicKind, artifactId: "src/example.js", artifactDigest: digest(sourceText), sourceText, startLine, startColumn });
+  await assert.rejects(validatesDeterministicMechanicAuthority(result.authorityData, "retry"), /retry authority kind/u);
+  await assert.rejects(validatesDeterministicMechanicAuthority({ ...result.authorityData, arbitrary: true }, mechanicKind), /iteration authority is invalid/u);
+});
+
+test("covers common loop, projection, retry, mutation, and text variants", async () => {
+  const variants = [
+    ["iteration", "for (let index = 0; index < items.length; index++) { if (skip) continue; consume(items[index]); }", 1, 1, "FOR"],
+    ["object-construction", "({ value, status: currentStatus, ...rest });", 1, 2, "OBJECT_LITERAL"],
+    ["retry", "withRetry(async () => await operation(), options);", 1, 1, "lambda"],
+    ["state-mutation", "items.push(value);", 1, 1, "MUTATOR_INVOCATION"],
+    ["state-mutation", "count++;", 1, 1, "UPDATE"],
+    ["meaning-hidden-in-text", "`status:${status}:ready`;", 1, 1, "templates"],
+  ];
+  for (const [mechanicKind, sourceText, startLine, startColumn, expected] of variants) {
+    const result = lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: `variant-${mechanicKind}-${expected}`, mechanicKind, artifactId: "src/variants.js", artifactDigest: digest(sourceText), sourceText, startLine, startColumn });
+    assert.ok(JSON.stringify(result.authorityData).includes(expected), `${mechanicKind}:${expected}`);
+    await assert.doesNotReject(validatesDeterministicMechanicAuthority(result.authorityData, mechanicKind));
+  }
 });
 
 test("rejects side-effecting and dynamically evaluated predicates with precise primitives", () => {
@@ -98,7 +149,7 @@ test("batch processing verifies source digests and admits only projected rows", 
     assert.equal(batch.admittedCount, 1);
     assert.equal(batch.rejected[0].code, "SOURCE_ARTIFACT_DIGEST_MISMATCH");
     assert.equal(admitted[0].mechanicOccurrenceId, "good");
-    assert.equal(admitted[0].lowererVersion, "typescript-branch-lowerer.v2");
+    assert.equal(admitted[0].lowererVersion, "typescript-mechanic-lowerer.v3");
     assert.equal(attempts.length, 1);
     assert.equal(attempts[0].loweringDisposition, "DETERMINISTIC_AUTHORITY_REJECTED");
     assert.equal(attempts[0].rejectionReason, "SOURCE_ARTIFACT_DIGEST_MISMATCH");

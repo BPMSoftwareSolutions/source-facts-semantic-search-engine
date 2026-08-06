@@ -21,8 +21,12 @@ test("admits completed mechanic authority into a queryable table and closes the 
   assert.match(sql,/MECHANIC_AUTHORITY_ALREADY_ADMITTED/u);
   assert.match(sql,/MECHANIC_AUTHORITY_LEGACY_REPLACED/u);
   assert.match(sql,/A different authority payload is already admitted/u);
+  assert.match(sql,/Existing authority carries an unsupported schema identity/u);
+  assert.match(sql,/Existing deterministic authority carries an invalid authority basis/u);
   assert.match(sql,/COL_LENGTH\('authority\.MechanicAuthorityAdmission','AuthoritySchemaId'\)/u);
-  assert.match(sql,/admission\.AuthoritySchemaId='deterministic-branch-authority\.schema\.json'/u);
+  assert.match(sql,/admission\.AuthoritySchemaId='deterministic-mechanic-authority\.schema\.json'/u);
+  assert.match(sql,/@ExistingAuthoritySchemaId='deterministic-branch-authority\.schema\.json'/u);
+  assert.match(sql,/typescript-mechanic-authority\.v1/u);
   assert.match(sql,/CREATE TABLE observation\.MechanicAuthorityLoweringAttempt/u);
   assert.match(sql,/CREATE OR ALTER PROCEDURE ingestion\.RecordMechanicAuthorityLoweringAttempt/u);
   assert.match(sql,/CREATE OR ALTER VIEW projection\.CurrentMechanicAuthorityTransformationQueue/u);

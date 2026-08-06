@@ -447,10 +447,11 @@ authority-completion backlog. Image-digest mismatch makes the entire execution
 analysis stale immediately. Observed call paths, applicability recommendations,
 and authority candidates remain explicitly unadmitted.
 
-Branch candidates can be lowered deterministically from their exact TypeScript
-AST nodes without an LLM. The command is dry-run by default, verifies local bytes
+All configured executable-mechanic families can be lowered deterministically
+from their exact TypeScript AST nodes without an LLM. The command is dry-run by
+default, verifies local bytes
 against the current repository-image artifact digest, validates the closed
-branch-authority grammar, and writes no SQL authority unless `--admit` is
+mechanic-authority grammar, and writes no SQL authority unless `--admit` is
 explicit. Dry runs record observational lowering attempts and rejection reasons
 in SQL so the transformation queue remains queryable:
 
@@ -458,7 +459,7 @@ in SQL so the transformation queue remains queryable:
 node src/cli.js lower-mechanic-authority `
   --root-id source-facts-semantic-search-engine `
   --workspace . `
-  --mechanic-kind branch `
+  --mechanic-kind all `
   --limit 100 `
   --output-dir artifacts/admissions/deterministic `
   --connection-env source-facts-semantic-search-engine `
@@ -470,8 +471,15 @@ expected execution-analysis and source-artifact digests and checks them under a
 serializable SQL transaction, so a refresh or source change cannot race the
 write. Identical re-admission is a no-op; a different payload for the same
 analysis and occurrence is rejected. Unsupported mechanic families, predicate
-forms, operators, and outcome forms remain explicit persisted rejections rather
+forms, operators, and statement forms remain explicit persisted rejections rather
 than guessed authority.
+
+The supported mechanic kinds are `branch`, `iteration`, `exception-handling`,
+`throw`, `object-construction`, `serialization`, `normalization`, `validation`,
+`fallback`, `retry`, `state-mutation`, and `meaning-hidden-in-text`. A specific
+kind may be supplied instead of `all`. Text meaning is lowered as exact
+vocabulary/template identity; the lowerer never invents undeclared domain
+semantics for a string.
 
 Files written with `--output-dir` are typed
 `NON_AUTHORITATIVE_INSPECTION_PROJECTION` exports. They are optional review
@@ -486,7 +494,7 @@ same lowerer version unless `--retry-rejected` is explicit.
 
 Reapplying SQL script `023` quarantines pre-hardening admission rows from current
 projections because they have no schema, basis, or lowerer-version testimony.
-Their first validated v2 admission atomically replaces the legacy payload and
+Their first validated v3 admission atomically replaces the legacy payload and
 returns `MECHANIC_AUTHORITY_LEGACY_REPLACED`; subsequent identical admission is
 a state-preserving no-op.
 

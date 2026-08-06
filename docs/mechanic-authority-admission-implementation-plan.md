@@ -1,6 +1,6 @@
 # Mechanic Authority Admission: Remaining Work Implementation Plan
 
-Status: hardened implementation complete locally; reapply SQL script 023 before the next live admission
+Status: all 12 deterministic mechanic-family lowerers complete locally; reapply SQL script 023 before the next live admission
 
 Plan date: 2026-08-05
 
@@ -35,15 +35,16 @@ Completed on 2026-08-05 against the configured
 
 ## Deterministic lowering extension
 
-Added and live-verified on 2026-08-05. Branch authority can now be completed
-from the exact TypeScript AST without an LLM:
+The branch lane was added and live-verified on 2026-08-05. On 2026-08-06 the
+same hardened lane was generalized locally to all 12 configured executable
+mechanic families. No LLM is used:
 
 ```text
 current SQL mechanic candidate
   -> verify local source bytes against repository-image artifact digest
-  -> locate the exact branch AST node
-  -> lower predicate, input references, rules, outcomes, and continuation
-  -> validate the closed deterministic-branch-authority.schema.json grammar
+  -> locate the exact family-specific AST node
+  -> lower its operands, policy, effects, transitions, or text vocabulary
+  -> validate the closed deterministic-mechanic-authority.schema.json grammar
   -> compare expected analysis and artifact digests atomically inside SQL admission
   -> admit
 ```
@@ -61,10 +62,13 @@ The same bounded batch was then run with explicit admission: 5 candidates were
 projected and admitted, 5 remained fail-closed, and the current aggregate rose
 to 6 admitted mechanics including the first pilot.
 
-This extension is intentionally branch-only. Other mechanic families remain
-`MECHANIC_FAMILY_NOT_DETERMINISTICALLY_LOWERABLE`; unsupported predicates,
-operators, outcome statements, and expressions receive precise rejection codes
-and required primitives. Attempts are persisted in
+The production dispatcher supports `branch`, `iteration`,
+`exception-handling`, `throw`, `object-construction`, `serialization`,
+`normalization`, `validation`, `fallback`, `retry`, `state-mutation`, and
+`meaning-hidden-in-text`. Unsupported syntax inside a supported family receives
+precise rejection codes and required primitives instead of guessed authority.
+Text authority is limited to exact literal/template identity when no domain
+interpretation is declared. Attempts are persisted in
 `observation.MechanicAuthorityLoweringAttempt` and surfaced through
 `projection.CurrentMechanicAuthorityTransformationQueue`; they are scale
 measurements and implementation queues, not inference prompts.
@@ -75,9 +79,10 @@ not admissible. SQL `authority.MechanicAuthorityAdmission` is the sole durable
 admitted authority store.
 
 The hardened script adds schema, basis, and lowerer-version testimony to new
-admissions. Existing pilot rows without that testimony are retained for audit
-but excluded from current projections until a validated v2 payload atomically
-replaces them with disposition `MECHANIC_AUTHORITY_LEGACY_REPLACED`.
+admissions. Existing pilot rows without that testimony, and branch-v2 rows
+under the former branch-only schema ID, are retained for audit but excluded
+from current projections until a validated v3 payload atomically replaces them
+with disposition `MECHANIC_AUTHORITY_LEGACY_REPLACED`.
 
 ## 1. What is already done
 

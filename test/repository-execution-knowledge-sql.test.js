@@ -26,7 +26,15 @@ test("queries bounded current mechanic candidates for deterministic lowering",as
   assert.match(query,/CurrentMechanicAuthorityTransformationQueue/u);
   assert.match(query,/AuthorityAdmissionStatus<>'AUTHORITY_ADMITTED'/u);
   assert.match(query,/ProjectionBlocking DESC/u);
-  assert.match(query,/typescript-branch-lowerer\.v2/u);
+  assert.match(query,/typescript-mechanic-lowerer\.v3/u);
   assert.match(query,/MechanicOccurrenceId=N'm1'/u);
   assert.rejects(queriesCurrentMechanicAuthorityCandidates({rootId:"root",limit:0,lowererVersion:deterministicMechanicLowererVersion,connection}),/limit must be an integer/u);
+});
+
+test("queries the cross-family transformation queue when mechanic kind is all",async()=>{
+  let query;
+  await queriesCurrentMechanicAuthorityCandidates({rootId:"root",mechanicKind:"all",limit:12,lowererVersion:deterministicMechanicLowererVersion,connection,queryRunner:async request=>{query=request.query;return [];}});
+  assert.match(query,/TOP \(12\)/u);
+  assert.doesNotMatch(query,/mechanic\.MechanicKind=N'all'/u);
+  assert.match(query,/CurrentMechanicAuthorityTransformationQueue/u);
 });

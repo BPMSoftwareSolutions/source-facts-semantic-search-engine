@@ -1780,7 +1780,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se analyze-execution --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se execution-knowledge --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se admit-mechanic-authority --root-id <id> --mechanic-occurrence-id <id> --authority-file <inspection-projection> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
-  stream.write(`  source-facts-se lower-mechanic-authority --root-id <id> [--workspace <dir>] [--mechanic-kind branch] [--mechanic-occurrence-id <id>] [--limit <1-1000>] [--output-dir <dir>] [--retry-rejected] [--admit] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se lower-mechanic-authority --root-id <id> [--workspace <dir>] [--mechanic-kind <kind|all>] [--mechanic-occurrence-id <id>] [--limit <1-1000>] [--output-dir <dir>] [--retry-rejected] [--admit] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id <id> --test-vector-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);

@@ -87,12 +87,9 @@ BEGIN
     IF @ExpectedAnalysisDigest IS NULL OR @ExpectedArtifactDigest IS NULL OR @LowererVersion IS NULL THROW 51097,'Mechanic authority admission requires analysis digest, artifact digest, and lowerer version CAS evidence.',1;
     IF ISJSON(@AuthorityDataJson)<>1 THROW 51092,'Admitted authority data must be JSON.',1;
     IF JSON_VALUE(@AuthorityDataJson,'$.authorityBasis')<>'DETERMINISTIC_SYNTAX_LOWERING'
-       OR JSON_VALUE(@AuthorityDataJson,'$.syntaxProfile')<>'typescript-branch-authority.v2'
+       OR JSON_VALUE(@AuthorityDataJson,'$.syntaxProfile') NOT IN ('typescript-branch-authority.v2','typescript-mechanic-authority.v1')
        OR JSON_VALUE(@AuthorityDataJson,'$.candidateAuthorityId')<>CONCAT('candidate-',@MechanicOccurrenceId)
-       OR JSON_QUERY(@AuthorityDataJson,'$.inputs') IS NULL
-       OR JSON_QUERY(@AuthorityDataJson,'$.rules') IS NULL
-       OR JSON_QUERY(@AuthorityDataJson,'$.outcomes') IS NULL
-       THROW 51098,'Admitted authority data does not carry the required deterministic branch authority envelope.',1;
+       THROW 51098,'Admitted authority data does not carry the required deterministic mechanic-authority envelope.',1;
 
     SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
     BEGIN TRY
@@ -119,26 +116,30 @@ BEGIN
         IF COALESCE(@CurrentArtifactDigest,'')<>@ExpectedArtifactDigest THROW 51096,'Current source artifact does not match deterministic lowering evidence.',1;
 
         DECLARE @AuthorityDigest varchar(80)=CONCAT('sha256:',LOWER(CONVERT(varchar(64),HASHBYTES('SHA2_256',CONVERT(varchar(max),@AuthorityDataJson)),2)));
-        DECLARE @ExistingAuthorityDigest varchar(80),@ExistingAuthoritySchemaId varchar(200),@Disposition varchar(80);
-        SELECT @ExistingAuthorityDigest=AuthorityDigest,@ExistingAuthoritySchemaId=AuthoritySchemaId FROM authority.MechanicAuthorityAdmission WITH (UPDLOCK,HOLDLOCK)
+        DECLARE @ExistingAuthorityDigest varchar(80),@ExistingAuthoritySchemaId varchar(200),@ExistingAuthorityBasis varchar(80),@Disposition varchar(80);
+        SELECT @ExistingAuthorityDigest=AuthorityDigest,@ExistingAuthoritySchemaId=AuthoritySchemaId,@ExistingAuthorityBasis=AuthorityBasis FROM authority.MechanicAuthorityAdmission WITH (UPDLOCK,HOLDLOCK)
         WHERE AnalysisDigest=@AnalysisDigest AND MechanicOccurrenceId=@MechanicOccurrenceId;
-        IF @ExistingAuthoritySchemaId IS NOT NULL AND @ExistingAuthorityDigest<>@AuthorityDigest
+        IF @ExistingAuthoritySchemaId IS NOT NULL AND @ExistingAuthoritySchemaId NOT IN ('deterministic-branch-authority.schema.json','deterministic-mechanic-authority.schema.json')
+            THROW 51100,'Existing authority carries an unsupported schema identity.',1;
+        IF @ExistingAuthoritySchemaId='deterministic-mechanic-authority.schema.json' AND @ExistingAuthorityBasis<>'DETERMINISTIC_SYNTAX_LOWERING'
+            THROW 51101,'Existing deterministic authority carries an invalid authority basis.',1;
+        IF @ExistingAuthoritySchemaId='deterministic-mechanic-authority.schema.json' AND @ExistingAuthorityDigest<>@AuthorityDigest
             THROW 51099,'A different authority payload is already admitted for this analysis and mechanic occurrence.',1;
         IF @ExistingAuthorityDigest IS NULL
         BEGIN
             INSERT authority.MechanicAuthorityAdmission (AnalysisDigest,MechanicOccurrenceId,AuthorityFamily,AuthorityDataJson,AuthorityDigest,AuthoritySchemaId,AuthorityBasis,LowererVersion,AdmissionDisposition)
-            VALUES (@AnalysisDigest,@MechanicOccurrenceId,@AuthorityFamily,@AuthorityDataJson,@AuthorityDigest,'deterministic-branch-authority.schema.json','DETERMINISTIC_SYNTAX_LOWERING',@LowererVersion,'AUTHORITY_ADMITTED');
+            VALUES (@AnalysisDigest,@MechanicOccurrenceId,@AuthorityFamily,@AuthorityDataJson,@AuthorityDigest,'deterministic-mechanic-authority.schema.json','DETERMINISTIC_SYNTAX_LOWERING',@LowererVersion,'AUTHORITY_ADMITTED');
             INSERT observation.MechanicAuthorityLoweringAttempt
                 (RootId,AnalysisDigest,MechanicOccurrenceId,MechanicKind,ArtifactId,ArtifactDigest,LowererVersion,AttemptMode,LoweringDisposition,AuthorityDigest,AdmissionDisposition)
             VALUES
                 (@RootId,@AnalysisDigest,@MechanicOccurrenceId,@MechanicKind,@ArtifactId,@CurrentArtifactDigest,@LowererVersion,'ADMIT','DETERMINISTIC_AUTHORITY_ADMITTED',@AuthorityDigest,'MECHANIC_AUTHORITY_ADMITTED');
             SET @Disposition='MECHANIC_AUTHORITY_ADMITTED';
         END
-        ELSE IF @ExistingAuthoritySchemaId IS NULL
+        ELSE IF @ExistingAuthoritySchemaId IS NULL OR @ExistingAuthoritySchemaId='deterministic-branch-authority.schema.json'
         BEGIN
             UPDATE authority.MechanicAuthorityAdmission
             SET AuthorityFamily=@AuthorityFamily,AuthorityDataJson=@AuthorityDataJson,AuthorityDigest=@AuthorityDigest,
-                AuthoritySchemaId='deterministic-branch-authority.schema.json',AuthorityBasis='DETERMINISTIC_SYNTAX_LOWERING',LowererVersion=@LowererVersion,
+                AuthoritySchemaId='deterministic-mechanic-authority.schema.json',AuthorityBasis='DETERMINISTIC_SYNTAX_LOWERING',LowererVersion=@LowererVersion,
                 AdmissionDisposition='AUTHORITY_ADMITTED',AdmittedAtUtc=SYSUTCDATETIME()
             WHERE AnalysisDigest=@AnalysisDigest AND MechanicOccurrenceId=@MechanicOccurrenceId;
             INSERT observation.MechanicAuthorityLoweringAttempt
@@ -251,7 +252,7 @@ OUTER APPLY
 LEFT JOIN authority.MechanicApplicabilityReview applicability ON applicability.AnalysisDigest=currentAnalysis.AnalysisDigest AND applicability.SourceFactIndexId=mechanic.IndexId AND applicability.RootId=mechanic.RootId AND applicability.MechanicOccurrenceId=mechanic.ExecutableMechanicFactId
 LEFT JOIN projection.ExecutionMechanicAuthority authorityProjection ON authorityProjection.SourceFactIndexId=mechanic.IndexId AND authorityProjection.RootId=mechanic.RootId AND authorityProjection.MechanicOccurrenceId=mechanic.ExecutableMechanicFactId
 LEFT JOIN authority.MechanicAuthorityAdmission admission ON admission.AnalysisDigest=currentAnalysis.AnalysisDigest AND admission.MechanicOccurrenceId=mechanic.ExecutableMechanicFactId
- AND admission.AuthoritySchemaId='deterministic-branch-authority.schema.json' AND admission.AuthorityBasis='DETERMINISTIC_SYNTAX_LOWERING'
+ AND admission.AuthoritySchemaId='deterministic-mechanic-authority.schema.json' AND admission.AuthorityBasis='DETERMINISTIC_SYNTAX_LOWERING'
 WHERE currentAnalysis.ExecutionAnalysisDisposition='EXECUTION_ANALYSIS_CURRENT';
 GO
 
@@ -326,7 +327,7 @@ WITH CurrentAnalysis AS
  LEFT JOIN Owned owned ON owned.ObservationSnapshotId=analysis.ObservationSnapshotId AND owned.CallableKey=callable.CallableKey AND owned.ContractSnapshotId=analysis.ContractSnapshotId
  LEFT JOIN TestSymbol testSymbol ON testSymbol.RootId=analysis.RootId AND testSymbol.ImportedSymbolName=callable.SymbolName
  LEFT JOIN authority.MechanicAuthorityAdmission admitted ON admitted.AnalysisDigest=analysis.AnalysisDigest AND admitted.MechanicOccurrenceId=mechanic.ExecutableMechanicFactId
-  AND admitted.AuthoritySchemaId='deterministic-branch-authority.schema.json' AND admitted.AuthorityBasis='DETERMINISTIC_SYNTAX_LOWERING'
+  AND admitted.AuthoritySchemaId='deterministic-mechanic-authority.schema.json' AND admitted.AuthorityBasis='DETERMINISTIC_SYNTAX_LOWERING'
  GROUP BY analysis.RootId
 ), CallableRollup AS
 (

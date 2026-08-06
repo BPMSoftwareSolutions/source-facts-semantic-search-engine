@@ -39,7 +39,7 @@ test("admits schema-valid authority with mandatory CAS evidence and echoes its i
   assert.equal(receipt.analysisDigest, analysisDigest);
   assert.equal(receipt.mechanicOccurrenceId, "mechanic-1");
   assert.match(query, /EXEC ingestion\.AdmitMechanicAuthority/u);
-  assert.match(query, /typescript-branch-lowerer\.v2/u);
+  assert.match(query, /typescript-mechanic-lowerer\.v3/u);
   assert.match(query, new RegExp(analysisDigest, "u"));
   assert.match(query, new RegExp(artifactDigest, "u"));
 });
@@ -78,6 +78,21 @@ test("records a digest-bound rejected lowering attempt", async () => {
   assert.equal(receipt.disposition, "MECHANIC_AUTHORITY_LOWERING_ATTEMPT_RECORDED");
   assert.match(query, /RecordMechanicAuthorityLoweringAttempt/u);
   assert.match(query, /predicate-form:CallExpression/u);
+});
+
+test("admits a non-branch authority through the same validated SQL lane", async () => {
+  const iterationSource = "for (const item of items) consume(item);";
+  const iterationAuthority = lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "iteration-1", mechanicKind: "iteration", artifactId: "src/example.js", artifactDigest: digest(iterationSource), sourceText: iterationSource, startLine: 1, startColumn: 1 }).authorityData;
+  let query;
+  const receipt = await admitsMechanicAuthorityInSqlServer({
+    rootId: "root", mechanicOccurrenceId: "iteration-1", mechanicKind: "iteration",
+    lowererVersion: deterministicMechanicLowererVersion, authorityData: iterationAuthority,
+    expectedAnalysisDigest: analysisDigest, expectedArtifactDigest: digest(iterationSource), connection,
+    queryRunner: async request => { query = request.query; return [`M|${analysisDigest}|iteration-1|${digest("iteration-authority")}|MECHANIC_AUTHORITY_ADMITTED`]; },
+  });
+  assert.equal(receipt.disposition, "MECHANIC_AUTHORITY_ADMITTED");
+  assert.match(query, /iteration-authority\.v1/u);
+  assert.match(query, /"mechanicKind":"iteration"/u);
 });
 
 test("requires root, occurrence, mechanic, lowerer, authority, and digests", async () => {
