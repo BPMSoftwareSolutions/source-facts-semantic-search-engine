@@ -212,11 +212,21 @@ export async function draftsCapabilityFromIntent({
       ],
     },
     responsePolicy: { format: "json", maximumOutputTokens: 16384, temperature: 0, schema: draftCapabilityResponseSchema },
-    executionPolicy: { timeoutMilliseconds: 60000, attemptAuthority: { maximumAuthorizedAttempts: 1 }, providerSubstitution: { allowed: false } },
+    executionPolicy: {
+      timeoutMilliseconds: 60000,
+      attemptAuthority: {
+        maximumAuthorizedAttempts: 3,
+        continuationRule: "continue-while-provider-reports-transient-failure",
+      },
+      providerSubstitution: { allowed: false },
+    },
     evidencePolicy: { captureRequestHash: true, captureResponseHash: true, captureResolvedProvider: true, captureResolvedModel: true, captureTokenUsage: true, captureTiming: true },
   };
   const response = await invoke(modelRequest);
-  if (response.disposition !== "MODEL_RESPONSE_OBTAINED") throw new Error(`Model invocation did not succeed: ${response.disposition}`);
+  if (response.disposition !== "MODEL_RESPONSE_OBTAINED") {
+    const details = (response.findings ?? []).map((finding) => finding.detail).filter(Boolean).join("; ");
+    throw new Error(`Model invocation did not succeed: ${response.disposition}${details.length > 0 ? ` (${details})` : ""}`);
+  }
   const blueprint = response.result?.structuredValue;
   const findings = validatesDraftCapabilityBlueprint(blueprint, featureId);
   if (findings.length > 0) throw new Error(`Draft capability failed deterministic validation: ${findings.join(", ")}`);
