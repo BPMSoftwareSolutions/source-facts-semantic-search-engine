@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Capability from Intent"
+  short_description: "Project trusted capabilities through a live LLM"
+  default_prompt: "Use $create-capability-from-intent-via-live-llm to turn this feature intent into a live-model-generated, governed, projected, and trust-gated capability."

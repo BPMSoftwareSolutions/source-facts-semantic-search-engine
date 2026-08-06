@@ -32,6 +32,8 @@
     { "directoryId": "docs-features-directory", "relativePath": "docs/features", "required": false },
     { "directoryId": "docs-generated-directory", "relativePath": "docs/generated", "required": false },
     { "directoryId": "docs-skills-directory", "relativePath": "docs/skills", "required": true },
+    { "directoryId": "docs-skills-create-capability-from-intent-via-live-llm-directory", "relativePath": "docs/skills/create-capability-from-intent-via-live-llm", "required": true },
+    { "directoryId": "docs-skills-create-capability-from-intent-via-live-llm-agents-directory", "relativePath": "docs/skills/create-capability-from-intent-via-live-llm/agents", "required": true },
     { "directoryId": "docs-skills-generate-authority-candidates-detailed-report-directory", "relativePath": "docs/skills/generate-authority-candidates-detailed-report", "required": true },
     { "directoryId": "docs-skills-generate-test-scenarios-from-source-facts-directory", "relativePath": "docs/skills/generate-test-scenarios-from-source-facts", "required": true },
     { "directoryId": "docs-skills-project-authority-candidates-from-mechanics-directory", "relativePath": "docs/skills/project-authority-candidates-from-mechanics", "required": true },
