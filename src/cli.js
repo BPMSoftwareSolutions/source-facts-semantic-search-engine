@@ -45,7 +45,7 @@ import { loadsRepositoryTestKnowledgeIntoSqlServer, queriesCurrentRepositoryTest
 import { executesCanonicalTestVector } from "./canonical-test-vector.js";
 import { extractsCanonicalTestVectorFromSqlServer, recordsCanonicalTestExecutionInSqlServer } from "./sqlserver/canonical-test-vector.js";
 import { projectsRepositoryExecutionKnowledge } from "./repository-execution-knowledge.js";
-import { recordsRepositoryExecutionKnowledgeInSqlServer, queriesCurrentOperationalExecutionSummary, admitsMechanicAuthorityInSqlServer, queriesCurrentMechanicAuthorityCandidates } from "./sqlserver/repository-execution-knowledge.js";
+import { recordsRepositoryExecutionKnowledgeInSqlServer, queriesCurrentOperationalExecutionSummary, admitsMechanicAuthorityInSqlServer, queriesCurrentMechanicAuthorityCandidates, recordsMechanicAuthorityLoweringAttemptInSqlServer } from "./sqlserver/repository-execution-knowledge.js";
 import { projectsAuthorityFromMechanics } from "./projects-authority-candidates.js";
 import { AuthorityProjectorFromViolations, projectAuthorityCandidatesFromViolations } from "./projects-authority-from-violations.js";
 import { projectsConsoleGovernedContract } from "./projects-governed-console-contract.js";
@@ -64,6 +64,7 @@ import { validatesSelfGovernanceReport } from "./governance/validates-self-gover
 import { formatsSelfGovernanceReportSummary, formatsSelfGovernanceReportMarkdown } from "./governance/formats-self-governance-report-summary.js";
 import { discoversCanonicalFeatureIntents } from "./governance/canonical-feature-intent.js";
 import { processesDeterministicMechanicAuthorityBatch } from "./governance/processes-deterministic-mechanic-authority.js";
+import { projectsMechanicAuthorityInspectionProjection, validatesMechanicAuthorityInspectionProjection } from "./governance/mechanic-authority-inspection-projection.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -1029,9 +1030,22 @@ async function runAdmitMechanicAuthority(rawArgs) {
   if (typeof flags.rootId !== "string") throw new Error("--root-id <id> is required.");
   if (typeof flags.mechanicOccurrenceId !== "string") throw new Error("--mechanic-occurrence-id <id> is required.");
   if (typeof flags.authorityFile !== "string") throw new Error("--authority-file <path> is required.");
-  const authorityData = JSON.parse(await fs.readFile(path.resolve(flags.authorityFile), "utf8"));
+  const projection = JSON.parse(await fs.readFile(path.resolve(flags.authorityFile), "utf8"));
+  await validatesMechanicAuthorityInspectionProjection(projection);
+  if (projection.rootId !== flags.rootId || projection.mechanicOccurrenceId !== flags.mechanicOccurrenceId) {
+    throw new Error("Authority inspection projection identity does not match the requested root and mechanic occurrence.");
+  }
   const connection = resolvesSqlServerConnection(flags);
-  const receipt = await admitsMechanicAuthorityInSqlServer({ rootId: flags.rootId, mechanicOccurrenceId: flags.mechanicOccurrenceId, authorityData, connection });
+  const receipt = await admitsMechanicAuthorityInSqlServer({
+    rootId: projection.rootId,
+    mechanicOccurrenceId: projection.mechanicOccurrenceId,
+    mechanicKind: projection.mechanicKind,
+    lowererVersion: projection.lowererVersion,
+    authorityData: projection.authorityData,
+    expectedAnalysisDigest: projection.executionAnalysisDigest,
+    expectedArtifactDigest: projection.artifactDigest,
+    connection,
+  });
   process.stdout.write(`${receipt.disposition}\n`);
   if (flags.summary === true) {
     process.stdout.write(`Mechanic occurrence: ${receipt.mechanicOccurrenceId}\n`);
@@ -1056,12 +1070,15 @@ async function runLowerMechanicAuthority(rawArgs) {
     connection,
     candidateQuery: queriesCurrentMechanicAuthorityCandidates,
     authorityAdmitter: admitsMechanicAuthorityInSqlServer,
+    attemptRecorder: recordsMechanicAuthorityLoweringAttemptInSqlServer,
+    retryRejected: flags["retry-rejected"] === true,
   });
   if (typeof flags.outputDir === "string") {
     const outputDirectory = path.resolve(flags.outputDir);
     for (const result of batch.projected) {
       const outputPath = path.join(outputDirectory, `${result.mechanicOccurrenceId}.authority.json`);
-      await writesJsonFile(outputPath, result.authorityData, { pretty: true });
+      const projection = await projectsMechanicAuthorityInspectionProjection({ rootId: batch.rootId, result });
+      await writesJsonFile(outputPath, projection, { pretty: true });
       process.stdout.write(`${outputPath}\n`);
     }
   }
@@ -1074,6 +1091,7 @@ async function runLowerMechanicAuthority(rawArgs) {
     process.stdout.write(`Projected: ${batch.projectedCount}\n`);
     process.stdout.write(`Rejected: ${batch.rejectedCount}\n`);
     process.stdout.write(`Admitted: ${batch.admittedCount}\n`);
+    process.stdout.write(`Attempt persistence failures: ${batch.attemptPersistenceFailureCount}\n`);
     for (const rejection of batch.rejected) process.stdout.write(`Rejected ${rejection.mechanicOccurrenceId}: ${rejection.code}\n`);
   }
 }
@@ -1664,7 +1682,7 @@ function parseArgs(rawArgs) {
     "--closure-receipt",
     "--contract-map-root",
   ]);
-  const booleanOptions = new Set(["--pretty", "--summary", "--prove", "--project", "--gate", "--write", "--write-receipt", "--admit"]);
+  const booleanOptions = new Set(["--pretty", "--summary", "--prove", "--project", "--gate", "--write", "--write-receipt", "--admit", "--retry-rejected"]);
   for (let index = 0; index < rawArgs.length; index++) {
     const current = rawArgs[index];
     if (!current.startsWith("-")) {
@@ -1761,8 +1779,8 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se test-meaning --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se analyze-execution --root-id <id> [--application-id <id>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se execution-knowledge --root-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
-  stream.write(`  source-facts-se admit-mechanic-authority --root-id <id> --mechanic-occurrence-id <id> --authority-file <file> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
-  stream.write(`  source-facts-se lower-mechanic-authority --root-id <id> [--workspace <dir>] [--mechanic-kind branch] [--mechanic-occurrence-id <id>] [--limit <1-1000>] [--output-dir <dir>] [--admit] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se admit-mechanic-authority --root-id <id> --mechanic-occurrence-id <id> --authority-file <inspection-projection> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
+  stream.write(`  source-facts-se lower-mechanic-authority --root-id <id> [--workspace <dir>] [--mechanic-kind branch] [--mechanic-occurrence-id <id>] [--limit <1-1000>] [--output-dir <dir>] [--retry-rejected] [--admit] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se prove-test-vector --root-id <id> --test-vector-id <id> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se ingest --workspace <dir> [--workspace-id <id>] [--output <file>] (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`\n`);

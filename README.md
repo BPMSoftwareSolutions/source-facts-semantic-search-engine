@@ -449,8 +449,10 @@ and authority candidates remain explicitly unadmitted.
 
 Branch candidates can be lowered deterministically from their exact TypeScript
 AST nodes without an LLM. The command is dry-run by default, verifies local bytes
-against the current repository-image artifact digest, validates the completed
-authority schema, and writes no SQL authority unless `--admit` is explicit:
+against the current repository-image artifact digest, validates the closed
+branch-authority grammar, and writes no SQL authority unless `--admit` is
+explicit. Dry runs record observational lowering attempts and rejection reasons
+in SQL so the transformation queue remains queryable:
 
 ```powershell
 node src/cli.js lower-mechanic-authority `
@@ -463,11 +465,30 @@ node src/cli.js lower-mechanic-authority `
   --summary
 ```
 
-Add `--admit` only after reviewing the dry-run coverage. Admission carries the
-expected execution-analysis and source-artifact digests, so SQL rejects a refresh
-or source change between deterministic lowering and persistence. Unsupported
-mechanic families and syntax remain explicit rejected rows rather than guessed
-authority.
+Add `--admit` only after reviewing the dry-run coverage. Admission requires the
+expected execution-analysis and source-artifact digests and checks them under a
+serializable SQL transaction, so a refresh or source change cannot race the
+write. Identical re-admission is a no-op; a different payload for the same
+analysis and occurrence is rejected. Unsupported mechanic families, predicate
+forms, operators, and outcome forms remain explicit persisted rejections rather
+than guessed authority.
+
+Files written with `--output-dir` are typed
+`NON_AUTHORITATIVE_INSPECTION_PROJECTION` exports. They are optional review
+surfaces, not durable authority; SQL `authority.MechanicAuthorityAdmission` is
+the canonical admitted store. The manual `admit-mechanic-authority` command
+accepts only a validated inspection wrapper carrying its exact CAS evidence.
+
+The prioritized queue is queryable through
+`projection.CurrentMechanicAuthorityTransformationQueue`. Rejected rows expose
+`RejectionReason` and `RequiredPrimitive`; unchanged rows are not retried by the
+same lowerer version unless `--retry-rejected` is explicit.
+
+Reapplying SQL script `023` quarantines pre-hardening admission rows from current
+projections because they have no schema, basis, or lowerer-version testimony.
+Their first validated v2 admission atomically replaces the legacy payload and
+returns `MECHANIC_AUTHORITY_LEGACY_REPLACED`; subsequent identical admission is
+a state-preserving no-op.
 
 Canonical authority, call-graph observations, and test evidence have a separate
 snapshot-preserving load path. Apply SQL scripts `001`, `006`, `007`, and `008`,

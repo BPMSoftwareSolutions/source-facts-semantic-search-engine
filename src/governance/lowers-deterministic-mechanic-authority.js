@@ -1,10 +1,14 @@
 import ts from "typescript";
 
+export const deterministicMechanicLowererVersion = "typescript-branch-lowerer.v2";
+export const deterministicBranchSyntaxProfile = "typescript-branch-authority.v2";
+
 export class DeterministicMechanicLoweringError extends Error {
-  constructor(code, message) {
+  constructor(code, message, requiredPrimitive = null) {
     super(message);
     this.name = "DeterministicMechanicLoweringError";
     this.code = code;
+    this.requiredPrimitive = requiredPrimitive;
   }
 }
 
@@ -13,6 +17,7 @@ export function lowersDeterministicMechanicAuthority({
   mechanicKind,
   artifactId,
   artifactDigest,
+  executionAnalysisDigest = null,
   sourceText,
   startLine,
   startColumn,
@@ -27,6 +32,7 @@ export function lowersDeterministicMechanicAuthority({
     throw new DeterministicMechanicLoweringError(
       "MECHANIC_FAMILY_NOT_DETERMINISTICALLY_LOWERABLE",
       `Mechanic kind '${mechanicKind}' is not supported by the deterministic lowerer.`,
+      `${mechanicKind}-authority-lowerer`,
     );
   }
 
@@ -51,10 +57,12 @@ export function lowersDeterministicMechanicAuthority({
   return Object.freeze({
     disposition: "DETERMINISTIC_MECHANIC_AUTHORITY_PROJECTED",
     derivationKind: "typescript-ast-lowering.v1",
+    lowererVersion: deterministicMechanicLowererVersion,
     mechanicOccurrenceId,
     mechanicKind,
     artifactId,
     artifactDigest,
+    executionAnalysisDigest,
     startLine,
     startColumn,
     sourceKind: ts.SyntaxKind[node.kind],
@@ -63,11 +71,13 @@ export function lowersDeterministicMechanicAuthority({
 }
 
 function lowersIfStatement(node, sourceFile, mechanicOccurrenceId) {
-  const predicate = lowersExpression(node.expression, sourceFile);
+  const predicate = lowersPredicate(node.expression, sourceFile);
   const matchedOutcome = "BRANCH_MATCHED";
   const noMatchOutcome = "BRANCH_NOT_MATCHED";
   return {
     authorityKind: "decision-authority.v1",
+    authorityBasis: "DETERMINISTIC_SYNTAX_LOWERING",
+    syntaxProfile: deterministicBranchSyntaxProfile,
     candidateAuthorityId: `candidate-${mechanicOccurrenceId}`,
     inputs: collectsReferencePaths(predicate),
     rules: [{
@@ -88,9 +98,11 @@ function lowersIfStatement(node, sourceFile, mechanicOccurrenceId) {
 }
 
 function lowersConditionalExpression(node, sourceFile, mechanicOccurrenceId) {
-  const predicate = lowersExpression(node.condition, sourceFile);
+  const predicate = lowersPredicate(node.condition, sourceFile);
   return {
     authorityKind: "decision-authority.v1",
+    authorityBasis: "DETERMINISTIC_SYNTAX_LOWERING",
+    syntaxProfile: deterministicBranchSyntaxProfile,
     candidateAuthorityId: `candidate-${mechanicOccurrenceId}`,
     inputs: collectsReferencePaths(predicate),
     rules: [{
@@ -107,16 +119,23 @@ function lowersConditionalExpression(node, sourceFile, mechanicOccurrenceId) {
 }
 
 function findsNodeAtLocation(sourceFile, line, column) {
-  let exact = null;
+  const exact = [];
   function visit(node) {
     if (ts.isIfStatement(node) || ts.isConditionalExpression(node)) {
       const location = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
-      if (location.line + 1 === line && location.character + 1 === column) exact = node;
+      if (location.line + 1 === line && location.character + 1 === column) exact.push(node);
     }
-    if (exact === null) ts.forEachChild(node, visit);
+    ts.forEachChild(node, visit);
   }
   visit(sourceFile);
-  return exact;
+  if (exact.length > 1) {
+    throw new DeterministicMechanicLoweringError(
+      "SOURCE_NODE_NOT_UNIQUE",
+      `More than one branch node starts at ${sourceFile.fileName}:${line}:${column}.`,
+      "unique-source-node-identity",
+    );
+  }
+  return exact[0] ?? null;
 }
 
 function lowersStatementBody(statement, sourceFile) {
@@ -141,7 +160,7 @@ function lowersStatement(node, sourceFile) {
   if (ts.isIfStatement(node)) {
     return {
       kind: "branch",
-      predicate: lowersExpression(node.expression, sourceFile),
+      predicate: lowersPredicate(node.expression, sourceFile),
       whenTrue: lowersStatementBody(node.thenStatement, sourceFile),
       whenFalse: node.elseStatement === undefined ? [] : lowersStatementBody(node.elseStatement, sourceFile),
     };
@@ -165,14 +184,15 @@ function lowersExpression(node, sourceFile) {
   if (ts.isNumericLiteral(node)) return { kind: "literal", literalType: "number", value: Number(node.text.replaceAll("_", "")) };
   if (ts.isPropertyAccessExpression(node)) {
     const target = lowersExpression(node.expression, sourceFile);
-    if (target.kind === "reference") return { kind: "reference", path: [...target.path, node.name.text] };
-    return { kind: "member", target, property: node.name.text };
+    if (target.kind === "reference" && node.questionDotToken === undefined) return { kind: "reference", path: [...target.path, node.name.text] };
+    return { kind: "member", target, property: node.name.text, optional: node.questionDotToken !== undefined };
   }
   if (ts.isElementAccessExpression(node)) {
     return {
       kind: "element",
       target: lowersExpression(node.expression, sourceFile),
       index: lowersExpression(node.argumentExpression, sourceFile),
+      optional: node.questionDotToken !== undefined,
     };
   }
   if (ts.isBinaryExpression(node)) {
@@ -195,6 +215,7 @@ function lowersExpression(node, sourceFile) {
       kind: ts.isNewExpression(node) ? "construct" : "call",
       callee: lowersExpression(node.expression, sourceFile),
       arguments: (node.arguments ?? []).map((argument) => lowersExpression(argument, sourceFile)),
+      ...(ts.isCallExpression(node) ? { optional: node.questionDotToken !== undefined } : {}),
     };
   }
   if (ts.isObjectLiteralExpression(node)) {
@@ -207,7 +228,7 @@ function lowersExpression(node, sourceFile) {
   if (ts.isConditionalExpression(node)) {
     return {
       kind: "conditional",
-      predicate: lowersExpression(node.condition, sourceFile),
+      predicate: lowersPredicate(node.condition, sourceFile),
       whenTrue: lowersExpression(node.whenTrue, sourceFile),
       whenFalse: lowersExpression(node.whenFalse, sourceFile),
     };
@@ -221,13 +242,73 @@ function lowersExpression(node, sourceFile) {
   }
   if (ts.isNoSubstitutionTemplateLiteral(node)) return { kind: "literal", literalType: "string", value: node.text };
   if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
+    unsupported(node, sourceFile, "outcome expression", "function-expression-authority");
+  }
+  unsupported(node, sourceFile, "outcome expression", "outcome-expression-lowering");
+}
+
+function lowersPredicate(node, sourceFile) {
+  if (ts.isParenthesizedExpression(node) || ts.isNonNullExpression(node) || ts.isAsExpression(node) || ts.isTypeAssertionExpression(node)) {
+    return lowersPredicate(node.expression, sourceFile);
+  }
+  if (ts.isIdentifier(node)) return { kind: "reference", path: [node.text] };
+  if (node.kind === ts.SyntaxKind.ThisKeyword) return { kind: "reference", path: ["this"] };
+  if (node.kind === ts.SyntaxKind.NullKeyword) return { kind: "literal", literalType: "null", value: null };
+  if (node.kind === ts.SyntaxKind.TrueKeyword || node.kind === ts.SyntaxKind.FalseKeyword) {
+    return { kind: "literal", literalType: "boolean", value: node.kind === ts.SyntaxKind.TrueKeyword };
+  }
+  if (ts.isStringLiteralLike(node)) return { kind: "literal", literalType: "string", value: node.text };
+  if (ts.isNumericLiteral(node)) return { kind: "literal", literalType: "number", value: Number(node.text.replaceAll("_", "")) };
+  if (ts.isPropertyAccessExpression(node)) {
+    const target = lowersPredicate(node.expression, sourceFile);
+    if (target.kind === "reference" && node.questionDotToken === undefined) return { kind: "reference", path: [...target.path, node.name.text] };
+    return { kind: "member", target, property: node.name.text, optional: node.questionDotToken !== undefined };
+  }
+  if (ts.isElementAccessExpression(node)) {
     return {
-      kind: "function",
-      parameters: node.parameters.map((parameter) => lowersBindingName(parameter.name, sourceFile)),
-      body: ts.isBlock(node.body) ? node.body.statements.map((statement) => lowersStatement(statement, sourceFile)) : [{ kind: "return", result: lowersExpression(node.body, sourceFile) }],
+      kind: "element",
+      target: lowersPredicate(node.expression, sourceFile),
+      index: lowersPredicate(node.argumentExpression, sourceFile),
+      optional: node.questionDotToken !== undefined,
     };
   }
-  unsupported(node, sourceFile, "expression");
+  if (ts.isBinaryExpression(node)) {
+    const operator = ts.tokenToString(node.operatorToken.kind) ?? ts.SyntaxKind[node.operatorToken.kind];
+    if (!predicateBinaryOperators.has(operator)) {
+      throw new DeterministicMechanicLoweringError(
+        "UNSUPPORTED_PREDICATE_OPERATOR",
+        `Predicate operator '${operator}' is not side-effect-free at ${formatsLocation(node, sourceFile)}.`,
+        `predicate-operator:${operator}`,
+      );
+    }
+    return { kind: "binary", operator, left: lowersPredicate(node.left, sourceFile), right: lowersPredicate(node.right, sourceFile) };
+  }
+  if (ts.isPrefixUnaryExpression(node)) {
+    const operator = ts.tokenToString(node.operator) ?? ts.SyntaxKind[node.operator];
+    if (!predicateUnaryOperators.has(operator)) {
+      throw new DeterministicMechanicLoweringError(
+        "UNSUPPORTED_PREDICATE_OPERATOR",
+        `Predicate operator '${operator}' is not side-effect-free at ${formatsLocation(node, sourceFile)}.`,
+        `predicate-operator:${operator}`,
+      );
+    }
+    return { kind: "unary", operator, operand: lowersPredicate(node.operand, sourceFile) };
+  }
+  if (ts.isTypeOfExpression(node)) return { kind: "unary", operator: "typeof", operand: lowersPredicate(node.expression, sourceFile) };
+  if (ts.isVoidExpression(node)) return { kind: "unary", operator: "void", operand: lowersPredicate(node.expression, sourceFile) };
+  if (ts.isConditionalExpression(node)) {
+    return {
+      kind: "conditional",
+      predicate: lowersPredicate(node.condition, sourceFile),
+      whenTrue: lowersPredicate(node.whenTrue, sourceFile),
+      whenFalse: lowersPredicate(node.whenFalse, sourceFile),
+    };
+  }
+  throw new DeterministicMechanicLoweringError(
+    "UNSUPPORTED_PREDICATE_FORM",
+    `Predicate form ${ts.SyntaxKind[node.kind]} is not in the side-effect-free profile at ${formatsLocation(node, sourceFile)}.`,
+    `predicate-form:${ts.SyntaxKind[node.kind]}`,
+  );
 }
 
 function lowersObjectProperty(property, sourceFile) {
@@ -240,10 +321,21 @@ function lowersObjectProperty(property, sourceFile) {
 function lowersBindingName(name, sourceFile) {
   if (ts.isIdentifier(name)) return { kind: "binding", name: name.text };
   if (ts.isObjectBindingPattern(name)) {
-    return { kind: "object-binding", elements: name.elements.map((element) => ({ name: lowersBindingName(element.name, sourceFile), property: element.propertyName === undefined ? null : propertyName(element.propertyName, sourceFile) })) };
+    return { kind: "object-binding", elements: name.elements.map((element) => {
+      if (element.dotDotDotToken !== undefined || element.initializer !== undefined) {
+        unsupported(element, sourceFile, "outcome expression", "destructuring-default-or-rest-binding");
+      }
+      return { name: lowersBindingName(element.name, sourceFile), property: element.propertyName === undefined ? null : propertyName(element.propertyName, sourceFile) };
+    }) };
   }
   if (ts.isArrayBindingPattern(name)) {
-    return { kind: "array-binding", elements: name.elements.map((element) => ts.isOmittedExpression(element) ? null : lowersBindingName(element.name, sourceFile)) };
+    return { kind: "array-binding", elements: name.elements.map((element) => {
+      if (ts.isOmittedExpression(element)) return null;
+      if (element.dotDotDotToken !== undefined || element.initializer !== undefined) {
+        unsupported(element, sourceFile, "outcome expression", "destructuring-default-or-rest-binding");
+      }
+      return lowersBindingName(element.name, sourceFile);
+    }) };
   }
   unsupported(name, sourceFile, "binding");
 }
@@ -282,13 +374,25 @@ function declarationKind(list) {
   return "var";
 }
 
-function unsupported(node, sourceFile, role) {
-  const location = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
+function unsupported(node, sourceFile, role, requiredPrimitive = null) {
   throw new DeterministicMechanicLoweringError(
-    "MECHANIC_SYNTAX_NOT_DETERMINISTICALLY_LOWERABLE",
-    `Unsupported ${role} ${ts.SyntaxKind[node.kind]} at ${sourceFile.fileName}:${location.line + 1}:${location.character + 1}.`,
+    role === "statement" ? "UNSUPPORTED_OUTCOME_STATEMENT" : "UNSUPPORTED_OUTCOME_EXPRESSION",
+    `Unsupported ${role} ${ts.SyntaxKind[node.kind]} at ${formatsLocation(node, sourceFile)}.`,
+    requiredPrimitive ?? `${role.replaceAll(" ", "-")}:${ts.SyntaxKind[node.kind]}`,
   );
 }
+
+function formatsLocation(node, sourceFile) {
+  const location = sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
+  return `${sourceFile.fileName}:${location.line + 1}:${location.character + 1}`;
+}
+
+const predicateBinaryOperators = new Set([
+  "===", "!==", "==", "!=", "<", "<=", ">", ">=", "&&", "||", "??",
+  "+", "-", "*", "/", "%", "**", "&", "|", "^", "<<", ">>", ">>>",
+  "in", "instanceof",
+]);
+const predicateUnaryOperators = new Set(["!", "+", "-", "~"]);
 
 function scriptKindForPath(filePath) {
   if (/\.tsx$/iu.test(filePath)) return ts.ScriptKind.TSX;

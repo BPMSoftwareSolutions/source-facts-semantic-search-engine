@@ -4,9 +4,20 @@
   "title": "Deterministically lowered branch authority",
   "type": "object",
   "additionalProperties": false,
-  "required": ["authorityKind", "candidateAuthorityId", "inputs", "rules", "outcomes", "noMatchDisposition"],
+  "required": [
+    "authorityKind",
+    "authorityBasis",
+    "syntaxProfile",
+    "candidateAuthorityId",
+    "inputs",
+    "rules",
+    "outcomes",
+    "noMatchDisposition"
+  ],
   "properties": {
     "authorityKind": { "const": "decision-authority.v1" },
+    "authorityBasis": { "const": "DETERMINISTIC_SYNTAX_LOWERING" },
+    "syntaxProfile": { "const": "typescript-branch-authority.v2" },
     "candidateAuthorityId": { "type": "string", "minLength": 1 },
     "inputs": {
       "type": "array",
@@ -23,7 +34,7 @@
         "required": ["ruleId", "predicate", "outcomeId"],
         "properties": {
           "ruleId": { "type": "string", "minLength": 1 },
-          "predicate": { "type": "object" },
+          "predicate": { "$ref": "#/$defs/predicateExpression" },
           "outcomeId": { "type": "string", "minLength": 1 }
         }
       }
@@ -31,17 +42,473 @@
     "outcomes": {
       "type": "array",
       "minItems": 2,
-      "items": {
-        "type": "object",
-        "required": ["outcomeId"],
-        "properties": {
-          "outcomeId": { "type": "string", "minLength": 1 },
-          "effects": { "type": "array", "items": { "type": "object" } },
-          "result": { "type": "object" },
-          "continuation": { "type": "string", "minLength": 1 }
+      "items": { "$ref": "#/$defs/outcome" }
+    },
+    "noMatchDisposition": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "outcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["outcomeId", "effects"],
+          "properties": {
+            "outcomeId": { "type": "string", "minLength": 1 },
+            "effects": { "type": "array", "items": { "$ref": "#/$defs/statement" } },
+            "continuation": { "enum": ["CONTINUE_AFTER_BRANCH", "EXECUTE_ELSE_BRANCH"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["outcomeId", "result"],
+          "properties": {
+            "outcomeId": { "type": "string", "minLength": 1 },
+            "result": { "$ref": "#/$defs/expression" }
+          }
+        }
+      ]
+    },
+    "statement": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "expression"],
+          "properties": {
+            "kind": { "const": "evaluate" },
+            "expression": { "$ref": "#/$defs/expression" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "result"],
+          "properties": {
+            "kind": { "const": "return" },
+            "result": {
+              "oneOf": [
+                { "$ref": "#/$defs/expression" },
+                { "type": "null" }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "error"],
+          "properties": {
+            "kind": { "const": "throw" },
+            "error": { "$ref": "#/$defs/expression" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "declarationKind", "bindings"],
+          "properties": {
+            "kind": { "const": "declare" },
+            "declarationKind": { "enum": ["const", "let", "var"] },
+            "bindings": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["binding", "initializer"],
+                "properties": {
+                  "binding": { "$ref": "#/$defs/binding" },
+                  "initializer": {
+                    "oneOf": [
+                      { "$ref": "#/$defs/expression" },
+                      { "type": "null" }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "predicate", "whenTrue", "whenFalse"],
+          "properties": {
+            "kind": { "const": "branch" },
+            "predicate": { "$ref": "#/$defs/predicateExpression" },
+            "whenTrue": { "type": "array", "items": { "$ref": "#/$defs/statement" } },
+            "whenFalse": { "type": "array", "items": { "$ref": "#/$defs/statement" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "effects"],
+          "properties": {
+            "kind": { "const": "block" },
+            "effects": { "type": "array", "items": { "$ref": "#/$defs/statement" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind"],
+          "properties": { "kind": { "const": "noop" } }
+        }
+      ]
+    },
+    "binding": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "name"],
+          "properties": {
+            "kind": { "const": "binding" },
+            "name": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "elements"],
+          "properties": {
+            "kind": { "const": "object-binding" },
+            "elements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "property"],
+                "properties": {
+                  "name": { "$ref": "#/$defs/binding" },
+                  "property": { "type": ["string", "null"] }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "elements"],
+          "properties": {
+            "kind": { "const": "array-binding" },
+            "elements": {
+              "type": "array",
+              "items": {
+                "oneOf": [
+                  { "$ref": "#/$defs/binding" },
+                  { "type": "null" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "predicateExpression": {
+      "oneOf": [
+        { "$ref": "#/$defs/referenceExpression" },
+        { "$ref": "#/$defs/literalExpression" },
+        { "$ref": "#/$defs/predicateMemberExpression" },
+        { "$ref": "#/$defs/predicateElementExpression" },
+        { "$ref": "#/$defs/predicateBinaryExpression" },
+        { "$ref": "#/$defs/predicateUnaryExpression" },
+        { "$ref": "#/$defs/predicateConditionalExpression" }
+      ]
+    },
+    "expression": {
+      "oneOf": [
+        { "$ref": "#/$defs/referenceExpression" },
+        { "$ref": "#/$defs/literalExpression" },
+        { "$ref": "#/$defs/memberExpression" },
+        { "$ref": "#/$defs/elementExpression" },
+        { "$ref": "#/$defs/binaryExpression" },
+        { "$ref": "#/$defs/unaryExpression" },
+        { "$ref": "#/$defs/awaitExpression" },
+        { "$ref": "#/$defs/callExpression" },
+        { "$ref": "#/$defs/constructExpression" },
+        { "$ref": "#/$defs/objectExpression" },
+        { "$ref": "#/$defs/arrayExpression" },
+        { "$ref": "#/$defs/conditionalExpression" },
+        { "$ref": "#/$defs/templateExpression" }
+      ]
+    },
+    "referenceExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path"],
+      "properties": {
+        "kind": { "const": "reference" },
+        "path": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
         }
       }
     },
-    "noMatchDisposition": { "type": "string", "minLength": 1 }
+    "literalExpression": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "literalType", "value"],
+          "properties": {
+            "kind": { "const": "literal" },
+            "literalType": { "const": "null" },
+            "value": { "type": "null" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "literalType", "value"],
+          "properties": {
+            "kind": { "const": "literal" },
+            "literalType": { "const": "boolean" },
+            "value": { "type": "boolean" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "literalType", "value"],
+          "properties": {
+            "kind": { "const": "literal" },
+            "literalType": { "const": "string" },
+            "value": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "literalType", "value"],
+          "properties": {
+            "kind": { "const": "literal" },
+            "literalType": { "const": "number" },
+            "value": { "type": "number" }
+          }
+        }
+      ]
+    },
+    "predicateMemberExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "target", "property", "optional"],
+      "properties": {
+        "kind": { "const": "member" },
+        "target": { "$ref": "#/$defs/predicateExpression" },
+        "property": { "type": "string", "minLength": 1 },
+        "optional": { "type": "boolean" }
+      }
+    },
+    "predicateElementExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "target", "index", "optional"],
+      "properties": {
+        "kind": { "const": "element" },
+        "target": { "$ref": "#/$defs/predicateExpression" },
+        "index": { "$ref": "#/$defs/predicateExpression" },
+        "optional": { "type": "boolean" }
+      }
+    },
+    "predicateBinaryExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "operator", "left", "right"],
+      "properties": {
+        "kind": { "const": "binary" },
+        "operator": {
+          "enum": [
+            "===", "!==", "==", "!=", "<", "<=", ">", ">=", "&&", "||", "??",
+            "+", "-", "*", "/", "%", "**", "&", "|", "^", "<<", ">>", ">>>",
+            "in", "instanceof"
+          ]
+        },
+        "left": { "$ref": "#/$defs/predicateExpression" },
+        "right": { "$ref": "#/$defs/predicateExpression" }
+      }
+    },
+    "predicateUnaryExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "operator", "operand"],
+      "properties": {
+        "kind": { "const": "unary" },
+        "operator": { "enum": ["!", "+", "-", "~", "typeof", "void"] },
+        "operand": { "$ref": "#/$defs/predicateExpression" }
+      }
+    },
+    "predicateConditionalExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "predicate", "whenTrue", "whenFalse"],
+      "properties": {
+        "kind": { "const": "conditional" },
+        "predicate": { "$ref": "#/$defs/predicateExpression" },
+        "whenTrue": { "$ref": "#/$defs/predicateExpression" },
+        "whenFalse": { "$ref": "#/$defs/predicateExpression" }
+      }
+    },
+    "memberExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "target", "property", "optional"],
+      "properties": {
+        "kind": { "const": "member" },
+        "target": { "$ref": "#/$defs/expression" },
+        "property": { "type": "string", "minLength": 1 },
+        "optional": { "type": "boolean" }
+      }
+    },
+    "elementExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "target", "index", "optional"],
+      "properties": {
+        "kind": { "const": "element" },
+        "target": { "$ref": "#/$defs/expression" },
+        "index": { "$ref": "#/$defs/expression" },
+        "optional": { "type": "boolean" }
+      }
+    },
+    "binaryExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "operator", "left", "right"],
+      "properties": {
+        "kind": { "const": "binary" },
+        "operator": {
+          "enum": [
+            "===", "!==", "==", "!=", "<", "<=", ">", ">=", "&&", "||", "??",
+            "+", "-", "*", "/", "%", "**", "&", "|", "^", "<<", ">>", ">>>",
+            "in", "instanceof", "=", "+=", "-=", "*=", "/=", "%=", "**=", "&=", "|=", "^=",
+            "<<=", ">>=", ">>>=", "&&=", "||=", "??="
+          ]
+        },
+        "left": { "$ref": "#/$defs/expression" },
+        "right": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "unaryExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "operator", "operand"],
+      "properties": {
+        "kind": { "const": "unary" },
+        "operator": { "enum": ["!", "+", "-", "~", "++", "--", "typeof", "void", "delete"] },
+        "operand": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "awaitExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "operation"],
+      "properties": {
+        "kind": { "const": "await" },
+        "operation": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "callExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "callee", "arguments", "optional"],
+      "properties": {
+        "kind": { "const": "call" },
+        "callee": { "$ref": "#/$defs/expression" },
+        "arguments": { "type": "array", "items": { "$ref": "#/$defs/expression" } },
+        "optional": { "type": "boolean" }
+      }
+    },
+    "constructExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "callee", "arguments"],
+      "properties": {
+        "kind": { "const": "construct" },
+        "callee": { "$ref": "#/$defs/expression" },
+        "arguments": { "type": "array", "items": { "$ref": "#/$defs/expression" } }
+      }
+    },
+    "objectExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "fields"],
+      "properties": {
+        "kind": { "const": "object" },
+        "fields": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "name", "value"],
+                "properties": {
+                  "kind": { "const": "field" },
+                  "name": { "type": "string", "minLength": 1 },
+                  "value": { "$ref": "#/$defs/expression" }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "value"],
+                "properties": {
+                  "kind": { "const": "spread" },
+                  "value": { "$ref": "#/$defs/expression" }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "arrayExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "items"],
+      "properties": {
+        "kind": { "const": "array" },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/expression" } }
+      }
+    },
+    "conditionalExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "predicate", "whenTrue", "whenFalse"],
+      "properties": {
+        "kind": { "const": "conditional" },
+        "predicate": { "$ref": "#/$defs/predicateExpression" },
+        "whenTrue": { "$ref": "#/$defs/expression" },
+        "whenFalse": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "templateExpression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "head", "spans"],
+      "properties": {
+        "kind": { "const": "template" },
+        "head": { "type": "string" },
+        "spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["expression", "literal"],
+            "properties": {
+              "expression": { "$ref": "#/$defs/expression" },
+              "literal": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
   }
 }

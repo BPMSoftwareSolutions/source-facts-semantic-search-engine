@@ -1,49 +1,93 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import test from "node:test";
-import { admitsMechanicAuthorityInSqlServer } from "../src/sqlserver/repository-execution-knowledge.js";
+import { admitsMechanicAuthorityInSqlServer, recordsMechanicAuthorityLoweringAttemptInSqlServer } from "../src/sqlserver/repository-execution-knowledge.js";
+import { deterministicMechanicLowererVersion, lowersDeterministicMechanicAuthority } from "../src/governance/lowers-deterministic-mechanic-authority.js";
 
-const connection={buildsArgs:()=>[],appliesToChildEnv:env=>env};
+const connection = { buildsArgs: () => [], appliesToChildEnv: (env) => env };
+const source = "if (enabled) run();\n";
+const analysisDigest = digest("analysis");
+const artifactDigest = digest(source);
+const authority = lowersDeterministicMechanicAuthority({
+  mechanicOccurrenceId: "mechanic-1",
+  mechanicKind: "branch",
+  artifactId: "src/example.js",
+  artifactDigest,
+  executionAnalysisDigest: analysisDigest,
+  sourceText: source,
+  startLine: 1,
+  startColumn: 1,
+}).authorityData;
 
-test("admits completed mechanic authority and echoes its identity",async()=>{
+test("admits schema-valid authority with mandatory CAS evidence and echoes its identity", async () => {
   let query;
-  const receipt=await admitsMechanicAuthorityInSqlServer({
-    rootId:"root",
-    mechanicOccurrenceId:"sha256:mechanic-1",
-    authorityData:{authorityKind:"decision-authority.v1",candidateAuthorityId:"candidate-sha256:mechanic-1",inputs:[],rules:[],outcomes:[],noMatchDisposition:"DECISION_NOT_RESOLVED"},
-    expectedAnalysisDigest:"sha256:analysis",
-    expectedArtifactDigest:"sha256:artifact",
+  const receipt = await admitsMechanicAuthorityInSqlServer({
+    rootId: "root",
+    mechanicOccurrenceId: "mechanic-1",
+    mechanicKind: "branch",
+    lowererVersion: deterministicMechanicLowererVersion,
+    authorityData: authority,
+    expectedAnalysisDigest: analysisDigest,
+    expectedArtifactDigest: artifactDigest,
     connection,
-    queryRunner:async request=>{
-      query=request.query;
-      return ["M|sha256:analysis|sha256:mechanic-1|sha256:authority|MECHANIC_AUTHORITY_ADMITTED"];
+    queryRunner: async (request) => {
+      query = request.query;
+      return [`M|${analysisDigest}|mechanic-1|${digest("authority")}|MECHANIC_AUTHORITY_ADMITTED`];
     },
   });
-  assert.equal(receipt.disposition,"MECHANIC_AUTHORITY_ADMITTED");
-  assert.equal(receipt.analysisDigest,"sha256:analysis");
-  assert.equal(receipt.mechanicOccurrenceId,"sha256:mechanic-1");
-  assert.equal(receipt.authorityDigest,"sha256:authority");
-  assert.match(query,/EXEC ingestion\.AdmitMechanicAuthority/u);
-  assert.match(query,/mechanic-1/u);
-  assert.match(query,/DECISION_NOT_RESOLVED/u);
-  assert.match(query,/expectedAnalysisDigest/u);
-  assert.match(query,/sha256:artifact/u);
+  assert.equal(receipt.disposition, "MECHANIC_AUTHORITY_ADMITTED");
+  assert.equal(receipt.analysisDigest, analysisDigest);
+  assert.equal(receipt.mechanicOccurrenceId, "mechanic-1");
+  assert.match(query, /EXEC ingestion\.AdmitMechanicAuthority/u);
+  assert.match(query, /typescript-branch-lowerer\.v2/u);
+  assert.match(query, new RegExp(analysisDigest, "u"));
+  assert.match(query, new RegExp(artifactDigest, "u"));
 });
 
-test("rejects a mismatched identity echoed back from SQL Server",async()=>{
+test("rejects missing CAS evidence and invalid authority before invoking SQL", async () => {
   await assert.rejects(
-    admitsMechanicAuthorityInSqlServer({
-      rootId:"root",
-      mechanicOccurrenceId:"sha256:mechanic-1",
-      authorityData:{authorityKind:"decision-authority.v1"},
-      connection,
-      queryRunner:async()=>["M|sha256:analysis|sha256:mechanic-2|sha256:authority|MECHANIC_AUTHORITY_ADMITTED"],
-    }),
-    /identity mismatch/u,
+    admitsMechanicAuthorityInSqlServer({ rootId: "root", mechanicOccurrenceId: "mechanic-1", mechanicKind: "branch", lowererVersion: deterministicMechanicLowererVersion, authorityData: authority, expectedArtifactDigest: artifactDigest, connection }),
+    /expectedAnalysisDigest must be a sha256 digest/u,
+  );
+  await assert.rejects(
+    admitsMechanicAuthorityInSqlServer({ rootId: "root", mechanicOccurrenceId: "mechanic-1", mechanicKind: "branch", lowererVersion: deterministicMechanicLowererVersion, authorityData: { arbitrary: true }, expectedAnalysisDigest: analysisDigest, expectedArtifactDigest: artifactDigest, connection }),
+    /Deterministic branch authority is invalid/u,
   );
 });
 
-test("requires rootId, mechanicOccurrenceId, and authorityData",async()=>{
-  await assert.rejects(admitsMechanicAuthorityInSqlServer({mechanicOccurrenceId:"m",authorityData:{},connection}),/rootId is required/u);
-  await assert.rejects(admitsMechanicAuthorityInSqlServer({rootId:"root",authorityData:{},connection}),/mechanicOccurrenceId is required/u);
-  await assert.rejects(admitsMechanicAuthorityInSqlServer({rootId:"root",mechanicOccurrenceId:"m",connection}),/authorityData is required/u);
+test("records a digest-bound rejected lowering attempt", async () => {
+  let query;
+  const receipt = await recordsMechanicAuthorityLoweringAttemptInSqlServer({
+    rootId: "root",
+    mechanicOccurrenceId: "mechanic-1",
+    mechanicKind: "branch",
+    artifactId: "src/example.js",
+    expectedAnalysisDigest: analysisDigest,
+    expectedArtifactDigest: artifactDigest,
+    lowererVersion: deterministicMechanicLowererVersion,
+    loweringDisposition: "DETERMINISTIC_AUTHORITY_REJECTED",
+    rejectionReason: "UNSUPPORTED_PREDICATE_FORM",
+    requiredPrimitive: "predicate-form:CallExpression",
+    message: "Call predicates require a reviewed primitive.",
+    connection,
+    queryRunner: async (request) => {
+      query = request.query;
+      return [`L|${analysisDigest}|mechanic-1|MECHANIC_AUTHORITY_LOWERING_ATTEMPT_RECORDED`];
+    },
+  });
+  assert.equal(receipt.disposition, "MECHANIC_AUTHORITY_LOWERING_ATTEMPT_RECORDED");
+  assert.match(query, /RecordMechanicAuthorityLoweringAttempt/u);
+  assert.match(query, /predicate-form:CallExpression/u);
 });
+
+test("requires root, occurrence, mechanic, lowerer, authority, and digests", async () => {
+  await assert.rejects(admitsMechanicAuthorityInSqlServer({ mechanicOccurrenceId: "m", mechanicKind: "branch", lowererVersion: deterministicMechanicLowererVersion, authorityData: authority, expectedAnalysisDigest: analysisDigest, expectedArtifactDigest: artifactDigest, connection }), /rootId is required/u);
+  await assert.rejects(admitsMechanicAuthorityInSqlServer({ rootId: "root", mechanicKind: "branch", lowererVersion: deterministicMechanicLowererVersion, authorityData: authority, expectedAnalysisDigest: analysisDigest, expectedArtifactDigest: artifactDigest, connection }), /mechanicOccurrenceId is required/u);
+  await assert.rejects(admitsMechanicAuthorityInSqlServer({ rootId: "root", mechanicOccurrenceId: "m", lowererVersion: deterministicMechanicLowererVersion, authorityData: authority, expectedAnalysisDigest: analysisDigest, expectedArtifactDigest: artifactDigest, connection }), /mechanicKind is required/u);
+  await assert.rejects(admitsMechanicAuthorityInSqlServer({ rootId: "root", mechanicOccurrenceId: "m", mechanicKind: "branch", authorityData: authority, expectedAnalysisDigest: analysisDigest, expectedArtifactDigest: artifactDigest, connection }), /lowererVersion is required/u);
+  await assert.rejects(admitsMechanicAuthorityInSqlServer({ rootId: "root", mechanicOccurrenceId: "m", mechanicKind: "branch", lowererVersion: deterministicMechanicLowererVersion, expectedAnalysisDigest: analysisDigest, expectedArtifactDigest: artifactDigest, connection }), /authorityData is required/u);
+});
+
+function digest(value) {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
+}

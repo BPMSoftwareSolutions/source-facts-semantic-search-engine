@@ -1,6 +1,6 @@
 # Mechanic Authority Admission: Remaining Work Implementation Plan
 
-Status: complete and verified against the live Azure SQL database
+Status: hardened implementation complete locally; reapply SQL script 023 before the next live admission
 
 Plan date: 2026-08-05
 
@@ -43,8 +43,8 @@ current SQL mechanic candidate
   -> verify local source bytes against repository-image artifact digest
   -> locate the exact branch AST node
   -> lower predicate, input references, rules, outcomes, and continuation
-  -> validate deterministic-branch-authority.schema.json
-  -> compare expected analysis and artifact digests inside SQL admission
+  -> validate the closed deterministic-branch-authority.schema.json grammar
+  -> compare expected analysis and artifact digests atomically inside SQL admission
   -> admit
 ```
 
@@ -62,9 +62,22 @@ projected and admitted, 5 remained fail-closed, and the current aggregate rose
 to 6 admitted mechanics including the first pilot.
 
 This extension is intentionally branch-only. Other mechanic families remain
-`MECHANIC_FAMILY_NOT_DETERMINISTICALLY_LOWERABLE`; unsupported branch syntax
-remains `MECHANIC_SYNTAX_NOT_DETERMINISTICALLY_LOWERABLE`. Those dispositions
-are scale measurements and implementation queues, not inference prompts.
+`MECHANIC_FAMILY_NOT_DETERMINISTICALLY_LOWERABLE`; unsupported predicates,
+operators, outcome statements, and expressions receive precise rejection codes
+and required primitives. Attempts are persisted in
+`observation.MechanicAuthorityLoweringAttempt` and surfaced through
+`projection.CurrentMechanicAuthorityTransformationQueue`; they are scale
+measurements and implementation queues, not inference prompts.
+
+Disk JSON under `artifacts/admissions/` is optional non-authoritative inspection
+evidence. New files are typed inspection wrappers and raw legacy payloads are
+not admissible. SQL `authority.MechanicAuthorityAdmission` is the sole durable
+admitted authority store.
+
+The hardened script adds schema, basis, and lowerer-version testimony to new
+admissions. Existing pilot rows without that testimony are retained for audit
+but excluded from current projections until a validated v2 payload atomically
+replaces them with disposition `MECHANIC_AUTHORITY_LEGACY_REPLACED`.
 
 ## 1. What is already done
 
@@ -175,6 +188,12 @@ WHERE RootId = 'source-facts-semantic-search-engine' AND MechanicOccurrenceId = 
 
 ### 3.5 Complete the authority JSON
 
+> **Superseded:** Raw or hand-authored authority JSON is no longer admissible.
+> Run `lower-mechanic-authority --output-dir artifacts/admissions/deterministic`
+> to produce a validated `mechanic-authority-inspection-projection.v1` wrapper
+> bound to the exact analysis digest, artifact digest, occurrence, and lowerer
+> version. The historical instructions below describe the original pilot only.
+
 Read the actual source at the mechanic's `SourceReferenceId`/line (via
 `projection.CurrentExecutionMechanicOccurrence.StartLine`/`ArtifactId`), then
 hand-author the completed JSON matching the family's shape from
@@ -196,12 +215,15 @@ is a manual/judgment step for now.
 node src/cli.js admit-mechanic-authority `
   --root-id source-facts-semantic-search-engine `
   --mechanic-occurrence-id <chosen-id> `
-  --authority-file artifacts\admissions\<chosen-id>.authority.json `
+  --authority-file artifacts\admissions\deterministic\<chosen-id>.authority.json `
   --connection-env source-facts-semantic-search-engine `
   --summary
 ```
 
-Expect `MECHANIC_AUTHORITY_ADMITTED` plus the analysis/authority digests.
+Expect `MECHANIC_AUTHORITY_ADMITTED` plus the analysis/authority digests. An
+identical retry returns `MECHANIC_AUTHORITY_ALREADY_ADMITTED` without changing
+the stored row; a different payload for the same analysis and occurrence is
+rejected.
 
 ### 3.7 Prove the loop closed
 

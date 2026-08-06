@@ -7,6 +7,7 @@ import test from "node:test";
 import { DeterministicMechanicLoweringError, lowersDeterministicMechanicAuthority } from "../src/governance/lowers-deterministic-mechanic-authority.js";
 import { processesDeterministicMechanicAuthorityBatch } from "../src/governance/processes-deterministic-mechanic-authority.js";
 import { validatesDeterministicMechanicAuthority } from "../src/governance/validates-deterministic-mechanic-authority.js";
+import { projectsMechanicAuthorityInspectionProjection, validatesMechanicAuthorityInspectionProjection } from "../src/governance/mechanic-authority-inspection-projection.js";
 
 const branchSource = `async function collect(contractPath, authorities) {\n  if (contractPath !== null) {\n    authorities.push({ contract: await readsJsonFile(contractPath), sourcePath: contractPath });\n  }\n}\n`;
 
@@ -16,6 +17,8 @@ test("deterministically lowers an if branch into normalized authority data", () 
   const repeated = lowersDeterministicMechanicAuthority(request);
   assert.deepEqual(first, repeated);
   assert.equal(first.disposition, "DETERMINISTIC_MECHANIC_AUTHORITY_PROJECTED");
+  assert.equal(first.authorityData.authorityBasis, "DETERMINISTIC_SYNTAX_LOWERING");
+  assert.equal(first.authorityData.syntaxProfile, "typescript-branch-authority.v2");
   assert.deepEqual(first.authorityData.inputs, ["contractPath"]);
   assert.equal(first.authorityData.rules[0].predicate.operator, "!==");
   assert.equal(first.authorityData.outcomes[0].effects[0].expression.callee.path.join("."), "authorities.push");
@@ -42,10 +45,35 @@ test("fails closed for unsupported mechanic families and source locations", () =
   );
 });
 
+test("rejects side-effecting and dynamically evaluated predicates with precise primitives", () => {
+  assert.throws(
+    () => lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "m", mechanicKind: "branch", artifactId: "src/x.js", artifactDigest: "sha256:x", sourceText: "if (enabled = true) run();", startLine: 1, startColumn: 1 }),
+    (error) => error instanceof DeterministicMechanicLoweringError && error.code === "UNSUPPORTED_PREDICATE_OPERATOR" && error.requiredPrimitive === "predicate-operator:=",
+  );
+  assert.throws(
+    () => lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "m", mechanicKind: "branch", artifactId: "src/x.js", artifactDigest: "sha256:x", sourceText: "if (isEnabled()) run();", startLine: 1, startColumn: 1 }),
+    (error) => error instanceof DeterministicMechanicLoweringError && error.code === "UNSUPPORTED_PREDICATE_FORM" && error.requiredPrimitive === "predicate-form:CallExpression",
+  );
+});
+
 test("validates completed deterministic branch authority and its references", async () => {
   const result = lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "mechanic-1", mechanicKind: "branch", artifactId: "src/example.js", artifactDigest: digest(branchSource), sourceText: branchSource, startLine: 2, startColumn: 3 });
   await assert.doesNotReject(validatesDeterministicMechanicAuthority(result.authorityData, "branch"));
   await assert.rejects(validatesDeterministicMechanicAuthority({ ...result.authorityData, noMatchDisposition: "UNKNOWN" }, "branch"), /does not resolve to an outcome/u);
+  await assert.rejects(
+    validatesDeterministicMechanicAuthority({ ...result.authorityData, rules: [{ ...result.authorityData.rules[0], predicate: { arbitrary: true } }] }, "branch"),
+    /Deterministic branch authority is invalid/u,
+  );
+});
+
+test("wraps disk output as a non-authoritative digest-bound inspection projection", async () => {
+  const result = lowersDeterministicMechanicAuthority({ mechanicOccurrenceId: "mechanic-1", mechanicKind: "branch", artifactId: "src/example.js", artifactDigest: digest(branchSource), executionAnalysisDigest: digest("analysis"), sourceText: branchSource, startLine: 2, startColumn: 3 });
+  const projection = await projectsMechanicAuthorityInspectionProjection({ rootId: "root", result });
+  assert.equal(projection.documentKind, "mechanic-authority-inspection-projection.v1");
+  assert.equal(projection.authorityDisposition, "NON_AUTHORITATIVE_INSPECTION_PROJECTION");
+  await assert.doesNotReject(validatesMechanicAuthorityInspectionProjection(projection));
+  await assert.rejects(validatesMechanicAuthorityInspectionProjection(result.authorityData), /raw authority JSON is not admissible/u);
+  await assert.rejects(validatesMechanicAuthorityInspectionProjection({ ...projection, authorityDigest: digest("forged") }), /digest mismatch/u);
 });
 
 test("batch processing verifies source digests and admits only projected rows", async () => {
@@ -55,6 +83,7 @@ test("batch processing verifies source digests and admits only projected rows", 
     await writeFile(path.join(root, "src", "example.js"), branchSource, "utf8");
     const candidates = [candidate("good", digest(branchSource)), candidate("stale", "sha256:stale")];
     const admitted = [];
+    const attempts = [];
     const batch = await processesDeterministicMechanicAuthorityBatch({
       rootId: "root",
       workspaceRoot: root,
@@ -62,19 +91,24 @@ test("batch processing verifies source digests and admits only projected rows", 
       connection: {},
       candidateQuery: async () => candidates,
       authorityAdmitter: async (request) => { admitted.push(request); return { mechanicOccurrenceId: request.mechanicOccurrenceId, disposition: "MECHANIC_AUTHORITY_ADMITTED" }; },
+      attemptRecorder: async (request) => { attempts.push(request); return { disposition: "MECHANIC_AUTHORITY_LOWERING_ATTEMPT_RECORDED" }; },
     });
     assert.equal(batch.projectedCount, 1);
     assert.equal(batch.rejectedCount, 1);
     assert.equal(batch.admittedCount, 1);
     assert.equal(batch.rejected[0].code, "SOURCE_ARTIFACT_DIGEST_MISMATCH");
     assert.equal(admitted[0].mechanicOccurrenceId, "good");
+    assert.equal(admitted[0].lowererVersion, "typescript-branch-lowerer.v2");
+    assert.equal(attempts.length, 1);
+    assert.equal(attempts[0].loweringDisposition, "DETERMINISTIC_AUTHORITY_REJECTED");
+    assert.equal(attempts[0].rejectionReason, "SOURCE_ARTIFACT_DIGEST_MISMATCH");
   } finally {
     await rm(root, { recursive: true, force: true });
   }
 });
 
 function candidate(mechanicOccurrenceId, artifactDigest) {
-  return { mechanicOccurrenceId, mechanicKind: "branch", artifactId: "src/example.js", artifactDigest, startLine: 2, startColumn: 3, authorityFamily: "decision-authority" };
+  return { mechanicOccurrenceId, mechanicKind: "branch", artifactId: "src/example.js", artifactDigest, executionAnalysisDigest: digest("analysis"), startLine: 2, startColumn: 3, authorityFamily: "decision-authority" };
 }
 
 function digest(value) {

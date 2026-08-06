@@ -87,7 +87,8 @@
   "artifactFamilies": [
     { "familyId": "artifacts-index-files", "pathPattern": "artifacts/indexes/**/*", "artifactKind": "source-fact-index", "cardinality": { "min": 0 } },
     { "familyId": "artifacts-call-graph-files", "pathPattern": "artifacts/call-graphs/**/*", "artifactKind": "call-graph", "cardinality": { "min": 0 } },
-    { "familyId": "artifacts-admission-files", "pathPattern": "artifacts/admissions/**/*.json", "artifactKind": "mechanic-authority-admission", "cardinality": { "min": 0 } },
+    { "familyId": "artifacts-admissions-readme", "pathPattern": "artifacts/admissions/README.md", "artifactKind": "documentation", "cardinality": { "min": 1, "max": 1 } },
+    { "familyId": "artifacts-admission-files", "pathPattern": "artifacts/admissions/**/*.json", "artifactKind": "non-authoritative-mechanic-authority-inspection-projection", "cardinality": { "min": 0 } },
     { "familyId": "artifacts-governance-files", "pathPattern": "artifacts/governance/**/*", "artifactKind": "governance-report", "cardinality": { "min": 0 } },
     { "familyId": "evidence-know-how-files", "pathPattern": "evidence/know-how/**/*", "artifactKind": "know-how-artifact", "cardinality": { "min": 0 } },
     { "familyId": "evidence-healing-files", "pathPattern": "evidence/healing/**/*", "artifactKind": "healing-artifact", "cardinality": { "min": 0 } },
