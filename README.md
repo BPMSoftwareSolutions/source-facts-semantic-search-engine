@@ -43,6 +43,7 @@ wherever this repository itself lives) before running `npm install`:
 | `@deterministic-solutions/source-code-taxonomy-scanner`| https://github.com/BPMSoftwareSolutions/source-code-taxonomy-scanner                        |
 | `@deterministic-solutions/workspace-file-system-governor` | https://github.com/BPMSoftwareSolutions/workspace-file-system-governor                  |
 | `webpage-classification-scanner`                       | https://github.com/BPMSoftwareSolutions/webpage-classification-scanner                      |
+| `generic-llm-conveyor`                                 | https://github.com/BPMSoftwareSolutions/generic-llm-conveyor                                |
 
 ```powershell
 cd C:\lab\repos
@@ -51,6 +52,7 @@ git clone https://github.com/BPMSoftwareSolutions/semantic-kernel.git
 git clone https://github.com/BPMSoftwareSolutions/source-code-taxonomy-scanner.git
 git clone https://github.com/BPMSoftwareSolutions/workspace-file-system-governor.git
 git clone https://github.com/BPMSoftwareSolutions/webpage-classification-scanner.git
+git clone https://github.com/BPMSoftwareSolutions/generic-llm-conveyor.git
 ```
 
 To produce a feature-scoped result and a receipt bound to that exact invocation:
