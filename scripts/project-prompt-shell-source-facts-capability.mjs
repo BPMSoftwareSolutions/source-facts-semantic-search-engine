@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, rmdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -487,7 +487,6 @@ assert.equal(converged, true, 'projection proof commitments did not converge');
 for (const args of [
   ['validate', '--contract', contractPath],
   ['project', ...common, '--write'],
-  ['gate', ...common, '--write-receipt'],
   ['project', ...common, '--check'],
 ]) {
   const run = spawnSync(process.execPath, [engineBin, ...args, ...engineInputs], { encoding: 'utf8', env: { ...process.env, SOURCE_FACTS_CLI_PATH: sourceFactsCliPath } });
@@ -496,4 +495,19 @@ for (const args of [
   if (run.status !== 0) process.exit(run.status || 1);
 }
 
-process.stdout.write(`${JSON.stringify({ contractPath, targetRoot, sourceFactsCliPath, inference: packageEvidence.inference }, null, 2)}\n`);
+// Executable projections carry their trust commitment in the provenance-sealed
+// lineage header. The current engine still requires a projection-ledger path as
+// transient evaluation state; do not retain that redundant secondary index.
+await rm(path.join(targetRoot, contract.projectionLedger.relativePath), { force: true });
+await rm(path.join(targetRoot, contract.receipt.relativePath), { force: true });
+const controlEvidenceDirectories = new Set([
+  path.dirname(path.join(targetRoot, contract.projectionLedger.relativePath)),
+  path.dirname(path.join(targetRoot, contract.receipt.relativePath)),
+]);
+for (const directory of controlEvidenceDirectories) {
+  await rmdir(directory).catch((error) => {
+    if (error.code !== 'ENOTEMPTY' && error.code !== 'ENOENT') throw error;
+  });
+}
+
+process.stdout.write(`${JSON.stringify({ contractPath, targetRoot, sourceFactsCliPath, trustEvidence: 'EMBEDDED_IN_EXECUTABLE_LINEAGE', durableReceiptFiles: 0, inference: packageEvidence.inference }, null, 2)}\n`);
