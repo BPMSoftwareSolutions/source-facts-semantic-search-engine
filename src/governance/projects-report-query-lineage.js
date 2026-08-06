@@ -573,9 +573,11 @@ export function reconcilesReportQueryLineage(report) {
     || [
       "missingQueryPointers", "unsupportedFactualClaims", "staleReceipts", "indexMismatches",
       "scopeMismatches", "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
-      "deterministicRerunMismatches", "claimsLackingDrillDownPath", "brokenDrillDownQueryReferences",
+      "claimsLackingDrillDownPath", "brokenDrillDownQueryReferences",
       "invalidDrillDownParameterBindings", "drillDownResultSchemaFailures",
-    ].some((key) => lineage.reconciliation[key] !== 0)) {
+    ].some((key) => lineage.reconciliation[key] !== 0)
+    || lineage.reconciliation.deterministicRerunDisposition !== "NOT_EVALUATED"
+    || lineage.reconciliation.deterministicRerunMismatches !== null) {
     throw new FactQueryLineageError("FACT_QUERY_RESULT_SHAPE_INVALID", "reconciliation summary");
   }
   for (const claim of lineage.claims) {
@@ -636,13 +638,11 @@ export function projectsReportQueryLineage(view, index, canonicalFeatureQueryPla
       result: { rows },
     });
   });
-  const deterministicRerunMismatches = catalog.reduce((count, query, position) => {
-    const rawRows = structuredClone(query.rows(context));
-    const rerunRows = query.rowDrillDowns
-      ? decoratesDrillDownRows(query, rawRows)
-      : decoratesBaseRows(query.queryId, rawRows);
-    return count + (hashes(rerunRows) === queryReceipts[position].execution.resultHash ? 0 : 1);
-  }, 0);
+  // The full catalog rerun is intentionally skipped because it duplicates
+  // the receipt-build cost. Preserve that distinction in the report instead
+  // of representing an unexecuted check as zero mismatches.
+  const deterministicRerunDisposition = "NOT_EVALUATED";
+  const deterministicRerunMismatches = null;
   const { drillDowns: _authoringDrillDowns, ...authoringReconciliation } = structuredClone(queryReceipts
     .find((receipt) => receipt.queryId === "authoring.reconciliation.v1")?.result.rows[0]);
   const claims = [
@@ -707,6 +707,7 @@ export function projectsReportQueryLineage(view, index, canonicalFeatureQueryPla
       resultShapeFailures: 0,
       resultHashFailures: 0,
       renderedValueMismatches: 0,
+      deterministicRerunDisposition,
       deterministicRerunMismatches,
       receiptsExecuted: queryReceipts.length,
       receiptsValid: queryReceipts.length,

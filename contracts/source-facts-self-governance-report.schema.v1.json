@@ -1176,7 +1176,7 @@
             "disposition", "claimCount", "claimsWithQueryPointers", "missingQueryPointers",
             "unsupportedFactualClaims", "staleReceipts", "indexMismatches", "scopeMismatches",
             "resultShapeFailures", "resultHashFailures", "renderedValueMismatches",
-            "deterministicRerunMismatches", "receiptsExecuted", "receiptsValid",
+            "deterministicRerunDisposition", "deterministicRerunMismatches", "receiptsExecuted", "receiptsValid",
             "claimsWithRequiredDrillDownPath", "claimsLackingDrillDownPath",
             "brokenDrillDownQueryReferences", "invalidDrillDownParameterBindings",
             "drillDownResultSchemaFailures"
@@ -1194,7 +1194,8 @@
             "resultShapeFailures": { "const": 0 },
             "resultHashFailures": { "const": 0 },
             "renderedValueMismatches": { "const": 0 },
-            "deterministicRerunMismatches": { "const": 0 },
+            "deterministicRerunDisposition": { "const": "NOT_EVALUATED" },
+            "deterministicRerunMismatches": { "const": null },
             "claimsWithRequiredDrillDownPath": { "type": "integer", "minimum": 1 },
             "claimsLackingDrillDownPath": { "const": 0 },
             "brokenDrillDownQueryReferences": { "const": 0 },

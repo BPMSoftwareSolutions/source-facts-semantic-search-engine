@@ -384,6 +384,8 @@ test("projectsSelfGovernanceReport binds rendered facts to inspectable registere
   assert.equal(report.queryLineage.reconciliation.claimsLackingDrillDownPath, 0);
   assert.equal(report.queryLineage.reconciliation.brokenDrillDownQueryReferences, 0);
   assert.equal(report.queryLineage.reconciliation.invalidDrillDownParameterBindings, 0);
+  assert.equal(report.queryLineage.reconciliation.deterministicRerunDisposition, "NOT_EVALUATED");
+  assert.equal(report.queryLineage.reconciliation.deterministicRerunMismatches, null);
   assert.ok(report.queryLineage.claims.every((claim) => claim.drillDowns.length > 0));
   assert.ok(report.queryLineage.claims.length > 0);
   const receipt = report.queryLineage.queryReceipts.find((entry) => entry.queryId === "feature-coverage.summary.v1");

@@ -65,6 +65,10 @@ function buildsAuthoringCollections(context) {
   const responsibilitiesByBody = groupsBy(responsibilities, "bodyFile");
   const candidateOccurrences = context.occurrenceEvidence
     .filter((row) => row.featureCoveragePosture === "FEATURE_COVERAGE_MISSING");
+  // Below, several per-symbol projections each re-filter candidateOccurrences
+  // by symbolId; indexing once turns that into O(candidateOccurrences) total
+  // instead of O(authoringSymbolIds x candidateOccurrences).
+  const candidateOccurrencesBySymbol = groupsBy(candidateOccurrences, "symbolId");
   const candidateSymbolIds = [...new Set(candidateOccurrences.map((row) => row.symbolId).filter(Boolean))].sort();
   const responsibilityBodyFiles = new Set(responsibilities.map((row) => row.bodyFile));
   const prefix = context.subjectScope.workspaceRelativePrefix;
@@ -162,7 +166,7 @@ function buildsAuthoringCollections(context) {
       invokedSymbols: relationships.filter((row) => row.relationshipKind === "invocation").map((row) => ({ relationshipId: row.relationshipId, symbolId: row.toSymbolId, candidate: row.toSymbolCandidate, sourceReferenceId: row.sourceReferenceId })),
       importedDependencies: relationships.filter((row) => row.relationshipKind === "dependency").map((row) => row.toSymbolCandidate).filter(Boolean),
       referencedConstants: relationships.filter((row) => row.relationshipKind === "member-access").map((row) => row.toSymbolCandidate).filter(Boolean),
-      mechanicsInSourceOrder: candidateOccurrences.filter((row) => row.symbolId === symbolId).sort((a, b) => (a.startLine ?? 0) - (b.startLine ?? 0)).map((row) => ({ occurrenceId: row.occurrenceId, mechanic: row.mechanic, sourceReferenceId: row.sourceReferenceId })),
+      mechanicsInSourceOrder: (candidateOccurrencesBySymbol.get(symbolId) ?? []).slice().sort((a, b) => (a.startLine ?? 0) - (b.startLine ?? 0)).map((row) => ({ occurrenceId: row.occurrenceId, mechanic: row.mechanic, sourceReferenceId: row.sourceReferenceId })),
       astFacts: reference ? [{ sourceReferenceId: reference.referenceId, kind: reference.kind, sourceKind: reference.sourceKind }] : [],
       unresolvedEvidence: ["PARAMETERS_NOT_INDEXED", "SOURCE_SNIPPET_NOT_INDEXED"],
     };
@@ -216,7 +220,7 @@ function buildsAuthoringCollections(context) {
     sourceValues: dataflows.filter((item) => item.sourceReferenceId === row.sourceReferenceId).map((item) => item.fromCandidate),
     optionalFields: [], nestedShapes: [],
     destination: dataflows.find((item) => item.sourceReferenceId === row.sourceReferenceId)?.toCandidate ?? null,
-    schemaReferences: [], repeatedVariantCount: candidateOccurrences.filter((item) => item.symbolId === row.symbolId && item.modulePath === row.modulePath && item.mechanic === "object-construction").length,
+    schemaReferences: [], repeatedVariantCount: (candidateOccurrencesBySymbol.get(row.symbolId) ?? []).filter((item) => item.modulePath === row.modulePath && item.mechanic === "object-construction").length,
     sourceReferenceId: row.sourceReferenceId,
   }));
   const resultContracts = identifies("authoring.result-contract-evidence.v1", bodyRows.flatMap((body) => body.returnSites.map((site) => ({
@@ -268,10 +272,10 @@ function buildsAuthoringCollections(context) {
       interfaceInputs: flows.filter((row) => row.dataflowKind === "argument").map((row) => ({ dataflowId: row.dataflowId, value: row.fromCandidate, callee: row.calleeCandidate, argumentIndex: row.argumentIndex })),
       parameterBindings: flows.filter((row) => row.dataflowKind === "assignment").map((row) => ({ dataflowId: row.dataflowId, from: row.fromCandidate, to: row.toCandidate })),
       transformations: flows.filter((row) => row.dataflowKind === "assignment" || row.dataflowKind === "argument").map((row) => row.dataflowId),
-      validations: candidateOccurrences.filter((row) => row.symbolId === symbolId && row.mechanic === "validation").map((row) => row.occurrenceId),
+      validations: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => row.mechanic === "validation").map((row) => row.occurrenceId),
       runtimeInvocations: (relationshipsBySymbol.get(symbolId) ?? []).filter((row) => row.relationshipKind === "invocation").map((row) => row.relationshipId),
-      objectProjections: candidateOccurrences.filter((row) => row.symbolId === symbolId && row.mechanic === "object-construction").map((row) => row.occurrenceId),
-      serializations: candidateOccurrences.filter((row) => row.symbolId === symbolId && row.mechanic === "serialization").map((row) => row.occurrenceId),
+      objectProjections: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => row.mechanic === "object-construction").map((row) => row.occurrenceId),
+      serializations: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => row.mechanic === "serialization").map((row) => row.occurrenceId),
       interfaceOutputs: flows.filter((row) => row.dataflowKind === "return").map((row) => ({ dataflowId: row.dataflowId, value: row.fromCandidate })),
       sourceReferenceIds: [...new Set(flows.map((row) => row.sourceReferenceId))],
     };
@@ -332,8 +336,8 @@ function buildsAuthoringCollections(context) {
     symbolId,
     modulePath: context.occurrenceEvidence.find((row) => row.symbolId === symbolId)?.modulePath ?? symbols.get(symbolId)?.modulePath ?? null,
     currentExecutableBodyReference: symbols.get(symbolId)?.sourceReferenceId ?? null,
-    mechanicsProposedForRemoval: candidateOccurrences.filter((row) => row.symbolId === symbolId).map((row) => row.occurrenceId),
-    retainedMechanicalAdapterOperations: candidateOccurrences.filter((row) => row.symbolId === symbolId && row.posture === "MECHANICAL_ADAPTER_OPERATION").map((row) => row.occurrenceId),
+    mechanicsProposedForRemoval: (candidateOccurrencesBySymbol.get(symbolId) ?? []).map((row) => row.occurrenceId),
+    retainedMechanicalAdapterOperations: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => row.posture === "MECHANICAL_ADAPTER_OPERATION").map((row) => row.occurrenceId),
     requiredSemanticRuntimeCalls: (relationshipsBySymbol.get(symbolId) ?? []).filter((row) => row.relationshipKind === "invocation").map((row) => row.toSymbolId ?? row.toSymbolCandidate).filter(Boolean),
     requiredImports: (relationshipsBySymbol.get(symbolId) ?? []).filter((row) => row.relationshipKind === "dependency").map((row) => row.toSymbolCandidate).filter(Boolean),
     targetGeneratedArtifactShape: "SEMANTIC_EXECUTION_ADAPTER_NOT_YET_AUTHORED",
@@ -344,10 +348,10 @@ function buildsAuthoringCollections(context) {
   const proofVectors = identifies("authoring.proof-vector-candidates.v1", authoringSymbolIds.map((symbolId) => ({
     symbolId,
     observedInputClasses: (dataflowsBySymbol.get(symbolId) ?? []).filter((row) => row.dataflowKind === "argument").map((row) => row.fromCandidate),
-    branchOutcomesRequiringCoverage: candidateOccurrences.filter((row) => row.symbolId === symbolId && ["branch", "fallback", "throw", "validation"].includes(row.mechanic)).map((row) => row.occurrenceId),
+    branchOutcomesRequiringCoverage: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => ["branch", "fallback", "throw", "validation"].includes(row.mechanic)).map((row) => row.occurrenceId),
     existingTests: [],
     resultShapes: (dataflowsBySymbol.get(symbolId) ?? []).filter((row) => row.dataflowKind === "return").map((row) => row.fromCandidate),
-    errorCases: candidateOccurrences.filter((row) => row.symbolId === symbolId && ["throw", "exception-handling"].includes(row.mechanic)).map((row) => row.occurrenceId),
+    errorCases: (candidateOccurrencesBySymbol.get(symbolId) ?? []).filter((row) => ["throw", "exception-handling"].includes(row.mechanic)).map((row) => row.occurrenceId),
     boundaryValues: [], deterministicFixtures: [],
     equivalenceDimensions: ["RETURN_VALUE", "FAILURE_DISPOSITION", "OBSERVABLE_SIDE_EFFECTS"],
     proofDisposition: "PROOF_VECTOR_CANDIDATE_REQUIRES_REVIEW",

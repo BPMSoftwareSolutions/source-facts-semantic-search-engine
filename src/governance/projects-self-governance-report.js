@@ -157,6 +157,16 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
   const candidateAuthorityMechanics = scopedAuthorityDocuments.flatMap(
     ({ document, filePath }) => extractsCandidateAuthorityMechanics(document, filePath),
   );
+  // resolvesCandidateAuthorityMatch only ever matches candidates whose
+  // mechanic type equals the occurrence's, so bucketing once here turns the
+  // occurrence loop below from O(occurrences x candidates) unindexed scans
+  // into O(occurrences x same-mechanic candidates only).
+  const candidateAuthorityMechanicsByMechanic = new Map();
+  for (const candidate of candidateAuthorityMechanics) {
+    const bucket = candidateAuthorityMechanicsByMechanic.get(candidate.mechanic) ?? [];
+    bucket.push(candidate);
+    candidateAuthorityMechanicsByMechanic.set(candidate.mechanic, bucket);
+  }
 
   const byPosture = Object.fromEntries(knownPostures.map((posture) => [posture, 0]));
   const byAutomationDisposition = Object.fromEntries(knownAutomationDispositions.map((disposition) => [disposition, 0]));
@@ -169,7 +179,7 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
     const isGoverned = posture === "GOVERNED_BY_SEMANTIC_AUTHORITY";
     const authorityFamily = resolvesAuthorityFamily(occurrence.mechanic);
     const home = resolvesAuthorityHomeStatus({ modulePath: occurrence.modulePath, isGoverned }, authorityHomeIndex);
-    const candidateMatch = isGoverned ? null : resolvesCandidateAuthorityMatch(occurrence, candidateAuthorityMechanics, knownModulePaths);
+    const candidateMatch = isGoverned ? null : resolvesCandidateAuthorityMatch(occurrence, candidateAuthorityMechanicsByMechanic.get(occurrence.mechanic) ?? [], knownModulePaths);
     const { automationDisposition, missingTissue } = classifiesAutomationReadiness({ posture, authorityHomeStatus: home.status, candidateMatch });
     byPosture[posture] += 1;
     byAutomationDisposition[automationDisposition] += 1;
