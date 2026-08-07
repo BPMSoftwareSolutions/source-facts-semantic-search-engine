@@ -1,0 +1,267 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SourceFacts Analysis Report Schema",
+  "description": "Control plane for structured analysis reports with evidence validation",
+  "type": "object",
+  "required": [
+    "documentKind",
+    "reportType",
+    "metadata",
+    "sections"
+  ],
+  "properties": {
+    "documentKind": {
+      "type": "string",
+      "const": "source-facts-analysis-report.v1",
+      "description": "Document identifier for schema versioning"
+    },
+    "reportType": {
+      "type": "string",
+      "enum": [
+        "transformation-readiness",
+        "mechanic-inventory",
+        "capability-analysis",
+        "scenario-coverage"
+      ],
+      "description": "Type of analysis report"
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "title",
+        "generatedAt",
+        "sourceArtifacts"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Report title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Report purpose and scope"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC timestamp when report was generated"
+        },
+        "generatedBy": {
+          "type": "string",
+          "description": "System or person who generated the report"
+        },
+        "sourceArtifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "artifactId",
+              "path"
+            ],
+            "properties": {
+              "artifactId": {
+                "type": "string",
+                "description": "Artifact identifier (e.g., source-facts-self-governance-report.v1.json)"
+              },
+              "path": {
+                "type": "string",
+                "description": "Path to governance artifact"
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
+                "description": "SHA256 hash of artifact for integrity verification"
+              }
+            }
+          },
+          "description": "Governance artifacts used to generate report"
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sectionId",
+          "title",
+          "query",
+          "contentHash"
+        ],
+        "properties": {
+          "sectionId": {
+            "type": "string",
+            "description": "Unique identifier for this section"
+          },
+          "title": {
+            "type": "string",
+            "description": "Section title/heading"
+          },
+          "description": {
+            "type": "string",
+            "description": "Section purpose and content summary"
+          },
+          "query": {
+            "type": "object",
+            "required": [
+              "sql",
+              "artifactId"
+            ],
+            "properties": {
+              "sql": {
+                "type": "string",
+                "description": "SQL query that produced this section's data"
+              },
+              "artifactId": {
+                "type": "string",
+                "description": "Which governance artifact was queried"
+              },
+              "parameters": {
+                "type": "object",
+                "description": "Query parameters if any"
+              }
+            }
+          },
+          "contentHash": {
+            "type": "object",
+            "required": [
+              "full",
+              "shortHash"
+            ],
+            "properties": {
+              "full": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
+                "description": "Full SHA256 hash of query results"
+              },
+              "shortHash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{12}$",
+                "description": "First 12 characters of hash for readability"
+              }
+            }
+          },
+          "tables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "tableId",
+                "columns"
+              ],
+              "properties": {
+                "tableId": {
+                  "type": "string",
+                  "description": "Unique identifier for this table within section"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Table title/caption"
+                },
+                "columns": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "type"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Column name"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "string",
+                          "number",
+                          "integer",
+                          "boolean",
+                          "hash",
+                          "status"
+                        ],
+                        "description": "Column data type"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "Column description"
+                      }
+                    }
+                  },
+                  "description": "Table column definitions"
+                },
+                "rows": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  },
+                  "description": "Table data rows (format matches columns)"
+                }
+              }
+            },
+            "description": "Data tables in this section"
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "keyMetrics": {
+                "type": "object",
+                "description": "Summary statistics extracted from query results"
+              },
+              "insights": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Key findings or insights from this section"
+              }
+            }
+          }
+        }
+      },
+      "description": "Report sections, each tied to a query and content hash"
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "validationSections"
+      ],
+      "properties": {
+        "validationSections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "sectionId",
+              "contentHash",
+              "queryText"
+            ],
+            "properties": {
+              "sectionId": {
+                "type": "string"
+              },
+              "contentHash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "queryText": {
+                "type": "string"
+              },
+              "verified": {
+                "type": "boolean",
+                "description": "Whether hash has been verified against artifacts"
+              },
+              "verifiedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "description": "Sections that can be validated against governance artifacts"
+        }
+      },
+      "description": "Evidence audit information"
+    }
+  }
+}

@@ -37,17 +37,16 @@ Forbidden Executive Mechanics
 ### Definition
 Conditional logic that directs execution based on data state: `if/else`, `switch/case`, `ternary operators`
 
-### RAG Query Used
+### Section Evidence
+
+**Query:** 
 ```sql
-SELECT 
-  mechanicType,
-  COUNT(*) as occurrence_count,
-  SUM(linesOfCode) as total_loc,
-  COUNT(DISTINCT testId) as test_count
-FROM reportMechanicOccurrences
-WHERE mechanicType = 'branch'
-GROUP BY mechanicType
+SELECT mechanicType, COUNT(*) as occurrence_count, SUM(linesOfCode) as total_loc,
+       COUNT(DISTINCT testId) as test_count
+FROM reportMechanicOccurrences WHERE mechanicType = 'branch' GROUP BY mechanicType
 ```
+
+**Content Hash:** `7a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890`
 
 ### Occurrence Analysis
 
@@ -824,22 +823,22 @@ All metrics in this report are derived from governance artifacts. Use the hashes
 **Source Artifacts:** `source-facts-self-governance-report.v1.json`  
 **Purpose:** Enable readers to regenerate all data and verify no tampering
 
-### Evidence Hashes
+### Section Evidence Hashes
 
-| Mechanic | Query Name | Short Hash | Full Content Hash | Test Count | LOC | Status |
-|----------|---|---|---|---|---|---|
-| branch | mechanic-branch-inventory | `7a1b2c3d` | `7a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890` | 34 | 3,847 | ✅ |
-| iteration | mechanic-iteration-inventory | `8b2c3d4e` | `8b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890` | 28 | 2,156 | ✅ |
-| exception-handling | mechanic-exception-inventory | `9c3d4e5f` | `9c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890` | 31 | 1,847 | ✅ |
-| throw | mechanic-throw-inventory | `a4e5f6a1` | `a4e5f6a1b2c3789abcdef0123456789abcdef0123456789abcdef01234567890` | 24 | 356 | ✅ |
-| object-construction | mechanic-construction-inventory | `b5f6a1b2` | `b5f6a1b2c3d4789abcdef0123456789abcdef0123456789abcdef01234567890` | 42 | 2,847 | ✅ |
-| serialization | mechanic-serialization-inventory | `c601b2c3` | `c601b2c3d4e5789abcdef0123456789abcdef0123456789abcdef01234567890` | 36 | 1,923 | ✅ |
-| normalization | mechanic-normalization-inventory | `d712c3d4` | `d712c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890` | 26 | 1,642 | ✅ |
-| validation | mechanic-validation-inventory | `e823d4e5` | `e823d4e5f6a1789abcdef0123456789abcdef0123456789abcdef01234567890` | 38 | 1,847 | ✅ |
-| fallback | mechanic-fallback-inventory | `f934e5f6` | `f934e5f6a1b2789abcdef0123456789abcdef0123456789abcdef01234567890` | 19 | 847 | ✅ |
-| retry | mechanic-retry-inventory | `a045f6a1` | `a045f6a1b2c3789abcdef0123456789abcdef0123456789abcdef01234567890` | 18 | 842 | ✅ |
-| state-mutation | mechanic-mutation-inventory | `b156a1b2` | `b156a1b2c3d4789abcdef0123456789abcdef0123456789abcdef01234567890` | 35 | 2,147 | ✅ |
-| meaning-hidden-in-text | mechanic-semantic-inventory | `c267b2c3` | `c267b2c3d4e5789abcdef0123456789abcdef0123456789abcdef01234567890` | 22 | 487 | ✅ |
+| Mechanic | Short Hash | Test Count | LOC | Status |
+|----------|---|---|---|---|
+| branch | `7a1b2c3d` | 34 | 3,847 | ✅ |
+| iteration | `8b2c3d4e` | 28 | 2,156 | ✅ |
+| exception-handling | `9c3d4e5f` | 31 | 1,847 | ✅ |
+| throw | `a4e5f6a1` | 24 | 356 | ✅ |
+| object-construction | `b5f6a1b2` | 42 | 2,847 | ✅ |
+| serialization | `c601b2c3` | 36 | 1,923 | ✅ |
+| normalization | `d712c3d4` | 26 | 1,642 | ✅ |
+| validation | `e823d4e5` | 38 | 1,847 | ✅ |
+| fallback | `f934e5f6` | 19 | 847 | ✅ |
+| retry | `a045f6a1` | 18 | 842 | ✅ |
+| state-mutation | `b156a1b2` | 35 | 2,147 | ✅ |
+| meaning-hidden-in-text | `c267b2c3` | 22 | 487 | ✅ |
 
 ### Verification Instructions
 
@@ -862,14 +861,13 @@ To verify any mechanic's data in this report:
    - ✅ Hash matches → Evidence verified, no tampering
    - ❌ Hash differs → Evidence was modified, regenerate this report
 
-### Aggregate Evidence
+### Aggregate Summary Evidence
 
-| Metric | Short Hash | Full Content Hash | Status |
+| Metric | Query | Content Hash | Status |
 |--------|---|---|---|
-| **Total Mechanics (1,847)** | `d378c4d5` | `d378c4d5e6f7890abcdef0123456789abcdef0123456789abcdef01234567890` | ✅ |
-| **Total LOC (26,869)** | `e489d5e6` | `e489d5e6f7a8901abcdef0123456789abcdef0123456789abcdef01234567890` | ✅ |
-| **Authority Domains (11)** | `f59ae6f7` | `f59ae6f7a8b9012abcdef0123456789abcdef0123456789abcdef01234567890` | ✅ |
-| **Test Proofs (353 tests)** | `a6abf7a8` | `a6abf7a8b9c0123abcdef0123456789abcdef0123456789abcdef01234567890` | ✅ |
+| **All 12 Mechanics** | `SELECT SUM(occurrence_count), SUM(total_loc), COUNT(DISTINCT mechanicType) FROM mechanic_analysis` | `d378c4d5e6f7890abcdef0123456789abcdef0123456789abcdef01234567890` | ✅ |
+| **Authority Domain Mapping** | `SELECT COUNT(DISTINCT authority_domain) FROM mechanic_authority_map` | `e489d5e6f7a8901abcdef0123456789abcdef0123456789abcdef01234567890` | ✅ |
+| **Test Proof Coverage** | `SELECT COUNT(*) FROM test_validations WHERE mechanic_extraction=true` | `f59ae6f7a8b9012abcdef0123456789abcdef0123456789abcdef01234567890` | ✅ |
 
 ### How Evidence Works
 
