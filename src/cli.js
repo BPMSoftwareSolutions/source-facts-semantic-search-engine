@@ -67,6 +67,7 @@ import { processesDeterministicMechanicAuthorityBatch } from "./governance/proce
 import { projectsMechanicAuthorityInspectionProjection, validatesMechanicAuthorityInspectionProjection } from "./governance/mechanic-authority-inspection-projection.js";
 import { evaluatesExecutableMechanicConformance } from "./governance/evaluates-executable-mechanic-conformance.js";
 import { draftsCapabilityFromIntent, materializesDraftCapabilityPackage, readsIntentText } from "./draft-capability/drafts-capability.js";
+import { conveysCapabilityThroughFamilyWorkers, writesFamilyConveyorProjectionInput } from "./capability-conveyor/conveys-capability-through-family-workers.js";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const consoleWorkspaceRoot = path.join(repositoryRoot, "src", "console");
@@ -138,6 +139,8 @@ if (command === "project") {
   await runGenerateConnectiveTissue(args.slice(1));
 } else if (command === "draft-capability") {
   await runDraftCapability(args.slice(1));
+} else if (command === "convey-capability") {
+  await runConveyCapability(args.slice(1));
 } else if (command === "web") {
   await runWeb(args.slice(1));
 } else if (command === "console") {
@@ -701,6 +704,20 @@ async function runDraftCapability(rawArgs) {
     process.stdout.write(`Disposition: ${result.receipt.disposition}\n`);
     process.stdout.write(`Proof scope: ${result.receipt.proofScope}\n`);
   }
+}
+
+async function runConveyCapability(rawArgs) {
+  const { flags, positional } = parseArgs(rawArgs);
+  const positionalIntent = positional.join(" ").trim();
+  const intentText = await readsIntentText({
+    intent: flags.intent ?? (positionalIntent.length > 0 ? positionalIntent : undefined),
+    intentFile: flags.intentFile,
+  });
+  if (typeof flags.featureId !== "string") throw new Error("--feature-id is required for the family conveyor.");
+  const outputDirectory = path.resolve(flags.output ?? path.join(process.cwd(), "artifacts", "family-conveyor", flags.featureId));
+  const result = await conveysCapabilityThroughFamilyWorkers({ intentText, featureId: flags.featureId });
+  const written = await writesFamilyConveyorProjectionInput(result, outputDirectory);
+  process.stdout.write(`${JSON.stringify({ disposition: "PROJECTABLE_CONTRACT_PRODUCED", completedFamilies: result.subject.familyProvenance.map((entry) => entry.familyId), outputRoot: written.outputRoot, contractPath: written.contractPath, projectionAuthorityPath: written.projectionAuthorityPath }, null, 2)}\n`);
 }
 
 /**
@@ -1815,6 +1832,7 @@ function writeUsage(stream) {
   stream.write(`  source-facts-se propose-feature-coverage --index <file> --query "<bounded SQL>" --cluster-id <id> --feature-id-hint <id> --authority-evidence-files <file,file,...> [--know-how-evidence-files <file,file,...>] [--symbols <symbol,symbol,...>] [--output <file>]\n`);
   stream.write(`  source-facts-se generate-connective-tissue --subject-id <id> --feature-authority-file <file> --feature-id <id> --scenario-id <id> --responsibility-id <id> --obligation-id <id> --executable-evidence-files <file,file,...> [--authority-evidence-files <file,file,...>] [--wiring-evidence <text>] [--known-gaps-file <file>] [--output <file>]\n`);
   stream.write(`  source-facts-se draft-capability (--intent <text> | --intent-file <file>) [--feature-id <id>] [--target-platform node-esm] [--output <new-directory>] [--summary]\n`);
+  stream.write(`  source-facts-se convey-capability (--intent <text> | --intent-file <file>) --feature-id <id> --output <new-directory>\n`);
   stream.write(`  source-facts-se console serve [--index <source-fact-index.json>] [--workspace <dir>] [--port <n>]\n`);
   stream.write(`  source-facts-se load-sqlserver --index <source-fact-index.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);
   stream.write(`  source-facts-se load-engineering-truth [--contract <governed-contract.json>] [--intent-dir <directory>] --report <self-governance-report.json> (--connection-env <ENV_VAR> | --server <host> [--database <name>]) [--summary]\n`);

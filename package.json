@@ -18,6 +18,7 @@
     "govern": "node src/cli.js govern",
     "sync-self-governance": "node src/cli.js sync-self-governance",
     "draft-capability": "node src/cli.js draft-capability",
+    "convey-capability": "node src/cli.js convey-capability",
     "start": "node src/cli.js",
     "build": "npm run gate:workspace",
     "check:deps": "node ./scripts/check-deps.mjs",
