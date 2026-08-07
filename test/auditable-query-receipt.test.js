@@ -6,6 +6,7 @@ import {
   createsQueryReference,
   formatsQueryEvidenceForReport,
   QueryEvidenceRegistry,
+  QueryHashIndex,
 } from "../src/governance/projects-auditable-query-receipt.js";
 
 test("projectsAuditableQueryReceipt generates deterministic content hash from query + results", () => {

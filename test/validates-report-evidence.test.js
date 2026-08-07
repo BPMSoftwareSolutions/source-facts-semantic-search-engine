@@ -7,25 +7,33 @@ import {
 } from "../src/governance/validates-report-evidence.js";
 import crypto from "node:crypto";
 
-test("validatesSectionEvidence validates hash for query results", () => {
-  const queryText = "SELECT COUNT(*) FROM tests";
-  const results = [{ count: 178 }];
-
-  // Compute what the hash should be
-  const normalizedQuery = queryText;
-  const resultJson = JSON.stringify(results);
+function createHashForQuery(queryText, results) {
+  const normalizedQuery = queryText
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .join(" ");
+  const resultJson = JSON.stringify(results, null, 0);
   const combined = `${normalizedQuery}\n---\n${resultJson}`;
-  const expectedHash = crypto
-    .createHash("sha256")
-    .update(combined)
-    .digest("hex");
 
-  // Verify
-  const validation = validatesSectionEvidence(
-    queryText,
-    expectedHash,
-    {}
-  );
+  return crypto.createHash("sha256").update(combined).digest("hex");
+}
+
+const governanceFixture = Object.freeze({
+  testTraceability: {
+    testPostures: [
+      { testId: "t1", testName: "alpha", posture: "OBLIGATION_SIGNAL_PROOF" },
+      { testId: "t2", testName: "beta", posture: "DIRECT_PROOF" },
+    ],
+  },
+});
+
+test("validatesSectionEvidence validates hash for results computed from real governance data", () => {
+  const queryText = "SELECT COUNT(*) FROM reportTestPostures";
+  const results = parseAndExecuteQuery(queryText, governanceFixture);
+  const expectedHash = createHashForQuery(queryText, results);
+
+  const validation = validatesSectionEvidence(queryText, expectedHash, governanceFixture);
 
   assert.equal(validation.valid, true);
   assert.equal(validation.hashMatches, true);
@@ -33,50 +41,69 @@ test("validatesSectionEvidence validates hash for query results", () => {
 });
 
 test("validatesSectionEvidence detects hash mismatch", () => {
-  const queryText = "SELECT COUNT(*) FROM tests";
-  const wrongHash = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+  const queryText = "SELECT COUNT(*) FROM reportTestPostures";
+  const wrongHash = "a".repeat(64);
 
-  const validation = validatesSectionEvidence(
-    queryText,
-    wrongHash,
-    {}
-  );
+  const validation = validatesSectionEvidence(queryText, wrongHash, governanceFixture);
 
   assert.equal(validation.valid, false);
   assert.equal(validation.hashMatches, false);
 });
 
-test("validatesSectionEvidence handles query execution errors", () => {
+test("validatesSectionEvidence fails closed on an unknown table instead of returning invented rows", () => {
   const queryText = "SELECT * FROM unknown_table";
-  const someHash = "a" .repeat(64);
+  const someHash = "a".repeat(64);
 
-  const validation = validatesSectionEvidence(
-    queryText,
-    someHash,
-    {}
-  );
+  const validation = validatesSectionEvidence(queryText, someHash, governanceFixture);
 
   assert.equal(validation.valid, false);
+  assert.equal(validation.queryExecuted, false);
+  assert.match(validation.error, /unknown governance table/i);
 });
 
-test("parseAndExecuteQuery extracts COUNT(*) from governance data", () => {
-  const query = "SELECT COUNT(*) FROM tests";
-  const mockData = {};
+test("validatesSectionEvidence fails closed when no governance data is supplied", () => {
+  const queryText = "SELECT COUNT(*) FROM reportTestPostures";
+  const someHash = "a".repeat(64);
 
-  const results = parseAndExecuteQuery(query, mockData);
+  const validation = validatesSectionEvidence(queryText, someHash, {});
 
-  assert(Array.isArray(results));
-  assert(results.length > 0);
-  assert("count" in results[0]);
+  assert.equal(validation.valid, false);
+  assert.equal(validation.queryExecuted, false);
+  assert.match(validation.error, /refusing to fabricate/i);
 });
 
-test("parseAndExecuteQuery handles mechanic queries", () => {
-  const query = "SELECT * FROM mechanic_analysis";
-  const mockData = {};
+test("parseAndExecuteQuery refuses to fabricate results when governance data is missing", () => {
+  assert.throws(
+    () => parseAndExecuteQuery("SELECT COUNT(*) FROM reportTestPostures", {}),
+    /refusing to fabricate/i
+  );
+  assert.throws(
+    () => parseAndExecuteQuery("SELECT COUNT(*) FROM reportTestPostures", null),
+    /refusing to fabricate/i
+  );
+});
 
-  const results = parseAndExecuteQuery(query, mockData);
+test("parseAndExecuteQuery rejects unknown tables instead of returning invented rows", () => {
+  assert.throws(
+    () => parseAndExecuteQuery("SELECT * FROM mechanic_analysis", governanceFixture),
+    /unknown governance table/i
+  );
+});
 
-  assert(Array.isArray(results));
+test("parseAndExecuteQuery extracts COUNT(*) from real governance data", () => {
+  const results = parseAndExecuteQuery("SELECT COUNT(*) FROM reportTestPostures", governanceFixture);
+
+  assert.deepEqual(results, [{ count: 2 }]);
+});
+
+test("parseAndExecuteQuery filters real governance rows with a WHERE clause", () => {
+  const results = parseAndExecuteQuery(
+    "SELECT * FROM reportTestPostures WHERE posture = 'DIRECT_PROOF'",
+    governanceFixture
+  );
+
+  assert.equal(results.length, 1);
+  assert.equal(results[0].testId, "t2");
 });
 
 test("exportsValidationJSON creates proper structure", () => {
@@ -107,96 +134,29 @@ test("exportsValidationJSON creates proper structure", () => {
   assert.equal(json.sections.length, 1);
 });
 
-test("validates that section queries produce data matching displayed tables", () => {
-  // Example: Mechanic 1 BRANCH section query should return metrics matching table
-  const branchQuery = `
-    SELECT
-      'branch' as mechanic,
-      287 as total_occurrences,
-      3847 as total_loc,
-      15.5 as pct_of_mechanics,
-      13.4 as avg_loc_per_mechanic,
-      34 as test_coverage
-    FROM reportMechanicOccurrences
-    WHERE mechanicType = 'branch'
-  `;
+test("parseAndExecuteQuery is insensitive to extra internal whitespace even though hashing is not", () => {
+  const query1 = "SELECT COUNT(*) FROM reportTestPostures";
+  const query2 = `SELECT  COUNT(*)  FROM  reportTestPostures`; // Extra spaces
 
-  // Expected table data from the STABLE-PATTERNS-MECHANIC-INVENTORY.md section
-  const expectedTableData = {
-    total_occurrences: 287,
-    total_loc: 3847,
-    pct_of_mechanics: 15.5,
-    avg_loc_per_mechanic: 13.4,
-    test_coverage: 34,
-  };
-
-  // Query should return results matching these metrics
-  const queryResults = [expectedTableData];
-  const normalizedQuery = branchQuery
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0)
-    .join(" ");
-
-  const resultJson = JSON.stringify(queryResults);
-  const combined = `${normalizedQuery}\n---\n${resultJson}`;
-  const computedHash = require("crypto")
-    .createHash("sha256")
-    .update(combined)
-    .digest("hex");
-
-  // Hash should be deterministic and repeatable
-  const recomputedHash = require("crypto")
-    .createHash("sha256")
-    .update(combined)
-    .digest("hex");
-
-  assert.equal(
-    computedHash,
-    recomputedHash,
-    "Query hash should be deterministic"
+  // Execution normalizes whitespace, so both queries hit the same table and produce the same rows.
+  assert.deepEqual(
+    parseAndExecuteQuery(query1, governanceFixture),
+    parseAndExecuteQuery(query2, governanceFixture)
   );
-  assert.equal(queryResults[0].total_occurrences, 287);
-  assert.equal(queryResults[0].total_loc, 3847);
+
+  // Hashing is over the literal (line-trimmed) query text, so a hash computed for one
+  // exact query string does not validate against a differently-formatted equivalent query.
+  const hash = createHashForQuery(query1, parseAndExecuteQuery(query1, governanceFixture));
+  assert.equal(validatesSectionEvidence(query1, hash, governanceFixture).valid, true);
+  assert.equal(validatesSectionEvidence(query2, hash, governanceFixture).valid, false);
 });
 
-test("validatesSectionEvidence normalizes query whitespace", () => {
-  const query1 = "SELECT COUNT(*) FROM tests";
-  const query2 = `SELECT  COUNT(*)  FROM  tests`; // Extra spaces
+test("validation identifies section count from real governance rows", () => {
+  const queryText = "SELECT * FROM reportTestPostures";
+  const results = parseAndExecuteQuery(queryText, governanceFixture);
+  const hash = createHashForQuery(queryText, results);
 
-  const results = [{ count: 178 }];
-  const normalizedQuery = query1;
-  const resultJson = JSON.stringify(results);
-  const combined = `${normalizedQuery}\n---\n${resultJson}`;
-  const hash = crypto
-    .createHash("sha256")
-    .update(combined)
-    .digest("hex");
-
-  // Both should validate against same hash due to normalization
-  const validation1 = validatesSectionEvidence(query1, hash, {});
-  const validation2 = validatesSectionEvidence(query2, hash, {});
-
-  assert.equal(validation1.valid, true);
-  // Note: validation2 may differ if query normalization differs
-});
-
-test("validation identifies section count from results", () => {
-  const queryText = "SELECT id, name FROM tests";
-  const results = [
-    { id: 1, name: "test1" },
-    { id: 2, name: "test2" },
-  ];
-
-  const normalizedQuery = queryText;
-  const resultJson = JSON.stringify(results);
-  const combined = `${normalizedQuery}\n---\n${resultJson}`;
-  const hash = crypto
-    .createHash("sha256")
-    .update(combined)
-    .digest("hex");
-
-  const validation = validatesSectionEvidence(queryText, hash, {});
+  const validation = validatesSectionEvidence(queryText, hash, governanceFixture);
 
   assert.equal(validation.resultRowCount, 2);
 });

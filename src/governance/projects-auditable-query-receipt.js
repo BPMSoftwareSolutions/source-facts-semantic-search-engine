@@ -138,7 +138,7 @@ Content: ${ref.contentHash}
  */
 export class QueryEvidenceRegistry {
   constructor() {
-    this.hashes = new Map(); // Map<contentHash, {queryName, queryHash, metadata}>
+    this.hashes = new Map(); // Map<contentHash, {queryName, queryHash, metadata, queryText, results}>
     this.queryNames = new Map(); // Map<queryName, contentHash>
   }
 
@@ -163,6 +163,8 @@ export class QueryEvidenceRegistry {
       timestamp: auditableReceipt.auditability.timestamp,
       queryLength: auditableReceipt.auditability.queryLength,
       resultSize: auditableReceipt.auditability.resultSize,
+      queryText: queryText,
+      results: results,
       governance: {
         artifact: `source-facts-self-governance-report.v1.json`,
         queryId: receipt.queryId || "unknown",
@@ -170,6 +172,22 @@ export class QueryEvidenceRegistry {
     });
 
     this.queryNames.set(queryName, contentHash);
+  }
+
+  /**
+   * Regenerate query/results from content hash
+   * Returns the original query text and results if found
+   */
+  regenerates(contentHash) {
+    const entry = this.hashes.get(contentHash);
+    if (!entry) return null;
+    return {
+      queryName: entry.queryName,
+      queryText: entry.queryText,
+      results: entry.results,
+      contentHash: entry.contentHash,
+      timestamp: entry.timestamp,
+    };
   }
 
   /**
@@ -206,6 +224,68 @@ export class QueryEvidenceRegistry {
         contentHash: entry.contentHash,
         queryHash: entry.queryHash,
         governance: entry.governance,
+        timestamp: entry.timestamp,
+      })),
+    };
+  }
+}
+
+/**
+ * Query hash index for lookups and exports
+ * Similar to QueryEvidenceRegistry but optimized for query name lookups and index exports
+ */
+export class QueryHashIndex {
+  constructor() {
+    this.queryNames = new Map(); // Map<queryName, { contentHash, queryHash, ...}>
+    this.entries = [];
+  }
+
+  /**
+   * Register query/result pair in the index
+   */
+  register(queryName, queryText, results, receipt) {
+    const auditableReceipt = projectsAuditableQueryReceipt(
+      receipt,
+      queryText,
+      results
+    );
+
+    const contentHash = auditableReceipt.auditability.contentHash;
+    const queryHash = auditableReceipt.auditability.queryHash;
+
+    const entry = {
+      queryName: queryName,
+      queryHash: queryHash,
+      contentHash: contentHash,
+      queryText: queryText,
+      results: results,
+      timestamp: auditableReceipt.auditability.timestamp,
+      queryLength: auditableReceipt.auditability.queryLength,
+      resultSize: auditableReceipt.auditability.resultSize,
+    };
+
+    this.queryNames.set(queryName, entry);
+    this.entries.push(entry);
+  }
+
+  /**
+   * Look up query by name
+   */
+  lookupByName(queryName) {
+    return this.queryNames.get(queryName) || null;
+  }
+
+  /**
+   * Export index metadata
+   */
+  export() {
+    return {
+      documentKind: "query-hash-index.v1",
+      queryCount: this.entries.length,
+      entries: this.entries.map((entry) => ({
+        queryName: entry.queryName,
+        queryHash: entry.queryHash,
+        contentHash: entry.contentHash,
         timestamp: entry.timestamp,
       })),
     };
