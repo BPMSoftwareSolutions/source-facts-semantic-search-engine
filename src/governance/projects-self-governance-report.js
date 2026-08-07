@@ -17,6 +17,7 @@ import { projectsReportQueryLineage, reconcilesReportQueryLineage } from "./proj
 import { projectsInterfaceGovernance } from "./projects-interface-governance.js";
 import { projectsCanonicalFeatureQueryPlane } from "./canonical-feature-intent.js";
 import { projectsTestTraceability } from "./projects-test-traceability.js";
+import { projectsTestVocabularyCrossCorrelation } from "./test-vocabulary-cross-correlation.js";
 import { buildsEnterpriseSubjectRegistry } from "../sqlserver/load-engineering-truth.js";
 
 function compareOccurrences(left, right) {
@@ -331,6 +332,10 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
     cliAuthorityFiles,
   });
   const testTraceability = await projectsTestTraceability({ testIndex, productionIndex: index, interfaceGovernance, canonicalFeatureQueryPlane });
+  const vocabularyCrosscorrelation = projectsTestVocabularyCrossCorrelation({
+    testTraceability,
+    scenarioConformance: projectedScenarioConformance,
+  });
   const lineageAuthorityFileSet = new Set(projectedScenarioConformance.lineageAuthorityFiles);
   const unclassifiedAuthorityDocuments = scopedAuthorityDocuments
     .filter((entry) => !lineageAuthorityFileSet.has(entry.filePath))
@@ -369,6 +374,7 @@ export async function projectsSelfGovernanceReport({ index, testIndex = null, re
     interfaceGovernance,
     testTraceability,
     scenarioConformance,
+    vocabularyCrosscorrelation,
     featureCoverage,
     unclassifiedInventory: Object.freeze({
       mechanicsByLineageDisposition: Object.freeze(lineageDispositionCounts),

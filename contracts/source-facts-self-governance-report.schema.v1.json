@@ -10,6 +10,7 @@
     "subjectScope",
     "interfaceGovernance",
     "scenarioConformance",
+    "vocabularyCrosscorrelation",
     "featureCoverage",
     "unclassifiedInventory",
     "authoritySources",
@@ -406,6 +407,108 @@
         "summary": { "type": "object" },
         "features": { "type": "array", "items": { "type": "object" } },
         "lineageAuthorityFiles": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "vocabularyCrosscorrelation": {
+      "type": "object",
+      "required": ["summary", "testVocabulary", "scenarioVocabulary", "vocabularyCorrelations", "traceabilityCorrelations"],
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["resultRowId", "testsAnalyzed", "scenariosAnalyzed", "correlationsDiscovered"],
+            "properties": {
+              "resultRowId": { "type": "string", "minLength": 1 },
+              "testsAnalyzed": { "type": "integer", "minimum": 0 },
+              "scenariosAnalyzed": { "type": "integer", "minimum": 0 },
+              "correlationsDiscovered": { "type": "integer", "minimum": 0 },
+              "sharedKeyTerms": { "type": "array", "items": { "type": "string" } },
+              "uniqueTestKeyTerms": { "type": "array", "items": { "type": "string" } },
+              "uniqueScenarioKeyTerms": { "type": "array", "items": { "type": "string" } },
+              "averageTestVocabularySize": { "type": "integer", "minimum": 0 },
+              "averageScenarioVocabularySize": { "type": "integer", "minimum": 0 },
+              "correlationCoverage": { "type": "number", "minimum": 0, "maximum": 100 }
+            }
+          }
+        },
+        "testVocabulary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["resultRowId", "testId", "testName", "testFile"],
+            "properties": {
+              "resultRowId": { "type": "string", "minLength": 1 },
+              "testId": { "type": "string", "minLength": 1 },
+              "testName": { "type": "string", "minLength": 1 },
+              "testFile": { "type": "string", "minLength": 1 },
+              "testSuite": { "type": "array", "items": { "type": "string" } },
+              "vocabulary": { "type": "array", "items": { "type": "object" } },
+              "vocabularySize": { "type": "integer", "minimum": 0 },
+              "keyTermCount": { "type": "integer", "minimum": 0 },
+              "keyTerms": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "scenarioVocabulary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["resultRowId", "scenarioId", "scenarioPurpose"],
+            "properties": {
+              "resultRowId": { "type": "string", "minLength": 1 },
+              "featureId": { "type": "string", "minLength": 1 },
+              "featurePurpose": { "type": "string" },
+              "scenarioId": { "type": "string", "minLength": 1 },
+              "scenarioPurpose": { "type": "string" },
+              "obligationCount": { "type": "integer", "minimum": 0 },
+              "obligationStatements": { "type": "array", "items": { "type": "string" } },
+              "vocabulary": { "type": "array", "items": { "type": "object" } },
+              "vocabularySize": { "type": "integer", "minimum": 0 },
+              "keyTermCount": { "type": "integer", "minimum": 0 },
+              "keyTerms": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "vocabularyCorrelations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["resultRowId", "testId", "scenarioId"],
+            "properties": {
+              "resultRowId": { "type": "string", "minLength": 1 },
+              "testId": { "type": "string", "minLength": 1 },
+              "testName": { "type": "string", "minLength": 1 },
+              "testFile": { "type": "string", "minLength": 1 },
+              "scenarioId": { "type": "string", "minLength": 1 },
+              "scenarioPurpose": { "type": "string" },
+              "featureId": { "type": "string", "minLength": 1 },
+              "featurePurpose": { "type": "string" },
+              "sharedKeyTerms": { "type": "array", "items": { "type": "string" } },
+              "sharedKeyTermCount": { "type": "integer", "minimum": 0 },
+              "keyTermSimilarity": { "type": "number", "minimum": 0, "maximum": 1 },
+              "vocabularySimilarity": { "type": "number", "minimum": 0, "maximum": 1 },
+              "correlationStrength": { "enum": ["STRONG_VOCABULARY_CORRELATION", "MODERATE_VOCABULARY_CORRELATION", "WEAK_VOCABULARY_CORRELATION"] },
+              "directionality": { "type": "string" }
+            }
+          }
+        },
+        "traceabilityCorrelations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["resultRowId", "testId", "scenarioId"],
+            "properties": {
+              "resultRowId": { "type": "string", "minLength": 1 },
+              "testId": { "type": "string", "minLength": 1 },
+              "scenarioId": { "type": "string", "minLength": 1 },
+              "traceabilityBindings": { "type": "integer", "minimum": 0 },
+              "isValidatedByVocabularyAnalysis": { "type": "boolean" },
+              "discoveryMethod": { "enum": ["VOCABULARY_AND_TRACEABILITY", "TRACEABILITY_ONLY", "VOCABULARY_ONLY"] }
+            }
+          }
+        }
       }
     },
     "featureCoverage": {
