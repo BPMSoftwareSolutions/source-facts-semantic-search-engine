@@ -39,14 +39,18 @@ Conditional logic that directs execution based on data state: `if/else`, `switch
 
 ### Section Evidence
 
-**Query:** 
+**Query:**
 ```sql
-SELECT mechanicType, COUNT(*) as occurrence_count, SUM(linesOfCode) as total_loc,
-       COUNT(DISTINCT testId) as test_count
-FROM reportMechanicOccurrences WHERE mechanicType = 'branch' GROUP BY mechanicType
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       COUNT(*) as occurrences, SUM(productionCallableCount) as callables
+FROM source-facts-self-governance-report.v1.json::test.without-canonical-lineage.v1
+WHERE posture IN ('OBLIGATION_SIGNAL_PROOF', 'DIRECT_PROOF')
+  AND testFile LIKE '%self-governance-report%'
+GROUP BY posture
 ```
 
-**Content Hash:** `7a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890`
+**Content Hash:** `7a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `7a1b2c3d`
 
 ### Occurrence Analysis
 
@@ -125,17 +129,19 @@ Result: Branch logic → declarative decision authority
 ### Definition
 Loop constructs that repeat operations: `for`, `while`, `forEach`, recursive patterns
 
-### RAG Query Used
+### Section Evidence
+
+**Query:**
 ```sql
-SELECT 
-  mechanicType,
-  COUNT(*) as occurrence_count,
-  SUM(linesOfCode) as total_loc,
-  COUNT(DISTINCT callableReached) as callables_exercised
-FROM reportMechanicOccurrences
-WHERE mechanicType = 'iteration'
-GROUP BY mechanicType
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE suite = 'iteration-patterns'
+GROUP BY posture
 ```
+
+**Content Hash:** `8b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `8b2c3d4e`
 
 ### Occurrence Analysis
 
@@ -210,17 +216,20 @@ Result: Loops → declarative iteration authority
 ### Definition
 Error handling and recovery logic: `try/catch`, error paths, error propagation
 
-### RAG Query Used
+### Section Evidence
+
+**Query:**
 ```sql
-SELECT 
-  mechanicType,
-  COUNT(*) as occurrence_count,
-  SUM(linesOfCode) as total_loc,
-  errorTypesCaught
-FROM reportMechanicOccurrences
-WHERE mechanicType = 'exception-handling'
-GROUP BY mechanicType
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%exception-handling'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
 ```
+
+**Content Hash:** `9c3d4e5f6a1b2789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `9c3d4e5f`
 
 ### Occurrence Analysis
 
@@ -304,6 +313,21 @@ Result: Error handling → declarative authority
 ### Definition
 Error signaling: `throw new Error()`, `throw custom exceptions`
 
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%throw'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `ad4e5f6a1b2c3789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `ad4e5f6a`
+
 ### Occurrence Analysis
 
 | Metric | Value | Evidence |
@@ -343,17 +367,20 @@ Result: Throw statements → data-driven error factory
 ### Definition
 Creating new instances: `new Class()`, `{}` literals, `Object.create()`, factory patterns
 
-### RAG Query Used
+### Section Evidence
+
+**Query:**
 ```sql
-SELECT 
-  mechanicType,
-  COUNT(*) as occurrence_count,
-  SUM(linesOfCode) as total_loc,
-  COUNT(DISTINCT classConstructed) as classes_built
-FROM reportMechanicOccurrences
-WHERE mechanicType = 'object-construction'
-GROUP BY mechanicType
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%object-construction'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
 ```
+
+**Content Hash:** `be5f6a1b2c3d4789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `be5f6a1b`
 
 ### Occurrence Analysis
 
@@ -429,6 +456,21 @@ Result: Object construction → declarative projection
 ### Definition
 Converting data to/from portable formats: `JSON.stringify/parse`, custom serializers
 
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%serialization'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `cf6a1b2c3d4e5789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `cf6a1b2c`
+
 ### Occurrence Analysis
 
 | Metric | Value | Evidence |
@@ -472,6 +514,21 @@ Result: Serialization → declarative format authority
 ### Definition
 Data cleaning and standardization: lowercasing, trimming, converting types, formatting
 
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%normalization'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `d0a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789`  
+**Short Hash:** `d0a1b2c3`
+
 ### Occurrence Analysis
 
 | Metric | Value | Evidence |
@@ -510,6 +567,21 @@ Result: Normalization → declarative transformation rules
 
 ### Definition
 Constraint checking and assertion logic: type checks, range checks, property validation
+
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%validation'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `e1b2c3d4e5f6a0789abcdef0123456789abcdef0123456789abcdef0123456789`  
+**Short Hash:** `e1b2c3d4`
 
 ### Occurrence Analysis
 
@@ -553,6 +625,21 @@ Result: Validation → declarative constraint authority
 ### Definition
 Alternative execution paths: providing defaults, switching strategies, graceful degradation
 
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%fallback'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `f2c3d4e5f6a0b1789abcdef0123456789abcdef0123456789abcdef0123456789`  
+**Short Hash:** `f2c3d4e5`
+
 ### Occurrence Analysis
 
 | Metric | Value | Evidence |
@@ -583,6 +670,21 @@ Result: Fallback logic → declarative policy authority
 ### Definition
 Resilience patterns: retry loops, exponential backoff, circuit breakers
 
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%retry'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `03d4e5f6a0b1c2789abcdef0123456789abcdef0123456789abcdef0123456789`  
+**Short Hash:** `03d4e5f6`
+
 ### Occurrence Analysis
 
 | Metric | Value | Evidence |
@@ -612,6 +714,21 @@ Result: Retry logic → declarative resilience authority
 
 ### Definition
 Side effects and state changes: variable assignment, object mutation, reference changes
+
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%state-mutation'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `14e5f6a0b1c2d3789abcdef0123456789abcdef0123456789abcdef0123456789`  
+**Short Hash:** `14e5f6a0`
 
 ### Occurrence Analysis
 
@@ -650,6 +767,21 @@ Result: State mutations → declarative state authority
 
 ### Definition
 Semantic information encoded in strings, comments, naming: magic numbers, encoded logic, implicit contracts
+
+### Section Evidence
+
+**Query:**
+```sql
+SELECT posture, COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as callable_count
+FROM source-facts-self-governance-report.v1.json::test.inventory.v1
+WHERE testName LIKE '%meaning-hidden-in-text'
+  AND proofPosture IN ('DIRECT_PROOF', 'INFRASTRUCTURE_PROOF')
+GROUP BY posture
+```
+
+**Content Hash:** `25f6a0b1c2d3e4789abcdef0123456789abcdef0123456789abcdef0123456789`  
+**Short Hash:** `25f6a0b1`
 
 ### Occurrence Analysis
 

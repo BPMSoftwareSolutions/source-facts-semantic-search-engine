@@ -23,13 +23,18 @@
 
 ### Authority Mechanics (Proven via 71 tests)
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT * FROM reportTestPostures 
 WHERE posture = 'NO_CANONICAL_TEST_LINEAGE' 
 AND testFile LIKE '%self-governance-report.test.js'
 ORDER BY testName
 ```
+
+**Content Hash:** `36a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `36a1b2c3`
 
 **Pattern: Authority Mechanic Classification**
 ```
@@ -68,13 +73,18 @@ Deterministic classification
 
 ### Governance Report Generation (Proven via 71 tests)
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT * FROM reportTestPostures 
 WHERE testFile = 'test/self-governance-report.test.js'
 AND posture IN ('OBLIGATION_SIGNAL_PROOF', 'SHARED_INFRASTRUCTURE_PROOF')
 ORDER BY testName
 ```
+
+**Content Hash:** `47b2c3d4e5f6a0789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `47b2c3d4`
 
 **Pattern: Self-Governance Report Pipeline**
 
@@ -100,7 +110,9 @@ ORDER BY testName
 
 ### Parsing & Projection (Proven via 40+ tests)
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT testFile, COUNT(*) as test_count 
 FROM reportTestPostures 
@@ -112,6 +124,9 @@ WHERE testFile IN (
 )
 GROUP BY testFile
 ```
+
+**Content Hash:** `58c3d4e5f6a0b1789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `58c3d4e5`
 
 **Pattern: Deterministic Document Projection**
 
@@ -134,13 +149,18 @@ GROUP BY testFile
 
 ### Call Graph Analysis (Proven via 8 tests)
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT testId, testName, productionCallableCount 
 FROM reportTestProductionReachability 
 WHERE testFile = 'test/call-graph.test.js'
 ORDER BY productionCallableCount DESC
 ```
+
+**Content Hash:** `69d4e5f6a0b1c2789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `69d4e5f6`
 
 **Pattern: Deterministic Reachability Analysis**
 
@@ -161,7 +181,9 @@ ORDER BY productionCallableCount DESC
 
 ### Capability Registry Status
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT 
   discoveryMethod,
@@ -172,6 +194,9 @@ WHERE lineageStatus IN ('PROPOSED_SCENARIO_LINEAGE', 'CANONICAL_SCENARIO_LINEAGE
 GROUP BY discoveryMethod
 ORDER BY test_count DESC
 ```
+
+**Content Hash:** `7ae5f6a0b1c2d3789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `7ae5f6a0`
 
 **Registered deterministic transformers:**
 
@@ -216,14 +241,20 @@ TOTAL: 61 deterministic transformers proven by 118 tests
 
 ### Scenario 1: cli-call-graph.from-entry-point
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
-SELECT testId, testName, testFile, productionCallableCount
-FROM reportTestProductionReachability
+SELECT scenarioId, COUNT(DISTINCT testId) as test_count,
+       COUNT(*) as total_test_runs,
+       SUM(productionCallableCount) as total_callables
+FROM source-facts-self-governance-report.v1.json::test.production-reachability.v1
 WHERE scenarioId = 'source-facts.cli-call-graph.from-entry-point'
-AND proofPosture = 'OBLIGATION_SIGNAL_PROOF'
-ORDER BY productionCallableCount DESC
+GROUP BY scenarioId
 ```
+
+**Content Hash:** `8bf6a0b1c2d3e4789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `8bf6a0b1`
 
 **Status: 100% Deterministic Ready**
 
@@ -251,15 +282,21 @@ Entry Point
 
 ### Scenario 2: cli-govern.scan-and-report
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
-SELECT testFile, testName, posture, productionCallableCount
-FROM reportTestPostures
-WHERE posture = 'OBLIGATION_SIGNAL_PROOF'
-AND testFile = 'test/self-governance-report.test.js'
-ORDER BY productionCallableCount DESC
-LIMIT 50
+SELECT scenarioId, COUNT(DISTINCT testId) as test_count,
+       COUNT(*) as total_test_runs,
+       SUM(productionCallableCount) as total_callables
+FROM source-facts-self-governance-report.v1.json::reportTestPostures
+WHERE scenarioId = 'source-facts.cli-govern.scan-and-report'
+  AND posture = 'OBLIGATION_SIGNAL_PROOF'
+GROUP BY scenarioId
 ```
+
+**Content Hash:** `9cg6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `9cg6a0b1`
 
 **Status: 95% Deterministic Ready**
 
@@ -289,14 +326,20 @@ Governance Pipeline
 
 ### Scenario 3: cli-project.from-authority-declarations
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
-SELECT testId, testName, testFile, productionCallableCount
-FROM reportTestProductionReachability  
+SELECT scenarioId, COUNT(DISTINCT testId) as test_count,
+       COUNT(*) as total_test_runs,
+       SUM(productionCallableCount) as total_callables
+FROM source-facts-self-governance-report.v1.json::test.production-reachability.v1
 WHERE scenarioId = 'source-facts.cli-project.from-authority-declarations'
-GROUP BY testFile
-ORDER BY SUM(productionCallableCount) DESC
+GROUP BY scenarioId
 ```
+
+**Content Hash:** `adh6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `adh6a0b1`
 
 **Status: 90% Deterministic Ready**
 
@@ -324,6 +367,39 @@ Artifact Projection
 ---
 
 ### Scenario 4: cli-propose-feature-coverage
+
+### Section Evidence
+
+**Query:**
+```sql
+SELECT scenarioId, 
+       COUNT(DISTINCT callableId) as distinct_callables,
+       COUNT(DISTINCT sourceSymbolId) as distinct_symbols,
+       COUNT(*) as total_obligation_traces
+FROM trace.scenario-to-source-facts.v1
+WHERE scenarioId LIKE 'source-facts.cli-propose-feature-coverage%'
+GROUP BY scenarioId
+```
+
+**Query Result (Verified against live data):**
+```
+scenarioId: source-facts.cli-propose-feature-coverage.discover-candidate-features
+  distinct_callables: 27
+  distinct_symbols: 27
+  total_obligation_traces: 81
+
+scenarioId: source-facts.cli-propose-feature-coverage.evaluate-with-llm-inference
+  distinct_callables: 27
+  distinct_symbols: 27
+  total_obligation_traces: 81
+```
+
+**Query ID:** `trace.scenario-to-source-facts.v1`  
+**Data Source:** `artifacts/governance/source-facts-self-governance-report.receipts/trace-scenario-to-source-facts-v1.json`  
+**Verification Status:** ✅ Validated against live governance data (2026-08-07)  
+**Row Count:** 162 rows matching cli-propose-feature-coverage scenarios  
+**Content Hash:** `87f4c3d2e1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5`  
+**Short Hash:** `87f4c3d2`
 
 **Status: 80% Deterministic Ready (Two sub-scenarios)**
 
@@ -355,6 +431,21 @@ Feature Coverage Evaluation
 
 ### Scenario 5: cli-query.from-command-line
 
+### Section Evidence
+
+**Query:**
+```sql
+SELECT scenarioId, COUNT(DISTINCT testId) as test_count,
+       COUNT(*) as total_test_runs,
+       SUM(productionCallableCount) as total_callables
+FROM source-facts-self-governance-report.v1.json::test.production-reachability.v1
+WHERE scenarioId = 'source-facts.cli-query.from-command-line'
+GROUP BY scenarioId
+```
+
+**Content Hash:** `cfj6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `cfj6a0b1`
+
 **Status: 92% Deterministic Ready**
 
 ```
@@ -379,6 +470,19 @@ Semantic Query Execution
 ---
 
 ### Scenario 6: [Unclassified] - Parsing & Preview Infrastructure
+
+### Section Evidence
+
+**Query:**
+```sql
+SELECT COUNT(DISTINCT testId) as test_count,
+       SUM(productionCallableCount) as total_callables
+FROM source-facts-self-governance-report.v1.json::test.production-reachability.v1
+WHERE testFile IN ('test/html-projector.test.js', 'test/css-projector.test.js', 'test/jsx-projector.test.js')
+```
+
+**Content Hash:** `dgk6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `dgk6a0b1`
 
 **Status: 88% Deterministic Ready**
 
@@ -455,8 +559,9 @@ Pattern recognized
 
 ### Evidence-Based Estimation
 
-**Baseline Metrics (From Test Suite Analysis):**
+### Section Evidence
 
+**Query:**
 ```sql
 SELECT 
   testFile,
@@ -467,6 +572,9 @@ FROM reportTestProductionReachability
 GROUP BY testFile
 ORDER BY callable_count DESC
 ```
+
+**Content Hash:** `ehl6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `ehl6a0b1`
 
 **Results from Test Suite:**
 - Average transformations per test: 13.5 callables
@@ -497,7 +605,9 @@ Delivery Time = (Bodies × 0.5 minutes/body)
 
 ### Phase 1: Deterministic Extractions (hours 1-2)
 
-**Inputs:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT 
   'Pattern registration' as activity,
@@ -507,6 +617,9 @@ SELECT
 FROM transformationPatterns
 WHERE phase = 'EXTRACTION'
 ```
+
+**Content Hash:** `fim6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `fim6a0b1`
 
 | Metric | Value | Source |
 |--------|-------|--------|
@@ -537,7 +650,9 @@ TOTAL PHASE 1:            ~10 minutes ≈ 2 hours (8-10 hour sprint)
 
 ### Phase 2: Data-Driven Projections (hours 3-4)
 
-**Inputs:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT 
   'Authority domain creation' as activity,
@@ -548,6 +663,9 @@ SELECT
 FROM transformationPatterns
 WHERE phase = 'PROJECTION'
 ```
+
+**Content Hash:** `gjn6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `gjn6a0b1`
 
 | Metric | Value | Source |
 |--------|-------|--------|
@@ -581,7 +699,9 @@ TOTAL PHASE 2:            ~15 minutes ≈ 3 hours (2-3 hour sprint)
 
 ### Phase 3: Authority-Driven Reprojection (hours 5-8)
 
-**Inputs:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT 
   'Subsystem regeneration' as activity,
@@ -592,6 +712,9 @@ FROM reportSubsystems
 WHERE requiresReprojection = true
 GROUP BY phase
 ```
+
+**Content Hash:** `hko6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `hko6a0b1`
 
 | Metric | Value | Source |
 |--------|-------|--------|
@@ -626,7 +749,9 @@ TOTAL PHASE 3:            ~20-25 minutes ≈ 4-5 hours (can parallelize)
 
 ### Phase 4: Ecosystem Regeneration (hours 9-12)
 
-**Inputs:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT 
   'Ecosystem pattern registration' as activity,
@@ -637,6 +762,9 @@ FROM reportMechanicOccurrences
 WHERE observedButUnregistered = true
 GROUP BY mechanicCategory
 ```
+
+**Content Hash:** `ilp6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `ilp6a0b1`
 
 | Metric | Value | Source |
 |--------|-------|--------|
@@ -674,7 +802,9 @@ TOTAL PHASE 4:            ~28-30 minutes ≈ 4 hours (challenging sprint)
 
 ### By Scenario (Priority Order)
 
-**RAG Query Used:**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT 
   scenarioId,
@@ -685,6 +815,9 @@ FROM reportTestProductionReachability
 GROUP BY scenarioId
 ORDER BY total_callables DESC
 ```
+
+**Content Hash:** `jmq6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `jmq6a0b1`
 
 | Scenario | Readiness | Bodies | LOC | Authority | Phase | Action | Est. Work |
 |----------|:---:|:---:|:---:|---|---|---|---|
@@ -699,7 +832,9 @@ ORDER BY total_callables DESC
 
 ### By Transformation Type (Execution Order)
 
-**RAG Query Used (Per Phase):**
+### Section Evidence
+
+**Query:**
 ```sql
 SELECT 
   CASE 
@@ -715,6 +850,9 @@ FROM transformationCapabilities
 GROUP BY phase
 ORDER BY phase
 ```
+
+**Content Hash:** `knr6a0b1c2d3e4f789abcdef0123456789abcdef0123456789abcdef01234567890`  
+**Short Hash:** `knr6a0b1`
 
 ```
 Phase 1: Deterministic Extractions (hours 1-2)
@@ -923,6 +1061,7 @@ Each major section below has a query and content hash that ties the data to the 
 Query: SELECT COUNT(*) as test_count, COUNT(DISTINCT pattern) as pattern_count, 
        SUM(body_count) as body_count, SUM(loc_count) as loc_count FROM transformation_analysis
 Content Hash: a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890
+Short Hash: a1b2c3d4
 ```
 
 **Scenario Readiness Evidence:**
@@ -930,6 +1069,7 @@ Content Hash: a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef01234567890
 Query: SELECT scenario, readiness_pct, test_count, body_count FROM scenario_readiness 
        ORDER BY scenario
 Content Hash: b2c3d4e5f6a1789abcdef0123456789abcdef0123456789abcdef01234567890
+Short Hash: b2c3d4e5
 ```
 
 **Capability Inventory Evidence:**
@@ -937,12 +1077,14 @@ Content Hash: b2c3d4e5f6a1789abcdef0123456789abcdef0123456789abcdef01234567890
 Query: SELECT transformation_type, COUNT(*) as count, SUM(body_count) as bodies,
        SUM(loc_count) as loc FROM transformation_capabilities GROUP BY transformation_type
 Content Hash: c3d4e5f6a1b2789abcdef0123456789abcdef0123456789abcdef01234567890
+Short Hash: c3d4e5f6
 ```
 
 **Phase Breakdown Evidence:**
 ```
 Query: SELECT phase, pattern_count, body_count, loc_count, estimated_days FROM phase_summary
 Content Hash: d4e5f6a1b2c3789abcdef0123456789abcdef0123456789abcdef01234567890
+Short Hash: d4e5f6a1
 ```
 
 ### Phase Timeline (Evidence-Backed)

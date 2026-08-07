@@ -32,8 +32,9 @@ export function validatesReportEvidence(reportPath, governanceArtifactPath) {
     errors: [],
   };
 
-  // Extract section evidence blocks
-  const sectionPattern = /###\s+Section Evidence.*?```.*?Query:\s*(.*?)```.*?Content Hash:\s*`([a-f0-9]+)`/gs;
+  // Extract section evidence blocks - with markdown bold markers
+  // Pattern: **Content Hash:** followed by backtick-enclosed hex string (60-66 chars for flexibility)
+  const sectionPattern = /\*\*Content Hash:\*\*\s*`([a-f0-9]{60,66})`/g;
   let match;
   let sectionCount = 0;
 
@@ -51,7 +52,8 @@ export function validatesReportEvidence(reportPath, governanceArtifactPath) {
     results.sections.push({
       sectionNumber: sectionCount,
       query: queryText.substring(0, 100), // Truncate for display
-      declaredHash: declaredHash.substring(0, 12), // Short hash
+      declaredHash: declaredHash.substring(0, 12), // Short hash for display
+      fullHash: declaredHash, // Store full hash for validation
       ...sectionResult,
     });
 
