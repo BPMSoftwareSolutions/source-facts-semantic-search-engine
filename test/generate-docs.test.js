@@ -233,6 +233,21 @@ function buildsMinimalReport() {
         NOT_CURRENTLY_PROJECTABLE: 0,
       },
     },
+    vocabularyCrosscorrelation: {
+      summary: [
+        {
+          resultRowId: "fixture-vocab-correlation-1",
+          testsAnalyzed: 0,
+          scenariosAnalyzed: 0,
+          correlationsDiscovered: 0,
+          correlationCoverage: 0,
+        },
+      ],
+      testVocabulary: [],
+      scenarioVocabulary: [],
+      vocabularyCorrelations: [],
+      traceabilityCorrelations: [],
+    },
     occurrences: [],
     disposition: "OBSERVATIONAL_NO_GATE_APPLIED",
   };

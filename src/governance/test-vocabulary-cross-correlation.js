@@ -348,7 +348,7 @@ function summarizesVocabularyCoverage(testVocab, scenarioVocab, correlations) {
           )
         : 0,
     correlationCoverage:
-      testVocab.length > 0
+      testVocab.length > 0 && scenarioVocab.length > 0
         ? parseFloat(
             ((correlations.length / (testVocab.length * scenarioVocab.length)) *
               100)
