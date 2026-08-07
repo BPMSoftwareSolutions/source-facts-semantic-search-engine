@@ -28,6 +28,7 @@
 
     { "directoryId": "docs-directory", "relativePath": "docs", "required": true },
     { "directoryId": "features-directory", "relativePath": "features", "required": false },
+    { "directoryId": "docs-analysis-directory", "relativePath": "docs/analysis", "required": false },
     { "directoryId": "docs-design-directory", "relativePath": "docs/design", "required": true },
     { "directoryId": "docs-features-directory", "relativePath": "docs/features", "required": false },
     { "directoryId": "docs-generated-directory", "relativePath": "docs/generated", "required": false },
@@ -42,6 +43,8 @@
 
     { "directoryId": "scripts-directory", "relativePath": "scripts", "required": true },
     { "directoryId": "scripts-sql-directory", "relativePath": "scripts/sql", "required": true },
+    { "directoryId": "scripts-authority-directory", "relativePath": "scripts/authority", "required": false },
+    { "directoryId": "scripts-authority-prompt-shell-directory", "relativePath": "scripts/authority/prompt-shell-query-source-facts", "required": false },
 
     { "directoryId": "source-facts-query-console-directory", "relativePath": "source-facts-query-console", "required": true },
     { "directoryId": "source-facts-query-console-contracts-directory", "relativePath": "source-facts-query-console/contracts", "required": true },
@@ -66,6 +69,7 @@
     { "directoryId": "src-console-governed-message-artifact-family-verification-directory", "relativePath": "src/console/governed-message-artifact-family/verification", "required": true },
     { "directoryId": "src-gallery-directory", "relativePath": "src/gallery", "required": true },
     { "directoryId": "src-lib-directory", "relativePath": "src/lib", "required": true },
+    { "directoryId": "src-prompt-shell-directory", "relativePath": "src/prompt-shell", "required": false },
     { "directoryId": "src-session-directory", "relativePath": "src/session", "required": true },
     { "directoryId": "src-sqlserver-directory", "relativePath": "src/sqlserver", "required": true },
     { "directoryId": "src-web-directory", "relativePath": "src/web", "required": true },
@@ -79,6 +83,7 @@
     { "directoryId": "artifacts-deterministic-admissions-directory", "relativePath": "artifacts/admissions/deterministic", "required": false },
     { "directoryId": "artifacts-governance-directory", "relativePath": "artifacts/governance", "required": false },
     { "directoryId": "artifacts-governance-self-report-receipts-directory", "relativePath": "artifacts/governance/source-facts-self-governance-report.receipts", "required": false },
+    { "directoryId": "artifacts-reports-directory", "relativePath": "artifacts/reports", "required": false },
 
     { "directoryId": "evidence-directory", "relativePath": "evidence", "required": false },
     { "directoryId": "evidence-know-how-directory", "relativePath": "evidence/know-how", "required": false },
@@ -95,6 +100,7 @@
     { "familyId": "artifacts-admissions-readme", "pathPattern": "artifacts/admissions/README.md", "artifactKind": "documentation", "cardinality": { "min": 1, "max": 1 } },
     { "familyId": "artifacts-admission-files", "pathPattern": "artifacts/admissions/**/*.json", "artifactKind": "non-authoritative-mechanic-authority-inspection-projection", "cardinality": { "min": 0 } },
     { "familyId": "artifacts-governance-files", "pathPattern": "artifacts/governance/**/*", "artifactKind": "governance-report", "cardinality": { "min": 0 } },
+    { "familyId": "artifacts-reports-files", "pathPattern": "artifacts/reports/**/*", "artifactKind": "analysis-report", "cardinality": { "min": 0 } },
     { "familyId": "evidence-know-how-files", "pathPattern": "evidence/know-how/**/*", "artifactKind": "know-how-artifact", "cardinality": { "min": 0 } },
     { "familyId": "evidence-healing-files", "pathPattern": "evidence/healing/**/*", "artifactKind": "healing-artifact", "cardinality": { "min": 0 } },
     { "familyId": "evidence-review-files", "pathPattern": "evidence/reviews/**/*", "artifactKind": "review-artifact", "cardinality": { "min": 0 } },
